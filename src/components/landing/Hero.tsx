@@ -194,7 +194,7 @@ export function Hero() {
         className="absolute inset-0 pointer-events-none"
         style={{ scale: reduceMotion ? 1 : bgScale, opacity: bgOpacity }}
       >
-        <div className="absolute inset-0 bg-[url('/hero-overlay.webp')] bg-cover bg-[center_top_3rem] md:bg-[center_top_10%] bg-no-repeat opacity-100" />
+        <div className="absolute inset-0 bg-[url('/hero-overlay-mobile.webp')] md:bg-[url('/hero-overlay.webp')] bg-cover bg-[center_top_3rem] md:bg-[center_top_10%] bg-no-repeat opacity-100" />
         {/* Soften the top edge so it doesn't clash with the transparent navbar */}
         <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-[#eef2f7] to-transparent" />
         {/* Soften the bottom edge for a seamless transition into the page */}
