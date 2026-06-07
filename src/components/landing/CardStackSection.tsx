@@ -1,14 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { cn } from "@/lib/utils";
-
-// Register GSAP plugins at module level
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 interface CardData {
   id: number | string;
@@ -25,106 +17,62 @@ const defaultCards: CardData[] = [
 ];
 
 export function CardStackSection() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const triggerRef = useRef<HTMLDivElement>(null);
-  const imageRefs = useRef<(HTMLImageElement | null)[]>([]);
-
-  useEffect(() => {
-    const trigger = triggerRef.current;
-    const images = imageRefs.current.filter(Boolean) as HTMLImageElement[];
-    const totalCards = images.length;
-
-    if (!trigger || totalCards === 0) return;
-
-    // Set initial positions: first card visible, rest below
-    gsap.set(images[0], { yPercent: 0, scale: 1, rotation: 0 });
-    for (let i = 1; i < totalCards; i++) {
-      gsap.set(images[i], { yPercent: 100, scale: 1, rotation: 0 });
-    }
-
-    // Build the scroll-driven timeline
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: trigger,
-        start: "top top",
-        end: () => `+=${window.innerHeight * (totalCards - 1)}`,
-        pin: true,
-        scrub: 1, // Smoother scrub value for mobile
-        pinSpacing: true,
-        invalidateOnRefresh: true,
-      },
-    });
-
-    for (let i = 0; i < totalCards - 1; i++) {
-      // Current card shrinks and rotates
-      tl.to(
-        images[i],
-        {
-          scale: 0.7,
-          rotation: 5,
-          duration: 1,
-          ease: "none",
-          force3D: true, // Hardware acceleration without memory penalty of will-change
-        },
-        i,
-      );
-
-      // Next card slides up into view
-      tl.to(
-        images[i + 1],
-        {
-          yPercent: 0,
-          duration: 1,
-          ease: "none",
-          force3D: true,
-        },
-        i,
-      );
-    }
-
-    // Refresh on resize
-    const ro = new ResizeObserver(() => ScrollTrigger.refresh());
-    if (sectionRef.current) ro.observe(sectionRef.current);
-
-    return () => {
-      ro.disconnect();
-      tl.kill();
-      ScrollTrigger.getAll().forEach((st) => st.kill());
-    };
-  }, []);
-
   return (
     <section
-      ref={sectionRef}
-      className="relative overflow-hidden z-20"
+      className="relative overflow-hidden z-20 py-24 md:py-32"
       style={{
         background: "linear-gradient(135deg, #eef2f7 0%, #dde6f2 45%, #e9f0fa 100%)",
         backgroundAttachment: "fixed",
       }}
     >
-      {/* This div is what ScrollTrigger pins */}
-      <div
-        ref={triggerRef}
-        className="relative flex items-center justify-center overflow-hidden"
-        style={{ height: "100vh", width: "100%" }}
-      >
-        {/* Card wrapper — holds all stacked images */}
-        <div
-          className="relative overflow-hidden rounded-3xl aspect-square md:aspect-none w-[90vw] md:w-[min(900px,90vw)] h-auto md:h-[80vh]"
-        >
-          {defaultCards.map((card, i) => (
-            <img
-              key={card.id}
-              src={card.image}
-              alt={card.alt || ""}
-              className={cn(
-                "absolute inset-0 w-full h-full rounded-3xl object-cover",
-              )}
-              ref={(el) => {
-                imageRefs.current[i] = el;
-              }}
-            />
-          ))}
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes marquee {
+          0% { transform: translateX(0%); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+          animation: marquee 60s linear infinite;
+        }
+        .animate-marquee:hover {
+          animation-play-state: paused;
+        }
+      `}} />
+
+      <div className="relative flex items-center justify-center overflow-hidden w-full">
+        {/* Left and right fade gradients for a smoother appearance */}
+        <div className="absolute top-0 bottom-0 left-0 w-16 md:w-32 bg-gradient-to-r from-[#eef2f7] to-transparent z-10 pointer-events-none" />
+        <div className="absolute top-0 bottom-0 right-0 w-16 md:w-32 bg-gradient-to-l from-[#e9f0fa] to-transparent z-10 pointer-events-none" />
+
+        {/* Marquee Wrapper */}
+        <div className="flex w-[max-content] animate-marquee gap-6 md:gap-10 px-3 md:px-5">
+           {/* First Set */}
+           {defaultCards.map((card) => (
+             <div 
+                key={`set1-${card.id}`} 
+                className="relative flex-shrink-0 w-[85vw] md:w-[700px] lg:w-[900px] aspect-[4/3] rounded-2xl md:rounded-[32px] overflow-hidden shadow-[0_20px_50px_rgba(10,37,64,0.15)] group cursor-grab active:cursor-grabbing border border-white/40"
+              >
+               <img 
+                 src={card.image} 
+                 alt={card.alt} 
+                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+               />
+               <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-500" />
+             </div>
+           ))}
+           {/* Duplicate Set for seamless infinite loop */}
+           {defaultCards.map((card) => (
+             <div 
+                key={`set2-${card.id}`} 
+                className="relative flex-shrink-0 w-[85vw] md:w-[700px] lg:w-[900px] aspect-[4/3] rounded-2xl md:rounded-[32px] overflow-hidden shadow-[0_20px_50px_rgba(10,37,64,0.15)] group cursor-grab active:cursor-grabbing border border-white/40"
+              >
+               <img 
+                 src={card.image} 
+                 alt={card.alt} 
+                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+               />
+               <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-500" />
+             </div>
+           ))}
         </div>
       </div>
     </section>
