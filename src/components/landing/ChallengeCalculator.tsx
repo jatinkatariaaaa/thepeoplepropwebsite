@@ -601,7 +601,45 @@ export function ChallengeCalculator() {
                     </button>
                   );
                 })}
+                })}
               </div>
+            </div>
+
+            {/* Promo / Coupon Code Section */}
+            <div className="mt-8">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-[11px] font-bold text-[var(--ink-600)] tracking-widest uppercase">Promo Code</span>
+                <span className="text-[10px] bg-[var(--accent-50)] text-[var(--accent-700)] px-2 py-0.5 rounded-full uppercase tracking-wider">Optional</span>
+              </div>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={promoCode}
+                  onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                  className="w-full rounded-[16px] border border-[var(--border)] px-4 py-3.5 text-[15px] outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-all bg-white text-[var(--ink-950)] font-mono uppercase placeholder:normal-case shadow-sm"
+                  placeholder="Enter code here..."
+                />
+                <Button
+                  type="button"
+                  onClick={() => {
+                    if (promoCode === "FIRSTTPP") {
+                      setAppliedDiscount(0.5);
+                    } else {
+                      setAppliedDiscount(0);
+                      alert("Invalid promo code.");
+                    }
+                  }}
+                  className="shrink-0 rounded-[16px] px-6 bg-[var(--ink-950)] text-white hover:bg-[var(--ink-800)] font-medium"
+                >
+                  Apply
+                </Button>
+              </div>
+              {appliedDiscount > 0 && (
+                <p className="text-[13px] font-medium text-[#10B981] mt-2.5 flex items-center gap-1.5">
+                  <Check className="w-4 h-4" strokeWidth={3} />
+                  50% Discount Applied Successfully!
+                </p>
+              )}
             </div>
           </div>
 
@@ -705,9 +743,14 @@ export function ChallengeCalculator() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -6 }}
                         transition={{ duration: 0.2 }}
-                        className="font-medium text-[26px] md:text-[28px] tabular-nums leading-none tracking-tight text-[var(--ink-950)]"
+                        className="font-medium text-[26px] md:text-[28px] tabular-nums leading-none tracking-tight text-[var(--ink-950)] flex flex-col items-end"
                       >
-                        {total != null ? `$${total.toLocaleString("en-US")}` : "—"}
+                        {appliedDiscount > 0 && total != null && (
+                          <span className="text-[15px] font-medium text-[var(--ink-400)] line-through leading-none mb-0.5">
+                            ${total.toLocaleString("en-US")}
+                          </span>
+                        )}
+                        <span>{finalPrice != null ? `$${finalPrice.toLocaleString("en-US")}` : "—"}</span>
                       </motion.div>
                     </AnimatePresence>
                     {base != null && total != null && total !== base && (
@@ -772,8 +815,13 @@ export function ChallengeCalculator() {
 
             {/* Price */}
             <div className="text-center mt-2 mb-6">
+              {appliedDiscount > 0 && total != null && (
+                <p className="text-[20px] font-medium text-[#94A3B8] line-through leading-none mb-1.5">
+                  ${total.toLocaleString("en-US")}
+                </p>
+              )}
               <h3 className="text-[52px] font-display font-bold text-[#0F172A] tracking-tight leading-none">
-                {total != null ? `$${total.toLocaleString("en-US")}` : "—"}
+                {finalPrice != null ? `$${finalPrice.toLocaleString("en-US")}` : "—"}
               </h3>
               <p className="text-[14px] text-[#64748B] mt-3 font-medium">
                 for {formatSizeLong(effectiveSize)} Account
@@ -853,43 +901,6 @@ export function ChallengeCalculator() {
               </div>
 
               <form onSubmit={handleCryptoPayment} className="p-6 space-y-4 text-left">
-                <div className="space-y-1.5 mb-2 pb-4 border-b border-[var(--border)]">
-                  <label className="text-[13px] font-bold text-[var(--ink-950)] flex items-center justify-between">
-                    <span>Promo / Coupon Code</span>
-                    <span className="text-[10px] bg-[var(--accent-50)] text-[var(--accent-700)] px-2 py-0.5 rounded-full uppercase tracking-wider">Optional</span>
-                  </label>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={promoCode}
-                      onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-                      className="w-full rounded-xl border border-[var(--border)] px-4 py-2.5 text-[14px] outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-all bg-[var(--paper-2)] text-[var(--ink-950)] font-mono uppercase placeholder:normal-case"
-                      placeholder="Enter code here..."
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => {
-                        if (promoCode === "FIRSTTPP") {
-                          setAppliedDiscount(0.5);
-                        } else {
-                          setAppliedDiscount(0);
-                          alert("Invalid promo code.");
-                        }
-                      }}
-                      className="shrink-0 rounded-xl bg-white"
-                    >
-                      Apply
-                    </Button>
-                  </div>
-                  {appliedDiscount > 0 && (
-                    <p className="text-[12px] font-medium text-[#10B981] mt-1.5 flex items-center gap-1">
-                      <Check className="w-3.5 h-3.5" strokeWidth={3} />
-                      50% Discount Applied Successfully!
-                    </p>
-                  )}
-                </div>
-
                 <div className="space-y-1.5">
                   <label className="text-[13px] font-medium text-[var(--ink-950)]">Full Name</label>
                   <input
