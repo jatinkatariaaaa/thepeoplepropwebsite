@@ -22,7 +22,7 @@ export function ProfitCalculator() {
   const calculatedProfit = Math.round(accountSize * (profitRate / 100) * profitSplitPercentage);
 
   return (
-    <section className="relative py-24 md:py-32 overflow-hidden bg-white">
+    <section className="relative py-24 md:py-32 overflow-hidden">
       {/* Background Decor */}
       <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/3 w-[800px] h-[800px] bg-[var(--accent)] opacity-[0.02] rounded-full blur-[100px] pointer-events-none" />
 
@@ -38,10 +38,10 @@ export function ProfitCalculator() {
               </span>
             </div>
             
-            <h2 className="text-[48px] sm:text-[64px] lg:text-[72px] font-black leading-[0.95] tracking-tight text-[var(--ink-950)] mb-8">
+            <h2 className="text-[48px] sm:text-[64px] lg:text-[72px] font-bold leading-[0.95] tracking-tight text-[var(--ink-950)] mb-8">
               HOW MUCH<br />
               CAN YOU<br />
-              MAKE?
+              <span className="word-serif text-[var(--accent)]">MAKE?</span>
             </h2>
 
             {/* Simulated Coins / Graphics container */}
@@ -70,7 +70,7 @@ export function ProfitCalculator() {
 
           {/* Right Side: Calculator Card */}
           <div className="flex justify-center lg:justify-end w-full">
-            <div className="w-full max-w-lg bg-[#FAFAFA] rounded-[32px] p-8 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 relative overflow-hidden">
+            <div className="w-full max-w-lg glass-strong rounded-[32px] p-8 sm:p-10 relative overflow-hidden lift">
               {/* Internal subtle glow */}
               <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--accent)] opacity-[0.03] rounded-full blur-[50px] pointer-events-none" />
 
@@ -88,7 +88,7 @@ export function ProfitCalculator() {
                 </label>
                 <div className="relative">
                   <select 
-                    className="w-full appearance-none bg-slate-100 rounded-2xl px-5 py-4 text-[18px] font-semibold text-[var(--ink-950)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] border border-transparent transition-all"
+                    className="w-full appearance-none bg-white border border-[var(--border)] rounded-2xl px-5 py-4 text-[18px] font-semibold text-[var(--ink-950)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] transition-all shadow-sm"
                     value={accountSize}
                     onChange={(e) => setAccountSize(Number(e.target.value))}
                   >
@@ -164,16 +164,16 @@ export function ProfitCalculator() {
                 </div>
                 
                 {/* 90% Split Badge */}
-                <div className="inline-flex items-center gap-1.5 bg-[#FFF8E6] text-[#B27B0A] px-3 py-1.5 rounded-lg border border-[#FFEAB8]">
+                <div className="chip chip-success px-3 py-1.5 shadow-sm">
                   <CheckCircle2 className="w-3.5 h-3.5" strokeWidth={3} />
-                  <span className="text-[11px] font-bold tracking-wide uppercase">
+                  <span className="font-bold">
                     Up to 90% Split
                   </span>
                 </div>
               </div>
 
               {/* Start Earning CTA */}
-              <Button href="/challenges" variant="primary" className="w-full bg-[#F5C24D] hover:bg-[#E8B23C] text-[var(--ink-950)] border-none h-[56px] text-[16px] font-bold shadow-sm rounded-xl">
+              <Button href="/challenges" variant="primary" size="lg" className="w-full shadow-md rounded-xl h-[56px] text-[16px] font-semibold">
                 Start Earning
               </Button>
               
