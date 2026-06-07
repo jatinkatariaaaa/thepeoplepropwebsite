@@ -13,7 +13,6 @@ const offices = [
   { city: "London", region: "EU HQ" },
   { city: "Dubai", region: "MENA" },
   { city: "Singapore", region: "APAC" },
-  { city: "São Paulo", region: "LATAM" },
   { city: "Mumbai", region: "India" },
 ];
 
@@ -56,7 +55,7 @@ export function PayoutSection() {
             <p className="text-center text-[11px] tracking-eyebrow text-[var(--ink-400)] mb-5">
               Regional Trader Hubs
             </p>
-            <ul className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-5">
+            <ul className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
               {offices.map((o) => (
                 <li
                   key={o.city}
