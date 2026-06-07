@@ -29,11 +29,33 @@ export function SectionHeading({
   return (
     <div
       className={cn(
-        "max-w-3xl",
+        "relative max-w-3xl",
         align === "center" && "mx-auto text-center",
         className,
       )}
     >
+      {/* Background Blue Glow & Grain Effect */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[180%] -z-10 pointer-events-none select-none">
+        {/* The Blue Glow */}
+        <div 
+          className="absolute inset-0 blur-[60px] md:blur-[80px]"
+          style={{
+            background: invert 
+              ? "radial-gradient(ellipse at center, rgba(59, 130, 246, 0.25) 0%, transparent 60%)"
+              : "radial-gradient(ellipse at center, rgba(37, 99, 235, 0.12) 0%, transparent 60%)"
+          }}
+        />
+        {/* The Grain Overlay */}
+        <div 
+          className={cn(
+            "absolute inset-0 mix-blend-overlay",
+            invert ? "opacity-[0.15]" : "opacity-[0.08]"
+          )}
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
+          }}
+        />
+      </div>
       {eyebrow && (
         <div className={cn("flex", align === "center" ? "justify-center" : "justify-start")}>
           <div
