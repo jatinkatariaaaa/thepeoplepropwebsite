@@ -851,6 +851,43 @@ export function ChallengeCalculator() {
               </div>
 
               <form onSubmit={handleCryptoPayment} className="p-6 space-y-4 text-left">
+                <div className="space-y-1.5 mb-2 pb-4 border-b border-[var(--border)]">
+                  <label className="text-[13px] font-bold text-[var(--ink-950)] flex items-center justify-between">
+                    <span>Promo / Coupon Code</span>
+                    <span className="text-[10px] bg-[var(--accent-50)] text-[var(--accent-700)] px-2 py-0.5 rounded-full uppercase tracking-wider">Optional</span>
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={promoCode}
+                      onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                      className="w-full rounded-xl border border-[var(--border)] px-4 py-2.5 text-[14px] outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-all bg-[var(--paper-2)] text-[var(--ink-950)] font-mono uppercase placeholder:normal-case"
+                      placeholder="Enter code here..."
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        if (promoCode === "FIRSTTPP") {
+                          setAppliedDiscount(0.5);
+                        } else {
+                          setAppliedDiscount(0);
+                          alert("Invalid promo code.");
+                        }
+                      }}
+                      className="shrink-0 rounded-xl bg-white"
+                    >
+                      Apply
+                    </Button>
+                  </div>
+                  {appliedDiscount > 0 && (
+                    <p className="text-[12px] font-medium text-[#10B981] mt-1.5 flex items-center gap-1">
+                      <Check className="w-3.5 h-3.5" strokeWidth={3} />
+                      50% Discount Applied Successfully!
+                    </p>
+                  )}
+                </div>
+
                 <div className="space-y-1.5">
                   <label className="text-[13px] font-medium text-[var(--ink-950)]">Full Name</label>
                   <input
@@ -896,40 +933,6 @@ export function ChallengeCalculator() {
                       placeholder="123 Trading St"
                     />
                   </div>
-                </div>
-
-                <div className="space-y-1.5 pt-2">
-                  <label className="text-[13px] font-medium text-[var(--ink-950)]">Promo / Coupon Code (Optional)</label>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={promoCode}
-                      onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-                      className="w-full rounded-xl border border-[var(--border)] px-4 py-2.5 text-[14px] outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-all bg-white text-black font-mono"
-                      placeholder="e.g. FIRSTTPP"
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => {
-                        if (promoCode === "FIRSTTPP") {
-                          setAppliedDiscount(0.5);
-                        } else {
-                          setAppliedDiscount(0);
-                          alert("Invalid promo code.");
-                        }
-                      }}
-                      className="shrink-0 rounded-xl"
-                    >
-                      Apply
-                    </Button>
-                  </div>
-                  {appliedDiscount > 0 && (
-                    <p className="text-[12px] font-medium text-[#10B981] mt-1.5 flex items-center gap-1">
-                      <Check className="w-3.5 h-3.5" strokeWidth={3} />
-                      50% Discount Applied Successfully!
-                    </p>
-                  )}
                 </div>
 
                 <div className="pt-4 border-t border-[var(--border)] mt-2">
