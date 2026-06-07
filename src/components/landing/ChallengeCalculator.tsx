@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowUpRight,
@@ -53,10 +54,11 @@ export function ChallengeCalculator() {
   const [checkoutForm, setCheckoutForm] = useState({ fullName: "", email: "", country: "", address: "" });
   const [promoCode, setPromoCode] = useState("");
   const [appliedDiscount, setAppliedDiscount] = useState(0);
+  const [mounted, setMounted] = useState(false);
 
-
-
-  const program = useMemo(
+  useEffect(() => {
+    setMounted(true);
+  }, []);  const program = useMemo(
     () => programs.find((p) => p.key === programKey) ?? programs[0],
     [programKey],
   );
@@ -870,22 +872,23 @@ export function ChallengeCalculator() {
       </div>
 
       {/* Checkout Modal */}
-      <AnimatePresence>
-        {showCheckoutModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-              onClick={() => setShowCheckoutModal(false)}
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-md overflow-hidden rounded-[24px] bg-white shadow-2xl"
-            >
+      {mounted && createPortal(
+        <AnimatePresence>
+          {showCheckoutModal && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                onClick={() => setShowCheckoutModal(false)}
+              />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                className="relative w-full max-w-md overflow-hidden rounded-[24px] bg-white shadow-2xl"
+              >
               <div className="flex items-center justify-between border-b border-[var(--border)] px-6 py-4">
                 <div>
                   <h3 className="text-lg font-bold text-[var(--ink-950)]">Checkout Details</h3>
@@ -966,7 +969,9 @@ export function ChallengeCalculator() {
             </motion.div>
           </div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>,
+      document.body
+      )}
     </section>
   );
 }
