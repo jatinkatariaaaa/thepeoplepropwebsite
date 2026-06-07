@@ -209,6 +209,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-col items-center text-center lg:items-start lg:text-left pt-[35vh] sm:pt-[40vh] lg:pt-0"
           >
             <motion.div
               initial={{ opacity: 0, y: 12, scale: 0.95 }}
@@ -259,13 +260,12 @@ export function Hero() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.9 }}
-              className="mt-9 flex flex-wrap items-center gap-3"
+              className="mt-9 flex w-full md:w-auto items-center justify-center lg:justify-start gap-3"
             >
-              <Button href="#calculator" variant="primary" size="lg">
-                Start Your Challenge
-                <ArrowUpRight className="w-4 h-4" />
+              <Button href="#calculator" variant="primary" size="lg" className="flex-1 md:flex-none py-3.5">
+                Start Challenge
               </Button>
-              <Button href="#how" variant="outline" size="lg">
+              <Button href="#how" variant="outline" size="lg" className="flex-1 md:flex-none py-3.5 bg-white/50 backdrop-blur-sm">
                 How It Works
               </Button>
             </motion.div>
@@ -274,18 +274,17 @@ export function Hero() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 1.1 }}
-              className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-3 text-[13px] text-[var(--ink-500)]"
+              className="mt-10 flex w-full justify-between sm:justify-center lg:justify-start items-center sm:gap-12 text-[12px] md:text-[13px] text-[var(--ink-500)]"
             >
               {[
-                { icon: ShieldCheck, label: "Regulated execution" },
-                { icon: TrendingUp, label: "Up to 90% profit split" },
-                { icon: Zap, label: "Sub-24h payouts" },
+                { value: "90%", label: "Profit Split" },
+                { value: "$200K", label: "Max Capital" },
+                { value: "< 24h", label: "Payouts" },
               ].map((it) => (
-                <li key={it.label} className="flex items-center gap-2">
-                  <it.icon
-                    className="w-4 h-4 text-[var(--accent)]"
-                    strokeWidth={2.2}
-                  />
+                <li key={it.label} className="flex flex-col items-center lg:items-start gap-0.5">
+                  <span className="text-2xl md:text-3xl font-semibold tracking-tight text-[var(--ink-950)]">
+                    {it.value}
+                  </span>
                   <span>{it.label}</span>
                 </li>
               ))}
