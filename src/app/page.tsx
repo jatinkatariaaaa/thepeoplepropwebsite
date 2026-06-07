@@ -7,6 +7,7 @@ import { Features } from "@/components/landing/Features";
 import { WhyChooseUs } from "@/components/landing/WhyChooseUs";
 import { EvaluationSteps } from "@/components/landing/EvaluationSteps";
 import { PayoutSection } from "@/components/landing/PayoutSection";
+import { ProfitCalculator } from "@/components/landing/ProfitCalculator";
 
 import { Testimonials } from "@/components/landing/Testimonials";
 import { ReferralPromo } from "@/components/landing/ReferralPromo";
@@ -45,6 +46,10 @@ export default function Home() {
       
       <SectionReveal3D>
         <PayoutSection />
+      </SectionReveal3D>
+
+      <SectionReveal3D>
+        <ProfitCalculator />
       </SectionReveal3D>
 
       <SectionReveal3D>
