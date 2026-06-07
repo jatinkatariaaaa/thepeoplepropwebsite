@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ArrowUpRight } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   Navbar as ResizableNavbar,
   NavBody,
@@ -27,7 +28,19 @@ export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <ResizableNavbar>
+    <>
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="fixed inset-0 z-40 bg-white/10 backdrop-blur-md md:hidden"
+          />
+        )}
+      </AnimatePresence>
+      <ResizableNavbar>
       {/* Desktop Navigation */}
       <NavBody>
         <NavbarLogo />
@@ -89,5 +102,6 @@ export function Navbar() {
         </MobileNavMenu>
       </MobileNav>
     </ResizableNavbar>
+    </>
   );
 }
