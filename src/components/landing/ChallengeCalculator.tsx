@@ -375,7 +375,7 @@ export function ChallengeCalculator() {
             {/* Add-ons */}
             <div className="mt-6">
               <ColumnHeading>Optional add-ons</ColumnHeading>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 {applicableAddOns.map((a) => {
                   const active = selectedAddOns.includes(a.key);
                   return (
@@ -385,14 +385,26 @@ export function ChallengeCalculator() {
                       onClick={() => toggleAddOn(a.key)}
                       aria-pressed={active}
                       className={cn(
-                        "group relative rounded-xl border p-3 text-left transition-all lift",
+                        "group relative rounded-2xl sm:rounded-xl border p-3 sm:p-3 text-left transition-all lift flex flex-col sm:block justify-between min-h-[85px] sm:min-h-0",
                         active
                           ? "border-[var(--ink-950)] bg-[var(--ink-950)] text-white"
                           : "border-[var(--border)] bg-white hover:border-[var(--ink-950)]",
                       )}
                     >
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0">
+                      {/* Desktop layout wrapper & Mobile top row */}
+                      <div className="flex items-start sm:items-start justify-between w-full sm:w-auto gap-3">
+                        {/* Mobile percentage (hidden on desktop) */}
+                        <span
+                          className={cn(
+                            "sm:hidden text-[11px] font-bold tabular-nums mt-0.5",
+                            active ? "text-[var(--accent-400)]" : "text-[var(--accent-700)]",
+                          )}
+                        >
+                          +{a.feePct}%
+                        </span>
+
+                        {/* Desktop text content (hidden on mobile) */}
+                        <div className="hidden sm:block min-w-0">
                           <p
                             className={cn(
                               "text-[13px] font-medium leading-tight",
@@ -412,6 +424,8 @@ export function ChallengeCalculator() {
                             {a.description}
                           </p>
                         </div>
+
+                        {/* Checkbox (shared) */}
                         <span
                           className={cn(
                             "shrink-0 grid place-items-center w-5 h-5 rounded-md border transition-colors",
@@ -430,9 +444,23 @@ export function ChallengeCalculator() {
                           )}
                         </span>
                       </div>
+
+                      {/* Mobile label (bottom row, hidden on desktop) */}
+                      <div className="sm:hidden mt-2 w-full">
+                        <p
+                          className={cn(
+                            "text-[12px] font-medium leading-tight pr-2",
+                            active ? "text-white" : "text-[var(--ink-950)]",
+                          )}
+                        >
+                          {a.label}
+                        </p>
+                      </div>
+
+                      {/* Desktop percentage (absolute top-right, hidden on mobile) */}
                       <span
                         className={cn(
-                          "absolute top-3 right-9 text-[10.5px] font-medium tabular-nums",
+                          "hidden sm:block absolute top-3 right-9 text-[10.5px] font-medium tabular-nums",
                           active ? "text-[var(--accent-400)]" : "text-[var(--accent-700)]",
                         )}
                       >
