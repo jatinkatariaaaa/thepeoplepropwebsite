@@ -17,8 +17,8 @@ export function ProfitCalculator() {
   const [accountSize, setAccountSize] = useState<number>(200000);
   const [profitRate, setProfitRate] = useState<number>(8);
 
-  // Up to 90% profit split
-  const profitSplitPercentage = 0.90;
+  // Up to 100% profit split
+  const profitSplitPercentage = 1.00;
   const calculatedProfit = Math.round(accountSize * (profitRate / 100) * profitSplitPercentage);
 
   return (
@@ -95,13 +95,13 @@ export function ProfitCalculator() {
                   <input
                     type="range"
                     min="1"
-                    max="20"
+                    max="100"
                     step="1"
                     value={profitRate}
                     onChange={(e) => setProfitRate(Number(e.target.value))}
                     className="w-full h-2 bg-slate-200 rounded-full appearance-none cursor-pointer"
                     style={{
-                      background: `linear-gradient(to right, var(--ink-950) ${(profitRate - 1) / 19 * 100}%, #E2E8F0 ${(profitRate - 1) / 19 * 100}%)`
+                      background: `linear-gradient(to right, var(--ink-950) ${(profitRate - 1) / 99 * 100}%, #E2E8F0 ${(profitRate - 1) / 99 * 100}%)`
                     }}
                   />
                   {/* Custom Thumb is handled via global css usually, but we rely on tailwind defaults or simple styling here */}
@@ -142,11 +142,11 @@ export function ProfitCalculator() {
                   </span>
                 </div>
                 
-                {/* 90% Split Badge */}
+                {/* 100% Split Badge */}
                 <div className="chip chip-success px-3 py-1.5 shadow-sm">
                   <CheckCircle2 className="w-3.5 h-3.5" strokeWidth={3} />
                   <span className="font-bold">
-                    Up to 90% Split
+                    Up to 100% Split
                   </span>
                 </div>
               </div>
