@@ -203,8 +203,8 @@ export function ChallengeCalculator() {
           className="mb-10 md:mb-14"
         />
 
-        {/* Program type pills (Atlas-style hero bar) */}
-        <div className="mx-auto mb-5 flex w-full max-w-3xl flex-wrap items-center justify-center gap-2 rounded-full border border-[var(--border)] bg-white p-1.5 shadow-[0_2px_0_rgba(11,15,26,0.02)]">
+        {/* Program type pills (Atlas-style hero bar) - Desktop */}
+        <div className="hidden md:flex mx-auto mb-5 w-full max-w-3xl flex-wrap items-center justify-center gap-2 rounded-full border border-[var(--border)] bg-white p-1.5 shadow-[0_2px_0_rgba(11,15,26,0.02)]">
           {programs.map((p) => {
             const active = p.key === program.key;
             return (
@@ -233,6 +233,29 @@ export function ChallengeCalculator() {
                     {p.badge.toUpperCase()}
                   </span>
                 )}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Program type segmented control - Mobile */}
+        <div className="md:hidden mx-auto mb-5 flex w-full max-w-full overflow-x-auto snap-x hide-scrollbar bg-[var(--paper-2)] p-1.5 rounded-full items-center gap-1 shadow-inner border border-black/[0.04]">
+          {programs.map((p) => {
+            const active = p.key === program.key;
+            return (
+              <button
+                key={p.key}
+                type="button"
+                onClick={() => selectProgram(p.key)}
+                aria-pressed={active}
+                className={cn(
+                  "relative inline-flex items-center justify-center whitespace-nowrap snap-center rounded-full px-5 py-2.5 text-[14px] font-medium transition-all flex-1 min-w-fit",
+                  active
+                    ? "bg-white text-[var(--ink-950)] shadow-[0_2px_8px_-2px_rgba(11,15,26,0.08)]"
+                    : "text-[var(--ink-500)] hover:text-[var(--ink-950)]",
+                )}
+              >
+                {p.shortLabel}
               </button>
             );
           })}
@@ -274,7 +297,8 @@ export function ChallengeCalculator() {
           {/* ── Platform column ── */}
           <div className="glass-strong rounded-2xl p-5 lift">
             <ColumnHeading>Choose a platform</ColumnHeading>
-            <div className="space-y-2">
+            {/* Desktop Platform List */}
+            <div className="hidden md:block space-y-2">
               {platforms.map((p) => {
                 const active = p.key === platformKey;
                 const disabled = p.status === "soon";
@@ -323,12 +347,51 @@ export function ChallengeCalculator() {
                 );
               })}
             </div>
+
+            {/* Mobile Platform Segmented Control */}
+            <div className="md:hidden flex w-full max-w-full overflow-x-auto snap-x hide-scrollbar bg-[var(--paper-2)] p-1.5 rounded-full items-center gap-1 shadow-inner border border-black/[0.04]">
+              {platforms.map((p) => {
+                const active = p.key === platformKey;
+                const disabled = p.status === "soon";
+                return (
+                  <button
+                    key={p.key}
+                    type="button"
+                    disabled={disabled}
+                    onClick={() => !disabled && setPlatformKey(p.key)}
+                    aria-pressed={active}
+                    className={cn(
+                      "relative inline-flex flex-col items-center justify-center whitespace-nowrap snap-center rounded-full px-5 py-2 transition-all flex-1 min-w-[100px]",
+                      disabled && "opacity-55 cursor-not-allowed",
+                      active && !disabled
+                        ? "bg-white text-[var(--ink-950)] shadow-[0_2px_8px_-2px_rgba(11,15,26,0.08)]"
+                        : "text-[var(--ink-500)] hover:text-[var(--ink-950)]",
+                    )}
+                  >
+                    <span className="block font-medium text-[13.5px] tracking-tight">
+                      {p.label}
+                    </span>
+                    <span className={cn("block text-[10px] mt-0.5", active && !disabled ? "text-[var(--ink-500)]" : "text-[var(--ink-400)]")}>
+                      {p.sub}
+                    </span>
+                    {disabled && (
+                      <Lock
+                        className="absolute top-2 right-3 w-3 h-3 text-[var(--ink-400)]"
+                        strokeWidth={2}
+                      />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
-          {/* ── Size grid column ── */}
+          {/* ── Size column ── */}
           <div className="glass-strong rounded-2xl p-5 lift">
             <ColumnHeading>Choose account size</ColumnHeading>
-            <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-3 gap-2">
+            
+            {/* Desktop Size Grid */}
+            <div className="hidden md:grid grid-cols-3 lg:grid-cols-3 gap-2">
               {ALL_SIZES.map((s) => {
                 const offered = program.fees[s] != null;
                 const active = s === effectiveSize && offered;
@@ -340,20 +403,20 @@ export function ChallengeCalculator() {
                     disabled={!offered}
                     aria-pressed={active}
                     className={cn(
-                      "relative rounded-3xl sm:rounded-xl border px-2 py-2.5 sm:px-3 sm:py-3.5 text-center transition-all duration-200 lift",
+                      "relative rounded-xl border px-3 py-3.5 text-center transition-all duration-200 lift",
                       !offered && "opacity-35 cursor-not-allowed",
                       active
                         ? "border-[var(--accent)] bg-[var(--accent-50)] text-[var(--ink-950)] shadow-[0_8px_22px_-14px_rgba(37,99,235,0.45)]"
                         : "border-[var(--border)] bg-white text-[var(--ink-950)] hover:border-[var(--ink-950)]",
                     )}
                   >
-                    <span className="block font-medium text-[13px] sm:text-[15px] md:text-[17px] tabular-nums tracking-tight">
+                    <span className="block font-medium text-[15px] md:text-[17px] tabular-nums tracking-tight">
                       {formatSize(s)}
                     </span>
                     {offered && program.fees[s] != null && (
                       <span
                         className={cn(
-                          "block text-[9px] sm:text-[10.5px] mt-0.5 tabular-nums",
+                          "block text-[10.5px] mt-0.5 tabular-nums",
                           active
                             ? "text-[var(--accent-700)] font-medium"
                             : "text-[var(--ink-500)]",
@@ -363,10 +426,38 @@ export function ChallengeCalculator() {
                       </span>
                     )}
                     {!offered && (
-                      <span className="block text-[9px] sm:text-[10.5px] mt-0.5 text-[var(--ink-400)]">
+                      <span className="block text-[10.5px] mt-0.5 text-[var(--ink-400)]">
                         n/a
                       </span>
                     )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Mobile Size Segmented Control */}
+            <div className="md:hidden flex w-full max-w-full overflow-x-auto snap-x hide-scrollbar bg-[var(--paper-2)] p-1.5 rounded-full items-center gap-1 shadow-inner border border-black/[0.04]">
+              {ALL_SIZES.map((s) => {
+                const offered = program.fees[s] != null;
+                const active = s === effectiveSize && offered;
+                return (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => offered && setSize(s)}
+                    disabled={!offered}
+                    aria-pressed={active}
+                    className={cn(
+                      "relative flex flex-col items-center justify-center whitespace-nowrap snap-center rounded-full px-5 py-2.5 transition-all flex-1 min-w-[70px]",
+                      !offered && "opacity-35 cursor-not-allowed hidden",
+                      active
+                        ? "bg-white text-[var(--ink-950)] shadow-[0_2px_8px_-2px_rgba(11,15,26,0.08)]"
+                        : "text-[var(--ink-600)] hover:text-[var(--ink-950)]",
+                    )}
+                  >
+                    <span className="block font-medium text-[14px] tabular-nums tracking-tight">
+                      {formatSize(s)}
+                    </span>
                   </button>
                 );
               })}
@@ -473,8 +564,8 @@ export function ChallengeCalculator() {
             </div>
           </div>
 
-          {/* ── Live spec card ── */}
-          <div className="lg:sticky lg:top-24">
+          {/* ── Live spec card (Desktop) ── */}
+          <div className="hidden lg:block lg:sticky lg:top-24">
             <div className="glass-strong rounded-2xl overflow-hidden lift relative">
               {/* Heading inside card */}
               <div className="relative px-5 md:px-6 pt-5 md:pt-6 pb-4 border-b border-[var(--border)] bg-white/30">
@@ -627,6 +718,64 @@ export function ChallengeCalculator() {
                 </li>
               ))}
             </ul>
+          </div>
+
+          {/* ── Mobile Live spec card ── */}
+          <div className="lg:hidden mt-2 bg-white rounded-[24px] border border-[var(--border)] p-5 relative shadow-[0_4px_24px_rgba(11,15,26,0.04)]">
+            {/* Top Badge */}
+            <div className="mb-4">
+              <span className="inline-flex items-center rounded-full bg-[#415C9C] px-3.5 py-1 text-[10px] font-bold tracking-widest text-white uppercase">
+                Most Popular
+              </span>
+            </div>
+
+            {/* Price */}
+            <div className="text-center mt-2 mb-6">
+              <h3 className="text-[52px] font-display font-bold text-[#0F172A] tracking-tight leading-none">
+                {total != null ? `$${total.toLocaleString("en-US")}` : "—"}
+              </h3>
+              <p className="text-[14px] text-[#64748B] mt-3 font-medium">
+                for {formatSizeLong(effectiveSize)} Account
+              </p>
+              {selectedAddOns.length > 0 && (
+                <p className="text-[12.5px] text-[#475569] mt-3 font-medium">
+                  Add-on available: <span className="text-[#0F172A]">{selectedAddOns.map(k => addOns.find(a => a.key === k)?.label).join(", ")}</span>
+                </p>
+              )}
+            </div>
+
+            {/* Buy Button */}
+            <Button
+              href={`/challenges#${program.key}-${effectiveSize}`}
+              className="w-full bg-[#0B1E4A] hover:bg-[#061230] text-white rounded-[18px] h-[54px] text-[15px] font-semibold mb-6 shadow-md"
+            >
+              Buy Challenge
+            </Button>
+
+            {/* Specs Grey Box */}
+            <div className="bg-[#F8FAFC] rounded-[20px] p-5 space-y-4">
+              {specs.map((row) => {
+                const Icon = row.icon;
+                return (
+                  <div key={row.label} className="flex items-center justify-between">
+                    <span className="text-[13.5px] text-[#334155] font-semibold flex items-center gap-1.5">
+                      {row.label}
+                    </span>
+                    <AnimatePresence mode="popLayout">
+                      <motion.span
+                        key={`${row.label}-${program.key}-${effectiveSize}-${selectedAddOns.length}`}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="text-[14px] tabular-nums font-bold text-[#0F172A] text-right"
+                      >
+                        {row.value}
+                        {Icon && <Icon className="inline-block ml-1 w-3.5 h-3.5 text-[#0F172A]" strokeWidth={3} />}
+                      </motion.span>
+                    </AnimatePresence>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
