@@ -38,11 +38,25 @@ export function ProfitCalculator() {
               </span>
             </div>
             
-            <h2 className="text-[48px] sm:text-[64px] lg:text-[72px] font-bold leading-[0.95] tracking-tight text-[var(--ink-950)] mb-8">
-              How much<br />
-              can you<br />
-              <span className="word-serif text-[var(--accent)]">make?</span>
-            </h2>
+            <div className="relative">
+              {/* Background Blue Glow & Grain Effect */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-[40%] -translate-y-1/2 w-[160%] h-[200%] -z-10 pointer-events-none select-none">
+                <div 
+                  className="absolute inset-0 blur-[40px] md:blur-[60px]"
+                  style={{ background: "radial-gradient(ellipse at center, rgba(37, 99, 235, 0.25) 0%, transparent 65%)" }}
+                />
+                <div 
+                  className="absolute inset-0 mix-blend-overlay opacity-[0.15]"
+                  style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}
+                />
+              </div>
+
+              <h2 className="relative text-[48px] sm:text-[64px] lg:text-[72px] font-bold leading-[0.95] tracking-tight text-[var(--ink-950)] mb-8">
+                How much<br />
+                can you<br />
+                <span className="word-serif text-[var(--accent)]">make?</span>
+              </h2>
+            </div>
 
 
           </div>

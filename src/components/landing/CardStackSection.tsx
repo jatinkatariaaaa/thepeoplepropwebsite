@@ -55,8 +55,20 @@ export function CardStackSection() {
       <div className="relative z-10 w-full max-w-[1400px] mx-auto">
         
         {/* Huge Header Section */}
-        <AnimatedSection className="px-5 md:px-8 text-center flex flex-col items-center">
-          <h2 className="text-[40px] md:text-[48px] lg:text-[56px] font-bold leading-[1.05] tracking-tight text-[var(--ink-950)] max-w-4xl mx-auto">
+        <AnimatedSection className="relative px-5 md:px-8 text-center flex flex-col items-center">
+          {/* Background Blue Glow & Grain Effect */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[80%] w-[120%] max-w-[800px] h-[300px] -z-10 pointer-events-none select-none">
+            <div 
+              className="absolute inset-0 blur-[40px] md:blur-[60px]"
+              style={{ background: "radial-gradient(ellipse at center, rgba(37, 99, 235, 0.25) 0%, transparent 65%)" }}
+            />
+            <div 
+              className="absolute inset-0 mix-blend-overlay opacity-[0.15]"
+              style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}
+            />
+          </div>
+
+          <h2 className="relative text-[40px] md:text-[48px] lg:text-[56px] font-bold leading-[1.05] tracking-tight text-[var(--ink-950)] max-w-4xl mx-auto">
             Scale Your Trading<br />
             <span className="text-[var(--ink-700)]">With Zero Personal Risk</span><br />
             <span className="text-[var(--ink-600)]">Access Up To $200k</span><br />
