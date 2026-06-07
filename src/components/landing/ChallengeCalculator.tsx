@@ -181,7 +181,7 @@ export function ChallengeCalculator() {
   );
 
   return (
-    <section id="calculator" className="relative py-24 md:py-32 overflow-hidden">
+    <section id="calculator" className="relative py-12 md:py-32 overflow-hidden">
       <div
         aria-hidden
         className="absolute inset-0 bg-grid bg-grid-fade opacity-40 pointer-events-none"

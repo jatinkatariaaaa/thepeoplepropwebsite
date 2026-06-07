@@ -211,7 +211,7 @@ export function Testimonials() {
 
   return (
     <section
-      className="relative w-full py-24 md:py-32 lg:py-40 overflow-hidden"
+      className="relative w-full py-12 md:py-32 lg:py-40 overflow-hidden"
       aria-label="Trader Testimonials"
     >
       {/* Dot-grid background */}

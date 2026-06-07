@@ -9,7 +9,7 @@ import { ArrowRight } from "lucide-react";
 
 export function ChallengesSection() {
   return (
-    <section className="relative py-24 md:py-32">
+    <section className="relative py-12 md:py-32">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <div className="flex items-end justify-between gap-8 flex-wrap mb-12 md:mb-16">
           <SectionHeading

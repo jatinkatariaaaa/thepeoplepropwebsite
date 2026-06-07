@@ -49,7 +49,7 @@ export function CardStackSection() {
         start: "top top",
         end: () => `+=${window.innerHeight * (totalCards - 1)}`,
         pin: true,
-        scrub: 0.5,
+        scrub: 1, // Smoother scrub value for mobile
         pinSpacing: true,
         invalidateOnRefresh: true,
       },
@@ -64,6 +64,7 @@ export function CardStackSection() {
           rotation: 5,
           duration: 1,
           ease: "none",
+          force3D: true, // Hardware acceleration without memory penalty of will-change
         },
         i,
       );
@@ -75,6 +76,7 @@ export function CardStackSection() {
           yPercent: 0,
           duration: 1,
           ease: "none",
+          force3D: true,
         },
         i,
       );
@@ -116,7 +118,7 @@ export function CardStackSection() {
               src={card.image}
               alt={card.alt || ""}
               className={cn(
-                "absolute inset-0 w-full h-full rounded-3xl object-cover will-change-transform",
+                "absolute inset-0 w-full h-full rounded-3xl object-cover",
               )}
               ref={(el) => {
                 imageRefs.current[i] = el;

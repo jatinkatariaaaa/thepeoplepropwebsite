@@ -27,7 +27,7 @@ export function EvaluationSteps() {
   return (
     <section
       id="how"
-      className="relative py-24 md:py-32 overflow-hidden"
+      className="relative py-12 md:py-32 overflow-hidden"
     >
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         {/* Header */}

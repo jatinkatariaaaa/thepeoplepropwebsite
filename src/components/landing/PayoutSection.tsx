@@ -19,7 +19,7 @@ const offices = [
 
 export function PayoutSection() {
   return (
-    <section className="relative py-24 md:py-32">
+    <section className="relative py-12 md:py-32">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <SectionHeading
           eyebrow="Proof Of Payouts"

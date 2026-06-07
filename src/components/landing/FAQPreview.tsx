@@ -7,7 +7,7 @@ import { faq } from "@/data/faq";
 export function FAQPreview() {
   const items = faq.slice(0, 6);
   return (
-    <section className="relative py-24 md:py-32 border-y border-[var(--border)]">
+    <section className="relative py-12 md:py-32 border-y border-[var(--border)]">
       <div className="mx-auto max-w-5xl px-5 md:px-8">
         <SectionHeading
           eyebrow="Frequently Asked"

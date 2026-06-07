@@ -5,7 +5,7 @@ import { Gift, Users, TrendingUp, ArrowUpRight } from "lucide-react";
 
 export function ReferralPromo() {
   return (
-    <section className="relative py-24 md:py-32">
+    <section className="relative py-12 md:py-32">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_0.85fr] gap-6 lg:gap-8 items-stretch">
           {/* Left — pitch */}

@@ -44,7 +44,7 @@ const rows: { feature: string; tpp: string; others: string }[] = [
 
 export function WhyChooseUs() {
   return (
-    <section className="relative py-24 md:py-32 overflow-hidden">
+    <section className="relative py-12 md:py-32 overflow-hidden">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <SectionHeading
           eyebrow="Side By Side"

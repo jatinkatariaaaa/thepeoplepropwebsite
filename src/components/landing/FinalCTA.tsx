@@ -17,7 +17,7 @@ export function FinalCTA() {
   const glowScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1.2, 0.9]);
 
   return (
-    <section ref={sectionRef} className="relative py-24 md:py-32 overflow-hidden">
+    <section ref={sectionRef} className="relative py-12 md:py-32 overflow-hidden">
       {/* Parallax grid */}
       <motion.div
         aria-hidden="true"
