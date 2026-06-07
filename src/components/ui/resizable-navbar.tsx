@@ -11,6 +11,16 @@ import { Menu, X } from "lucide-react";
 export function Navbar({ children, className }: { children: React.ReactNode; className?: string }) {
   const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const isScrolledOrMobile = scrolled || isMobile;
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     if (latest > 50) {
@@ -25,31 +35,31 @@ export function Navbar({ children, className }: { children: React.ReactNode; cla
       className="fixed top-0 left-0 right-0 z-50 flex justify-center w-full pointer-events-none"
       initial={false}
       animate={{
-        paddingTop: scrolled ? 16 : 0,
+        paddingTop: isScrolledOrMobile ? 16 : 0,
       }}
       transition={{ type: "spring", stiffness: 180, damping: 22 }}
     >
       <motion.div
         initial={false}
         animate={{
-          width: scrolled ? "calc(100% - 32px)" : "100%",
-          maxWidth: scrolled ? "1024px" : "100%",
-          borderRadius: scrolled ? "24px" : "0px",
-          paddingLeft: scrolled ? "20px" : "32px",
-          paddingRight: scrolled ? "20px" : "32px",
-          paddingTop: scrolled ? "10px" : "16px",
-          paddingBottom: scrolled ? "10px" : "16px",
-          borderTopColor: scrolled ? "var(--border)" : "transparent",
-          borderLeftColor: scrolled ? "var(--border)" : "transparent",
-          borderRightColor: scrolled ? "var(--border)" : "transparent",
-          borderBottomColor: scrolled ? "var(--border)" : "transparent",
-          boxShadow: scrolled ? "0 10px 30px -10px rgba(0,0,0,0.03)" : "0 0px 0px rgba(0,0,0,0)",
-          backgroundColor: scrolled ? "rgba(255,255,255,0.9)" : "transparent",
+          width: isScrolledOrMobile ? "calc(100% - 32px)" : "100%",
+          maxWidth: isScrolledOrMobile ? "1024px" : "100%",
+          borderRadius: isScrolledOrMobile ? "24px" : "0px",
+          paddingLeft: isScrolledOrMobile ? "20px" : "32px",
+          paddingRight: isScrolledOrMobile ? "20px" : "32px",
+          paddingTop: isScrolledOrMobile ? "10px" : "16px",
+          paddingBottom: isScrolledOrMobile ? "10px" : "16px",
+          borderTopColor: isScrolledOrMobile ? "var(--border)" : "transparent",
+          borderLeftColor: isScrolledOrMobile ? "var(--border)" : "transparent",
+          borderRightColor: isScrolledOrMobile ? "var(--border)" : "transparent",
+          borderBottomColor: isScrolledOrMobile ? "var(--border)" : "transparent",
+          boxShadow: isScrolledOrMobile ? "0 10px 30px -10px rgba(0,0,0,0.03)" : "0 0px 0px rgba(0,0,0,0)",
+          backgroundColor: isScrolledOrMobile ? "rgba(255,255,255,0.9)" : "transparent",
         }}
         transition={{ type: "spring", stiffness: 180, damping: 22 }}
         className={cn(
           "flex flex-col w-full pointer-events-auto border-t border-l border-r border-b",
-          scrolled ? "backdrop-blur-md" : ""
+          isScrolledOrMobile ? "backdrop-blur-md" : ""
         )}
         style={{
           borderStyle: "solid",
