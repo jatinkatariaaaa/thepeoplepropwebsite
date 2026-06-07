@@ -239,7 +239,7 @@ export function ChallengeCalculator() {
         </div>
 
         {/* Program type segmented control - Mobile */}
-        <div className="md:hidden mx-auto mb-5 flex w-full max-w-full overflow-x-auto snap-x hide-scrollbar bg-[var(--paper-2)] p-1.5 rounded-full items-center gap-1 shadow-inner border border-black/[0.04]">
+        <div className="md:hidden mx-auto mb-5 flex w-full max-w-full bg-[var(--paper-2)] p-1 rounded-full items-center shadow-inner border border-black/[0.04]">
           {programs.map((p) => {
             const active = p.key === program.key;
             return (
@@ -249,13 +249,13 @@ export function ChallengeCalculator() {
                 onClick={() => selectProgram(p.key)}
                 aria-pressed={active}
                 className={cn(
-                  "relative inline-flex items-center justify-center whitespace-nowrap snap-center rounded-full px-5 py-2.5 text-[14px] font-medium transition-all flex-1 min-w-fit",
+                  "relative inline-flex items-center justify-center whitespace-nowrap rounded-full px-2 py-2.5 transition-all flex-1",
                   active
                     ? "bg-white text-[var(--ink-950)] shadow-[0_2px_8px_-2px_rgba(11,15,26,0.08)]"
                     : "text-[var(--ink-500)] hover:text-[var(--ink-950)]",
                 )}
               >
-                {p.shortLabel}
+                <span className="text-[11px] sm:text-[12px] font-semibold tracking-tight">{p.shortLabel}</span>
               </button>
             );
           })}
@@ -349,7 +349,7 @@ export function ChallengeCalculator() {
             </div>
 
             {/* Mobile Platform Segmented Control */}
-            <div className="md:hidden flex w-full max-w-full overflow-x-auto snap-x hide-scrollbar bg-[var(--paper-2)] p-1.5 rounded-full items-center gap-1 shadow-inner border border-black/[0.04]">
+            <div className="md:hidden flex w-full max-w-full bg-[var(--paper-2)] p-1 rounded-full items-center shadow-inner border border-black/[0.04]">
               {platforms.map((p) => {
                 const active = p.key === platformKey;
                 const disabled = p.status === "soon";
@@ -361,22 +361,19 @@ export function ChallengeCalculator() {
                     onClick={() => !disabled && setPlatformKey(p.key)}
                     aria-pressed={active}
                     className={cn(
-                      "relative inline-flex flex-col items-center justify-center whitespace-nowrap snap-center rounded-full px-5 py-2 transition-all flex-1 min-w-[100px]",
+                      "relative inline-flex flex-col items-center justify-center whitespace-nowrap rounded-full px-1 py-2 transition-all flex-1",
                       disabled && "opacity-55 cursor-not-allowed",
                       active && !disabled
                         ? "bg-white text-[var(--ink-950)] shadow-[0_2px_8px_-2px_rgba(11,15,26,0.08)]"
                         : "text-[var(--ink-500)] hover:text-[var(--ink-950)]",
                     )}
                   >
-                    <span className="block font-medium text-[13.5px] tracking-tight">
+                    <span className="block font-semibold text-[10.5px] sm:text-[11.5px] tracking-tight">
                       {p.label}
-                    </span>
-                    <span className={cn("block text-[10px] mt-0.5", active && !disabled ? "text-[var(--ink-500)]" : "text-[var(--ink-400)]")}>
-                      {p.sub}
                     </span>
                     {disabled && (
                       <Lock
-                        className="absolute top-2 right-3 w-3 h-3 text-[var(--ink-400)]"
+                        className="absolute top-1.5 right-2 w-2.5 h-2.5 text-[var(--ink-400)]"
                         strokeWidth={2}
                       />
                     )}
@@ -436,7 +433,7 @@ export function ChallengeCalculator() {
             </div>
 
             {/* Mobile Size Segmented Control */}
-            <div className="md:hidden flex w-full max-w-full overflow-x-auto snap-x hide-scrollbar bg-[var(--paper-2)] p-1.5 rounded-full items-center gap-1 shadow-inner border border-black/[0.04]">
+            <div className="md:hidden flex w-full max-w-full bg-[var(--paper-2)] p-1 rounded-full items-center shadow-inner border border-black/[0.04]">
               {ALL_SIZES.map((s) => {
                 const offered = program.fees[s] != null;
                 const active = s === effectiveSize && offered;
@@ -448,15 +445,15 @@ export function ChallengeCalculator() {
                     disabled={!offered}
                     aria-pressed={active}
                     className={cn(
-                      "relative flex flex-col items-center justify-center whitespace-nowrap snap-center rounded-full px-5 py-2.5 transition-all flex-1 min-w-[70px]",
+                      "relative flex flex-col items-center justify-center whitespace-nowrap rounded-full px-0.5 py-2.5 transition-all flex-1",
                       !offered && "opacity-35 cursor-not-allowed hidden",
                       active
                         ? "bg-white text-[var(--ink-950)] shadow-[0_2px_8px_-2px_rgba(11,15,26,0.08)]"
                         : "text-[var(--ink-600)] hover:text-[var(--ink-950)]",
                     )}
                   >
-                    <span className="block font-medium text-[14px] tabular-nums tracking-tight">
-                      {formatSize(s)}
+                    <span className="block font-semibold text-[10.5px] sm:text-[11.5px] tabular-nums tracking-tighter">
+                      {formatSize(s).replace("$", "")}
                     </span>
                   </button>
                 );
