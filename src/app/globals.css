@@ -28,17 +28,17 @@
   --paper-3: #F1F5F9;
   --white:   #FFFFFF;
 
-  /* ── Primary Accent — Cobalt Blue ── */
-  --accent: #2563EB;
-  --accent-800: #1E40AF;
-  --accent-700: #1D4ED8;
-  --accent-600: #2563EB;
-  --accent-500: #3B82F6;
-  --accent-400: #60A5FA;
-  --accent-300: #93BBFD;
-  --accent-200: #BFDBFE;
-  --accent-100: #DBEAFE;
-  --accent-50:  #EFF6FF;
+  /* ── Primary Accent — Yellow/Gold (Calculator Theme) ── */
+  --accent: #F5C24D;
+  --accent-800: #B27B0A;
+  --accent-700: #C98E11;
+  --accent-600: #E8B23C;
+  --accent-500: #F5C24D;
+  --accent-400: #FAD477;
+  --accent-300: #FCE19B;
+  --accent-200: #FDEABF;
+  --accent-100: #FEF3D8;
+  --accent-50:  #FFF9E6;
 
   /* ── Success — Emerald Green ── */
   --success: #059669;
@@ -142,8 +142,8 @@ html {
 }
 
 html, body {
-  background: linear-gradient(135deg, #eef2f7 0%, #dde6f2 45%, #e9f0fa 100%) !important;
-  background-attachment: fixed !important;
+  background: var(--white) !important;
+  background-attachment: scroll !important;
   color: var(--ink-950);
   font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   font-feature-settings: "ss01", "cv11";
@@ -189,8 +189,9 @@ html, body {
 
 h1, h2, h3, h4 {
   font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.05em;
   line-height: 1.05;
+  font-weight: 900;
 }
 
 .word-serif {
