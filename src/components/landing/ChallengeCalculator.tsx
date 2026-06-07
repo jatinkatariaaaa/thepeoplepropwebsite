@@ -10,6 +10,7 @@ import {
   Plus,
   ShieldCheck,
   Tag,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -48,8 +49,11 @@ export function ChallengeCalculator() {
   const [platformKey, setPlatformKey] = useState<PlatformKey>(DEFAULT_PLATFORM);
   const [selectedAddOns, setSelectedAddOns] = useState<AddOnKey[]>([]);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [showCheckoutModal, setShowCheckoutModal] = useState(false);
+  const [checkoutForm, setCheckoutForm] = useState({ fullName: "", email: "", country: "", address: "" });
 
-  const handleCryptoPayment = async () => {
+  const handleCryptoPayment = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (total == null) return;
     try {
       setIsProcessingPayment(true);
@@ -61,7 +65,8 @@ export function ChallengeCalculator() {
           price_currency: "usd",
           program_key: programKey,
           size: size,
-          order_id: `TPP-${Date.now()}`
+          order_id: `TPP-${Date.now()}`,
+          ...checkoutForm
         }),
       });
       
@@ -297,17 +302,17 @@ export function ChallengeCalculator() {
         <div className="mx-auto mb-10 flex w-full max-w-3xl items-center justify-center gap-3 rounded-full bg-[var(--ink-950)] px-5 py-3 text-[12.5px] text-white/85">
           <span className="hidden sm:inline-flex items-center gap-1.5 text-[10.5px] uppercase tracking-[0.18em] text-white/55">
             <Tag className="w-3 h-3" strokeWidth={2.5} />
-            Founders&apos; cohort
+            Exclusive Offer
           </span>
           <span className="hidden sm:block h-3 w-px bg-white/15" />
           <span>
-            <span className="text-[var(--accent-400)] font-medium">25% off</span> + free
+            <span className="text-[var(--accent-400)] font-medium">50% off</span> + free
             retry add-on
           </span>
           <span className="h-3 w-px bg-white/15" />
           <button
             type="button"
-            onClick={() => copy("FOUNDERS25")}
+            onClick={() => copy("FIRSTTPP")}
             className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[11.5px] font-mono tracking-wider text-white hover:bg-white/15 transition-colors"
             aria-label="Copy promo code"
           >
@@ -318,7 +323,7 @@ export function ChallengeCalculator() {
               </>
             ) : (
               <>
-                Code: FOUNDERS25 <Copy className="w-3 h-3" strokeWidth={2.5} />
+                Code: FIRSTTPP <Copy className="w-3 h-3" strokeWidth={2.5} />
               </>
             )}
           </button>
@@ -710,23 +715,13 @@ export function ChallengeCalculator() {
                 </div>
 
                 <Button
-                  href={`/challenges#${program.key}-${effectiveSize}`}
+                  onClick={() => setShowCheckoutModal(true)}
+                  disabled={total == null}
                   variant="primary"
                   size="lg"
-                  fullWidth
+                  className="w-full flex items-center justify-center gap-2"
                 >
-                  Get Funded {formatSizeLong(effectiveSize)}
-                  <ArrowUpRight className="w-4 h-4" />
-                </Button>
-
-                <Button
-                  onClick={handleCryptoPayment}
-                  disabled={isProcessingPayment || total == null}
-                  variant="outline"
-                  size="lg"
-                  className="mt-3 w-full border-[var(--border)] text-[var(--ink-950)] flex items-center justify-center gap-2"
-                >
-                  {isProcessingPayment ? "Connecting..." : "Pay with Crypto"}
+                  Pay with Crypto
                 </Button>
 
                 {/* Payment icons */}
@@ -785,18 +780,11 @@ export function ChallengeCalculator() {
 
             {/* Buy Button */}
             <Button
-              href={`/challenges#${program.key}-${effectiveSize}`}
-              className="w-full bg-[#0B1E4A] hover:bg-[#061230] text-white rounded-[18px] h-[54px] text-[15px] font-semibold mb-3 shadow-md"
+              onClick={() => setShowCheckoutModal(true)}
+              disabled={total == null}
+              className="w-full bg-[#0B1E4A] hover:bg-[#061230] text-white rounded-[18px] h-[54px] text-[15px] font-semibold mb-6 shadow-md"
             >
-              Buy Challenge
-            </Button>
-
-            <Button
-              onClick={handleCryptoPayment}
-              disabled={isProcessingPayment || total == null}
-              className="w-full bg-white hover:bg-slate-50 text-[#0F172A] border border-slate-200 rounded-[18px] h-[54px] text-[15px] font-semibold mb-6 shadow-sm"
-            >
-              {isProcessingPayment ? "Connecting..." : "Pay with Crypto"}
+              Pay with Crypto
             </Button>
 
             {/* Specs Grey Box */}
@@ -826,6 +814,99 @@ export function ChallengeCalculator() {
           </div>
         </div>
       </div>
+
+      {/* Checkout Modal */}
+      <AnimatePresence>
+        {showCheckoutModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              onClick={() => setShowCheckoutModal(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-md overflow-hidden rounded-[24px] bg-white shadow-2xl"
+            >
+              <div className="flex items-center justify-between border-b border-[var(--border)] px-6 py-4">
+                <div>
+                  <h3 className="text-lg font-bold text-[var(--ink-950)]">Checkout Details</h3>
+                  <p className="text-[13px] text-[var(--ink-500)]">Please fill in your details to proceed to payment.</p>
+                </div>
+                <button
+                  onClick={() => setShowCheckoutModal(false)}
+                  className="rounded-full p-2 text-[var(--ink-500)] hover:bg-[var(--paper-2)] hover:text-[var(--ink-950)] transition-colors"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              <form onSubmit={handleCryptoPayment} className="p-6 space-y-4 text-left">
+                <div className="space-y-1.5">
+                  <label className="text-[13px] font-medium text-[var(--ink-950)]">Full Name</label>
+                  <input
+                    required
+                    type="text"
+                    value={checkoutForm.fullName}
+                    onChange={(e) => setCheckoutForm({ ...checkoutForm, fullName: e.target.value })}
+                    className="w-full rounded-xl border border-[var(--border)] px-4 py-2.5 text-[14px] outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-all bg-white text-black"
+                    placeholder="John Doe"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[13px] font-medium text-[var(--ink-950)]">Email Address</label>
+                  <input
+                    required
+                    type="email"
+                    value={checkoutForm.email}
+                    onChange={(e) => setCheckoutForm({ ...checkoutForm, email: e.target.value })}
+                    className="w-full rounded-xl border border-[var(--border)] px-4 py-2.5 text-[14px] outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-all bg-white text-black"
+                    placeholder="john@example.com"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[13px] font-medium text-[var(--ink-950)]">Country</label>
+                    <input
+                      required
+                      type="text"
+                      value={checkoutForm.country}
+                      onChange={(e) => setCheckoutForm({ ...checkoutForm, country: e.target.value })}
+                      className="w-full rounded-xl border border-[var(--border)] px-4 py-2.5 text-[14px] outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-all bg-white text-black"
+                      placeholder="United States"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[13px] font-medium text-[var(--ink-950)]">Address</label>
+                    <input
+                      required
+                      type="text"
+                      value={checkoutForm.address}
+                      onChange={(e) => setCheckoutForm({ ...checkoutForm, address: e.target.value })}
+                      className="w-full rounded-xl border border-[var(--border)] px-4 py-2.5 text-[14px] outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-all bg-white text-black"
+                      placeholder="123 Trading St"
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-4">
+                  <Button
+                    type="submit"
+                    disabled={isProcessingPayment}
+                    className="w-full bg-[var(--accent)] hover:bg-[var(--accent-700)] text-white rounded-xl h-[48px] text-[15px] font-semibold shadow-md flex items-center justify-center gap-2"
+                  >
+                    {isProcessingPayment ? "Connecting to NOWPayments..." : `Pay $${total?.toLocaleString("en-US")} via Crypto`}
+                  </Button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
