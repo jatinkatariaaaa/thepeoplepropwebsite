@@ -44,28 +44,7 @@ export function ProfitCalculator() {
               <span className="word-serif text-[var(--accent)]">make?</span>
             </h2>
 
-            {/* Simulated Coins / Graphics container */}
-            <div className="relative mt-8 lg:mt-16 w-full max-w-md aspect-[4/3] self-center lg:self-start hidden sm:block">
-               {/* 3D coin abstraction using CSS */}
-               <div className="absolute top-1/4 left-1/4 w-32 h-32 rounded-full border-4 border-slate-800 bg-gradient-to-br from-slate-600 to-slate-900 shadow-2xl flex items-center justify-center rotate-12 -translate-y-4">
-                 <span className="text-white font-serif font-bold text-3xl opacity-50">TPP</span>
-                 <div className="absolute inset-2 border-2 border-slate-700 rounded-full" />
-                 <div className="absolute inset-0 bg-white/10 rounded-full blur-[2px]" />
-               </div>
-               
-               <div className="absolute bottom-1/4 left-0 w-40 h-40 rounded-full border-[5px] border-slate-800 bg-gradient-to-br from-slate-700 to-[#0A1128] shadow-2xl flex items-center justify-center -rotate-6 z-10">
-                 <span className="text-white font-serif font-bold text-4xl">TPP</span>
-                 <div className="absolute inset-3 border-[3px] border-slate-600 rounded-full" />
-                 {/* Glare */}
-                 <div className="absolute -top-2 -left-2 w-full h-full bg-gradient-to-br from-white/30 to-transparent rounded-full opacity-60" />
-               </div>
 
-               <div className="absolute bottom-1/3 right-1/4 w-36 h-36 rounded-full border-4 border-slate-800 bg-gradient-to-br from-slate-600 to-slate-900 shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex items-center justify-center rotate-45 translate-x-8 -translate-y-8 z-20">
-                 <span className="text-white font-serif font-bold text-3xl opacity-80">TPP</span>
-                 <div className="absolute inset-2.5 border-2 border-slate-700 rounded-full" />
-                 <div className="absolute inset-0 bg-white/20 rounded-full" />
-               </div>
-            </div>
           </div>
 
           {/* Right Side: Calculator Card */}
