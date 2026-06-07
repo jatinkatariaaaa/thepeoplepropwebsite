@@ -1,9 +1,10 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import { ArrowUpRight, ShieldCheck, Zap, TrendingUp, Check } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/utils";
 
 /* ───────────────────────────────────────────────
    Hero — cinematic split layout with:
@@ -34,6 +35,50 @@ function AnimatedWords({ text, className, delay = 0 }: { text: string; className
           {word}
         </motion.span>
       ))}
+    </span>
+  );
+}
+
+function TypewriterWord({ word, className, delay = 0 }: { word: string; className?: string; delay?: number }) {
+  const [displayText, setDisplayText] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    let interval: NodeJS.Timeout;
+
+    timeout = setTimeout(() => {
+      setIsTyping(true);
+      let i = 0;
+      interval = setInterval(() => {
+        setDisplayText(word.slice(0, i + 1));
+        i++;
+        if (i >= word.length) {
+          clearInterval(interval);
+          setIsTyping(false);
+        }
+      }, 120);
+    }, delay * 1000);
+
+    return () => {
+      clearTimeout(timeout);
+      clearInterval(interval);
+    };
+  }, [word, delay]);
+
+  return (
+    <span className={cn("inline-flex items-center", className)}>
+      {displayText}
+      <motion.span
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{
+          repeat: Infinity,
+          duration: 0.8,
+          ease: "circInOut",
+        }}
+        className={cn("inline-block w-[3px] h-[0.9em] bg-[var(--accent)] ml-[2px]", isTyping ? "opacity-100" : "")}
+      />
     </span>
   );
 }
@@ -229,18 +274,11 @@ export function Hero() {
               <br />
               <AnimatedWords text="Keep the" delay={0.5} />
               <br />
-              <motion.span
-                className="word-serif"
-                initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                transition={{ duration: 0.7, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              >
-                profits
-              </motion.span>
+              <TypewriterWord word="profits" className="word-serif" delay={1.0} />
               <motion.span
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.85 }}
+                transition={{ delay: 2.0 }}
               >.</motion.span>
             </h1>
 
