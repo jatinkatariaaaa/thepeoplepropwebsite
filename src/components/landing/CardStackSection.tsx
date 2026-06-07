@@ -13,71 +13,74 @@ interface FeatureCard {
 const featureCards: FeatureCard[] = [
   {
     id: "platform",
-    title: "Premium Trading Platform",
-    desc: "Trade on our lightning-fast, custom-built web terminal with advanced charting and execution.",
+    title: "Advanced Web Terminal",
+    desc: "Experience lightning-fast execution and professional-grade charting tools built directly into your browser.",
     image: "./images/cards/111.webp",
   },
   {
     id: "dashboard",
-    title: "Intuitive Dashboard",
-    desc: "Track your objectives, manage accounts, and view deep analytics in one central hub.",
+    title: "Trader's Command Center",
+    desc: "Track your evaluation objectives and manage your funded accounts seamlessly in one intuitive hub.",
     image: "./images/cards/112.webp",
   },
   {
     id: "analytics",
-    title: "Deep Performance Analytics",
-    desc: "Gain edge with institutional-grade metrics, trade journaling, and behavioral analysis.",
+    title: "Institutional Insights",
+    desc: "Refine your trading edge with deep behavioral metrics, trade journaling, and performance analytics.",
     image: "./images/cards/113.webp",
   },
   {
     id: "splits",
-    title: "Up to 100% Profit Splits",
-    desc: "Keep more of what you earn. Scale your account and unlock the industry's highest payouts.",
+    title: "Maximum Profit Share",
+    desc: "Why settle for less? Scale your trading capital and keep up to 100% of your hard-earned gains.",
     image: "./images/cards/114.webp",
   },
   {
     id: "payouts",
-    title: "Fast On-Demand Payouts",
-    desc: "Request your profits anytime. We process withdrawals securely within 24 hours.",
+    title: "Lightning Fast Payouts",
+    desc: "Request your profits on your terms. We process withdrawals securely within 24 hours.",
     image: "./images/cards/115.webp",
   },
 ];
 
 export function CardStackSection() {
   return (
-    <section className="relative overflow-hidden z-20 py-24 md:py-32 bg-[#050914]">
-      {/* Subtle Background Glows */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none" />
-
+    <section 
+      className="relative overflow-hidden z-20 py-24 md:py-32"
+      style={{
+        background: "linear-gradient(135deg, #eef2f7 0%, #dde6f2 45%, #e9f0fa 100%)",
+        backgroundAttachment: "fixed",
+      }}
+    >
       <div className="relative z-10 w-full max-w-[1400px] mx-auto">
         
         {/* Huge Header Section */}
         <AnimatedSection className="px-5 md:px-8 text-center flex flex-col items-center">
-          <h2 className="text-[36px] sm:text-[56px] md:text-[72px] lg:text-[80px] font-black leading-[0.95] text-white uppercase tracking-tight max-w-5xl mx-auto">
-            Trading<br />
-            <span className="text-white/90">But with less risk</span><br />
-            <span className="text-white/80">With more capital</span><br />
-            <span className="text-white/70">And more reward</span>
+          <h2 className="text-[36px] sm:text-[56px] md:text-[72px] lg:text-[80px] font-black leading-[0.95] text-[var(--ink-950)] uppercase tracking-tight max-w-5xl mx-auto">
+            Scale Your Trading<br />
+            <span className="text-[var(--ink-700)]">With Zero Personal Risk</span><br />
+            <span className="text-[var(--ink-600)]">Access Up To $200k</span><br />
+            <span className="text-[var(--accent)] word-serif">And Keep What You Earn</span>
           </h2>
 
-          <p className="mt-8 text-[16px] md:text-[18px] text-white/60 font-medium max-w-2xl mx-auto">
-            Simulated Capital with Real Rewards. Paid Fast &amp; Secure.
+          <p className="mt-8 text-[16px] md:text-[18px] text-[var(--ink-500)] font-medium max-w-2xl mx-auto">
+            Trade our capital. Keep your profits. Industry-leading payout conditions designed for your success.
           </p>
 
           <div className="mt-10 flex flex-col items-center gap-5">
             <a 
-              href="/dashboard"
-              className="group relative inline-flex items-center justify-center gap-3 bg-[#FACC15] hover:bg-[#EAB308] text-black font-bold text-[16px] px-8 py-4 rounded-xl transition-all duration-300 shadow-[0_0_40px_rgba(250,204,21,0.2)] hover:shadow-[0_0_60px_rgba(250,204,21,0.3)] hover:-translate-y-1"
+              href="/challenges"
+              className="group relative inline-flex items-center justify-center gap-3 bg-[var(--accent)] hover:bg-blue-700 text-white font-bold text-[16px] px-8 py-4 rounded-xl transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-1"
             >
-              Get Funded
-              <div className="w-6 h-6 rounded-full bg-white/30 flex items-center justify-center group-hover:translate-x-1 transition-transform">
-                <ArrowRight className="w-3.5 h-3.5 text-black" strokeWidth={3} />
+              Start Your Evaluation
+              <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center group-hover:translate-x-1 transition-transform">
+                <ArrowRight className="w-3.5 h-3.5 text-white" strokeWidth={3} />
               </div>
             </a>
             
-            <div className="flex items-center gap-2 text-[#FACC15] text-[13px] font-bold tracking-wide uppercase bg-[#FACC15]/10 px-3 py-1.5 rounded-full border border-[#FACC15]/20">
-              <Trophy className="w-4 h-4" /> 
-              <span>Join 240,000+ Traders</span>
+            <div className="flex items-center gap-2 text-[var(--ink-600)] text-[13px] font-bold tracking-wide uppercase bg-slate-200/50 px-4 py-2 rounded-full border border-slate-300">
+              <Trophy className="w-4 h-4 text-amber-500" /> 
+              <span>Trusted by thousands globally</span>
             </div>
           </div>
         </AnimatedSection>
@@ -85,35 +88,35 @@ export function CardStackSection() {
         {/* Feature Cards Horizontal Scroll */}
         <div className="mt-20 md:mt-24 w-full relative">
           
-          {/* Edge fade gradients for scroll indication */}
-          <div className="absolute top-0 bottom-0 left-0 w-8 md:w-24 bg-gradient-to-r from-[#050914] to-transparent z-10 pointer-events-none" />
-          <div className="absolute top-0 bottom-0 right-0 w-8 md:w-24 bg-gradient-to-l from-[#050914] to-transparent z-10 pointer-events-none" />
+          {/* Edge fade gradients for scroll indication (Light Theme) */}
+          <div className="absolute top-0 bottom-0 left-0 w-8 md:w-24 bg-gradient-to-r from-[#eef2f7] to-transparent z-10 pointer-events-none" />
+          <div className="absolute top-0 bottom-0 right-0 w-8 md:w-24 bg-gradient-to-l from-[#e9f0fa] to-transparent z-10 pointer-events-none" />
 
           <div className="flex overflow-x-auto snap-x snap-mandatory gap-5 md:gap-6 px-5 md:px-12 pb-12 w-full hide-scrollbar">
             {featureCards.map((card, index) => (
               <AnimatedSection 
                 key={card.id}
-                className="snap-center shrink-0 w-[85vw] sm:w-[400px] md:w-[450px] bg-[#0E1424] rounded-3xl p-6 md:p-8 flex flex-col relative overflow-hidden group border border-white/5 hover:border-white/10 transition-colors duration-500"
+                className="snap-center shrink-0 w-[85vw] sm:w-[400px] md:w-[450px] bg-white/80 backdrop-blur-2xl rounded-3xl p-6 md:p-8 flex flex-col relative overflow-hidden group border border-slate-200 shadow-xl hover:shadow-2xl transition-all duration-500"
               >
                 {/* Text Content */}
                 <div className="relative z-10">
-                  <h3 className="text-white text-[22px] md:text-[26px] font-bold leading-tight mb-3 pr-8">
+                  <h3 className="text-[var(--ink-950)] text-[22px] md:text-[26px] font-bold leading-tight mb-3 pr-8">
                     {card.title}
                   </h3>
-                  <p className="text-white/50 text-[14px] md:text-[15px] leading-relaxed font-medium">
+                  <p className="text-[var(--ink-500)] text-[14px] md:text-[15px] leading-relaxed font-medium">
                     {card.desc}
                   </p>
                 </div>
                 
                 {/* Image / Graphic Container */}
-                <div className="mt-10 md:mt-12 relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl transition-transform duration-700 group-hover:-translate-y-2 group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10 bg-black">
+                <div className="mt-10 md:mt-12 relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-lg transition-transform duration-700 group-hover:-translate-y-2 group-hover:shadow-2xl border border-slate-200 bg-slate-100">
                   <img 
                     src={card.image} 
                     alt={card.title} 
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100" 
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
                   />
-                  {/* Internal Glow Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
+                  {/* Subtle inner shadow overlay */}
+                  <div className="absolute inset-0 bg-black/5 pointer-events-none transition-colors duration-500 group-hover:bg-transparent" />
                 </div>
               </AnimatedSection>
             ))}
