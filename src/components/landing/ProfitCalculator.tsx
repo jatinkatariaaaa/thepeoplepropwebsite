@@ -39,9 +39,9 @@ export function ProfitCalculator() {
             </div>
             
             <h2 className="text-[48px] sm:text-[64px] lg:text-[72px] font-bold leading-[0.95] tracking-tight text-[var(--ink-950)] mb-8">
-              HOW MUCH<br />
-              CAN YOU<br />
-              <span className="word-serif text-[var(--accent)]">MAKE?</span>
+              How much<br />
+              can you<br />
+              <span className="word-serif text-[var(--accent)]">make?</span>
             </h2>
 
             {/* Simulated Coins / Graphics container */}

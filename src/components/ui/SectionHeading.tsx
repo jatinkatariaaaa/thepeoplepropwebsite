@@ -35,20 +35,19 @@ export function SectionHeading({
       )}
     >
       {eyebrow && (
-        <div
-          className={cn(
-            "flex items-center gap-3 text-[11px] tracking-eyebrow font-medium mb-5",
-            invert ? "text-[var(--accent-300)]" : "text-[var(--accent-700)]",
-            align === "center" && "justify-center",
-          )}
-        >
-          <span
+        <div className={cn("flex", align === "center" ? "justify-center" : "justify-start")}>
+          <div
             className={cn(
-              "h-px w-8",
-              invert ? "bg-white/25" : "bg-[var(--accent)]/40",
+              "inline-flex items-center gap-2 mb-6 rounded-md px-3 py-1.5 border shadow-sm",
+              invert 
+                ? "bg-white/10 border-white/20 text-white" 
+                : "bg-white/80 backdrop-blur-md border-[var(--border)] text-[var(--ink-700)]"
             )}
-          />
-          {eyebrow}
+          >
+            <span className="text-[11px] font-bold tracking-widest uppercase">
+              {eyebrow}
+            </span>
+          </div>
         </div>
       )}
       <h2
