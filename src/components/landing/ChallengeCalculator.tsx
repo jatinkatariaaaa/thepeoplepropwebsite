@@ -72,9 +72,9 @@ export function ChallengeCalculator() {
       if (data.invoice_url) {
         window.location.href = data.invoice_url;
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Payment error:", err);
-      alert("There was an issue connecting to the payment gateway. Please try again.");
+      alert(`Payment Error: ${err.message || "Failed to connect to gateway"}`);
     } finally {
       setIsProcessingPayment(false);
     }
