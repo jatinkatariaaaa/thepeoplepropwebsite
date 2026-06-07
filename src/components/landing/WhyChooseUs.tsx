@@ -2,52 +2,68 @@
 
 import { AnimatedSection, AnimatedItem } from "@/components/ui/AnimatedSection";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { Check, X } from "lucide-react";
+import { Check, X, Zap, Clock, TrendingUp, ShieldCheck, Banknote, Infinity as InfinityIcon } from "lucide-react";
 
-const rows: { feature: string; tpp: string; others: string }[] = [
+const widgets = [
   {
-    feature: "Profit split",
-    tpp: "Up to 90%",
-    others: "70 – 80% typical",
+    id: "split",
+    title: "Profit Split",
+    icon: Banknote,
+    tppValue: "Up to 90%",
+    othersValue: "70-80% max",
+    highlight: true,
   },
   {
-    feature: "Evaluation phases",
-    tpp: "1 step — pass once",
-    others: "2 to 3 phases",
+    id: "phases",
+    title: "Evaluation",
+    icon: ShieldCheck,
+    tppValue: "1-Step",
+    othersValue: "2-3 Phases",
+    highlight: false,
   },
   {
-    feature: "Payout cycle",
-    tpp: "Bi-weekly, sub-24h",
-    others: "Monthly, 3 – 7 days",
+    id: "payouts",
+    title: "Payout Speed",
+    icon: Zap,
+    tppValue: "Sub-24h",
+    othersValue: "3-7 Days",
+    highlight: true,
   },
   {
-    feature: "Refund on first payout",
-    tpp: "100%",
-    others: "0 – 30%",
+    id: "time",
+    title: "Time Limit",
+    icon: InfinityIcon,
+    tppValue: "None",
+    othersValue: "30-60 Days",
+    highlight: false,
   },
   {
-    feature: "News & weekend trading",
-    tpp: "Allowed, no penalty",
-    others: "Restricted or banned",
+    id: "trading",
+    title: "News & Weekend",
+    icon: Clock,
+    tppValue: "Allowed",
+    othersValue: "Restricted",
+    highlight: false,
   },
   {
-    feature: "Time limit",
-    tpp: "None",
-    others: "30 – 60 days",
-  },
-  {
-    feature: "Scaling plan",
-    tpp: "Auto every 4 months",
-    others: "Manual review",
+    id: "scaling",
+    title: "Scaling Plan",
+    icon: TrendingUp,
+    tppValue: "Auto (4 months)",
+    othersValue: "Manual Review",
+    highlight: false,
   },
 ];
 
 export function WhyChooseUs() {
   return (
-    <section className="relative py-12 md:py-32 overflow-hidden">
-      <div className="mx-auto max-w-7xl px-5 md:px-8">
+    <section className="relative py-16 md:py-32 overflow-hidden bg-gradient-to-b from-[#f8fafc] to-white">
+      {/* Background decoration */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[var(--accent)] opacity-[0.03] rounded-full blur-3xl pointer-events-none" />
+
+      <div className="mx-auto max-w-7xl px-5 md:px-8 relative z-10">
         <SectionHeading
-          eyebrow="Side By Side"
+          eyebrow="The TPP Advantage"
           title={
             <>
               We did the math.
@@ -55,63 +71,72 @@ export function WhyChooseUs() {
               <span className="word-serif">Other firms</span> didn&apos;t.
             </>
           }
-          description="Compare what TPP offers against industry-standard prop firms."
+          description="A side-by-side look at why top traders choose our superior infrastructure over industry standards."
           align="center"
-          className="mb-12 md:mb-16"
+          className="mb-14 md:mb-20"
         />
 
-        <AnimatedSection>
-          <div className="evalsteps-panel overflow-hidden max-w-4xl mx-auto flex flex-col gap-2" style={{ padding: '12px' }}>
-            
-            {/* Horizontal Scroll Wrapper for Mobile */}
-            <div className="w-full overflow-x-auto pb-4 md:pb-0 hide-scrollbar-on-desktop">
-              <div className="min-w-[700px] md:min-w-0">
-                {/* Header */}
-                <div className="grid grid-cols-[1.2fr_1fr_1fr] px-2 mb-2">
-                  <div className="px-5 md:px-7 py-3 text-[11px] tracking-eyebrow text-[var(--ink-500)] border-b border-[var(--border)]">
-                    Feature
-                  </div>
-                  <div className="px-5 md:px-7 py-3 text-[12px] font-medium text-[var(--ink-950)] flex items-center gap-2 border-b border-[var(--border)]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
-                    The People Prop
-                  </div>
-                  <div className="px-5 md:px-7 py-3 text-[12px] text-[var(--ink-500)] border-b border-[var(--border)]">
-                    Industry average
-                  </div>
-                </div>
+        <AnimatedSection stagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {widgets.map((w) => {
+            const Icon = w.icon;
+            return (
+              <AnimatedItem key={w.id} className="h-full">
+                <div className="relative h-full flex flex-col p-6 rounded-3xl overflow-hidden group transition-all duration-500 bg-white shadow-[0_4px_24px_rgba(10,37,64,0.06)] hover:shadow-[0_20px_40px_rgba(10,37,64,0.12)] border border-[rgba(10,37,64,0.06)] hover:border-[var(--accent-200)] hover:-translate-y-1">
+                  
+                  {/* Subtle glare effect */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-                {/* Rows */}
-                <AnimatedSection stagger className="flex flex-col gap-1 px-2 pb-2">
-                  {rows.map((r) => (
-                    <AnimatedItem key={r.feature}>
-                      <div className="grid grid-cols-[1.2fr_1fr_1fr] rounded-xl relative overflow-hidden group transition-all duration-500 hover:bg-[rgba(255,255,255,0.6)] hover:backdrop-blur-xl hover:shadow-[0_20px_40px_rgba(10,37,64,0.12),inset_0_1px_1px_rgba(255,255,255,1)] hover:-translate-y-1 hover:z-10 cursor-default border border-transparent hover:border-white/60">
-                        
-                        {/* Liquid glare effect */}
-                        <div className="absolute inset-0 -translate-x-[150%] group-hover:translate-x-[150%] bg-gradient-to-r from-transparent via-white/80 to-transparent transition-transform duration-[1.2s] ease-in-out pointer-events-none -skew-x-12 z-0" />
+                  {/* Header */}
+                  <div className="flex items-center gap-3 mb-8">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${w.highlight ? 'bg-[var(--accent)] text-white shadow-lg shadow-[var(--accent-200)]' : 'bg-slate-100 text-slate-600'}`}>
+                      <Icon className="w-5 h-5" strokeWidth={2.5} />
+                    </div>
+                    <h3 className="text-[16px] font-semibold tracking-tight text-[var(--ink-950)]">
+                      {w.title}
+                    </h3>
+                  </div>
 
-                        <div className="relative z-10 px-5 md:px-7 py-4 text-[14px] text-[var(--ink-700)] border-b border-[rgba(10,37,64,0.04)] group-hover:border-transparent transition-colors duration-300">
-                          {r.feature}
-                        </div>
-                        <div className="relative z-10 px-5 md:px-7 py-4 text-[14px] font-medium text-[var(--ink-950)] flex items-center gap-2 border-b border-[rgba(10,37,64,0.04)] group-hover:border-transparent transition-colors duration-300">
-                          <Check
-                            className="w-4 h-4 text-[var(--success)] shrink-0"
-                            strokeWidth={2.5}
-                          />
-                          {r.tpp}
-                        </div>
-                        <div className="relative z-10 px-5 md:px-7 py-4 text-[14px] text-[var(--ink-500)] flex items-center gap-2 border-b border-[rgba(10,37,64,0.04)] group-hover:border-transparent transition-colors duration-300">
-                          <X className="w-4 h-4 text-[var(--ink-300)] shrink-0" />
-                          {r.others}
+                  {/* Comparison Data */}
+                  <div className="flex-1 flex flex-col justify-end gap-5">
+                    
+                    {/* TPP Advantage */}
+                    <div className="relative">
+                      <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-1 h-8 bg-[var(--success)] rounded-r-full" />
+                      <div className="pl-3">
+                        <p className="text-[11px] font-bold tracking-widest text-[var(--ink-400)] uppercase mb-1">
+                          The People Prop
+                        </p>
+                        <div className="flex items-end gap-2">
+                          <span className={`text-[24px] md:text-[28px] font-bold leading-none tracking-tight ${w.highlight ? 'text-[var(--accent)]' : 'text-[var(--ink-950)]'}`}>
+                            {w.tppValue}
+                          </span>
+                          <Check className="w-5 h-5 text-[var(--success)] mb-1" strokeWidth={3} />
                         </div>
                       </div>
-                    </AnimatedItem>
-                  ))}
-                </AnimatedSection>
-              </div>
-            </div>
+                    </div>
 
-          </div>
+                    <div className="w-full h-px bg-gradient-to-r from-transparent via-[rgba(10,37,64,0.1)] to-transparent" />
+
+                    {/* Others Disadvantage */}
+                    <div className="pl-3 opacity-60 grayscale group-hover:grayscale-0 group-hover:opacity-80 transition-all duration-300">
+                      <p className="text-[10px] font-semibold tracking-wider text-[var(--ink-400)] uppercase mb-1">
+                        Industry Average
+                      </p>
+                      <div className="flex items-center gap-1.5">
+                        <X className="w-4 h-4 text-slate-400" strokeWidth={2.5} />
+                        <span className="text-[15px] font-medium text-slate-500">
+                          {w.othersValue}
+                        </span>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </AnimatedItem>
+            );
+          })}
         </AnimatedSection>
+
       </div>
     </section>
   );
