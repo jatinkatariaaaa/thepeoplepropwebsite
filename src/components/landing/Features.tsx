@@ -56,7 +56,7 @@ export function Features() {
   return (
     <section
       id="features"
-      className="relative py-8 md:py-12 overflow-hidden"
+      className="hidden md:block relative py-8 md:py-12 overflow-hidden"
     >
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">
         <AnimatedSection>
