@@ -47,6 +47,38 @@ export function ChallengeCalculator() {
   const [size, setSize] = useState<AccountSize>(DEFAULT_SIZE);
   const [platformKey, setPlatformKey] = useState<PlatformKey>(DEFAULT_PLATFORM);
   const [selectedAddOns, setSelectedAddOns] = useState<AddOnKey[]>([]);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+
+  const handleCryptoPayment = async () => {
+    if (total == null) return;
+    try {
+      setIsProcessingPayment(true);
+      const res = await fetch("/api/create-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          price_amount: total,
+          price_currency: "usd",
+          program_key: programKey,
+          size: size,
+          order_id: `TPP-${Date.now()}`
+        }),
+      });
+      
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to initiate payment");
+      }
+      if (data.invoice_url) {
+        window.location.href = data.invoice_url;
+      }
+    } catch (err) {
+      console.error("Payment error:", err);
+      alert("There was an issue connecting to the payment gateway. Please try again.");
+    } finally {
+      setIsProcessingPayment(false);
+    }
+  };
 
   const program = useMemo(
     () => programs.find((p) => p.key === programKey) ?? programs[0],
@@ -687,6 +719,16 @@ export function ChallengeCalculator() {
                   <ArrowUpRight className="w-4 h-4" />
                 </Button>
 
+                <Button
+                  onClick={handleCryptoPayment}
+                  disabled={isProcessingPayment || total == null}
+                  variant="outline"
+                  size="lg"
+                  className="mt-3 w-full border-[var(--border)] text-[var(--ink-950)] flex items-center justify-center gap-2"
+                >
+                  {isProcessingPayment ? "Connecting..." : "Pay with Crypto"}
+                </Button>
+
                 {/* Payment icons */}
                 <div className="mt-3 flex items-center justify-center gap-3 opacity-60">
                   {["Visa", "Mastercard", "Apple Pay", "Google Pay", "Crypto"].map(
@@ -744,9 +786,17 @@ export function ChallengeCalculator() {
             {/* Buy Button */}
             <Button
               href={`/challenges#${program.key}-${effectiveSize}`}
-              className="w-full bg-[#0B1E4A] hover:bg-[#061230] text-white rounded-[18px] h-[54px] text-[15px] font-semibold mb-6 shadow-md"
+              className="w-full bg-[#0B1E4A] hover:bg-[#061230] text-white rounded-[18px] h-[54px] text-[15px] font-semibold mb-3 shadow-md"
             >
               Buy Challenge
+            </Button>
+
+            <Button
+              onClick={handleCryptoPayment}
+              disabled={isProcessingPayment || total == null}
+              className="w-full bg-white hover:bg-slate-50 text-[#0F172A] border border-slate-200 rounded-[18px] h-[54px] text-[15px] font-semibold mb-6 shadow-sm"
+            >
+              {isProcessingPayment ? "Connecting..." : "Pay with Crypto"}
             </Button>
 
             {/* Specs Grey Box */}
