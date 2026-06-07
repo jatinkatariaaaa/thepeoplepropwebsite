@@ -224,10 +224,11 @@ export function Hero() {
               Guaranteed free evaluation Prizes on 1 August 2026
             </motion.div>
 
-            <h1 className="font-medium leading-[0.98] tracking-[-0.035em] text-[var(--ink-950)] text-[clamp(2.6rem,7vw,5.25rem)]">
+            <h1 className="font-medium leading-[0.98] tracking-[-0.035em] text-[var(--ink-950)] text-[clamp(2.6rem,7vw,5.25rem)] max-w-[55%] sm:max-w-[65%] md:max-w-none">
               <AnimatedWords text="Trade our capital." delay={0.15} />
               <br />
               <AnimatedWords text="Keep the" delay={0.5} />
+              <br />
               <motion.span
                 className="word-serif"
                 initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
@@ -247,7 +248,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.7 }}
-              className="mt-7 max-w-xl text-[17px] md:text-[18px] leading-[1.55] text-[var(--ink-700)]"
+              className="mt-7 max-w-[55%] sm:max-w-[65%] md:max-w-xl text-[16px] md:text-[18px] leading-[1.4] md:leading-[1.55] text-[var(--ink-700)]"
             >
               The People Prop funds skilled traders up to{" "}
               <span className="text-[var(--ink-950)] font-medium">$200,000</span>.
