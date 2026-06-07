@@ -29,8 +29,8 @@ export function ProfitCalculator() {
       <div className="mx-auto max-w-7xl px-5 md:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-8 items-center">
           
-          {/* Left Side: Headlines & Graphics */}
-          <div className="flex flex-col relative">
+          {/* Left Side: Headlines */}
+          <div className="flex flex-col relative lg:self-start lg:pt-10">
             <div className="inline-flex items-center gap-2 mb-6 self-start rounded-md bg-slate-100 px-3 py-1.5 border border-slate-200">
               <Calculator className="w-4 h-4 text-[var(--ink-600)]" />
               <span className="text-[11px] font-bold tracking-widest text-[var(--ink-700)] uppercase">
