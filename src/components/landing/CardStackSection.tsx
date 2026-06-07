@@ -56,7 +56,7 @@ export function CardStackSection() {
         
         {/* Huge Header Section */}
         <AnimatedSection className="px-5 md:px-8 text-center flex flex-col items-center">
-          <h2 className="text-[36px] sm:text-[56px] md:text-[72px] lg:text-[80px] font-black leading-[0.95] text-[var(--ink-950)] uppercase tracking-tight max-w-5xl mx-auto">
+          <h2 className="text-[40px] md:text-[48px] lg:text-[56px] font-bold leading-[1.05] tracking-tight text-[var(--ink-950)] max-w-4xl mx-auto">
             Scale Your Trading<br />
             <span className="text-[var(--ink-700)]">With Zero Personal Risk</span><br />
             <span className="text-[var(--ink-600)]">Access Up To $200k</span><br />
