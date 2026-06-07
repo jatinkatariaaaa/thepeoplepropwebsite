@@ -96,7 +96,7 @@ export function CardStackSection() {
             {featureCards.map((card, index) => (
               <AnimatedSection 
                 key={card.id}
-                className="snap-center shrink-0 w-[85vw] sm:w-[400px] md:w-[450px] bg-white/80 backdrop-blur-2xl rounded-3xl p-6 md:p-8 flex flex-col relative overflow-hidden group border border-slate-200 shadow-xl hover:shadow-2xl transition-all duration-500"
+                className="snap-center shrink-0 w-[85vw] sm:w-[400px] md:w-[450px] bg-slate-50 backdrop-blur-2xl rounded-3xl p-6 md:p-8 flex flex-col relative overflow-hidden group border border-slate-200 shadow-xl hover:shadow-2xl transition-all duration-500"
               >
                 {/* Text Content */}
                 <div className="relative z-10">
