@@ -54,6 +54,29 @@ export function ChallengeCalculator() {
   const [promoCode, setPromoCode] = useState("");
   const [appliedDiscount, setAppliedDiscount] = useState(0);
 
+
+
+  const program = useMemo(
+    () => programs.find((p) => p.key === programKey) ?? programs[0],
+    [programKey],
+  );
+
+  // If the active size isn't offered by the new program, fall back to its largest available size.
+  const effectiveSize = useMemo<AccountSize>(() => {
+    if (programOffersSize(program, size)) return size;
+    const offered = (Object.keys(program.fees) as unknown as string[])
+      .map((s) => Number(s) as AccountSize)
+      .sort((a, b) => a - b);
+    // Prefer the closest size <= current, otherwise the smallest offered.
+    const lowerOrEqual = offered.filter((s) => s <= size).pop();
+    return lowerOrEqual ?? offered[0];
+  }, [program, size]);
+
+  const { base, total, addOnFees } = useMemo(
+    () => feeFor(program, effectiveSize, selectedAddOns),
+    [program, effectiveSize, selectedAddOns],
+  );
+
   // Compute final price locally based on discount
   const finalPrice = total != null ? total * (1 - appliedDiscount) : null;
 
@@ -89,27 +112,6 @@ export function ChallengeCalculator() {
       setIsProcessingPayment(false);
     }
   };
-
-  const program = useMemo(
-    () => programs.find((p) => p.key === programKey) ?? programs[0],
-    [programKey],
-  );
-
-  // If the active size isn't offered by the new program, fall back to its largest available size.
-  const effectiveSize = useMemo<AccountSize>(() => {
-    if (programOffersSize(program, size)) return size;
-    const offered = (Object.keys(program.fees) as unknown as string[])
-      .map((s) => Number(s) as AccountSize)
-      .sort((a, b) => a - b);
-    // Prefer the closest size <= current, otherwise the smallest offered.
-    const lowerOrEqual = offered.filter((s) => s <= size).pop();
-    return lowerOrEqual ?? offered[0];
-  }, [program, size]);
-
-  const { base, total, addOnFees } = useMemo(
-    () => feeFor(program, effectiveSize, selectedAddOns),
-    [program, effectiveSize, selectedAddOns],
-  );
 
   const profitTargetUsd = useMemo(() => {
     // Approximate the $ profit target from the headline %
