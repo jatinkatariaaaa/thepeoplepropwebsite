@@ -51,17 +51,22 @@ export function ChallengeCalculator() {
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
   const [checkoutForm, setCheckoutForm] = useState({ fullName: "", email: "", country: "", address: "" });
+  const [promoCode, setPromoCode] = useState("");
+  const [appliedDiscount, setAppliedDiscount] = useState(0);
+
+  // Compute final price locally based on discount
+  const finalPrice = total != null ? total * (1 - appliedDiscount) : null;
 
   const handleCryptoPayment = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (total == null) return;
+    if (finalPrice == null) return;
     try {
       setIsProcessingPayment(true);
       const res = await fetch("/api/create-payment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          price_amount: total,
+          price_amount: finalPrice,
           price_currency: "usd",
           program_key: programKey,
           size: size,
@@ -893,13 +898,53 @@ export function ChallengeCalculator() {
                   </div>
                 </div>
 
-                <div className="pt-4">
+                <div className="space-y-1.5 pt-2">
+                  <label className="text-[13px] font-medium text-[var(--ink-950)]">Promo / Coupon Code (Optional)</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={promoCode}
+                      onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                      className="w-full rounded-xl border border-[var(--border)] px-4 py-2.5 text-[14px] outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-all bg-white text-black font-mono"
+                      placeholder="e.g. FIRSTTPP"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        if (promoCode === "FIRSTTPP") {
+                          setAppliedDiscount(0.5);
+                        } else {
+                          setAppliedDiscount(0);
+                          alert("Invalid promo code.");
+                        }
+                      }}
+                      className="shrink-0 rounded-xl"
+                    >
+                      Apply
+                    </Button>
+                  </div>
+                  {appliedDiscount > 0 && (
+                    <p className="text-[12px] font-medium text-[#10B981] mt-1.5 flex items-center gap-1">
+                      <Check className="w-3.5 h-3.5" strokeWidth={3} />
+                      50% Discount Applied Successfully!
+                    </p>
+                  )}
+                </div>
+
+                <div className="pt-4 border-t border-[var(--border)] mt-2">
+                  <div className="flex justify-between items-center mb-4 px-1">
+                    <span className="text-[14px] font-medium text-[var(--ink-600)]">Total to Pay</span>
+                    <span className="text-[20px] font-bold text-[var(--ink-950)]">
+                      ${finalPrice?.toLocaleString("en-US")}
+                    </span>
+                  </div>
                   <Button
                     type="submit"
                     disabled={isProcessingPayment}
                     className="w-full bg-[var(--accent)] hover:bg-[var(--accent-700)] text-white rounded-xl h-[48px] text-[15px] font-semibold shadow-md flex items-center justify-center gap-2"
                   >
-                    {isProcessingPayment ? "Connecting to NOWPayments..." : `Pay $${total?.toLocaleString("en-US")} via Crypto`}
+                    {isProcessingPayment ? "Connecting to NOWPayments..." : `Pay $${finalPrice?.toLocaleString("en-US")} via Crypto`}
                   </Button>
                 </div>
               </form>
