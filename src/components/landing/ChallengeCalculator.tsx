@@ -286,7 +286,7 @@ export function ChallengeCalculator() {
                     onClick={() => !disabled && setPlatformKey(p.key)}
                     aria-pressed={active}
                     className={cn(
-                      "relative w-full rounded-xl border px-3.5 py-3 text-left transition-all lift",
+                      "relative w-full rounded-full sm:rounded-xl border px-3.5 py-3 text-left transition-all lift",
                       disabled && "opacity-55 cursor-not-allowed",
                       active && !disabled
                         ? "border-[var(--accent)] bg-[var(--accent)] text-white"
@@ -328,7 +328,7 @@ export function ChallengeCalculator() {
           {/* ── Size grid column ── */}
           <div className="glass-strong rounded-2xl p-5 lift">
             <ColumnHeading>Choose account size</ColumnHeading>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-2.5">
+            <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-3 gap-2">
               {ALL_SIZES.map((s) => {
                 const offered = program.fees[s] != null;
                 const active = s === effectiveSize && offered;
@@ -340,20 +340,20 @@ export function ChallengeCalculator() {
                     disabled={!offered}
                     aria-pressed={active}
                     className={cn(
-                      "relative rounded-xl border px-3 py-3.5 text-center transition-all duration-200 lift",
+                      "relative rounded-3xl sm:rounded-xl border px-2 py-2.5 sm:px-3 sm:py-3.5 text-center transition-all duration-200 lift",
                       !offered && "opacity-35 cursor-not-allowed",
                       active
                         ? "border-[var(--accent)] bg-[var(--accent-50)] text-[var(--ink-950)] shadow-[0_8px_22px_-14px_rgba(37,99,235,0.45)]"
                         : "border-[var(--border)] bg-white text-[var(--ink-950)] hover:border-[var(--ink-950)]",
                     )}
                   >
-                    <span className="block font-medium text-[15px] md:text-[17px] tabular-nums tracking-tight">
+                    <span className="block font-medium text-[13px] sm:text-[15px] md:text-[17px] tabular-nums tracking-tight">
                       {formatSize(s)}
                     </span>
                     {offered && program.fees[s] != null && (
                       <span
                         className={cn(
-                          "block text-[10.5px] mt-0.5 tabular-nums",
+                          "block text-[9px] sm:text-[10.5px] mt-0.5 tabular-nums",
                           active
                             ? "text-[var(--accent-700)] font-medium"
                             : "text-[var(--ink-500)]",
@@ -363,7 +363,7 @@ export function ChallengeCalculator() {
                       </span>
                     )}
                     {!offered && (
-                      <span className="block text-[10.5px] mt-0.5 text-[var(--ink-400)]">
+                      <span className="block text-[9px] sm:text-[10.5px] mt-0.5 text-[var(--ink-400)]">
                         n/a
                       </span>
                     )}
@@ -385,7 +385,7 @@ export function ChallengeCalculator() {
                       onClick={() => toggleAddOn(a.key)}
                       aria-pressed={active}
                       className={cn(
-                        "group relative rounded-2xl sm:rounded-xl border p-3 sm:p-3 text-left transition-all lift flex flex-col sm:block justify-between min-h-[85px] sm:min-h-0",
+                        "group relative rounded-[28px] sm:rounded-xl border p-3 sm:p-3 text-left transition-all lift flex flex-col sm:block justify-between min-h-[85px] sm:min-h-0",
                         active
                           ? "border-[var(--ink-950)] bg-[var(--ink-950)] text-white"
                           : "border-[var(--border)] bg-white hover:border-[var(--ink-950)]",
