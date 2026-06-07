@@ -209,13 +209,13 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-col items-center text-center lg:items-start lg:text-left pt-[35vh] sm:pt-[40vh] lg:pt-0"
+            className="flex flex-col items-start text-left pt-24 sm:pt-32 lg:pt-0 w-full"
           >
             <motion.div
               initial={{ opacity: 0, y: 12, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className="inline-flex items-center gap-2 chip chip-accent mb-6"
+              className="inline-flex items-center justify-center self-center md:self-start w-[90%] sm:w-auto mx-auto md:mx-0 gap-2 chip chip-accent mb-8 md:mb-6 text-[10.5px] md:text-xs font-bold text-center leading-relaxed py-2 md:py-1.5"
             >
               <span className="relative flex w-2 h-2">
                 <span className="absolute inset-0 rounded-full bg-[var(--accent)] animate-ping opacity-75" />
@@ -260,7 +260,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.9 }}
-              className="mt-9 flex w-full md:w-auto items-center justify-center lg:justify-start gap-3"
+              className="mt-14 md:mt-9 flex w-full md:w-auto items-center justify-center lg:justify-start gap-3 relative z-20 pb-4 md:pb-0"
             >
               <Button href="#calculator" variant="primary" size="lg" className="flex-1 md:flex-none py-3.5">
                 Start Challenge
@@ -274,7 +274,7 @@ export function Hero() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 1.1 }}
-              className="mt-10 flex w-full justify-between sm:justify-center lg:justify-start items-center sm:gap-12 text-[12px] md:text-[13px] text-[var(--ink-500)]"
+              className="hidden md:flex mt-10 w-full justify-between sm:justify-center lg:justify-start items-center sm:gap-12 text-[12px] md:text-[13px] text-[var(--ink-500)]"
             >
               {[
                 { value: "90%", label: "Profit Split" },
