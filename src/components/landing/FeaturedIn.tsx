@@ -16,7 +16,7 @@ const marqueeItems = [...logos, ...logos, ...logos, ...logos];
 
 export function FeaturedIn() {
   return (
-    <section className="relative py-12 md:py-16 overflow-hidden">
+    <section className="relative pt-12 md:pt-16 pb-2 md:pb-4 overflow-hidden">
       <div className="mx-auto max-w-7xl px-5 md:px-8 mb-6 md:mb-8 text-center">
         <p className="text-[11px] md:text-[12px] uppercase tracking-[0.2em] text-[var(--ink-400)] font-medium">
           As Featured In & Trusted By Industry Leaders
