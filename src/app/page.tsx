@@ -8,7 +8,6 @@ import { WhyChooseUs } from "@/components/landing/WhyChooseUs";
 import { EvaluationSteps } from "@/components/landing/EvaluationSteps";
 import { PayoutSection } from "@/components/landing/PayoutSection";
 import { ProfitCalculator } from "@/components/landing/ProfitCalculator";
-import { DashboardPreview } from "@/components/landing/DashboardPreview";
 
 import { Testimonials } from "@/components/landing/Testimonials";
 import { ReferralPromo } from "@/components/landing/ReferralPromo";
@@ -51,10 +50,6 @@ export default function Home() {
 
       <SectionReveal3D>
         <ProfitCalculator />
-      </SectionReveal3D>
-
-      <SectionReveal3D>
-        <DashboardPreview />
       </SectionReveal3D>
 
       <SectionReveal3D>
