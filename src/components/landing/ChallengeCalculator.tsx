@@ -601,7 +601,6 @@ export function ChallengeCalculator() {
                     </button>
                   );
                 })}
-                })}
               </div>
             </div>
 
