@@ -79,13 +79,20 @@ export function NewChallengeForm() {
     promoDiscountAmt = (base ?? 0) * 0.50; // 50% off
   }
 
+  // Adjust total for free retry if coupon is applied
+  let freeRetryAdjustment = 0;
+  if (isFirstTpp && selectedAddOns.includes("free-retry")) {
+    const retryDef = addOns.find(a => a.key === "free-retry");
+    if (retryDef) freeRetryAdjustment = (base ?? 0) * (retryDef.feePct / 100);
+  }
+
   // Platform logic
   let platformExtras = 0;
   if (platform !== "TPP Dashboard") {
     platformExtras = (base ?? 0) * 0.10; // +10% of base fee
   }
 
-  let total = prePlatformTotal ? prePlatformTotal + platformExtras - promoDiscountAmt : 0;
+  let total = prePlatformTotal ? prePlatformTotal + platformExtras - promoDiscountAmt - freeRetryAdjustment : 0;
   
   // Payment gateway fees
   let paymentFeePct = 0;
@@ -239,7 +246,8 @@ export function NewChallengeForm() {
           <div className="space-y-4">
             {addOns.filter(a => a.appliesTo.includes(programKey)).map(addon => {
               const isActive = selectedAddOns.includes(addon.key);
-              const extraCost = (base ?? 0) * (addon.feePct / 100);
+              let extraCost = (base ?? 0) * (addon.feePct / 100);
+              if (isFirstTpp && addon.key === "free-retry") extraCost = 0;
               
               let noLabel = "No";
               let noSub = "Default";
@@ -450,7 +458,8 @@ export function NewChallengeForm() {
               {selectedAddOns.map(key => {
                 const addOnDef = addOns.find(a => a.key === key);
                 if (!addOnDef) return null;
-                const cost = (base ?? 0) * (addOnDef.feePct / 100);
+                let cost = (base ?? 0) * (addOnDef.feePct / 100);
+                if (isFirstTpp && key === "free-retry") cost = 0;
                 return (
                   <div key={key} className="flex justify-between items-center text-[13px] font-medium text-[var(--ink-500)]">
                     <span>{addOnDef.label}</span>
@@ -550,8 +559,8 @@ export function NewChallengeForm() {
             </div>
 
             {isFirstTpp && paymentMethod !== "Crypto" && (
-              <div className="mt-4 p-3 bg-amber-50 text-amber-700 border border-amber-200 rounded-xl text-[12px] font-medium">
-                Coupon offers only support crypto payments. Please select Crypto.
+              <div className="mt-4 p-3 bg-red-50 border-l-4 border-red-500 rounded-r-xl text-[12px] font-bold text-red-700 shadow-sm">
+                Promo code applied only on crypto payments
               </div>
             )}
 
