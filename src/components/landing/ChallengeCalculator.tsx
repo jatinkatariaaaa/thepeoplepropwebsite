@@ -43,7 +43,7 @@ import { cn } from "@/lib/utils";
 
 const DEFAULT_PROGRAM: ProgramKey = "1-step";
 const DEFAULT_SIZE: AccountSize = 25_000;
-const DEFAULT_PLATFORM: PlatformKey = "mt5";
+const DEFAULT_PLATFORM: PlatformKey = "tppdashboard";
 
 export function ChallengeCalculator() {
   const router = useRouter();
@@ -76,10 +76,16 @@ export function ChallengeCalculator() {
     return lowerOrEqual ?? offered[0];
   }, [program, size]);
 
-  const { base, total, addOnFees } = useMemo(
+  const { base, total: prePlatformTotal, addOnFees } = useMemo(
     () => feeFor(program, effectiveSize, selectedAddOns),
     [program, effectiveSize, selectedAddOns],
   );
+
+  let platformExtras = 0;
+  if (platformKey !== "tppdashboard") {
+    platformExtras = (base ?? 0) * 0.10;
+  }
+  const total = prePlatformTotal != null ? prePlatformTotal + platformExtras : null;
 
   // Compute final price locally based on discount
   const finalPrice = total != null ? total * (1 - appliedDiscount) : null;

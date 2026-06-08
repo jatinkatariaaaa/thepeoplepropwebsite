@@ -23,10 +23,16 @@ export function NewChallengeForm() {
   const [size, setSize] = useState<AccountSize>(ALL_SIZES[2]); // Default 25k
   const [selectedAddOns, setSelectedAddOns] = useState<AddOnKey[]>([]);
   const [currency, setCurrency] = useState("USD");
-  const [platform, setPlatform] = useState("MetaTrader 5");
+  const [platform, setPlatform] = useState("TPP Dashboard");
   const [paymentMethod, setPaymentMethod] = useState("Credit / Debit Card");
   const [agreed, setAgreed] = useState(false);
   
+  // Promo State
+  const [promoInput, setPromoInput] = useState("");
+  const [appliedPromo, setAppliedPromo] = useState("");
+  const [promoError, setPromoError] = useState("");
+  const [isPromoOpen, setIsPromoOpen] = useState(false);
+
   // Personal Info State
   const [personalInfo, setPersonalInfo] = useState({
     firstName: "",
@@ -66,11 +72,20 @@ export function NewChallengeForm() {
     [program, effectiveSize, selectedAddOns]
   );
 
+  // Promo Logic
+  let promoDiscountAmt = 0;
+  const isFirstTpp = appliedPromo.toLowerCase() === "firsttpp";
+  if (isFirstTpp) {
+    promoDiscountAmt = (base ?? 0) * 0.50; // 50% off
+  }
+
   // Platform logic
   let platformExtras = 0;
-  if (platform === "CTrader") platformExtras = 20;
+  if (platform !== "TPP Dashboard") {
+    platformExtras = (base ?? 0) * 0.10; // +10% of base fee
+  }
 
-  let total = prePlatformTotal ? prePlatformTotal + platformExtras : 0;
+  let total = prePlatformTotal ? prePlatformTotal + platformExtras - promoDiscountAmt : 0;
   
   // Payment gateway fees
   let paymentFeePct = 0;
@@ -82,6 +97,20 @@ export function NewChallengeForm() {
   }
 
   const finalTotal = total * (1 + (paymentFeePct / 100));
+
+  const handleApplyPromo = () => {
+    if (promoInput.toLowerCase() === "firsttpp") {
+      setAppliedPromo("firsttpp");
+      setPromoError("");
+      setPaymentMethod("Crypto");
+      if (!selectedAddOns.includes("free-retry")) {
+        setSelectedAddOns(prev => [...prev, "free-retry"]);
+      }
+    } else {
+      setPromoError("Invalid promo code");
+      setAppliedPromo("");
+    }
+  };
 
   // Currency Conversion Logic
   const CURRENCY_RATES: Record<string, { symbol: string, rate: number, prefix: boolean }> = {
@@ -329,11 +358,12 @@ export function NewChallengeForm() {
         {/* Trading Platform */}
         <div>
           <h3 className="font-bold text-[15px] text-[var(--ink-950)] mb-3">Trading Platform</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {[
-              { id: "MetaTrader 5", extra: "" },
-              { id: "MatchTrader", extra: "" },
-              { id: "CTrader", extra: `+${formatCurrency(20)}` }
+              { id: "TPP Dashboard", extra: "Free" },
+              { id: "MetaTrader 5", extra: `+${formatCurrency((base ?? 0) * 0.10)}` },
+              { id: "TradeLocker", extra: `+${formatCurrency((base ?? 0) * 0.10)}` },
+              { id: "MatchTrader", extra: `+${formatCurrency((base ?? 0) * 0.10)}` }
             ].map(plat => (
               <button
                 key={plat.id}
@@ -346,7 +376,11 @@ export function NewChallengeForm() {
                 )}
               >
                 <span className="font-bold">{plat.id}</span>
-                {plat.extra && <span className="text-[var(--ink-400)] text-[12px]">{plat.extra}</span>}
+                {plat.extra && (
+                  <span className={plat.extra === "Free" ? "text-emerald-600 font-bold text-[12px]" : "text-[var(--ink-400)] text-[12px]"}>
+                    {plat.extra}
+                  </span>
+                )}
               </button>
             ))}
           </div>
@@ -368,9 +402,36 @@ export function NewChallengeForm() {
           </div>
 
           <div className="p-6 border-b border-[var(--border)] bg-[var(--paper)]">
-            <button className="flex items-center gap-2 text-[13px] font-bold text-[var(--ink-700)] mb-4">
-              Have a promo code? <ChevronDown className="w-4 h-4" />
-            </button>
+            <div className="mb-6">
+              <button 
+                onClick={() => setIsPromoOpen(!isPromoOpen)}
+                className="flex items-center gap-2 text-[13px] font-bold text-[var(--ink-700)] hover:text-[var(--ink-950)] transition-colors"
+              >
+                Have a promo code? <ChevronDown className={cn("w-4 h-4 transition-transform", isPromoOpen && "rotate-180")} />
+              </button>
+              
+              {isPromoOpen && (
+                <div className="mt-3 flex flex-col gap-2">
+                  <div className="flex gap-2">
+                    <input 
+                      type="text"
+                      value={promoInput}
+                      onChange={e => setPromoInput(e.target.value)}
+                      placeholder="Enter promo code"
+                      className="flex-1 bg-white border border-[var(--border)] rounded-xl h-10 px-3 text-[13px] uppercase focus:outline-none focus:border-[var(--ink-400)] transition-colors"
+                    />
+                    <button 
+                      onClick={handleApplyPromo}
+                      className="h-10 px-4 bg-[var(--ink-950)] hover:bg-[var(--ink-800)] text-white text-[13px] font-bold rounded-xl transition-all"
+                    >
+                      Apply
+                    </button>
+                  </div>
+                  {promoError && <p className="text-red-500 text-[12px] font-medium px-1">{promoError}</p>}
+                  {appliedPromo && <p className="text-emerald-600 text-[12px] font-medium px-1">Promo applied successfully!</p>}
+                </div>
+              )}
+            </div>
 
             <div className="space-y-3 mb-6">
               <div className="flex justify-between items-center text-[13px] font-medium text-[var(--ink-700)]">
@@ -379,7 +440,11 @@ export function NewChallengeForm() {
               </div>
               <div className="flex justify-between items-center text-[13px] font-medium text-[var(--ink-500)]">
                 <span>Platform: {platform}</span>
-                {platform === "CTrader" && <span>+{formatCurrency(20)}</span>}
+                {platformExtras > 0 ? (
+                  <span>+{formatCurrency(platformExtras)}</span>
+                ) : (
+                  <span className="text-emerald-600 font-bold">Free</span>
+                )}
               </div>
               
               {selectedAddOns.map(key => {
@@ -395,6 +460,13 @@ export function NewChallengeForm() {
                   </div>
                 );
               })}
+
+              {promoDiscountAmt > 0 && (
+                <div className="flex justify-between items-center text-[13px] font-bold text-emerald-600 pt-2 border-t border-[var(--border)]">
+                  <span>Promo ({appliedPromo.toUpperCase()})</span>
+                  <span>-{formatCurrency(promoDiscountAmt)}</span>
+                </div>
+              )}
 
               {paymentFeePct > 0 && (
                  <div className="flex justify-between items-center text-[13px] font-medium text-amber-600">
@@ -457,7 +529,10 @@ export function NewChallengeForm() {
                         name="paymentMethod"
                         value={method.id}
                         checked={paymentMethod === method.id}
-                        onChange={(e) => setPaymentMethod(e.target.value)}
+                        onChange={(e) => {
+                          if (isFirstTpp && method.id !== "Crypto") return;
+                          setPaymentMethod(e.target.value);
+                        }}
                         className="peer sr-only" 
                       />
                       <div className="w-4 h-4 rounded-full border border-[var(--ink-300)] bg-white peer-checked:border-[var(--accent)] peer-checked:border-[5px] transition-all" />
@@ -474,8 +549,14 @@ export function NewChallengeForm() {
               ))}
             </div>
 
+            {isFirstTpp && paymentMethod !== "Crypto" && (
+              <div className="mt-4 p-3 bg-amber-50 text-amber-700 border border-amber-200 rounded-xl text-[12px] font-medium">
+                Coupon offers only support crypto payments. Please select Crypto.
+              </div>
+            )}
+
             <button 
-              disabled={!agreed}
+              disabled={!agreed || (isFirstTpp && paymentMethod !== "Crypto")}
               className="w-full mt-6 h-12 bg-[var(--ink-950)] hover:bg-[var(--ink-800)] text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md active:scale-[0.98]"
             >
               Proceed to Payment

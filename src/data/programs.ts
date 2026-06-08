@@ -273,7 +273,7 @@ export const addOns: AddOn[] = [
 
 /* ─── Platforms ────────────────────────────────────────────────── */
 
-export type PlatformKey = "mt5" | "tradelocker" | "matchtrader" | "ctrader";
+export type PlatformKey = "tppdashboard" | "mt5" | "tradelocker" | "matchtrader";
 
 export interface Platform {
   key: PlatformKey;
@@ -283,10 +283,10 @@ export interface Platform {
 }
 
 export const platforms: Platform[] = [
+  { key: "tppdashboard", label: "TPP Dashboard", sub: "Built-in web platform", status: "live" },
   { key: "mt5", label: "MetaTrader 5", sub: "Industry standard", status: "live" },
   { key: "tradelocker", label: "TradeLocker", sub: "Web-first, no install", status: "live" },
   { key: "matchtrader", label: "Match-Trader", sub: "Modern UI, fast fills", status: "live" },
-  { key: "ctrader", label: "cTrader", sub: "Coming Q3 2026", status: "soon" },
 ];
 
 /* ─── Helpers ──────────────────────────────────────────────────── */
