@@ -10,7 +10,7 @@ import {
   Settings, 
   LogOut, 
   Award,
-  Wallet,
+  History,
   Menu,
   X,
   ArrowUpRight,
@@ -25,7 +25,7 @@ import { NavbarLogo } from "@/components/ui/resizable-navbar";
 
 const navItems = [
   { icon: Home, label: "Home", href: "/dashboard" },
-  { icon: Wallet, label: "Billing", href: "/dashboard/billing" },
+  { icon: History, label: "Transaction History", href: "/dashboard/transactions" },
   { icon: Trophy, label: "Competitions", href: "/dashboard/competitions" },
   { icon: Award, label: "Rewards", href: "/dashboard/rewards" },
   { icon: ListOrdered, label: "Leaderboard", href: "/dashboard/leaderboard" },
