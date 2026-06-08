@@ -1,44 +1,71 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { ChevronDown, Check } from "lucide-react";
+import {
+  ALL_SIZES,
+  addOns,
+  feeFor,
+  formatSize,
+  formatSizeLong,
+  programs,
+  type AccountSize,
+  type AddOnKey,
+  type ProgramKey,
+} from "@/data/programs";
 
 export function NewChallengeForm() {
-  const [challengeType, setChallengeType] = useState("2 Step Standard");
-  const [swapFree, setSwapFree] = useState("No");
-  const [profitTarget, setProfitTarget] = useState("8%");
-  const [currency, setCurrency] = useState("INR");
-  const [accountSize, setAccountSize] = useState("₹90 lakh");
+  const [programKey, setProgramKey] = useState<ProgramKey>(programs[0].key);
+  const [size, setSize] = useState<AccountSize>(ALL_SIZES[2]); // Default 25k
+  const [selectedAddOns, setSelectedAddOns] = useState<AddOnKey[]>([]);
+  const [currency, setCurrency] = useState("USD");
   const [platform, setPlatform] = useState("MetaTrader 5");
   const [paymentMethod, setPaymentMethod] = useState("Credit / Debit Card");
   const [agreed, setAgreed] = useState(false);
 
-  // Mock Pricing Logic
-  let basePrice = 0;
-  if (accountSize === "₹4.5 lakh") basePrice = 49;
-  if (accountSize === "₹9 lakh") basePrice = 99;
-  if (accountSize === "₹22.5 lakh") basePrice = 199;
-  if (accountSize === "₹45 lakh") basePrice = 349;
-  if (accountSize === "₹90 lakh") basePrice = 544; // Matching the screenshot default
+  const program = useMemo(
+    () => programs.find((p) => p.key === programKey) ?? programs[0],
+    [programKey]
+  );
 
-  let extras = 0;
-  if (swapFree === "Yes") extras += basePrice * 0.1; // +10%
-  if (profitTarget === "10%") extras -= 55; // -$55.00 flat modifier
-  if (platform === "CTrader") extras += 20;
+  // Fallback size if current program doesn't offer it
+  const effectiveSize = useMemo<AccountSize>(() => {
+    if (program.fees[size] !== undefined) return size;
+    const offered = (Object.keys(program.fees) as unknown as string[])
+      .map((s) => Number(s) as AccountSize)
+      .sort((a, b) => a - b);
+    const lowerOrEqual = offered.filter((s) => s <= size).pop();
+    return lowerOrEqual ?? offered[0];
+  }, [program, size]);
 
-  let total = basePrice + extras;
+  const { base, total: prePlatformTotal, addOnFees } = useMemo(
+    () => feeFor(program, effectiveSize, selectedAddOns),
+    [program, effectiveSize, selectedAddOns]
+  );
+
+  // Platform logic
+  let platformExtras = 0;
+  if (platform === "CTrader") platformExtras = 20;
+
+  let total = prePlatformTotal ? prePlatformTotal + platformExtras : 0;
   
   // Payment gateway fees
+  let paymentFeePct = 0;
   if (paymentMethod === "Neteller" || paymentMethod === "Skrill") {
-    total = total * 1.04;
+    paymentFeePct = 4;
   }
   if (paymentMethod === "Paysafecard") {
-    total = total * 1.10;
+    paymentFeePct = 10;
   }
 
-  // To fix floating point weirdness
-  total = Math.max(0, total);
+  const finalTotal = total * (1 + (paymentFeePct / 100));
+
+  const toggleAddOn = (key: AddOnKey) => {
+    setSelectedAddOns(prev => 
+      prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key]
+    );
+  };
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 pb-20">
@@ -50,92 +77,71 @@ export function NewChallengeForm() {
         <div>
           <h3 className="font-bold text-[15px] text-[var(--ink-950)] mb-3">Challenge Type</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            {["Zero", "1 Step", "2 Step Standard", "2 Step Pro"].map(type => (
+            {programs.map(prog => (
               <button
-                key={type}
-                onClick={() => setChallengeType(type)}
+                key={prog.key}
+                onClick={() => setProgramKey(prog.key)}
                 className={cn(
                   "py-3 px-2 rounded-xl text-[13px] font-bold border transition-all text-center",
-                  challengeType === type 
+                  programKey === prog.key 
                     ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)] shadow-sm" 
                     : "bg-white border-[var(--border)] text-[var(--ink-600)] hover:border-[var(--ink-300)]"
                 )}
               >
-                {type}
+                {prog.shortLabel}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Customise Trading Rules */}
+        {/* Customise Trading Rules (Add-ons) */}
         <div>
           <h3 className="font-bold text-[15px] text-[var(--ink-950)]">Customise Trading Rules</h3>
           <p className="text-[13px] text-[var(--ink-500)] mb-4">Adjust your challenge parameters to match your trading style</p>
           
           <div className="space-y-4">
-            {/* Swap Free */}
-            <div>
-              <div className="text-[14px] font-bold text-[var(--ink-700)] mb-2">Swap Free</div>
-              <p className="text-[12px] text-[var(--ink-500)] mb-2">Choose options for swap free</p>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  onClick={() => setSwapFree("No")}
-                  className={cn(
-                    "flex items-center justify-between py-3 px-4 rounded-xl text-[13px] font-medium border transition-all",
-                    swapFree === "No" 
-                      ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)]" 
-                      : "bg-white border-[var(--border)] text-[var(--ink-600)]"
-                  )}
-                >
-                  <span className="font-bold">No</span>
-                  <span className="text-[var(--ink-400)] text-[12px]">Default</span>
-                </button>
-                <button
-                  onClick={() => setSwapFree("Yes")}
-                  className={cn(
-                    "flex items-center justify-between py-3 px-4 rounded-xl text-[13px] font-medium border transition-all",
-                    swapFree === "Yes" 
-                      ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)]" 
-                      : "bg-white border-[var(--border)] text-[var(--ink-600)]"
-                  )}
-                >
-                  <span className="font-bold">Yes</span>
-                  <span className="text-emerald-600 font-bold text-[12px]">+{((basePrice * 0.1)).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span>
-                </button>
+            {addOns.filter(a => a.appliesTo.includes(programKey)).map(addon => {
+              const isActive = selectedAddOns.includes(addon.key);
+              const extraCost = (base ?? 0) * (addon.feePct / 100);
+              return (
+                <div key={addon.key}>
+                  <div className="text-[14px] font-bold text-[var(--ink-700)] mb-1">{addon.label}</div>
+                  <p className="text-[12px] text-[var(--ink-500)] mb-2">{addon.description}</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => isActive && toggleAddOn(addon.key)}
+                      className={cn(
+                        "flex items-center justify-between py-3 px-4 rounded-xl text-[13px] font-medium border transition-all",
+                        !isActive 
+                          ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)]" 
+                          : "bg-white border-[var(--border)] text-[var(--ink-600)]"
+                      )}
+                    >
+                      <span className="font-bold">No</span>
+                      <span className="text-[var(--ink-400)] text-[12px]">Default</span>
+                    </button>
+                    <button
+                      onClick={() => !isActive && toggleAddOn(addon.key)}
+                      className={cn(
+                        "flex items-center justify-between py-3 px-4 rounded-xl text-[13px] font-medium border transition-all",
+                        isActive 
+                          ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)]" 
+                          : "bg-white border-[var(--border)] text-[var(--ink-600)]"
+                      )}
+                    >
+                      <span className="font-bold">Yes</span>
+                      <span className="text-emerald-600 font-bold text-[12px]">+{extraCost.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span>
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+            
+            {addOns.filter(a => a.appliesTo.includes(programKey)).length === 0 && (
+              <div className="text-[13px] text-[var(--ink-500)] p-4 border border-[var(--border)] rounded-xl bg-[var(--paper)]">
+                No customisations available for this challenge type.
               </div>
-            </div>
-
-            {/* Profit Target */}
-            <div>
-              <div className="text-[14px] font-bold text-[var(--ink-700)] mb-2">Profit Target</div>
-              <p className="text-[12px] text-[var(--ink-500)] mb-2">Choose options for profit target</p>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  onClick={() => setProfitTarget("8%")}
-                  className={cn(
-                    "flex items-center justify-between py-3 px-4 rounded-xl text-[13px] font-medium border transition-all",
-                    profitTarget === "8%" 
-                      ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)]" 
-                      : "bg-white border-[var(--border)] text-[var(--ink-600)]"
-                  )}
-                >
-                  <span className="font-bold">8%</span>
-                  <span className="text-[var(--ink-400)] text-[12px]">Default</span>
-                </button>
-                <button
-                  onClick={() => setProfitTarget("10%")}
-                  className={cn(
-                    "flex items-center justify-between py-3 px-4 rounded-xl text-[13px] font-medium border transition-all",
-                    profitTarget === "10%" 
-                      ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)]" 
-                      : "bg-white border-[var(--border)] text-[var(--ink-600)]"
-                  )}
-                >
-                  <span className="font-bold">10%</span>
-                  <span className="text-emerald-600 font-bold text-[12px]">-$55.00</span>
-                </button>
-              </div>
-            </div>
+            )}
           </div>
         </div>
 
@@ -171,20 +177,25 @@ export function NewChallengeForm() {
         <div>
           <h3 className="font-bold text-[15px] text-[var(--ink-950)] mb-3">Account Size</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            {["₹4.5 lakh", "₹9 lakh", "₹22.5 lakh", "₹45 lakh", "₹90 lakh"].map(size => (
-              <button
-                key={size}
-                onClick={() => setAccountSize(size)}
-                className={cn(
-                  "py-3 px-2 rounded-xl text-[13px] font-bold border transition-all text-center",
-                  accountSize === size 
-                    ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)] shadow-sm" 
-                    : "bg-white border-[var(--border)] text-[var(--ink-600)] hover:border-[var(--ink-300)]"
-                )}
-              >
-                {size}
-              </button>
-            ))}
+            {ALL_SIZES.map(s => {
+              const isAvailable = program.fees[s] !== undefined;
+              return (
+                <button
+                  key={s}
+                  disabled={!isAvailable}
+                  onClick={() => setSize(s)}
+                  className={cn(
+                    "py-3 px-2 rounded-xl text-[13px] font-bold border transition-all text-center",
+                    !isAvailable && "opacity-40 cursor-not-allowed bg-[var(--paper-2)]",
+                    isAvailable && effectiveSize === s 
+                      ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)] shadow-sm" 
+                      : isAvailable && "bg-white border-[var(--border)] text-[var(--ink-600)] hover:border-[var(--ink-300)]"
+                  )}
+                >
+                  {formatSizeLong(s)}
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -236,36 +247,37 @@ export function NewChallengeForm() {
 
             <div className="space-y-3 mb-6">
               <div className="flex justify-between items-center text-[13px] font-medium text-[var(--ink-700)]">
-                <span>{accountSize} • {challengeType}</span>
-                <span className="font-bold text-[var(--ink-950)]">${basePrice.toFixed(2)}</span>
+                <span>{formatSizeLong(effectiveSize)} • {program.shortLabel}</span>
+                <span className="font-bold text-[var(--ink-950)]">${(base ?? 0).toFixed(2)}</span>
               </div>
               <div className="flex justify-between items-center text-[13px] font-medium text-[var(--ink-500)]">
                 <span>Platform: {platform}</span>
                 {platform === "CTrader" && <span>+$20.00</span>}
               </div>
-              {swapFree === "Yes" && (
-                <div className="flex justify-between items-center text-[13px] font-medium text-[var(--ink-500)]">
-                  <span>Swap Free</span>
-                  <span>+${(basePrice * 0.1).toFixed(2)}</span>
-                </div>
-              )}
-              {profitTarget === "10%" && (
-                <div className="flex justify-between items-center text-[13px] font-medium text-[var(--ink-500)]">
-                  <span>10% Profit Target</span>
-                  <span>-$55.00</span>
-                </div>
-              )}
-              {paymentMethod === "Neteller" || paymentMethod === "Skrill" || paymentMethod === "Paysafecard" ? (
+              
+              {selectedAddOns.map(key => {
+                const addOnDef = addOns.find(a => a.key === key);
+                if (!addOnDef) return null;
+                const cost = (base ?? 0) * (addOnDef.feePct / 100);
+                return (
+                  <div key={key} className="flex justify-between items-center text-[13px] font-medium text-[var(--ink-500)]">
+                    <span>{addOnDef.label}</span>
+                    <span>+${cost.toFixed(2)}</span>
+                  </div>
+                );
+              })}
+
+              {paymentFeePct > 0 && (
                  <div className="flex justify-between items-center text-[13px] font-medium text-amber-600">
                   <span>Payment Gateway Fee</span>
-                  <span>+{(paymentMethod === "Paysafecard" ? 10 : 4)}%</span>
+                  <span>+{paymentFeePct}%</span>
                 </div>
-              ) : null}
+              )}
             </div>
 
             <div className="flex justify-between items-end border-t border-[var(--border)] pt-4">
               <span className="font-bold text-[15px] text-[var(--ink-950)]">Total</span>
-              <span className="text-[28px] font-display font-bold text-[var(--ink-950)] leading-none">${total.toFixed(2)}</span>
+              <span className="text-[28px] font-display font-bold text-[var(--ink-950)] leading-none">${finalTotal.toFixed(2)}</span>
             </div>
           </div>
 
