@@ -222,7 +222,7 @@ export function NewChallengeForm() {
                 yesLabel = "0 Days";
               } else if (addon.key === "payout-on-demand") {
                 noLabel = program.payoutCycle;
-                noSub = "Default";
+                noSub = "Regular";
                 yesLabel = "On Demand";
               } else if (addon.key === "split-100") {
                 noLabel = `${program.profitSplit}%`;
