@@ -24,7 +24,7 @@ const navItems = [
   { icon: Home, label: "Home", href: "/dashboard" },
   { icon: Wallet, label: "Billing", href: "/dashboard/billing" },
   { icon: Trophy, label: "Competitions", href: "/dashboard/competitions" },
-  { icon: Award, label: "Certificates", href: "/dashboard/certificates" },
+  { icon: Award, label: "Rewards", href: "/dashboard/rewards" },
   { icon: ListOrdered, label: "Leaderboard", href: "/dashboard/leaderboard" },
   { icon: Settings, label: "Settings", href: "/dashboard/settings" },
 ];
