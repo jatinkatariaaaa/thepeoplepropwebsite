@@ -83,6 +83,33 @@ export function NewChallengeForm() {
 
   const finalTotal = total * (1 + (paymentFeePct / 100));
 
+  // Currency Conversion Logic
+  const CURRENCY_RATES: Record<string, { symbol: string, rate: number, prefix: boolean }> = {
+    USD: { symbol: "$", rate: 1, prefix: true },
+    EUR: { symbol: "€", rate: 0.95, prefix: true },
+    GBP: { symbol: "£", rate: 0.82, prefix: true },
+    CHF: { symbol: "CHF", rate: 0.9, prefix: false },
+    INR: { symbol: "₹", rate: 90, prefix: true }
+  };
+
+  const currentCurrency = CURRENCY_RATES[currency] || CURRENCY_RATES["USD"];
+
+  const formatCurrency = (usdAmount: number) => {
+    if (usdAmount === 0) return "Free";
+    const converted = usdAmount * currentCurrency.rate;
+    const formatted = converted.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return currentCurrency.prefix ? `${currentCurrency.symbol}${formatted}` : `${formatted} ${currentCurrency.symbol}`;
+  };
+
+  const formatAccSize = (usdSize: number) => {
+    if (currency === "INR") {
+      const inr = usdSize * 90;
+      return `₹${inr / 100000} lakh`;
+    }
+    const converted = usdSize * currentCurrency.rate;
+    return currentCurrency.prefix ? `${currentCurrency.symbol}${converted.toLocaleString('en-US')}` : `${converted.toLocaleString('en-US')} ${currentCurrency.symbol}`;
+  };
+
   const toggleAddOn = (key: AddOnKey) => {
     setSelectedAddOns(prev => 
       prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key]
@@ -230,7 +257,7 @@ export function NewChallengeForm() {
                       )}
                     >
                       <span className="font-bold">{yesLabel}</span>
-                      <span className="text-emerald-600 font-bold text-[12px]">{extraCost === 0 ? "Free" : `+${extraCost.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}`}</span>
+                      <span className="text-emerald-600 font-bold text-[12px]">{extraCost === 0 ? "Free" : `+${formatCurrency(extraCost)}`}</span>
                     </button>
                   </div>
                 </div>
@@ -292,7 +319,7 @@ export function NewChallengeForm() {
                       : isAvailable && "bg-white border-[var(--border)] text-[var(--ink-600)] hover:border-[var(--ink-300)]"
                   )}
                 >
-                  {formatSizeLong(s)}
+                  {formatAccSize(s)}
                 </button>
               );
             })}
@@ -306,7 +333,7 @@ export function NewChallengeForm() {
             {[
               { id: "MetaTrader 5", extra: "" },
               { id: "MatchTrader", extra: "" },
-              { id: "CTrader", extra: "+$20.00" }
+              { id: "CTrader", extra: `+${formatCurrency(20)}` }
             ].map(plat => (
               <button
                 key={plat.id}
@@ -347,12 +374,12 @@ export function NewChallengeForm() {
 
             <div className="space-y-3 mb-6">
               <div className="flex justify-between items-center text-[13px] font-medium text-[var(--ink-700)]">
-                <span>{formatSizeLong(effectiveSize)} • {program.shortLabel}</span>
-                <span className="font-bold text-[var(--ink-950)]">${(base ?? 0).toFixed(2)}</span>
+                <span>{formatAccSize(effectiveSize)} • {program.shortLabel}</span>
+                <span className="font-bold text-[var(--ink-950)]">{formatCurrency(base ?? 0)}</span>
               </div>
               <div className="flex justify-between items-center text-[13px] font-medium text-[var(--ink-500)]">
                 <span>Platform: {platform}</span>
-                {platform === "CTrader" && <span>+$20.00</span>}
+                {platform === "CTrader" && <span>+{formatCurrency(20)}</span>}
               </div>
               
               {selectedAddOns.map(key => {
@@ -363,7 +390,7 @@ export function NewChallengeForm() {
                   <div key={key} className="flex justify-between items-center text-[13px] font-medium text-[var(--ink-500)]">
                     <span>{addOnDef.label}</span>
                     <span className={cost === 0 ? "text-emerald-600 font-bold" : ""}>
-                      {cost === 0 ? "Free" : `+$${cost.toFixed(2)}`}
+                      {cost === 0 ? "Free" : `+${formatCurrency(cost)}`}
                     </span>
                   </div>
                 );
@@ -379,7 +406,7 @@ export function NewChallengeForm() {
 
             <div className="flex justify-between items-end border-t border-[var(--border)] pt-4">
               <span className="font-bold text-[15px] text-[var(--ink-950)]">Total</span>
-              <span className="text-[28px] font-display font-bold text-[var(--ink-950)] leading-none">${finalTotal.toFixed(2)}</span>
+              <span className="text-[28px] font-display font-bold text-[var(--ink-950)] leading-none">{formatCurrency(finalTotal)}</span>
             </div>
           </div>
 
