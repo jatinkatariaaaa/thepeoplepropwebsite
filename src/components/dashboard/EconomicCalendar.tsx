@@ -33,9 +33,9 @@ export function EconomicCalendar() {
         const options = {
           method: 'GET',
           headers: {
+            'x-rapidapi-key': '7b05222adbmshc2ff91e2ae2711cp156094jsn330ac8009d19',
             'x-rapidapi-host': 'tradingview-data1.p.rapidapi.com',
             'Content-Type': 'application/json'
-            // Intentionally omitting x-rapidapi-key as per user's request 
           }
         };
 
