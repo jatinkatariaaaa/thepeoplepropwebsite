@@ -15,7 +15,8 @@ import {
   X,
   ArrowUpRight,
   ListOrdered,
-  CalendarDays
+  CalendarDays,
+  Plus
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -69,8 +70,17 @@ export function ClientSidebar() {
           </Link>
         </div>
 
+        {/* New Challenge Button */}
+        <div className="px-6 pt-6 pb-2">
+          <Link href="/dashboard/new-challenge" onClick={() => setIsOpen(false)}>
+            <div className="w-12 h-12 rounded-full bg-[var(--ink-950)] text-white flex items-center justify-center hover:bg-[var(--accent)] hover:scale-105 transition-all shadow-md cursor-pointer group">
+              <Plus className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" />
+            </div>
+          </Link>
+        </div>
+
         {/* Navigation */}
-        <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+        <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
