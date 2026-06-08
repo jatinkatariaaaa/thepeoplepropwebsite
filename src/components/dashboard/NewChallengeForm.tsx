@@ -211,7 +211,7 @@ export function NewChallengeForm() {
                       )}
                     >
                       <span className="font-bold">Yes</span>
-                      <span className="text-emerald-600 font-bold text-[12px]">+{extraCost.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span>
+                      <span className="text-emerald-600 font-bold text-[12px]">{extraCost === 0 ? "Free" : `+${extraCost.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}`}</span>
                     </button>
                   </div>
                 </div>
@@ -343,7 +343,9 @@ export function NewChallengeForm() {
                 return (
                   <div key={key} className="flex justify-between items-center text-[13px] font-medium text-[var(--ink-500)]">
                     <span>{addOnDef.label}</span>
-                    <span>+${cost.toFixed(2)}</span>
+                    <span className={cost === 0 ? "text-emerald-600 font-bold" : ""}>
+                      {cost === 0 ? "Free" : `+$${cost.toFixed(2)}`}
+                    </span>
                   </div>
                 );
               })}

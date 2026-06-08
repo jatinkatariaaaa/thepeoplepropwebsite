@@ -244,8 +244,8 @@ export const addOns: AddOn[] = [
   {
     key: "payout-on-demand",
     label: "Payout on Demand",
-    description: "Request your first payout any time after the funded phase begins.",
-    feePct: 20,
+    description: "First payout on demand is now free for all accounts.",
+    feePct: 0,
     appliesTo: ["1-step", "2-step", "3-step", "instant", "access"],
   },
   {

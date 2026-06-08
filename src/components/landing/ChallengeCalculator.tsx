@@ -536,7 +536,7 @@ export function ChallengeCalculator() {
                             active ? "text-[var(--accent-400)]" : "text-[var(--accent-700)]",
                           )}
                         >
-                          +{a.feePct}%
+                          {a.feePct === 0 ? "Free" : `+${a.feePct}%`}
                         </span>
 
                         {/* Desktop text content (hidden on mobile) */}
@@ -600,7 +600,7 @@ export function ChallengeCalculator() {
                           active ? "text-[var(--accent-400)]" : "text-[var(--accent-700)]",
                         )}
                       >
-                        +{a.feePct}%
+                        {a.feePct === 0 ? "Free" : `+${a.feePct}%`}
                       </span>
                     </button>
                   );
