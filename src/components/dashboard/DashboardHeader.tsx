@@ -1,6 +1,7 @@
 "use client";
 
 import { Bell, Plus } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 
 export function DashboardHeader() {
@@ -30,10 +31,12 @@ export function DashboardHeader() {
           </span>
         </button>
         
-        <Button className="hidden sm:flex items-center gap-2 h-10 px-5 rounded-full bg-[var(--accent)] hover:bg-[var(--accent-700)] text-white shadow-md text-[14px] font-medium">
-          <Plus className="w-4 h-4" />
-          New Challenge
-        </Button>
+        <Link href="/dashboard/new-challenge">
+          <Button className="hidden sm:flex items-center gap-2 h-10 px-5 rounded-full bg-[var(--accent)] hover:bg-[var(--accent-700)] text-white shadow-md text-[14px] font-medium">
+            <Plus className="w-4 h-4" />
+            New Challenge
+          </Button>
+        </Link>
       </div>
     </header>
   );
