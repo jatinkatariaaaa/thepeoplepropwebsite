@@ -243,8 +243,8 @@ export const addOns: AddOn[] = [
   },
   {
     key: "payout-on-demand",
-    label: "Payout on Demand",
-    description: "First payout on demand is now free for all accounts.",
+    label: "First Payout on Demand",
+    description: "Your first payout can be requested at any time. Subsequent payouts follow standard cycle.",
     feePct: 0,
     appliesTo: ["1-step", "2-step", "3-step", "instant", "access"],
   },
