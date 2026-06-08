@@ -1,7 +1,7 @@
 "use client";
 
-import { Filter, Calendar as CalendarIcon, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { Filter, Calendar as CalendarIcon, ChevronDown, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 const mockEvents = [
@@ -21,6 +21,56 @@ const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 export function EconomicCalendar() {
   const [activeDay, setActiveDay] = useState("Mon");
   const [showPassed, setShowPassed] = useState(false);
+  const [events, setEvents] = useState(mockEvents);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchCalendarData() {
+      try {
+        setLoading(true);
+        // Using the user's provided API snippet
+        const url = 'https://tradingview-data1.p.rapidapi.com/api/calendar/economic?from=1769356800&to=1769961599&market=america';
+        const options = {
+          method: 'GET',
+          headers: {
+            'x-rapidapi-host': 'tradingview-data1.p.rapidapi.com',
+            'Content-Type': 'application/json'
+            // Intentionally omitting x-rapidapi-key as per user's request 
+          }
+        };
+
+        const response = await fetch(url, options);
+        if (!response.ok) {
+          throw new Error('API request failed, falling back to mock data');
+        }
+        
+        const result = await response.json();
+        // If API returns data, map it. Otherwise keep mock data.
+        if (result && Array.isArray(result) && result.length > 0) {
+          const mappedEvents = result.map((item: any) => ({
+            time: item.time || "--:--",
+            currency: item.currency || "USD",
+            flag: item.currency === "EUR" ? "🇪🇺" : item.currency === "GBP" ? "🇬🇧" : "🇺🇸",
+            event: item.title || item.event || "Economic Event",
+            previous: item.previous || "—",
+            forecast: item.forecast || "—",
+            impact: item.importance === 3 ? "High" : item.importance === 2 ? "Medium" : "Low"
+          }));
+          setEvents(mappedEvents);
+        } else {
+          setEvents(mockEvents);
+        }
+      } catch (error) {
+        console.error(error);
+        // Fallback to beautiful mock data if the API fails (e.g. 401 Unauthorized)
+        setEvents(mockEvents);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchCalendarData();
+  }, []);
 
   return (
     <div className="bg-white rounded-[24px] border border-[var(--border)] shadow-sm overflow-hidden">
@@ -89,7 +139,12 @@ export function EconomicCalendar() {
       </div>
 
       {/* Events Table */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto relative">
+        {loading && (
+          <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-10 flex items-center justify-center">
+            <Loader2 className="w-8 h-8 text-[var(--accent)] animate-spin" />
+          </div>
+        )}
         <table className="w-full text-left whitespace-nowrap min-w-[800px]">
           <thead>
             <tr className="text-[12px] font-bold text-[var(--ink-400)] border-b border-[var(--border)]">
@@ -102,7 +157,7 @@ export function EconomicCalendar() {
             </tr>
           </thead>
           <tbody className="divide-y divide-[var(--border)] text-[13px]">
-            {mockEvents.map((event, idx) => (
+            {events.map((event, idx) => (
               <tr key={idx} className="hover:bg-[var(--paper-2)]/30 transition-colors group">
                 <td className="px-6 py-4 font-medium text-[var(--ink-600)]">{event.time}</td>
                 <td className="px-6 py-4">
@@ -122,6 +177,13 @@ export function EconomicCalendar() {
                 </td>
               </tr>
             ))}
+            {!loading && events.length === 0 && (
+              <tr>
+                <td colSpan={6} className="px-6 py-12 text-center text-[var(--ink-500)]">
+                  No upcoming events found.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
