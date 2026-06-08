@@ -14,7 +14,8 @@ import {
   Menu,
   X,
   ArrowUpRight,
-  ListOrdered
+  ListOrdered,
+  CalendarDays
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -26,6 +27,7 @@ const navItems = [
   { icon: Trophy, label: "Competitions", href: "/dashboard/competitions" },
   { icon: Award, label: "Rewards", href: "/dashboard/rewards" },
   { icon: ListOrdered, label: "Leaderboard", href: "/dashboard/leaderboard" },
+  { icon: CalendarDays, label: "Calendar", href: "/dashboard/calendar" },
   { icon: Settings, label: "Settings", href: "/dashboard/settings" },
 ];
 
