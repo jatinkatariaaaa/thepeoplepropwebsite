@@ -3,34 +3,34 @@ import { cn } from "@/lib/utils";
 
 const highlights = [
   {
-    title: "Highest Total Rewards",
-    value: "$58,124.00",
-    trader: "Zagros S",
-    country: "🇨🇦",
+    title: "Highest Total Payout",
+    value: "$142,500.00",
+    trader: "Alex M.",
+    country: "🇺🇸",
     icon: Trophy,
     gradient: "from-[var(--accent-700)] to-[var(--ink-950)]"
   },
   {
-    title: "Longest Master Acc Duration",
-    value: "349 days",
-    trader: "Tianyi C",
-    country: "🇹🇭",
+    title: "Longest Funded Duration",
+    value: "412 days",
+    trader: "Sofia R.",
+    country: "🇪🇸",
     icon: CalendarDays,
     gradient: "from-[var(--accent-700)] to-[var(--ink-950)]"
   },
   {
-    title: "Highest Single Reward",
-    value: "$40,000.00",
-    trader: "Zagros S",
-    country: "🇨🇦",
+    title: "Highest Single Profit",
+    value: "$31,240.00",
+    trader: "Arjun K.",
+    country: "🇮🇳",
     icon: Coins,
     gradient: "from-[var(--accent-700)] to-[var(--ink-950)]"
   },
   {
-    title: "Highest Total Rewards Count",
-    value: "12",
-    trader: "Erti C",
-    country: "🇦🇱",
+    title: "Most Payouts Received",
+    value: "15",
+    trader: "James T.",
+    country: "🇬🇧",
     icon: Crown,
     gradient: "from-[var(--accent-700)] to-[var(--ink-950)]"
   }
