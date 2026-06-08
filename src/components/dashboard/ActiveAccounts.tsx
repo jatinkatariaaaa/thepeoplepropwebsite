@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Trophy, Calendar, Eye, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
@@ -85,10 +86,12 @@ export function ActiveAccounts() {
               <button className="px-5 py-2.5 rounded-xl font-medium text-[14px] text-[var(--ink-700)] bg-[var(--paper-2)] border border-[var(--border)] hover:bg-[var(--border)] transition-colors">
                 Credentials
               </button>
-              <Button className="flex items-center gap-2 h-10 px-5 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-700)] text-white shadow-sm text-[14px] font-medium">
-                <Eye className="w-4 h-4" />
-                View Dashboard
-              </Button>
+              <Link href={`/dashboard/account/${account.id}`}>
+                <Button className="flex items-center gap-2 h-10 px-5 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-700)] text-white shadow-sm text-[14px] font-medium">
+                  <Eye className="w-4 h-4" />
+                  View Dashboard
+                </Button>
+              </Link>
             </div>
             
             {/* Edge Glow */}
