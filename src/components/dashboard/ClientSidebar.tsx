@@ -13,7 +13,8 @@ import {
   Wallet,
   Menu,
   X,
-  ArrowUpRight
+  ArrowUpRight,
+  ListOrdered
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -24,6 +25,7 @@ const navItems = [
   { icon: Wallet, label: "Billing", href: "/dashboard/billing" },
   { icon: Trophy, label: "Competitions", href: "/dashboard/competitions" },
   { icon: Award, label: "Certificates", href: "/dashboard/certificates" },
+  { icon: ListOrdered, label: "Leaderboard", href: "/dashboard/leaderboard" },
   { icon: Settings, label: "Settings", href: "/dashboard/settings" },
 ];
 
