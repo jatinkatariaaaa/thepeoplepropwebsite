@@ -184,6 +184,25 @@ export function NewChallengeForm() {
             {addOns.filter(a => a.appliesTo.includes(programKey)).map(addon => {
               const isActive = selectedAddOns.includes(addon.key);
               const extraCost = (base ?? 0) * (addon.feePct / 100);
+              
+              let noLabel = "No";
+              let noSub = "Default";
+              let yesLabel = "Yes";
+
+              if (addon.key === "no-min-days") {
+                noLabel = `${program.minTradingDays} Days`;
+                noSub = "Minimum";
+                yesLabel = "0 Days";
+              } else if (addon.key === "payout-on-demand") {
+                noLabel = program.payoutCycle;
+                noSub = "Default";
+                yesLabel = "On Demand";
+              } else if (addon.key === "split-100") {
+                noLabel = `${program.profitSplit}%`;
+                noSub = "Split";
+                yesLabel = "100%";
+              }
+
               return (
                 <div key={addon.key}>
                   <div className="text-[14px] font-bold text-[var(--ink-700)] mb-1">{addon.label}</div>
@@ -198,8 +217,8 @@ export function NewChallengeForm() {
                           : "bg-white border-[var(--border)] text-[var(--ink-600)]"
                       )}
                     >
-                      <span className="font-bold">No</span>
-                      <span className="text-[var(--ink-400)] text-[12px]">Default</span>
+                      <span className="font-bold">{noLabel}</span>
+                      <span className="text-[var(--ink-400)] text-[12px]">{noSub}</span>
                     </button>
                     <button
                       onClick={() => !isActive && toggleAddOn(addon.key)}
@@ -210,7 +229,7 @@ export function NewChallengeForm() {
                           : "bg-white border-[var(--border)] text-[var(--ink-600)]"
                       )}
                     >
-                      <span className="font-bold">Yes</span>
+                      <span className="font-bold">{yesLabel}</span>
                       <span className="text-emerald-600 font-bold text-[12px]">{extraCost === 0 ? "Free" : `+${extraCost.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}`}</span>
                     </button>
                   </div>
