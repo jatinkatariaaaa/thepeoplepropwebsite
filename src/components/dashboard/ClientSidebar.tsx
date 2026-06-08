@@ -21,7 +21,6 @@ import { NavbarLogo } from "@/components/ui/resizable-navbar";
 
 const navItems = [
   { icon: Home, label: "Home", href: "/dashboard" },
-  { icon: Briefcase, label: "Accounts", href: "/dashboard/accounts" },
   { icon: Wallet, label: "Billing", href: "/dashboard/billing" },
   { icon: Trophy, label: "Competitions", href: "/dashboard/competitions" },
   { icon: Award, label: "Certificates", href: "/dashboard/certificates" },
