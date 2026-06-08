@@ -23,6 +23,7 @@ export function EconomicCalendar() {
   const [showPassed, setShowPassed] = useState(false);
   const [events, setEvents] = useState(mockEvents);
   const [loading, setLoading] = useState(true);
+  const [isLive, setIsLive] = useState(false);
 
   useEffect(() => {
     async function fetchCalendarData() {
@@ -57,13 +58,16 @@ export function EconomicCalendar() {
             impact: item.importance === 3 ? "High" : item.importance === 2 ? "Medium" : "Low"
           }));
           setEvents(mappedEvents);
+          setIsLive(true);
         } else {
           setEvents(mockEvents);
+          setIsLive(false);
         }
       } catch (error) {
         console.error(error);
         // Fallback to beautiful mock data if the API fails (e.g. 401 Unauthorized)
         setEvents(mockEvents);
+        setIsLive(false);
       } finally {
         setLoading(false);
       }
@@ -77,9 +81,24 @@ export function EconomicCalendar() {
       
       {/* Filters Header */}
       <div className="p-6 border-b border-[var(--border)] bg-[var(--paper-2)]/30">
-        <div className="flex items-center gap-2 text-[var(--ink-950)] font-bold mb-4">
-          <Filter className="w-4 h-4 text-[var(--ink-500)]" />
-          Filters
+        <div className="flex items-center gap-3 mb-4">
+          <div className="flex items-center gap-2 text-[var(--ink-950)] font-bold">
+            <Filter className="w-4 h-4 text-[var(--ink-500)]" />
+            Filters
+          </div>
+          {/* Live Data Indicator */}
+          {!loading && (
+            <div className={cn(
+              "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider",
+              isLive ? "bg-emerald-50 text-emerald-600 border border-emerald-200" : "bg-amber-50 text-amber-600 border border-amber-200"
+            )}>
+              <span className={cn(
+                "w-1.5 h-1.5 rounded-full",
+                isLive ? "bg-emerald-500 animate-pulse" : "bg-amber-500"
+              )} />
+              {isLive ? "Live API Data" : "Mock Data (API Error)"}
+            </div>
+          )}
         </div>
 
         <div className="flex flex-wrap items-center gap-4 lg:gap-6">
