@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { ChevronDown, Check } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 import {
   ALL_SIZES,
   addOns,
@@ -16,6 +18,7 @@ import {
 } from "@/data/programs";
 
 export function NewChallengeForm() {
+  const router = useRouter();
   const [programKey, setProgramKey] = useState<ProgramKey>(programs[0].key);
   const [size, setSize] = useState<AccountSize>(ALL_SIZES[2]); // Default 25k
   const [selectedAddOns, setSelectedAddOns] = useState<AddOnKey[]>([]);
@@ -23,6 +26,25 @@ export function NewChallengeForm() {
   const [platform, setPlatform] = useState("MetaTrader 5");
   const [paymentMethod, setPaymentMethod] = useState("Credit / Debit Card");
   const [agreed, setAgreed] = useState(false);
+  
+  // Personal Info State
+  const [personalInfo, setPersonalInfo] = useState({
+    firstName: "",
+    lastName: "",
+    phone: "",
+    address: "",
+    city: "",
+    zipCode: ""
+  });
+
+  // Auth Check
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        router.push("/login?redirect=/dashboard/new-challenge");
+      }
+    });
+  }, [router]);
 
   const program = useMemo(
     () => programs.find((p) => p.key === programKey) ?? programs[0],
@@ -73,6 +95,65 @@ export function NewChallengeForm() {
       {/* Left Column: Configuration */}
       <div className="flex-1 space-y-8">
         
+        {/* Personal Information */}
+        <div className="bg-white rounded-[20px] border border-[var(--border)] p-6 shadow-sm">
+          <h3 className="font-bold text-[16px] text-[var(--ink-950)] mb-1">Personal Information</h3>
+          <p className="text-[13px] text-[var(--ink-500)] mb-6">Please enter your billing and contact details</p>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">First Name</label>
+              <input 
+                type="text" 
+                value={personalInfo.firstName}
+                onChange={e => setPersonalInfo({...personalInfo, firstName: e.target.value})}
+                className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)] transition-colors"
+                placeholder="John"
+              />
+            </div>
+            <div>
+              <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Last Name</label>
+              <input 
+                type="text" 
+                value={personalInfo.lastName}
+                onChange={e => setPersonalInfo({...personalInfo, lastName: e.target.value})}
+                className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)] transition-colors"
+                placeholder="Doe"
+              />
+            </div>
+            <div>
+              <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Phone Number</label>
+              <input 
+                type="tel" 
+                value={personalInfo.phone}
+                onChange={e => setPersonalInfo({...personalInfo, phone: e.target.value})}
+                className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)] transition-colors"
+                placeholder="+1 234 567 8900"
+              />
+            </div>
+            <div>
+              <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Zip/Postal Code</label>
+              <input 
+                type="text" 
+                value={personalInfo.zipCode}
+                onChange={e => setPersonalInfo({...personalInfo, zipCode: e.target.value})}
+                className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)] transition-colors"
+                placeholder="10001"
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Billing Address</label>
+              <input 
+                type="text" 
+                value={personalInfo.address}
+                onChange={e => setPersonalInfo({...personalInfo, address: e.target.value})}
+                className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)] transition-colors"
+                placeholder="123 Trading St, Suite 400"
+              />
+            </div>
+          </div>
+        </div>
+
         {/* Challenge Type */}
         <div>
           <h3 className="font-bold text-[15px] text-[var(--ink-950)] mb-3">Challenge Type</h3>

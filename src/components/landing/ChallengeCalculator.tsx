@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowUpRight,
@@ -45,6 +46,7 @@ const DEFAULT_SIZE: AccountSize = 25_000;
 const DEFAULT_PLATFORM: PlatformKey = "mt5";
 
 export function ChallengeCalculator() {
+  const router = useRouter();
   const [programKey, setProgramKey] = useState<ProgramKey>(DEFAULT_PROGRAM);
   const [size, setSize] = useState<AccountSize>(DEFAULT_SIZE);
   const [platformKey, setPlatformKey] = useState<PlatformKey>(DEFAULT_PLATFORM);
@@ -766,13 +768,13 @@ export function ChallengeCalculator() {
                 </div>
 
                 <Button
-                  onClick={() => setShowCheckoutModal(true)}
+                  onClick={() => router.push('/dashboard/new-challenge')}
                   disabled={total == null}
                   variant="primary"
                   size="lg"
                   className="w-full flex items-center justify-center gap-2"
                 >
-                  Pay with Crypto
+                  Get Funded
                 </Button>
 
                 {/* Payment icons */}
@@ -836,11 +838,11 @@ export function ChallengeCalculator() {
 
             {/* Buy Button */}
             <Button
-              onClick={() => setShowCheckoutModal(true)}
+              onClick={() => router.push('/dashboard/new-challenge')}
               disabled={total == null}
               className="w-full bg-[#0B1E4A] hover:bg-[#061230] text-white rounded-[18px] h-[54px] text-[15px] font-semibold mb-6 shadow-md"
             >
-              Pay with Crypto
+              Get Funded
             </Button>
 
             {/* Specs Grey Box */}

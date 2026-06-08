@@ -51,7 +51,9 @@ export default function LoginPage() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        router.push("/referral");
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirect = urlParams.get("redirect") || "/dashboard";
+        router.push(redirect);
       }
     });
   }, [router]);
@@ -87,7 +89,9 @@ export default function LoginPage() {
           password: pw,
         });
         if (signInError) throw signInError;
-        router.push("/referral");
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirect = urlParams.get("redirect") || "/dashboard";
+        router.push(redirect);
       } else {
         const { data, error: signUpError } = await supabase.auth.signUp({
           email,
