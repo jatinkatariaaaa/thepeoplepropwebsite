@@ -12,10 +12,12 @@ import {
   Award,
   Wallet,
   Menu,
-  X
+  X,
+  ArrowUpRight
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { NavbarLogo } from "@/components/ui/resizable-navbar";
 
 const navItems = [
   { icon: Home, label: "Home", href: "/dashboard" },
@@ -34,9 +36,7 @@ export function ClientSidebar() {
     <>
       {/* Mobile Toggle */}
       <div className="lg:hidden fixed top-0 left-0 w-full h-16 bg-white/80 backdrop-blur-md z-40 border-b border-[var(--border)] flex items-center justify-between px-4">
-        <Link href="/" className="font-display font-bold text-lg tracking-tight text-[var(--ink-950)]">
-          The People Prop
-        </Link>
+        <NavbarLogo />
         <button 
           onClick={() => setIsOpen(!isOpen)}
           className="p-2 text-[var(--ink-700)] hover:text-[var(--ink-950)]"
@@ -59,9 +59,10 @@ export function ClientSidebar() {
         isOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         {/* Logo Section */}
-        <div className="h-20 flex items-center px-6 border-b border-[var(--border)]">
-          <Link href="/" className="font-display font-bold text-xl tracking-tight text-[var(--ink-950)]">
-            The People Prop
+        <div className="pt-8 pb-4 flex flex-col items-start px-6 border-b border-[var(--border)]">
+          <NavbarLogo />
+          <Link href="/" className="mt-4 flex items-center gap-1.5 text-[12px] font-bold text-[var(--ink-500)] hover:text-[var(--accent)] transition-colors uppercase tracking-wider bg-[var(--paper-2)] px-3 py-1.5 rounded-full border border-[var(--border)]">
+            Go to site <ArrowUpRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
