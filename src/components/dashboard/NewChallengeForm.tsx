@@ -89,7 +89,7 @@ export function NewChallengeForm() {
     EUR: { symbol: "€", rate: 0.95, prefix: true },
     GBP: { symbol: "£", rate: 0.82, prefix: true },
     CHF: { symbol: "CHF", rate: 0.9, prefix: false },
-    INR: { symbol: "₹", rate: 90, prefix: true }
+    INR: { symbol: "₹", rate: 96, prefix: true }
   };
 
   const currentCurrency = CURRENCY_RATES[currency] || CURRENCY_RATES["USD"];
@@ -103,7 +103,7 @@ export function NewChallengeForm() {
 
   const formatAccSize = (usdSize: number) => {
     if (currency === "INR") {
-      const inr = usdSize * 90;
+      const inr = usdSize * 96;
       return `₹${inr / 100000} lakh`;
     }
     const converted = usdSize * currentCurrency.rate;
