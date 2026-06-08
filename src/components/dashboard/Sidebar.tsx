@@ -1,115 +1,144 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
-import { 
-  Home, 
-  Briefcase, 
-  Trophy, 
-  Settings, 
-  LogOut, 
-  Award,
-  Wallet,
+import {
+  LayoutDashboard,
+  Trophy,
+  Gift,
+  BarChart3,
+  Settings,
+  LogOut,
+  ArrowLeft,
   Menu,
-  X
 } from "lucide-react";
-import { useState } from "react";
+import { Logo } from "@/components/layout/Logo";
 import { cn } from "@/lib/utils";
+import { UserProfile, supabase } from "@/lib/supabase";
+import { useRouter } from "next/navigation";
 
-const navItems = [
-  { icon: Home, label: "Home", href: "/dashboard" },
-  { icon: Briefcase, label: "Accounts", href: "/dashboard/accounts" },
-  { icon: Wallet, label: "Billing", href: "/dashboard/billing" },
-  { icon: Trophy, label: "Competitions", href: "/dashboard/competitions" },
-  { icon: Award, label: "Certificates", href: "/dashboard/certificates" },
-  { icon: Settings, label: "Settings", href: "/dashboard/settings" },
+const items = [
+  { icon: LayoutDashboard, label: "Overview", active: true },
+  { icon: Trophy, label: "Leaderboard" },
+  { icon: Gift, label: "Rewards" },
+  { icon: BarChart3, label: "Analytics" },
+  { icon: Settings, label: "Settings" },
 ];
 
-export function Sidebar() {
-  const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
+export function DashboardSidebar({
+  active,
+  onChange,
+  profile,
+}: {
+  active: string;
+  onChange: (v: string) => void;
+  profile: UserProfile | null;
+}) {
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    router.push("/login");
+  };
 
   return (
-    <>
-      {/* Mobile Toggle */}
-      <div className="lg:hidden fixed top-0 left-0 w-full h-16 bg-white/80 backdrop-blur-md z-40 border-b border-[var(--border)] flex items-center justify-between px-4">
-        <Link href="/" className="font-display font-bold text-lg tracking-tight text-[var(--ink-950)]">
-          The People Prop
-        </Link>
-        <button 
-          onClick={() => setIsOpen(!isOpen)}
-          className="p-2 text-[var(--ink-700)] hover:text-[var(--ink-950)]"
+    <aside className="hidden lg:flex flex-col w-60 shrink-0 border-r border-[var(--border)] bg-white sticky top-0 h-screen">
+      <div className="px-6 h-[72px] flex items-center justify-between border-b border-[var(--border)]">
+        <Logo />
+      </div>
+      <Link
+        href="/"
+        className="flex items-center gap-2 mx-3 mt-3 px-3 py-2 rounded-lg text-[12px] text-[var(--ink-500)] hover:text-[var(--ink-950)] hover:bg-[var(--paper-2)]"
+      >
+        <ArrowLeft className="w-3.5 h-3.5" />
+        Back to site
+      </Link>
+
+      <nav className="flex-1 px-3 py-6 space-y-1">
+        {items.map((it) => (
+          <button
+            key={it.label}
+            onClick={() => onChange(it.label)}
+            className={cn(
+              "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] transition-all cursor-pointer",
+              active === it.label
+                ? "bg-[var(--accent-50)] text-[var(--accent-700)] border border-[rgba(14,124,92,0.18)] font-medium"
+                : "text-[var(--ink-500)] hover:text-[var(--ink-950)] hover:bg-[var(--paper-2)] border border-transparent",
+            )}
+          >
+            <it.icon className="w-4 h-4" strokeWidth={2} />
+            {it.label}
+          </button>
+        ))}
+      </nav>
+
+      <div className="p-4 border-t border-[var(--border)]">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-9 h-9 rounded-full bg-[var(--ink-950)] text-white grid place-items-center text-[12px] font-medium tracking-wide">
+            {profile?.display_name ? profile.display_name.substring(0, 2).toUpperCase() : "US"}
+          </div>
+          <div className="min-w-0">
+            <div className="text-[13.5px] text-[var(--ink-950)] truncate font-medium">
+              {profile?.display_name || "User"}
+            </div>
+            <div className="text-[11px] text-[var(--ink-400)] truncate tracking-eyebrow">
+              Rank #{profile?.global_rank || "999"}
+            </div>
+          </div>
+        </div>
+        <button
+          onClick={handleSignOut}
+          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[13.5px] text-[var(--ink-500)] hover:text-[var(--ink-950)] hover:bg-[var(--paper-2)] transition-colors cursor-pointer"
         >
-          {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          <LogOut className="w-4 h-4" strokeWidth={2} />
+          Sign out
         </button>
       </div>
+    </aside>
+  );
+}
 
-      {/* Overlay for mobile */}
-      {isOpen && (
-        <div 
-          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 lg:hidden"
-          onClick={() => setIsOpen(false)}
-        />
-      )}
-
-      {/* Sidebar Content */}
-      <aside className={cn(
-        "fixed inset-y-0 left-0 z-50 w-[260px] bg-[var(--paper)] border-r border-[var(--border)] transform transition-transform duration-300 ease-in-out lg:translate-x-0 flex flex-col",
-        isOpen ? "translate-x-0" : "-translate-x-full"
-      )}>
-        {/* Logo Section */}
-        <div className="h-20 flex items-center px-6 border-b border-[var(--border)]">
-          <Link href="/" className="font-display font-bold text-xl tracking-tight text-[var(--ink-950)]">
-            The People Prop
-          </Link>
-        </div>
-
-        {/* Navigation */}
-        <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = pathname === item.href;
-
-            return (
-              <Link 
-                key={item.href} 
-                href={item.href}
-                onClick={() => setIsOpen(false)}
-                className="relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group outline-none"
-              >
-                {isActive && (
-                  <motion.div
-                    layoutId="sidebar-active"
-                    className="absolute inset-0 bg-[var(--accent-50)] rounded-xl"
-                    initial={false}
-                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                  />
-                )}
-                
-                <Icon className={cn(
-                  "w-5 h-5 relative z-10 transition-colors",
-                  isActive ? "text-[var(--accent-700)]" : "text-[var(--ink-500)] group-hover:text-[var(--ink-900)]"
-                )} />
-                <span className={cn(
-                  "text-[14px] font-medium relative z-10 transition-colors",
-                  isActive ? "text-[var(--accent-700)]" : "text-[var(--ink-700)] group-hover:text-[var(--ink-950)]"
-                )}>
-                  {item.label}
-                </span>
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* Footer / Logout */}
-        <div className="p-4 border-t border-[var(--border)]">
-          <button className="flex items-center gap-3 px-3 py-2.5 w-full rounded-xl transition-all text-[var(--ink-500)] hover:text-red-600 hover:bg-red-50 font-medium text-[14px]">
-            <LogOut className="w-5 h-5" />
-            Sign Out
+export function MobileTopBar({
+  active,
+  onChange,
+}: {
+  active: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <div className="lg:hidden sticky top-0 z-30 bg-paper/90 backdrop-blur-xl border-b border-[var(--border)]">
+      <div className="flex items-center justify-between h-14 px-4">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-[12px] text-[var(--ink-500)] hover:text-[var(--ink-950)]"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          Back
+        </Link>
+        <Logo showWord={false} />
+        <button
+          aria-label="Menu"
+          className="grid place-items-center w-9 h-9 rounded-full border border-[var(--border-strong)] bg-white text-[var(--ink-950)]"
+        >
+          <Menu className="w-4 h-4" />
+        </button>
+      </div>
+      <div className="flex items-center gap-1 px-4 pb-3 overflow-x-auto">
+        {items.map((it) => (
+          <button
+            key={it.label}
+            onClick={() => onChange(it.label)}
+            className={cn(
+              "shrink-0 flex items-center gap-2 px-3.5 py-2 rounded-full text-[12px] whitespace-nowrap transition-all border",
+              active === it.label
+                ? "bg-[var(--accent-50)] text-[var(--accent-700)] border-[rgba(14,124,92,0.22)] font-medium"
+                : "border-[var(--border)] text-[var(--ink-500)] hover:text-[var(--ink-950)] bg-white",
+            )}
+          >
+            <it.icon className="w-3.5 h-3.5" strokeWidth={2} />
+            {it.label}
           </button>
-        </div>
-      </aside>
-    </>
+        ))}
+      </div>
+    </div>
   );
 }
