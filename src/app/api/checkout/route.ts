@@ -52,9 +52,9 @@ export async function POST(request: Request) {
     // Generate Order ID
     const orderId = `ORD-${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
 
-    // 2. Insert into orders (Payment is assumed complete here for crypto integration flow)
-    const { data: order, error: orderError } = await supabaseAdmin
-      .from("orders")
+    // 2. Insert into purchases (Payment is assumed complete here for crypto integration flow)
+    const { data: purchase, error: purchaseError } = await supabaseAdmin
+      .from("purchases")
       .insert({
         user_id: user.id,
         order_id: orderId,
@@ -72,7 +72,7 @@ export async function POST(request: Request) {
       .select()
       .single();
 
-    if (orderError) throw orderError;
+    if (purchaseError) throw purchaseError;
 
     // 3. Generate Trading Account for the Terminal
     const loginId = Math.floor(100000 + Math.random() * 900000).toString();
@@ -115,7 +115,7 @@ export async function POST(request: Request) {
           .insert({
             affiliate_id: affiliateUser.id,
             referred_user_id: user.id,
-            order_id: order.id,
+            purchase_id: purchase.id,
             amount: commission,
             status: 'pending'
           });
