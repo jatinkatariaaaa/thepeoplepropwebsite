@@ -16,7 +16,21 @@ const activeAccounts = [
   }
 ];
 
-export function ActiveAccounts() {
+export function ActiveAccounts({ accounts = [] }: { accounts?: any[] }) {
+  if (accounts.length === 0) {
+    return (
+      <div className="space-y-6">
+        <h2 className="text-xl font-display font-bold text-[var(--ink-950)]">Active Accounts</h2>
+        <div className="bg-white rounded-[24px] border border-[var(--border)] p-12 text-center text-[var(--ink-500)]">
+          <p>You don't have any active accounts yet.</p>
+          <Link href="/dashboard/new-challenge">
+            <Button className="mt-4 bg-[var(--ink-950)] hover:bg-[var(--ink-800)] text-white">Start a New Challenge</Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -29,7 +43,14 @@ export function ActiveAccounts() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        {activeAccounts.map((account) => (
+        {accounts.map((account) => {
+          // Format date safely
+          let startedDate = "Unknown";
+          if (account.created_at) {
+            startedDate = new Date(account.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+          }
+          
+          return (
           <div 
             key={account.id}
             className="bg-white rounded-[24px] border border-[var(--border)] overflow-hidden shadow-sm hover:shadow-md transition-shadow group relative"
@@ -42,24 +63,30 @@ export function ActiveAccounts() {
                     <Trophy className="w-4 h-4" />
                   </div>
                   <h3 className="font-bold text-[16px] text-[var(--ink-950)]">
-                    {account.name} - {account.id}
+                    {account.label || "Trading Account"}
                   </h3>
                 </div>
                 <div className="flex items-center gap-2 text-[13px] font-medium text-[var(--ink-600)]">
-                  <span>{account.challengeName}</span>
+                  <span>Account ID: {account.id.substring(0, 8)}...</span>
                   <span className="w-1 h-1 rounded-full bg-[var(--ink-300)]" />
                   <span className="flex items-center gap-1">
                     <Calendar className="w-3.5 h-3.5" />
-                    Started: {account.started}
+                    Started: {startedDate}
                   </span>
                 </div>
               </div>
               <div className="flex items-center gap-3 self-start sm:self-auto">
                 <span className="px-3 py-1 rounded-full bg-[var(--ink-100)] text-[12px] font-bold text-[var(--ink-700)] uppercase tracking-wider">
-                  {account.platform}
+                  TPP Dashboard
                 </span>
-                <span className="px-3 py-1 rounded-full bg-emerald-50 text-[12px] font-bold text-emerald-600 uppercase tracking-wider flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className={cn(
+                  "px-3 py-1 rounded-full text-[12px] font-bold uppercase tracking-wider flex items-center gap-1.5",
+                  account.status === 'active' ? "bg-emerald-50 text-emerald-600" : 
+                  account.status === 'breached' ? "bg-red-50 text-red-600" :
+                  account.status === 'passed' ? "bg-blue-50 text-blue-600" :
+                  "bg-amber-50 text-amber-600"
+                )}>
+                  {account.status === 'active' && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />}
                   {account.status}
                 </span>
               </div>
@@ -69,35 +96,31 @@ export function ActiveAccounts() {
             <div className="grid grid-cols-3 p-6 gap-4">
               <div>
                 <p className="text-[12px] font-bold text-[var(--ink-500)] uppercase tracking-wider mb-1">Starting Balance</p>
-                <p className="text-[20px] font-display font-bold text-[var(--ink-950)]">{account.startingBalance}</p>
+                <p className="text-[20px] font-display font-bold text-[var(--ink-950)]">${Number(account.starting_balance).toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
               </div>
               <div>
                 <p className="text-[12px] font-bold text-[var(--ink-500)] uppercase tracking-wider mb-1">Current Equity</p>
-                <p className="text-[20px] font-display font-bold text-[var(--accent-600)]">{account.currentEquity}</p>
+                <p className="text-[20px] font-display font-bold text-[var(--accent-600)]">${Number(account.equity).toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
               </div>
               <div>
                 <p className="text-[12px] font-bold text-[var(--ink-500)] uppercase tracking-wider mb-1">Phase</p>
-                <p className="text-[20px] font-display font-bold text-[var(--ink-950)]">{account.phase}</p>
+                <p className="text-[20px] font-display font-bold text-[var(--ink-950)] capitalize">{account.phase}</p>
               </div>
             </div>
 
             {/* Actions */}
             <div className="px-6 pb-6 flex items-center justify-end gap-3">
-              <button className="px-5 py-2.5 rounded-xl font-medium text-[14px] text-[var(--ink-700)] bg-[var(--paper-2)] border border-[var(--border)] hover:bg-[var(--border)] transition-colors">
-                Credentials
-              </button>
-              <Link href={`/dashboard/account/${account.id}`}>
-                <Button className="flex items-center gap-2 h-10 px-5 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-700)] text-white shadow-sm text-[14px] font-medium">
-                  <Eye className="w-4 h-4" />
-                  View Dashboard
-                </Button>
+              <Link href={`https://tradingterminal-six.vercel.app/login`} target="_blank">
+                <button className="px-5 py-2.5 rounded-xl font-medium text-[14px] text-[var(--ink-700)] bg-[var(--paper-2)] border border-[var(--border)] hover:bg-[var(--border)] transition-colors">
+                  Open Terminal
+                </button>
               </Link>
             </div>
             
             {/* Edge Glow */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--accent)] opacity-[0.03] blur-2xl rounded-full pointer-events-none group-hover:opacity-[0.06] transition-opacity duration-500" />
           </div>
-        ))}
+        )})}
         
         {/* Placeholder for new account card */}
         <div className="bg-transparent rounded-[24px] border-2 border-dashed border-[var(--ink-200)] flex flex-col items-center justify-center p-12 text-center hover:bg-[var(--paper)] hover:border-[var(--accent-300)] transition-colors cursor-pointer group min-h-[260px]">

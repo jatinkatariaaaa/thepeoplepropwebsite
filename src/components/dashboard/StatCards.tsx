@@ -32,10 +32,48 @@ const stats = [
   },
 ];
 
-export function StatCards() {
+export function StatCards({ accounts = [] }: { accounts?: any[] }) {
+  const activeCount = accounts.length;
+  const passedCount = accounts.filter(a => a.status === 'passed').length;
+  const fundedCount = accounts.filter(a => a.status === 'funded').length;
+  
+  // Calculate total payouts if available, else 0
+  const totalPayouts = "$0.00"; // Can be dynamic later
+
+  const dynamicStats = [
+    {
+      label: "Total Payouts",
+      value: totalPayouts,
+      icon: DollarSign,
+      color: "text-emerald-600",
+      bgColor: "bg-emerald-50",
+    },
+    {
+      label: "Number of Accounts",
+      value: activeCount.toString(),
+      icon: LayoutList,
+      color: "text-[var(--accent-700)]",
+      bgColor: "bg-[var(--accent-50)]",
+    },
+    {
+      label: "Accounts Passed",
+      value: passedCount.toString(),
+      icon: CheckCircle2,
+      color: "text-[var(--violet-700)]",
+      bgColor: "bg-[var(--violet-50)]",
+    },
+    {
+      label: "Funded Accounts",
+      value: fundedCount.toString(),
+      icon: Award,
+      color: "text-[var(--amber-700)]",
+      bgColor: "bg-[var(--amber-50)]",
+    },
+  ];
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8 lg:mb-10">
-      {stats.map((stat) => {
+      {dynamicStats.map((stat) => {
         const Icon = stat.icon;
         return (
           <div 
