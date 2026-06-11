@@ -330,10 +330,8 @@ export function Hero() {
             </motion.ul>
           </motion.div>
 
-          {/* ── Right column — 3D Dashboard Visual ── */}
-          <div className="relative w-full h-full min-h-[400px]">
-            <HeroDashboardVisual />
-          </div>
+          {/* ── Right column (Empty to preserve left column width) ── */}
+          <div className="hidden lg:block" />
         </div>
       </div>
 
