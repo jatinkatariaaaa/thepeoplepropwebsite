@@ -6,6 +6,8 @@ import { cookies } from "next/headers";
 import { supabaseAdmin } from "@/lib/supabase";
 import { Toaster } from "sonner";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminLayout({
   children,
 }: {
