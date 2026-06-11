@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
+import { supabase } from "@/lib/supabase";
+
 export default function SettingsPage() {
   const [formData, setFormData] = useState({
     title: "Mr.",
@@ -28,9 +30,14 @@ export default function SettingsPage() {
     setIsSubmitting(true);
     setMessage("");
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
       const res = await fetch("/api/user/settings", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          ...(session?.access_token && { "Authorization": `Bearer ${session.access_token}` })
+        },
         body: JSON.stringify(formData),
       });
       const data = await res.json();

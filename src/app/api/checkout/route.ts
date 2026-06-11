@@ -7,33 +7,17 @@ import { programs, ProgramKey, AccountSize } from "@/data/programs";
 export async function POST(request: Request) {
   try {
     const cookieStore = await cookies();
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll() {
-            return cookieStore.getAll();
-          },
-          setAll(cookiesToSet) {
-            try {
-              cookiesToSet.forEach(({ name, value, options }) =>
-                cookieStore.set(name, value, options)
-              );
-            } catch {
-              // The `setAll` method was called from a Server Component.
-              // This can be ignored if you have middleware refreshing
-              // user sessions.
-            }
-          },
-        },
-      }
-    );
+    const authHeader = request.headers.get("Authorization");
+    const token = authHeader?.split(" ")[1];
+    
+    if (!token) {
+      return NextResponse.json({ error: "Unauthorized - No token" }, { status: 401 });
+    }
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
 
     if (authError || !user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized - Invalid token" }, { status: 401 });
     }
 
     const body = await request.json();
