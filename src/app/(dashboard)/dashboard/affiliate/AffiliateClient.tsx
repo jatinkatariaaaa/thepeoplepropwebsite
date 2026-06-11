@@ -33,7 +33,7 @@ export function AffiliateClient() {
     fetchAffiliate();
   }, []);
 
-  const referralLink = userId ? `https://thepeopleprop.com/ref/${userId.substring(0, 8)}` : "Loading...";
+  const referralLink = userId ? `https://thepeopleprop.live/ref/${userId.substring(0, 8)}` : "Loading...";
 
   const handleCopy = () => {
     if (!userId) return;
