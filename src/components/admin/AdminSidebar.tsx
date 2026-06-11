@@ -12,7 +12,8 @@ import {
   LogOut,
   Menu,
   X,
-  DollarSign
+  DollarSign,
+  ArrowUpRight
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
