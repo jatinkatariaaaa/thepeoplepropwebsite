@@ -28,11 +28,11 @@ const navItems = [
   { icon: Home, label: "Home", href: "/dashboard" },
   { icon: History, label: "Transaction History", href: "/dashboard/transactions" },
   { icon: Trophy, label: "Competitions", href: "/dashboard/competitions" },
-  { icon: Award, label: "Rewards", href: "/dashboard/rewards" },
   { icon: ListOrdered, label: "Leaderboard", href: "/dashboard/leaderboard" },
   { icon: CalendarDays, label: "Calendar", href: "/dashboard/calendar" },
   { icon: Users, label: "Affiliate", href: "/dashboard/affiliate" },
   { icon: DollarSign, label: "Payouts", href: "/dashboard/payouts" },
+  { icon: Award, label: "Certificates", href: "/dashboard/certificates" },
   { icon: Settings, label: "Settings", href: "/dashboard/settings" },
 ];
 
