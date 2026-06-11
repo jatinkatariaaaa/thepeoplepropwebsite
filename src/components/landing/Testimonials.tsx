@@ -97,14 +97,6 @@ export function Testimonials() {
 
     const rows = host.querySelectorAll<HTMLDivElement>(".marquee-row");
     if (!rows.length) return;
-
-    const SCROLL_MULTIPLIER = 0.12;
-    const MAX_BOOST = 6.0;
-    const DECAY = 0.94;
-    const DEAD_ZONE = 0.01;
-
-    let scrollBoost = 0;
-    let lastScrollY = window.scrollY;
     let rafId: number | null = null;
 
     type RowState = {
@@ -137,9 +129,6 @@ export function Testimonials() {
       row.addEventListener("mouseenter", () => { state.paused = true; });
       row.addEventListener("mouseleave", () => { state.paused = false; });
     });
-
-    // Removed scroll listener to keep constant speed
-    // window.addEventListener("scroll", onScroll, { passive: true });
 
     function tick() {
       for (const s of rowState) {
@@ -183,7 +172,6 @@ export function Testimonials() {
       if (e.matches && rafId) {
         cancelAnimationFrame(rafId);
         rows.forEach((r) => { r.style.transform = "none"; });
-        window.removeEventListener("scroll", onScroll);
       }
     };
     mq.addEventListener("change", onMotionChange);
