@@ -280,8 +280,8 @@ export function ChallengeCalculator() {
                     className={cn(
                       "rounded-full px-1.5 py-0.5 text-[9px] tracking-eyebrow font-semibold",
                       active
-                        ? "bg-white text-[var(--accent)]"
-                        : "bg-[var(--accent-50)] text-[var(--accent-700)]",
+                        ? "bg-amber-100 text-amber-700"
+                        : "bg-amber-50 text-amber-600",
                     )}
                   >
                     {p.badge.toUpperCase()}
@@ -323,7 +323,7 @@ export function ChallengeCalculator() {
           </span>
           <span className="hidden sm:block h-3 w-px bg-white/15" />
           <span>
-            <span className="text-[var(--accent-400)] font-medium">50% off</span> + free
+            <span className="text-amber-400 font-medium">50% off</span> + free
             retry add-on
           </span>
           <span className="h-3 w-px bg-white/15" />
@@ -335,7 +335,7 @@ export function ChallengeCalculator() {
           >
             {copied ? (
               <>
-                <Check className="w-3 h-3 text-[var(--accent-400)]" strokeWidth={2.5} />
+                <Check className="w-3 h-3 text-amber-400" strokeWidth={2.5} />
                 Copied
               </>
             ) : (

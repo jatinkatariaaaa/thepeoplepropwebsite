@@ -260,11 +260,11 @@ export function Hero() {
               initial={{ opacity: 0, y: 12, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className="inline-flex items-center justify-center self-center md:self-start w-[90%] sm:w-auto mx-auto md:mx-0 gap-2 chip chip-accent mb-8 md:mb-6 text-[10.5px] md:text-xs font-bold text-center leading-relaxed py-2 md:py-1.5"
+              className="inline-flex items-center justify-center self-center md:self-start w-[90%] sm:w-auto mx-auto md:mx-0 gap-2 chip chip-amber mb-8 md:mb-6 text-[10.5px] md:text-xs font-bold text-center leading-relaxed py-2 md:py-1.5"
             >
               <span className="relative flex w-2 h-2">
-                <span className="absolute inset-0 rounded-full bg-[var(--accent)] animate-ping opacity-75" />
-                <span className="relative rounded-full w-2 h-2 bg-[var(--accent)]" />
+                <span className="absolute inset-0 rounded-full bg-amber-500 animate-ping opacity-75" />
+                <span className="relative rounded-full w-2 h-2 bg-amber-500" />
               </span>
               Guaranteed free evaluation Prizes on 1 August 2026
             </motion.div>

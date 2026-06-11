@@ -79,15 +79,15 @@
   --ring: rgba(37, 99, 235, 0.35);
 
   /* ── Shadows — ultra-soft, layered, organic ── */
-  --shadow-xs:    0 1px 2px rgba(0, 0, 0, 0.03);
-  --shadow-sm:    0 1px 2px rgba(0, 0, 0, 0.02), 0 2px 6px rgba(0, 0, 0, 0.03);
-  --shadow-md:    0 2px 4px rgba(0, 0, 0, 0.02), 0 8px 24px -8px rgba(0, 0, 0, 0.05);
-  --shadow-lg:    0 4px 8px rgba(0, 0, 0, 0.02), 0 20px 48px -16px rgba(0, 0, 0, 0.08);
-  --shadow-xl:    0 30px 60px -15px rgba(0, 0, 0, 0.10), 0 4px 8px rgba(0, 0, 0, 0.02);
-  --shadow-2xl:   0 40px 80px -20px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(0, 0, 0, 0.03);
+  --shadow-xs:    0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-sm:    0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 10px rgba(0, 0, 0, 0.03);
+  --shadow-md:    0 2px 6px rgba(0, 0, 0, 0.04), 0 10px 28px -6px rgba(0, 0, 0, 0.06);
+  --shadow-lg:    0 4px 10px rgba(0, 0, 0, 0.03), 0 24px 54px -12px rgba(0, 0, 0, 0.09);
+  --shadow-xl:    0 30px 60px -15px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.03);
+  --shadow-2xl:   0 40px 80px -20px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.04);
   --shadow-blue:  0 16px 40px -12px rgba(37, 99, 235, 0.25);
   --shadow-green: 0 16px 40px -12px rgba(5, 150, 105, 0.25);
-  --shadow-glass: 0 1px 2px rgba(0, 0, 0, 0.02), 0 8px 32px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  --shadow-glass: 0 1px 2px rgba(0, 0, 0, 0.03), 0 8px 32px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 /* ── Tailwind v4 theme registration ── */
@@ -142,7 +142,12 @@ html {
 }
 
 html, body {
-  background: linear-gradient(135deg, #fdfdfd 0%, #f0f4f8 50%, #f9fbfd 100%) !important;
+  background-color: #f1f5f9 !important;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.12) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.09) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(245, 158, 11, 0.08) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(139, 92, 246, 0.08) 0px, transparent 50%) !important;
   background-attachment: fixed !important;
   color: var(--ink-950);
   font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
