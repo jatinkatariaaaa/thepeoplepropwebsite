@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { supabaseAdmin } from "@/lib/supabase";
+import { Toaster } from "sonner";
 
 export default async function AdminLayout({
   children,
@@ -49,6 +50,7 @@ export default async function AdminLayout({
           {children}
         </main>
       </div>
+      <Toaster position="bottom-right" />
     </div>
   );
 }
