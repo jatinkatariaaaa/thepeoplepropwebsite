@@ -138,26 +138,14 @@ export function Testimonials() {
       row.addEventListener("mouseleave", () => { state.paused = false; });
     });
 
-    function onScroll() {
-      const currentY = window.scrollY;
-      const delta = currentY - lastScrollY;
-      lastScrollY = currentY;
-      scrollBoost = Math.min(
-        Math.abs(scrollBoost) + Math.abs(delta) * SCROLL_MULTIPLIER,
-        MAX_BOOST,
-      );
-    }
-
-    window.addEventListener("scroll", onScroll, { passive: true });
+    // Removed scroll listener to keep constant speed
+    // window.addEventListener("scroll", onScroll, { passive: true });
 
     function tick() {
-      scrollBoost *= DECAY;
-      if (scrollBoost < DEAD_ZONE) scrollBoost = 0;
-
       for (const s of rowState) {
         if (s.paused) continue;
 
-        const speed = (s.baseSpeed + scrollBoost) * s.dir;
+        const speed = s.baseSpeed * s.dir;
         s.pos += speed;
 
         if (s.dir > 0 && s.pos >= 0) {
@@ -203,7 +191,6 @@ export function Testimonials() {
     return () => {
       clearTimeout(timer);
       if (rafId) cancelAnimationFrame(rafId);
-      window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       mq.removeEventListener("change", onMotionChange);
     };
