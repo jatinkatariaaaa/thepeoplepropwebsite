@@ -28,7 +28,7 @@ export default async function CertificatesPage() {
   // Fetch passed and funded accounts
   const { data: accounts } = await supabaseAdmin
     .from("accounts")
-    .select("*, profiles(display_name)")
+    .select("*")
     .eq("user_id", user.id)
     .in("status", ["passed", "funded"])
     .order("created_at", { ascending: false });

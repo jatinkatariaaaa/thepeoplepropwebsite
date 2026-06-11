@@ -13,7 +13,7 @@ export async function GET(
     // Fetch account details
     const { data: account, error } = await supabaseAdmin
       .from("accounts")
-      .select("*, profiles(display_name)")
+      .select("*")
       .eq("id", id)
       .single();
 
@@ -21,7 +21,8 @@ export async function GET(
       return new Response("Certificate not found or account not eligible", { status: 404 });
     }
 
-    const traderName = account.profiles?.display_name || "Valued Trader";
+    const { data: profile } = await supabaseAdmin.from("profiles").select("display_name").eq("id", account.user_id).single();
+    const traderName = profile?.display_name || "Valued Trader";
     const passDate = new Date(account.updated_at).toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
