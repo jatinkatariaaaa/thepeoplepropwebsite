@@ -66,6 +66,19 @@ export function CardStackSection() {
           </div>
         </AnimatedSection>
 
+        {/* Premium Dashboard Mockup Image */}
+        <AnimatedSection className="mt-16 md:mt-20 px-5 md:px-12 w-full max-w-6xl mx-auto">
+          <div className="relative w-full rounded-2xl md:rounded-[2rem] overflow-hidden shadow-2xl border border-white/60 bg-white/40 p-2 md:p-4 backdrop-blur-sm">
+            <div className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-xl md:rounded-2xl overflow-hidden shadow-inner bg-slate-100">
+              <img 
+                src="/images/dashboard-mockup.webp" 
+                alt="Trader Dashboard Preview" 
+                className="absolute inset-0 w-full h-full object-cover object-top"
+              />
+              <div className="absolute inset-0 ring-1 ring-inset ring-black/5 rounded-xl md:rounded-2xl pointer-events-none" />
+            </div>
+          </div>
+        </AnimatedSection>
 
       </div>
     </section>
