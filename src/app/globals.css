@@ -628,8 +628,8 @@ input, select, textarea {
 
 .testimonial-glass-card {
   flex-shrink: 0;
-  width: 370px;
-  padding: 22px 24px;
+  width: 340px;
+  padding: 16px 20px;
   cursor: default;
 
   background:

@@ -25,9 +25,9 @@ function TestimonialCard({ t, isClone = false }: { t: Testimonial; isClone?: boo
       className="testimonial-glass-card"
       aria-hidden={isClone ? "true" : undefined}
     >
-      <div className="flex items-center gap-3.5 mb-3.5">
+      <div className="flex items-center gap-3 mb-2.5">
         {/* Initials avatar */}
-        <div className="w-[44px] h-[44px] rounded-full bg-[var(--ink-950)] text-white text-[13px] font-medium tracking-wide flex items-center justify-center shrink-0">
+        <div className="w-[36px] h-[36px] rounded-full bg-[var(--ink-950)] text-white text-[12px] font-medium tracking-wide flex items-center justify-center shrink-0">
           {t.initials}
         </div>
         <div className="min-w-0">
@@ -39,11 +39,11 @@ function TestimonialCard({ t, isClone = false }: { t: Testimonial; isClone?: boo
           </p>
         </div>
       </div>
-      <p className="text-[14px] leading-[1.6] text-[var(--ink-600)] line-clamp-3">
+      <p className="text-[13px] leading-[1.5] text-[var(--ink-600)] line-clamp-2" title={t.body}>
         &ldquo;{t.body}&rdquo;
       </p>
-      <div className="mt-3 flex items-center justify-between">
-        <Badge variant="success" className="!gap-1 !text-[11px]">
+      <div className="mt-2.5 flex items-center justify-between">
+        <Badge variant="success" className="!gap-1 !text-[10px] !py-0.5 !px-1.5">
           <CheckCircle2 className="w-3 h-3" strokeWidth={2.5} />
           {t.payout}
         </Badge>
