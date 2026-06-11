@@ -1,11 +1,15 @@
 import { Wallet, TrendingUp, Calendar, CalendarClock } from "lucide-react";
 
-export function TopMetrics() {
+export function TopMetrics({ account }: { account: any }) {
+  const startDate = account?.created_at 
+    ? new Date(account.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    : 'Unknown';
+
   const metrics = [
-    { label: "Account Size", value: "$100,000.00", icon: Wallet },
-    { label: "Today's Profit", value: "$0.00", icon: TrendingUp },
-    { label: "Start Date", value: "Oct 1, 2025", icon: Calendar },
-    { label: "End Date", value: "Oct 31, 2025", icon: CalendarClock },
+    { label: "Account Size", value: `$${Number(account.starting_balance || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`, icon: Wallet },
+    { label: "Current Equity", value: `$${Number(account.equity || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`, icon: TrendingUp },
+    { label: "Start Date", value: startDate, icon: Calendar },
+    { label: "Phase", value: (account.phase || 'Unknown').toUpperCase(), icon: CalendarClock },
   ];
 
   return (

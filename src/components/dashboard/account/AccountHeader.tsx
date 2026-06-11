@@ -3,10 +3,14 @@ import { ChevronRight, Share2, Key, Lock } from "lucide-react";
 import { NavbarLogo } from "@/components/ui/resizable-navbar";
 
 interface Props {
-  accountId: string;
+  account: any;
 }
 
-export function AccountHeader({ accountId }: Props) {
+export function AccountHeader({ account }: Props) {
+  const creationDate = account?.created_at 
+    ? new Date(account.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    : 'Unknown Date';
+    
   return (
     <div className="space-y-6 mb-6">
       {/* Breadcrumbs */}
@@ -15,7 +19,7 @@ export function AccountHeader({ accountId }: Props) {
         <ChevronRight className="w-4 h-4 mx-2" />
         <Link href="/dashboard" className="hover:text-[var(--ink-950)] transition-colors">Accounts</Link>
         <ChevronRight className="w-4 h-4 mx-2" />
-        <span className="text-[var(--ink-950)]">#{accountId}</span>
+        <span className="text-[var(--ink-950)]">#{account.id.substring(0, 8)}</span>
       </div>
 
       {/* Trading Disabled Alert */}
@@ -35,25 +39,30 @@ export function AccountHeader({ accountId }: Props) {
               <NavbarLogo />
             </div>
             <h1 className="text-xl md:text-2xl font-display font-bold text-[var(--ink-950)]">
-              #{accountId}
+              #{account.id.substring(0, 8)}
             </h1>
             <span className="text-[12px] text-[var(--ink-500)] font-medium mt-1">
-              Created Oct 1, 2025
+              Created {creationDate}
             </span>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <span className="px-3 py-1 rounded-full bg-rose-50 border border-rose-200 text-[12px] font-bold text-rose-600">
-              Closed
+            <span className={`px-3 py-1 rounded-full border text-[12px] font-bold capitalize ${
+              account.status === 'active' ? 'bg-emerald-50 border-emerald-200 text-emerald-600' :
+              account.status === 'breached' ? 'bg-rose-50 border-rose-200 text-rose-600' :
+              account.status === 'passed' ? 'bg-blue-50 border-blue-200 text-blue-600' :
+              'bg-amber-50 border-amber-200 text-amber-600'
+            }`}>
+              {account.status || 'Unknown'}
             </span>
             <span className="px-3 py-1 rounded-full bg-[var(--paper-2)] border border-[var(--border)] text-[12px] font-bold text-[var(--ink-600)]">
-              Competition
+              {account.label || 'Trading Account'}
+            </span>
+            <span className="px-3 py-1 rounded-full bg-[var(--paper-2)] border border-[var(--border)] text-[12px] font-bold text-[var(--ink-600)] capitalize">
+              {account.phase || 'Phase 1'}
             </span>
             <span className="px-3 py-1 rounded-full bg-[var(--paper-2)] border border-[var(--border)] text-[12px] font-bold text-[var(--ink-600)]">
-              Phase 1
-            </span>
-            <span className="px-3 py-1 rounded-full bg-[var(--paper-2)] border border-[var(--border)] text-[12px] font-bold text-[var(--ink-600)]">
-              Match Trader
+              TPP Dashboard
             </span>
           </div>
         </div>
