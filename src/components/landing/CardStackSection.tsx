@@ -10,47 +10,12 @@ interface FeatureCard {
   image: string;
 }
 
-const featureCards: FeatureCard[] = [
-  {
-    id: "platform",
-    title: "Advanced Web Terminal",
-    desc: "Experience lightning-fast execution and professional-grade charting tools built directly into your browser.",
-    image: "./images/cards/111.webp",
-  },
-  {
-    id: "dashboard",
-    title: "Trader's Command Center",
-    desc: "Track your evaluation objectives and manage your funded accounts seamlessly in one intuitive hub.",
-    image: "./images/cards/112.webp",
-  },
-  {
-    id: "analytics",
-    title: "Institutional Insights",
-    desc: "Refine your trading edge with deep behavioral metrics, trade journaling, and performance analytics.",
-    image: "./images/cards/113.webp",
-  },
-  {
-    id: "splits",
-    title: "Maximum Profit Share",
-    desc: "Why settle for less? Scale your trading capital and keep up to 100% of your hard-earned gains.",
-    image: "./images/cards/114.webp",
-  },
-  {
-    id: "payouts",
-    title: "Lightning Fast Payouts",
-    desc: "Request your profits on your terms. We process withdrawals securely within 24 hours.",
-    image: "./images/cards/115.webp",
-  },
-];
+// Feature cards removed as requested
 
 export function CardStackSection() {
   return (
     <section 
       className="relative overflow-hidden z-20 py-24 md:py-32"
-      style={{
-        background: "linear-gradient(135deg, #eef2f7 0%, #dde6f2 45%, #e9f0fa 100%)",
-        backgroundAttachment: "fixed",
-      }}
     >
       <div className="relative z-10 w-full max-w-[1400px] mx-auto">
         
@@ -101,54 +66,7 @@ export function CardStackSection() {
           </div>
         </AnimatedSection>
 
-        {/* Feature Cards Horizontal Scroll */}
-        <div className="mt-20 md:mt-24 w-full relative">
-          
-          {/* Edge fade gradients for scroll indication (Light Theme) */}
-          <div className="absolute top-0 bottom-0 left-0 w-8 md:w-24 bg-gradient-to-r from-[#eef2f7] to-transparent z-10 pointer-events-none" />
-          <div className="absolute top-0 bottom-0 right-0 w-8 md:w-24 bg-gradient-to-l from-[#e9f0fa] to-transparent z-10 pointer-events-none" />
 
-          <div className="flex overflow-x-auto snap-x snap-mandatory gap-5 md:gap-6 px-5 md:px-12 pb-12 w-full hide-scrollbar">
-            {featureCards.map((card, index) => (
-              <AnimatedSection 
-                key={card.id}
-                className="snap-center shrink-0 w-[85vw] sm:w-[400px] md:w-[450px] bg-slate-50 backdrop-blur-2xl rounded-3xl p-6 md:p-8 flex flex-col relative overflow-hidden group border border-slate-200 shadow-xl hover:shadow-2xl transition-all duration-500"
-              >
-                {/* Text Content */}
-                <div className="relative z-10">
-                  <h3 className="text-[var(--ink-950)] text-[22px] md:text-[26px] font-bold leading-tight mb-3 pr-8">
-                    {card.title}
-                  </h3>
-                  <p className="text-[var(--ink-500)] text-[14px] md:text-[15px] leading-relaxed font-medium">
-                    {card.desc}
-                  </p>
-                </div>
-                
-                {/* Image / Graphic Container */}
-                <div className="mt-10 md:mt-12 relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-lg transition-transform duration-700 group-hover:-translate-y-2 group-hover:shadow-2xl border border-slate-200 bg-slate-100">
-                  <img 
-                    src={card.image} 
-                    alt={card.title} 
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
-                  />
-                  {/* Subtle inner shadow overlay */}
-                  <div className="absolute inset-0 bg-black/5 pointer-events-none transition-colors duration-500 group-hover:bg-transparent" />
-                </div>
-              </AnimatedSection>
-            ))}
-          </div>
-          
-          <style jsx>{`
-            .hide-scrollbar::-webkit-scrollbar {
-              display: none;
-            }
-            .hide-scrollbar {
-              -ms-overflow-style: none;
-              scrollbar-width: none;
-            }
-          `}</style>
-
-        </div>
       </div>
     </section>
   );
