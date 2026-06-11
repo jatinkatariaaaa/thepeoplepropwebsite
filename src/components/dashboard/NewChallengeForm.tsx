@@ -42,6 +42,9 @@ export function NewChallengeForm() {
     city: "",
     zipCode: ""
   });
+  
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [checkoutMessage, setCheckoutMessage] = useState("");
 
   // Auth Check
   useEffect(() => {
@@ -150,6 +153,38 @@ export function NewChallengeForm() {
     setSelectedAddOns(prev => 
       prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key]
     );
+  };
+
+  const handleCheckout = async () => {
+    setIsCheckingOut(true);
+    setCheckoutMessage("");
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          programKey,
+          accountSize: size,
+          priceAmount: finalTotal,
+          fullName: `${personalInfo.firstName} ${personalInfo.lastName}`,
+          address: `${personalInfo.address}, ${personalInfo.city}, ${personalInfo.zipCode}`,
+          country: "Unknown", // Can be added to form later
+          platform,
+          promoCode: appliedPromo
+        })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setCheckoutMessage("Success! Account created and linked to terminal.");
+        // Redirect to dashboard or show success modal
+        setTimeout(() => router.push("/dashboard"), 2000);
+      } else {
+        setCheckoutMessage(data.error || "Checkout failed");
+      }
+    } catch (err) {
+      setCheckoutMessage("An error occurred during checkout");
+    }
+    setIsCheckingOut(false);
   };
 
   return (
@@ -565,11 +600,17 @@ export function NewChallengeForm() {
             )}
 
             <button 
-              disabled={!agreed || (isFirstTpp && paymentMethod !== "Crypto")}
+              onClick={handleCheckout}
+              disabled={!agreed || (isFirstTpp && paymentMethod !== "Crypto") || isCheckingOut}
               className="w-full mt-6 h-12 bg-[var(--ink-950)] hover:bg-[var(--ink-800)] text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md active:scale-[0.98]"
             >
-              Proceed to Payment
+              {isCheckingOut ? "Processing..." : "Proceed to Payment"}
             </button>
+            {checkoutMessage && (
+              <div className="mt-4 text-center text-[13px] font-bold text-emerald-600">
+                {checkoutMessage}
+              </div>
+            )}
           </div>
 
         </div>

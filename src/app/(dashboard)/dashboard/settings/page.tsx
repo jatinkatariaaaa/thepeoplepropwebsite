@@ -17,8 +17,32 @@ export default function SettingsPage() {
     country: "India",
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState("");
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    setMessage("");
+    try {
+      const res = await fetch("/api/user/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setMessage("Profile updated successfully!");
+      } else {
+        setMessage(data.error || "Failed to update profile");
+      }
+    } catch (err) {
+      setMessage("An error occurred");
+    }
+    setIsSubmitting(false);
   };
 
   return (
@@ -171,9 +195,14 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        <div className="flex justify-end pt-4">
-          <button className="h-11 px-6 bg-[var(--ink-950)] hover:bg-[var(--ink-800)] text-white text-[14px] font-bold rounded-xl transition-all shadow-md active:scale-[0.98]">
-            Save Changes
+        <div className="flex items-center justify-end gap-4 pt-4">
+          {message && <span className="text-[13px] font-medium text-emerald-600">{message}</span>}
+          <button 
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+            className="h-11 px-6 bg-[var(--ink-950)] hover:bg-[var(--ink-800)] text-white text-[14px] font-bold rounded-xl transition-all shadow-md active:scale-[0.98] disabled:opacity-50"
+          >
+            {isSubmitting ? "Saving..." : "Save Changes"}
           </button>
         </div>
       </div>
