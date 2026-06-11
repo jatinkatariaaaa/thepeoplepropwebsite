@@ -17,7 +17,18 @@ const activeAccounts = [
   }
 ];
 
-export function ActiveAccounts({ accounts = [] }: { accounts?: any[] }) {
+export function ActiveAccounts({ accounts = [], loading = false }: { accounts?: any[], loading?: boolean }) {
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <h2 className="text-xl font-display font-bold text-[var(--ink-950)]">Active Accounts</h2>
+        <div className="bg-white rounded-[24px] border border-[var(--border)] p-12 text-center text-[var(--ink-500)] flex justify-center">
+          <div className="w-8 h-8 rounded-full border-4 border-[var(--accent)] border-t-transparent animate-spin"></div>
+        </div>
+      </div>
+    );
+  }
+
   if (accounts.length === 0) {
     return (
       <div className="space-y-6">
