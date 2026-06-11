@@ -151,20 +151,25 @@ export async function GET(request: Request) {
 }
 
 async function promoteAccount(account: any) {
-  const program = programs[account.program_key as ProgramKey];
+  const program = programs.find((p) => p.key === account.program_key);
   if (!program) return;
 
   let newPhase: "challenge" | "funded";
   let newProfitTarget: number | null;
   let newLabel: string;
 
+  // Parse limits
+  const targets = program.profitTarget.split("+").map(t => parseFloat(t.replace(/[^0-9.]/g, "").trim()) / 100);
+  const maxDailyDrawdown = parseFloat(program.dailyDrawdown.replace(/[^0-9.]/g, "")) / 100;
+  const maxOverallDrawdown = parseFloat(program.maxDrawdown.replace(/[^0-9.]/g, "")) / 100;
+
   // Determine next phase rules
   if (program.phases === 2) {
     // If it's a 2-step program
     // Phase 1 -> Phase 2
-    if (account.profit_target === program.targetPhase1) {
+    if (Math.abs(account.profit_target - (targets[0] || 0.08)) < 0.001) {
       newPhase = "challenge";
-      newProfitTarget = program.targetPhase2;
+      newProfitTarget = targets[1] || null;
       newLabel = `${program.shortLabel} Phase 2 $${account.starting_balance.toLocaleString()}`;
     } 
     // Phase 2 -> Funded
@@ -192,8 +197,8 @@ async function promoteAccount(account: any) {
     equity: account.starting_balance,
     daily_start_balance: account.starting_balance,
     highest_equity: account.starting_balance,
-    max_daily_drawdown: program.maxDailyDrawdown,
-    max_overall_drawdown: program.maxOverallDrawdown,
+    max_daily_drawdown: maxDailyDrawdown,
+    max_overall_drawdown: maxOverallDrawdown,
     profit_target: newProfitTarget
   });
 }

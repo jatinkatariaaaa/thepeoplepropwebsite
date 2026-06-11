@@ -7,9 +7,9 @@ export const revalidate = 60; // Cache for 60 seconds
 export default async function VerifyCertificatePage({
   params
 }: {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }) {
-  const { id } = params;
+  const { id } = await params;
 
   // Fetch account details
   const { data: account, error } = await supabaseAdmin
