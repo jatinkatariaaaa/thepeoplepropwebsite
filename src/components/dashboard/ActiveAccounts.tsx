@@ -127,6 +127,12 @@ export function ActiveAccounts({ accounts = [], loading = false }: { accounts?: 
                   Open Terminal
                 </button>
               </Link>
+              <Link href={`/dashboard/account/${account.id}`}>
+                <Button className="flex items-center gap-2 h-10 px-5 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-700)] text-white shadow-sm text-[14px] font-medium">
+                  <Eye className="w-4 h-4" />
+                  View Metrics
+                </Button>
+              </Link>
             </div>
             
             {/* Edge Glow */}
