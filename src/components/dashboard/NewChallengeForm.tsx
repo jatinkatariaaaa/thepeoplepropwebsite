@@ -180,9 +180,12 @@ export function NewChallengeForm() {
       });
       const data = await res.json();
       if (res.ok) {
-        setCheckoutMessage("Success! Account created and linked to terminal.");
-        // Redirect to dashboard or show success modal
-        setTimeout(() => router.push("/dashboard"), 2000);
+        setCheckoutMessage("Redirecting to payment gateway...");
+        if (data.invoice_url) {
+          window.location.href = data.invoice_url;
+        } else {
+          setCheckoutMessage("Error: Missing invoice URL");
+        }
       } else {
         setCheckoutMessage(data.error || "Checkout failed");
       }

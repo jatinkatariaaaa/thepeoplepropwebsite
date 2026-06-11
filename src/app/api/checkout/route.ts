@@ -47,7 +47,7 @@ export async function POST(request: Request) {
     // Generate Order ID
     const orderId = `ORD-${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
 
-    // 2. Insert into purchases (Payment is assumed complete here for crypto integration flow)
+    // 2. Insert into purchases as pending
     const { data: purchase, error: purchaseError } = await supabaseAdmin
       .from("purchases")
       .insert({
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
         program_key: programKey,
         account_size: accountSize,
         price_amount: priceAmount,
-        payment_status: 'paid', // Assuming callback from crypto gateway
+        payment_status: 'pending',
         payment_method: 'crypto',
         promo_code: promoCode
       })
@@ -69,76 +69,45 @@ export async function POST(request: Request) {
 
     if (purchaseError) throw purchaseError;
 
-    // 3. Generate Trading Account for the Terminal
-    const loginId = Math.floor(100000 + Math.random() * 900000).toString();
-    const password = Math.random().toString(36).substring(2, 12);
-
-    const { error: accountError } = await supabaseAdmin
-      .from("accounts") // This matches the terminal's 0001_profiles_accounts.sql
-      .insert({
-        user_id: user.id,
-        label: `${program.shortLabel} $${accountSize.toLocaleString()}`,
-        phase: program.phases === 0 ? 'funded' : 'challenge',
-        program_key: programKey,
-        status: 'active',
-        starting_balance: accountSize,
-        balance: accountSize,
-        equity: accountSize,
-        daily_start_balance: accountSize,
-        highest_equity: accountSize,
-        max_daily_drawdown: maxDailyDrawdown || 0.05,
-        max_overall_drawdown: maxOverallDrawdown || 0.10,
-        profit_target: profitTarget || 0.08
-      });
-
-    if (accountError) throw accountError;
-
-    // 4. Track Affiliate Commission
-    // Check if the user was referred by someone
-    const { data: referral } = await supabaseAdmin
-      .from("affiliate_referrals")
-      .select("affiliate_id")
-      .eq("referred_user_id", user.id)
-      .single();
-      
-    if (referral?.affiliate_id) {
-      // 10% commission
-      const commission = priceAmount * 0.10;
-      
-      // Insert earnings record
-      await supabaseAdmin
-        .from("affiliate_earnings")
-        .insert({
-          affiliate_id: referral.affiliate_id,
-          purchase_id: purchase.id,
-          amount: commission,
-          status: 'pending'
-        });
-        
-      // Update affiliate's pending payout and total earnings
-      // We do a raw rpc call or just let a trigger handle it. 
-      // Since we don't have an RPC, we read and update.
-      const { data: affiliateData } = await supabaseAdmin
-        .from("affiliates")
-        .select("total_earnings, pending_payout")
-        .eq("user_id", referral.affiliate_id)
-        .single();
-        
-      if (affiliateData) {
-        await supabaseAdmin
-          .from("affiliates")
-          .update({
-            total_earnings: Number(affiliateData.total_earnings) + commission,
-            pending_payout: Number(affiliateData.pending_payout) + commission
-          })
-          .eq("user_id", referral.affiliate_id);
-      }
+    // 3. Create NOWPayments Invoice
+    const apiKey = process.env.NOWPAYMENTS_API_KEY || process.env.NOWPAYMENTS_KEY;
+    if (!apiKey) {
+      throw new Error("NOWPAYMENTS_API_KEY is missing from environment variables.");
     }
 
+    const payload = {
+      price_amount: priceAmount,
+      price_currency: "usd",
+      order_id: orderId,
+      order_description: `${program.shortLabel} $${accountSize.toLocaleString()} Challenge`,
+      success_url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://thepeopleprop.live"}/dashboard?success=true`,
+      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://thepeopleprop.live"}/dashboard?canceled=true`,
+      ipn_callback_url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://thepeopleprop.live"}/api/nowpayments-ipn`,
+      customer_email: user.email
+    };
+
+    const response = await fetch("https://api.nowpayments.io/v1/invoice", {
+      method: "POST",
+      headers: {
+        "x-api-key": apiKey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error("NOWPayments API Error:", data);
+      throw new Error(data.message || "Failed to create payment invoice.");
+    }
+
+    // Return the invoice URL to the frontend for redirection
     return NextResponse.json({ 
       success: true, 
       orderId,
-      message: "Account created successfully and linked to terminal."
+      invoice_url: data.invoice_url,
+      message: "Invoice created. Redirecting to payment gateway..."
     });
 
   } catch (err: any) {
