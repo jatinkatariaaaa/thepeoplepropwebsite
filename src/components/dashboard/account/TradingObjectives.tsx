@@ -21,6 +21,12 @@ export function TradingObjectives({ account }: { account: any }) {
   const overallLossProgress = Math.min(100, (currentOverallLoss / maxAllowedOverallLoss) * 100) || 0;
   const overallBalanceThreshold = startingBalance - maxAllowedOverallLoss;
 
+  // Calculate Profit Target
+  const profitTargetPercent = Number(account?.profit_target || 0.10);
+  const profitTargetAmount = startingBalance * profitTargetPercent;
+  const currentProfit = currentEquity - startingBalance > 0 ? currentEquity - startingBalance : 0;
+  const profitTargetProgress = Math.min(100, (currentProfit / profitTargetAmount) * 100) || 0;
+
   return (
     <div className="mb-8">
       <h3 className="font-bold text-[16px] text-[var(--ink-950)] mb-4">Trading Objectives</h3>
@@ -73,6 +79,27 @@ export function TradingObjectives({ account }: { account: any }) {
 
           <div className="h-2 w-full bg-[var(--paper-2)] rounded-full overflow-hidden">
             <div className={`h-full ${overallLossProgress > 90 ? 'bg-rose-500' : 'bg-[var(--accent)]'}`} style={{ width: `${overallLossProgress}%` }} />
+          </div>
+        </div>
+
+        {/* Profit Target */}
+        <div className="p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+            <h4 className="font-bold text-[15px] text-[var(--ink-950)] flex items-center gap-2">
+              Profit Target <Info className="w-4 h-4 text-[var(--ink-400)]" />
+            </h4>
+            <div className="text-[13px] font-medium text-[var(--ink-950)]">
+              Current Profit: ${currentProfit.toLocaleString(undefined, {minimumFractionDigits: 2})}
+            </div>
+          </div>
+          
+          <div className="flex flex-wrap items-center gap-6 text-[13px] text-[var(--ink-500)] mb-4 font-medium">
+            <span>Target Amount: ${profitTargetAmount.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+            <span>Target Balance: ${(startingBalance + profitTargetAmount).toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+          </div>
+
+          <div className="h-2 w-full bg-[var(--paper-2)] rounded-full overflow-hidden">
+            <div className="h-full bg-emerald-500" style={{ width: `${profitTargetProgress}%` }} />
           </div>
         </div>
 

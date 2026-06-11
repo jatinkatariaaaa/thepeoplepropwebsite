@@ -5,10 +5,14 @@ export function TopMetrics({ account }: { account: any }) {
     ? new Date(account.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
     : 'Unknown';
 
+  const currentBalance = Number(account?.balance || 0);
+  const startingBalance = Number(account?.starting_balance || 0);
+  const totalProfit = currentBalance - startingBalance;
+  
   const metrics = [
-    { label: "Account Size", value: `$${Number(account.starting_balance || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`, icon: Wallet },
+    { label: "Account Size", value: `$${startingBalance.toLocaleString(undefined, {minimumFractionDigits: 2})}`, icon: Wallet },
     { label: "Current Equity", value: `$${Number(account.equity || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`, icon: TrendingUp },
-    { label: "Start Date", value: startDate, icon: Calendar },
+    { label: "Total Profit", value: `${totalProfit >= 0 ? '+' : ''}$${totalProfit.toLocaleString(undefined, {minimumFractionDigits: 2})}`, icon: TrendingUp },
     { label: "Phase", value: (account.phase || 'Unknown').toUpperCase(), icon: CalendarClock },
   ];
 
