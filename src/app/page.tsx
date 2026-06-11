@@ -53,6 +53,10 @@ export default function Home() {
       </SectionReveal3D>
 
       <SectionReveal3D>
+        <Testimonials />
+      </SectionReveal3D>
+
+      <SectionReveal3D>
         <ReferralPromo />
       </SectionReveal3D>
       
