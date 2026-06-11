@@ -4,25 +4,27 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { 
-  Home, 
+  LayoutDashboard, 
   Users, 
-  Briefcase,
+  Target, 
   CreditCard,
-  DollarSign,
+  Network,
+  LogOut,
   Menu,
   X,
-  ArrowUpRight
+  DollarSign
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { NavbarLogo } from "@/components/ui/resizable-navbar";
 
 const navItems = [
-  { icon: Home, label: "Overview", href: "/admin" },
+  { icon: LayoutDashboard, label: "Overview", href: "/admin" },
   { icon: Users, label: "Users", href: "/admin/users" },
-  { icon: Briefcase, label: "Accounts", href: "/admin/accounts" },
+  { icon: Target, label: "Accounts", href: "/admin/accounts" },
   { icon: CreditCard, label: "Purchases", href: "/admin/purchases" },
-  { icon: DollarSign, label: "Affiliates", href: "/admin/affiliates" },
+  { icon: Network, label: "Affiliates", href: "/admin/affiliates" },
+  { icon: DollarSign, label: "Payouts", href: "/admin/payouts" },
 ];
 
 export function AdminSidebar() {

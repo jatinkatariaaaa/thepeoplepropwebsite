@@ -17,7 +17,8 @@ import {
   ListOrdered,
   CalendarDays,
   Plus,
-  Users
+  Users,
+  DollarSign
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -31,6 +32,7 @@ const navItems = [
   { icon: ListOrdered, label: "Leaderboard", href: "/dashboard/leaderboard" },
   { icon: CalendarDays, label: "Calendar", href: "/dashboard/calendar" },
   { icon: Users, label: "Affiliate", href: "/dashboard/affiliate" },
+  { icon: DollarSign, label: "Payouts", href: "/dashboard/payouts" },
   { icon: Settings, label: "Settings", href: "/dashboard/settings" },
 ];
 
