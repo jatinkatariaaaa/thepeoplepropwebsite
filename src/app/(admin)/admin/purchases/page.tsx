@@ -3,16 +3,20 @@ import { supabaseAdmin } from "@/lib/supabase";
 export const revalidate = 0;
 
 export default async function AdminPurchasesPage() {
-  const { data: purchases, error } = await supabaseAdmin
-    .from("purchases")
-    .select(`
-      *,
-      profiles (
-        email,
-        display_name
-      )
-    `)
-    .order("created_at", { ascending: false });
+  const [ { data: purchases }, { data: profiles } ] = await Promise.all([
+    supabaseAdmin.from("purchases").select("*").order("created_at", { ascending: false }),
+    supabaseAdmin.from("profiles").select("id, email, display_name")
+  ]);
+
+  const profilesMap = (profiles || []).reduce((acc: any, p: any) => {
+    acc[p.id] = p;
+    return acc;
+  }, {});
+
+  const enrichedPurchases = (purchases || []).map(pur => ({
+    ...pur,
+    profiles: profilesMap[pur.user_id] || null
+  }));
 
   return (
     <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
@@ -35,7 +39,7 @@ export default async function AdminPurchasesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-[var(--border)]">
-              {purchases?.map((purchase) => (
+              {enrichedPurchases?.map((purchase) => (
                 <tr key={purchase.id} className="hover:bg-[var(--paper-2)] transition-colors">
                   <td className="px-6 py-4">
                     <span className="font-mono text-xs text-[var(--ink-500)]">{purchase.order_id || purchase.id.substring(0, 8)}</span>
@@ -65,7 +69,7 @@ export default async function AdminPurchasesPage() {
                   </td>
                 </tr>
               ))}
-              {(!purchases || purchases.length === 0) && (
+              {(!enrichedPurchases || enrichedPurchases.length === 0) && (
                 <tr>
                   <td colSpan={6} className="px-6 py-8 text-center text-[var(--ink-500)]">
                     No purchases found.

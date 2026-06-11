@@ -4,16 +4,20 @@ import { AccountsClient } from "./AccountsClient";
 export const revalidate = 0;
 
 export default async function AdminAccountsPage() {
-  const { data: accounts, error } = await supabaseAdmin
-    .from("accounts")
-    .select(`
-      *,
-      profiles (
-        email,
-        display_name
-      )
-    `)
-    .order("created_at", { ascending: false });
+  const [ { data: accounts }, { data: profiles } ] = await Promise.all([
+    supabaseAdmin.from("accounts").select("*").order("created_at", { ascending: false }),
+    supabaseAdmin.from("profiles").select("id, email, display_name")
+  ]);
+
+  const profilesMap = (profiles || []).reduce((acc: any, p: any) => {
+    acc[p.id] = p;
+    return acc;
+  }, {});
+
+  const enrichedAccounts = (accounts || []).map(acc => ({
+    ...acc,
+    profiles: profilesMap[acc.user_id] || { email: "Unknown" }
+  }));
 
   return (
     <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
@@ -22,7 +26,7 @@ export default async function AdminAccountsPage() {
         <p className="text-[var(--ink-500)]">Manage all trading challenges and funded accounts.</p>
       </div>
 
-      <AccountsClient initialAccounts={accounts || []} />
+      <AccountsClient initialAccounts={enrichedAccounts} />
     </div>
   );
 }
