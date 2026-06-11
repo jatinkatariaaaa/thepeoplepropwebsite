@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Trophy, Calendar, Eye, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/utils";
 
 const activeAccounts = [
   {
