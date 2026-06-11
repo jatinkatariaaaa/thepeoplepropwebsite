@@ -32,7 +32,6 @@ const navItems = [
   { icon: CalendarDays, label: "Calendar", href: "/dashboard/calendar" },
   { icon: Users, label: "Affiliate", href: "/dashboard/affiliate" },
   { icon: DollarSign, label: "Payouts", href: "/dashboard/payouts" },
-  { icon: Award, label: "Certificates", href: "/dashboard/certificates" },
   { icon: Settings, label: "Settings", href: "/dashboard/settings" },
 ];
 
