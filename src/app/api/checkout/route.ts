@@ -79,6 +79,7 @@ export async function POST(request: Request) {
         user_id: user.id,
         label: `${program.shortLabel} $${accountSize.toLocaleString()}`,
         phase: program.phases === 0 ? 'funded' : 'challenge',
+        program_key: programKey,
         status: 'active',
         starting_balance: accountSize,
         balance: accountSize,
