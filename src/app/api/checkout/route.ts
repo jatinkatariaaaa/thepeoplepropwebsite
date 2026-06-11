@@ -92,28 +92,45 @@ export async function POST(request: Request) {
 
     if (accountError) throw accountError;
 
-    // 4. Track Affiliate if affiliate_code cookie exists
-    const affiliateCode = cookieStore.get("ref")?.value;
-    if (affiliateCode) {
-      // Find affiliate user
-      const { data: affiliateUser } = await supabaseAdmin
-        .from("profiles")
-        .select("id")
-        .eq("affiliate_code", affiliateCode)
+    // 4. Track Affiliate Commission
+    // Check if the user was referred by someone
+    const { data: referral } = await supabaseAdmin
+      .from("affiliate_referrals")
+      .select("affiliate_id")
+      .eq("referred_user_id", user.id)
+      .single();
+      
+    if (referral?.affiliate_id) {
+      // 10% commission
+      const commission = priceAmount * 0.10;
+      
+      // Insert earnings record
+      await supabaseAdmin
+        .from("affiliate_earnings")
+        .insert({
+          affiliate_id: referral.affiliate_id,
+          purchase_id: purchase.id,
+          amount: commission,
+          status: 'pending'
+        });
+        
+      // Update affiliate's pending payout and total earnings
+      // We do a raw rpc call or just let a trigger handle it. 
+      // Since we don't have an RPC, we read and update.
+      const { data: affiliateData } = await supabaseAdmin
+        .from("affiliates")
+        .select("total_earnings, pending_payout")
+        .eq("user_id", referral.affiliate_id)
         .single();
         
-      if (affiliateUser) {
-        // 15% commission
-        const commission = priceAmount * 0.15;
+      if (affiliateData) {
         await supabaseAdmin
-          .from("affiliate_earnings")
-          .insert({
-            affiliate_id: affiliateUser.id,
-            referred_user_id: user.id,
-            purchase_id: purchase.id,
-            amount: commission,
-            status: 'pending'
-          });
+          .from("affiliates")
+          .update({
+            total_earnings: Number(affiliateData.total_earnings) + commission,
+            pending_payout: Number(affiliateData.pending_payout) + commission
+          })
+          .eq("user_id", referral.affiliate_id);
       }
     }
 

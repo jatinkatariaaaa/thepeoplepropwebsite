@@ -93,10 +93,16 @@ export default function LoginPage() {
         const redirect = urlParams.get("redirect") || "/dashboard";
         router.push(redirect);
       } else {
+        // Read affiliate cookie if exists
+        let affiliateId = null;
+        const match = document.cookie.match(/(^| )tpp_affiliate=([^;]+)/);
+        if (match) affiliateId = match[2];
+
         const { data, error: signUpError } = await supabase.auth.signUp({
           email,
           password: pw,
           options: {
+            data: affiliateId ? { affiliate_id: affiliateId } : undefined,
             emailRedirectTo: `${window.location.origin}/referral`,
           },
         });
