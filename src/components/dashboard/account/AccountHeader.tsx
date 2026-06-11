@@ -23,13 +23,15 @@ export function AccountHeader({ account }: Props) {
       </div>
 
       {/* Trading Disabled Alert */}
-      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex gap-3 text-amber-800">
-        <Lock className="w-5 h-5 shrink-0 mt-0.5" />
-        <div>
-          <h4 className="font-bold text-[14px]">Trading Disabled</h4>
-          <p className="text-[13px] mt-0.5 opacity-90">Trading is currently disabled for this account.</p>
+      {account.status === 'breached' && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex gap-3 text-amber-800">
+          <Lock className="w-5 h-5 shrink-0 mt-0.5" />
+          <div>
+            <h4 className="font-bold text-[14px]">Trading Disabled</h4>
+            <p className="text-[13px] mt-0.5 opacity-90">Trading is currently disabled because this account has been breached.</p>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Main Header */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
