@@ -142,7 +142,7 @@ html {
 }
 
 html, body {
-  background: linear-gradient(135deg, #eef2f7 0%, #dde6f2 45%, #e9f0fa 100%) !important;
+  background: linear-gradient(135deg, #fdfdfd 0%, #f0f4f8 50%, #f9fbfd 100%) !important;
   background-attachment: fixed !important;
   color: var(--ink-950);
   font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
