@@ -182,10 +182,10 @@ export default function V2Page() {
       <section className="w-full py-16 lg:py-24">
         <div className="w-full px-5 lg:px-10">
           <div className="grid gap-y-16 md:grid-cols-12 gap-x-7 items-center">
-            {/* Left small image */}
+            {/* Left small video */}
             <Reveal className="hidden md:block md:col-span-3 lg:col-span-2">
-              <div className="aspect-[9/10] w-full rounded-2xl lg:rounded-3xl overflow-hidden bg-[#e5ddd0]">
-                <img src="/images/dashboard-v2.webp" alt="Dashboard" className="w-full h-full object-cover" loading="lazy" />
+              <div className="aspect-[9/10] w-full rounded-2xl lg:rounded-3xl overflow-hidden bg-black">
+                <video src="/videos/left-video.webm" autoPlay loop muted playsInline className="w-full h-full object-cover" />
               </div>
             </Reveal>
 
