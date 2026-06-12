@@ -326,7 +326,7 @@ export default function V2Page() {
       <section className="w-full pb-16 lg:pb-24">
         <div className="w-full px-0">
           <div className="px-[5px] py-[5px]">
-            <div className="rounded-2xl bg-[#bcff2e] py-20 xl:py-32 px-[15px] lg:px-[35px]">
+            <div className="rounded-[2rem] lg:rounded-[3.5rem] bg-[#bcff2e] py-20 xl:py-32 px-[15px] lg:px-[35px]">
               <Reveal>
                 <div className="text-center mb-16">
                   <div className="text-lg font-medium text-[#0c0c0c]/60 mb-4">Why TPP</div>
@@ -364,7 +364,7 @@ export default function V2Page() {
       <section className="w-full pb-16 lg:pb-24">
         <div className="w-full px-0">
           <div className="px-[5px] py-[5px]">
-            <div className="rounded-2xl bg-black py-20 xl:py-32 px-[15px] lg:px-[35px]">
+            <div className="rounded-[2rem] lg:rounded-[3.5rem] bg-black py-20 xl:py-32 px-[15px] lg:px-[35px]">
               <Reveal>
                 <div className="text-center mb-16">
                   <div className="text-lg font-medium text-white/60 mb-4">Trader Voices</div>
