@@ -5,6 +5,9 @@ import { motion, useInView } from "framer-motion";
 import Link from "next/link";
 import {
   TrendingUp,
+  Shield,
+  Clock,
+  Award,
   CalendarOff,
   Monitor,
   Newspaper,
