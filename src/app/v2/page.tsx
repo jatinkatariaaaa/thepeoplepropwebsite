@@ -4,16 +4,7 @@ import { useRef, useEffect, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import Link from "next/link";
 import {
-  ArrowRight,
-  ArrowUpRight,
   TrendingUp,
-  Shield,
-  Clock,
-  CheckCircle2,
-  Award,
-  ChevronUp,
-  Menu,
-  Zap,
   CalendarOff,
   Monitor,
   Newspaper,
