@@ -363,10 +363,10 @@ export default function V2Page() {
                       accent: false 
                     },
                     { 
-                      stat: "3", 
+                      stat: "4", 
                       unit: "platforms", 
-                      title: "MT4 · MT5 · DXTrade", 
-                      desc: "Trade on the platform you already know and trust.", 
+                      title: "MT4 · MT5 · DXTrade · TPP Dashboard", 
+                      desc: "Trade on the platform you trust, plus our own proprietary dashboard.", 
                       icon: Monitor,
                       accent: false,
                       fullWidth: true 
