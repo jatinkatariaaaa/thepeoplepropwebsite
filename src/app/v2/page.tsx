@@ -18,7 +18,7 @@ import {
   Target,
 } from "lucide-react";
 
-import { ChallengeCalculator } from "@/components/landing/ChallengeCalculator";
+import { V2ChallengeCalculator } from "@/components/landing/V2ChallengeCalculator";
 
 /* ═══════════════════════════════════════════════════════════════
    V2 Landing Page — Noramble Card-Stacking Design
@@ -318,7 +318,7 @@ export default function V2Page() {
       {/* ═══════════════════════════════════════════════
           SECTION 5: CALCULATOR — Imported from V1
           ═══════════════════════════════════════════════ */}
-      <ChallengeCalculator />
+      <V2ChallengeCalculator />
 
       {/* ═══════════════════════════════════════════════
           SECTION 6: FEATURES — Lime Green Card
