@@ -281,7 +281,12 @@ export default function V2Page() {
       </section>
 
       {/* ═══════════════════════════════════════════════
-          SECTION 4: WORK/HOW IT WORKS — Black Card
+          SECTION 4: CALCULATOR
+          ═══════════════════════════════════════════════ */}
+      <V2ChallengeCalculator />
+
+      {/* ═══════════════════════════════════════════════
+          SECTION 5: WORK/HOW IT WORKS — Black Card
           ═══════════════════════════════════════════════ */}
       <section className="w-full pb-16 lg:pb-24">
         <div className="w-full px-0">
@@ -356,10 +361,7 @@ export default function V2Page() {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════
-          SECTION 5: CALCULATOR — Imported from V1
-          ═══════════════════════════════════════════════ */}
-      <V2ChallengeCalculator />
+
 
       {/* ═══════════════════════════════════════════════
           SECTION 6: FEATURES — Lime Green Card
