@@ -198,12 +198,12 @@ export default function V2Page() {
             {/* Center content */}
             <div className="md:col-span-6 lg:col-span-8">
               <div className="relative">
-                {/* Use a linear-gradient to color the text without aggressive multiply blending. */}
-                <div className="relative z-20 text-center pointer-events-none opacity-95">
+                {/* Use a linear-gradient to color the exact overlapping portion of the text, AND mix-blend-multiply so it truly blends with the image underneath, allowing dashboard details to show through. */}
+                <div className="relative z-20 text-center pointer-events-none mix-blend-multiply opacity-70">
                   <h2 className="tracking-tight font-medium text-transparent bg-clip-text" style={{ 
                     fontSize: "clamp(3rem, 10vw, 8rem)", 
                     lineHeight: "1",
-                    backgroundImage: "linear-gradient(to bottom, #0c0c0c calc(100% - 3vw), #0ea5e9 calc(100% - 3vw))",
+                    backgroundImage: "linear-gradient(to bottom, #333333 calc(100% - 3vw), #0ea5e9 calc(100% - 3vw))",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent"
                   }}>
