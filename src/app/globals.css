@@ -1359,3 +1359,25 @@ html.lenis body {
     font-size: 12px;
   }
 }
+
+/* ══════════════════════════════════════
+   V2 Dark Theme Override
+   ══════════════════════════════════════ */
+
+/* When a v2-root wrapper is present, hide the main site chrome */
+body:has(.v2-root) {
+  background: #0c0c0c !important;
+  background-image: none !important;
+}
+
+body:has(.v2-root) > div > nav,
+body:has(.v2-root) > div > footer,
+body:has(.v2-root) header.glass-strong {
+  display: none !important;
+}
+
+/* Also hide Navbar and Footer rendered by ChromeGate */
+.v2-root ~ nav,
+.v2-root ~ footer {
+  display: none !important;
+}
