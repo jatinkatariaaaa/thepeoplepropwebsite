@@ -18,6 +18,8 @@ import {
   Target,
 } from "lucide-react";
 
+import { ChallengeCalculator } from "@/components/landing/ChallengeCalculator";
+
 /* ═══════════════════════════════════════════════════════════════
    V2 Landing Page — Noramble Card-Stacking Design
    
@@ -314,51 +316,9 @@ export default function V2Page() {
       </section>
 
       {/* ═══════════════════════════════════════════════
-          SECTION 5: SERVICES — Cream bg, link list
+          SECTION 5: CALCULATOR — Imported from V1
           ═══════════════════════════════════════════════ */}
-      <section className="w-full py-16 lg:py-24">
-        <div className="w-full px-5 lg:px-10">
-          <Reveal>
-            <div className="text-center mb-12">
-              <div className="text-lg font-medium text-[#6c6a68] mb-4">Challenge Plans</div>
-              <h2 className="tracking-[-0.03em] text-[#0c0c0c] font-medium" style={{ fontSize: "clamp(2rem, 6vw, 3.75rem)" }}>
-                Pick your
-                <br /><span className="text-[#bcff2e]">account size</span>
-              </h2>
-            </div>
-          </Reveal>
-
-          <div className="max-w-3xl mx-auto space-y-0 border-t border-[#0c0c0c]/10">
-            {[
-              { size: "$10,000", price: "$99" },
-              { size: "$25,000", price: "$199", popular: true },
-              { size: "$50,000", price: "$299" },
-              { size: "$100,000", price: "$449" },
-              { size: "$200,000", price: "$899" },
-            ].map((plan, i) => (
-              <Reveal key={plan.size} delay={i * 0.05}>
-                <Link
-                  href="/dashboard/new-challenge"
-                  className="group flex items-center justify-between py-6 border-b border-[#0c0c0c]/10 hover:pl-4 transition-all duration-500"
-                >
-                  <div className="flex items-center gap-4">
-                    <span className="text-2xl md:text-3xl font-medium tracking-tight text-[#0c0c0c]">{plan.size}</span>
-                    {plan.popular && (
-                      <span className="bg-[#bcff2e] text-[#0c0c0c] text-[10px] font-bold uppercase tracking-[0.15em] px-3 py-1 rounded-full">
-                        Popular
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <span className="text-[#6c6a68] text-base">from {plan.price}</span>
-                    <ArrowRight className="w-5 h-5 text-[#0c0c0c]/20 group-hover:text-[#bcff2e] group-hover:translate-x-1 transition-all duration-300" />
-                  </div>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
+      <ChallengeCalculator />
 
       {/* ═══════════════════════════════════════════════
           SECTION 6: FEATURES — Lime Green Card
