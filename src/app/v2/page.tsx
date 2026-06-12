@@ -13,6 +13,13 @@ import {
   Award,
   ChevronUp,
   Menu,
+  Zap,
+  CalendarOff,
+  Monitor,
+  Newspaper,
+  MoonStar,
+  RotateCcw,
+  BadgeDollarSign,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -311,20 +318,21 @@ export default function V2Page() {
                     { 
                       id: 1, 
                       span: "md:col-span-3 md:row-span-2", 
-                      bg: "var1", 
-                      title: <>Best Trading<br />Conditions</>, 
-                      subtitle: <><span className="text-[#bcff2e]">Lowest</span> spreads</>,
+                      bg: "dark", 
+                      icon: TrendingUp,
+                      title: <>Raw Spreads,<br />Zero Markup</>, 
+                      subtitle: <><span className="text-[#bcff2e]">Tier-1</span> liquidity with spreads from 0.0 pips</>,
                       image: "/images/coins-card.webp",
                       imageClassName: "w-[65%] sm:w-[55%] md:w-[60%] absolute bottom-[-10%] right-[-5%] object-contain drop-shadow-2xl transition-transform duration-500 group-hover:-translate-y-2 group-hover:-translate-x-2"
                     },
-                    { id: 2, span: "md:col-span-3 md:row-span-2", bg: "var2", title: "No Minimum Trading Days", subtitle: "Take your time" },
+                    { id: 2, span: "md:col-span-3 md:row-span-2", bg: "dark", icon: CalendarOff, title: <>No Minimum<br />Trading Days</>, subtitle: "Pass in 1 day or 100 — we never rush your strategy" },
                     /* Row 2 (3 cards) */
-                    { id: 3, span: "md:col-span-2 md:row-span-2", bg: "var3", title: <>Trading<br />Platforms</>, subtitle: "MT4, MT5, DXTrade" },
-                    { id: 4, span: "md:col-span-2 md:row-span-2", bg: "lime", title: <>News<br />Trading</>, subtitle: "Allowed on all accounts" },
-                    { id: 5, span: "md:col-span-2 md:row-span-2", bg: "var4", title: <>Weekend<br />Holding</>, subtitle: "Keep trades open" },
+                    { id: 3, span: "md:col-span-2 md:row-span-2", bg: "dark", icon: Monitor, title: <>All Major<br />Platforms</>, subtitle: "MT4 · MT5 · DXTrade" },
+                    { id: 4, span: "md:col-span-2 md:row-span-2", bg: "lime", icon: Newspaper, title: <>News Trading<br />Allowed</>, subtitle: "Trade NFP, FOMC & every high-impact event" },
+                    { id: 5, span: "md:col-span-2 md:row-span-2", bg: "dark", icon: MoonStar, title: <>Weekend &<br />Overnight</>, subtitle: "Hold through swaps, weekends & holidays" },
                     /* Row 3 (2 cards) */
-                    { id: 6, span: "md:col-span-3 md:row-span-2", bg: "var2", title: "Instant Funding", subtitle: <>Skip the challenge & <span className="text-[#bcff2e]">get funded right now</span></> },
-                    { id: 7, span: "md:col-span-3 md:row-span-2", bg: "var1", title: "Access Challenge", subtitle: <>Only pay <span className="text-[#bcff2e]">after</span> you pass</> },
+                    { id: 6, span: "md:col-span-3 md:row-span-2", bg: "dark", icon: RotateCcw, title: <>Free Retry<br />On Us</>, subtitle: <><span className="text-[#bcff2e]">Missed by 1%?</span> We give you another shot — no extra fee</> },
+                    { id: 7, span: "md:col-span-3 md:row-span-2", bg: "dark", icon: BadgeDollarSign, title: <>Pass First,<br />Pay Later</>, subtitle: <>Clear the challenge, <span className="text-[#bcff2e]">then</span> pay — zero upfront risk</> },
                   ].map((s, i) => (
                     <Reveal key={s.id} delay={i * 0.1} className={cn("w-full h-full", s.span)}>
                       <div 
@@ -332,9 +340,22 @@ export default function V2Page() {
                           "relative w-full h-full rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-8 flex flex-col justify-between transition-all duration-300 hover:scale-[1.02] overflow-hidden group cursor-pointer border",
                           s.bg === "lime" 
                             ? "bg-[#bcff2e] shadow-[0_0_30px_rgba(188,255,46,0.15)] border-transparent" 
-                            : "bg-[#1A2326] border-white/[0.05] shadow-inner shadow-white/[0.02]"
+                            : "bg-[#1A2326] border-white/[0.05]"
                         )}
                       >
+                        {/* Icon */}
+                        <div className="relative z-10 mb-1">
+                          <div className={cn(
+                            "w-10 h-10 rounded-xl flex items-center justify-center mb-4",
+                            s.bg === "lime" ? "bg-[#0c0c0c]/10" : "bg-white/[0.06]"
+                          )}>
+                            <s.icon className={cn(
+                              "w-5 h-5",
+                              s.bg === "lime" ? "text-[#0c0c0c]" : "text-[#bcff2e]"
+                            )} strokeWidth={2} />
+                          </div>
+                        </div>
+
                         {/* Text Content */}
                         <div className="relative z-10">
                           <h3 className={cn(
@@ -344,23 +365,23 @@ export default function V2Page() {
                             {s.title}
                           </h3>
                           <p className={cn(
-                            "text-[15px] md:text-[16px] font-medium leading-snug", 
-                            s.bg === "lime" ? "text-[#0c0c0c]/70" : "text-white/60"
+                            "text-[14px] md:text-[15px] font-medium leading-snug", 
+                            s.bg === "lime" ? "text-[#0c0c0c]/70" : "text-white/55"
                           )}>
                             {s.subtitle}
                           </p>
                         </div>
                         
-                        {/* Image or Placeholder */}
+                        {/* Image or subtle glow */}
                         {s.image ? (
                           <div className="absolute inset-0 w-full h-full overflow-hidden rounded-[1.5rem] md:rounded-[2rem] pointer-events-none">
                             <img src={s.image} className={s.imageClassName} alt="" loading="lazy" />
                           </div>
                         ) : (
-                          <div className="absolute right-0 bottom-0 w-3/4 h-3/4 opacity-[0.15] group-hover:opacity-30 transition-opacity duration-500 pointer-events-none flex items-end justify-end p-4">
+                          <div className="absolute right-0 bottom-0 w-1/2 h-1/2 opacity-[0.08] group-hover:opacity-[0.15] transition-opacity duration-500 pointer-events-none">
                             <div className={cn(
                               "w-full h-full rounded-tl-full blur-3xl", 
-                              s.bg === "lime" ? "bg-white/60" : "bg-white/20"
+                              s.bg === "lime" ? "bg-white/60" : "bg-[#bcff2e]/40"
                             )} />
                           </div>
                         )}
