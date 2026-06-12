@@ -235,7 +235,6 @@ export function V2ChallengeCalculator() {
   );
 
   return (
-  return (
     <section id="calculator" className="w-full pb-16 lg:pb-24">
       <div className="w-full px-0">
         <div className="px-[5px] py-[5px]">
