@@ -39,7 +39,8 @@ export function Globe() {
         // Singapore
         { location: [1.3521, 103.8198], size: 0.05 },
       ],
-      onRender: (state) => {
+      // @ts-expect-error onRender is valid in cobe but missing from its type definitions
+      onRender: (state: any) => {
         state.phi = phi;
         phi += 0.003;
       },
