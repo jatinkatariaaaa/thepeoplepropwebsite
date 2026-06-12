@@ -952,6 +952,9 @@ export function V2ChallengeCalculator() {
       </AnimatePresence>,
       document.body
       )}
+          </div>
+        </div>
+      </div>
     </section>
   );
 }
