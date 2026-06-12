@@ -9,6 +9,7 @@ import {
   Clock,
   Award,
   CheckCircle2,
+  ChevronUp,
   CalendarOff,
   Monitor,
   Newspaper,
