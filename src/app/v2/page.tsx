@@ -464,29 +464,32 @@ export default function V2Page() {
                 </div>
               </Reveal>
 
-              <div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-10 max-w-6xl mx-auto">
-                {/* Left Column */}
-                <div className="w-full lg:w-[35%] flex flex-col gap-4">
+              <div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-0 max-w-7xl mx-auto">
+                {/* Left Column — pushed to far left */}
+                <div className="w-full lg:w-[28%] flex flex-col gap-5">
                   {[
                     { icon: TrendingUp, title: "Tier-1 Liquidity", desc: "Raw spreads, no re-quotes. Your strategy deserves real market conditions." },
                     { icon: Shield, title: "Transparent Rules", desc: "4% daily drawdown, 8% max. No hidden gotchas. What you see is what you get." },
                   ].map((f, i) => (
                     <Reveal key={f.title} delay={i * 0.08}>
-                      <div className="rounded-2xl bg-[#0c0c0c] p-6 flex items-start gap-4 hover:scale-[1.02] transition-transform duration-500 border border-white/[0.05] shadow-lg">
-                        <div className="pt-0.5 shrink-0">
-                          <f.icon className="w-6 h-6 text-[#bcff2e]" strokeWidth={2} />
+                      <div className="rounded-2xl md:rounded-3xl bg-[#0c0c0c] p-5 md:p-6 hover:scale-[1.02] transition-all duration-500 border border-white/[0.05] shadow-xl relative overflow-hidden group">
+                        {/* Icon Box */}
+                        <div className="w-10 h-10 rounded-xl bg-white/[0.06] flex items-center justify-center mb-4">
+                          <f.icon className="w-5 h-5 text-[#bcff2e]" strokeWidth={2} />
                         </div>
-                        <div>
-                          <h3 className="text-[17px] font-bold text-white mb-1.5 tracking-tight">{f.title}</h3>
-                          <p className="text-white/60 text-[14px] leading-snug">{f.desc}</p>
-                        </div>
+                        {/* Title */}
+                        <h3 className="text-lg font-bold text-white mb-1.5 tracking-tight">{f.title}</h3>
+                        {/* Description */}
+                        <p className="text-white/50 text-[13px] leading-relaxed">{f.desc}</p>
+                        {/* Bottom accent line */}
+                        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-[1px] bg-gradient-to-r from-transparent via-[#bcff2e]/20 to-transparent" />
                       </div>
                     </Reveal>
                   ))}
                 </div>
 
-                {/* Center Graphic */}
-                <div className="hidden lg:flex w-[30%] justify-center items-center relative">
+                {/* Center Graphic — wider space for orbit */}
+                <div className="hidden lg:flex w-[44%] justify-center items-center relative py-8">
                   <div className="relative w-[340px] h-[340px] flex items-center justify-center">
                     {/* Outer Orbit Ring with Platform Icons */}
                     <div className="absolute inset-[-30px] animate-[spin_20s_linear_infinite]">
@@ -528,21 +531,24 @@ export default function V2Page() {
                   </div>
                 </div>
 
-                {/* Right Column */}
-                <div className="w-full lg:w-[35%] flex flex-col gap-4">
+                {/* Right Column — pushed to far right */}
+                <div className="w-full lg:w-[28%] flex flex-col gap-5">
                   {[
                     { icon: Clock, title: "No Time Limit", desc: "Trade at your own pace. Pass the evaluation whenever you're ready." },
                     { icon: Award, title: "Auto-Scaling", desc: "Hit targets and grow automatically. $25K → $50K → $100K → $200K." },
                   ].map((f, i) => (
                     <Reveal key={f.title} delay={i * 0.08}>
-                      <div className="rounded-2xl bg-[#0c0c0c] p-6 flex items-start gap-4 hover:scale-[1.02] transition-transform duration-500 border border-white/[0.05] shadow-lg">
-                        <div className="pt-0.5 shrink-0">
-                          <f.icon className="w-6 h-6 text-[#bcff2e]" strokeWidth={2} />
+                      <div className="rounded-2xl md:rounded-3xl bg-[#0c0c0c] p-5 md:p-6 hover:scale-[1.02] transition-all duration-500 border border-white/[0.05] shadow-xl relative overflow-hidden group">
+                        {/* Icon Box */}
+                        <div className="w-10 h-10 rounded-xl bg-white/[0.06] flex items-center justify-center mb-4">
+                          <f.icon className="w-5 h-5 text-[#bcff2e]" strokeWidth={2} />
                         </div>
-                        <div>
-                          <h3 className="text-[17px] font-bold text-white mb-1.5 tracking-tight">{f.title}</h3>
-                          <p className="text-white/60 text-[14px] leading-snug">{f.desc}</p>
-                        </div>
+                        {/* Title */}
+                        <h3 className="text-lg font-bold text-white mb-1.5 tracking-tight">{f.title}</h3>
+                        {/* Description */}
+                        <p className="text-white/50 text-[13px] leading-relaxed">{f.desc}</p>
+                        {/* Bottom accent line */}
+                        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-[1px] bg-gradient-to-r from-transparent via-[#bcff2e]/20 to-transparent" />
                       </div>
                     </Reveal>
                   ))}
