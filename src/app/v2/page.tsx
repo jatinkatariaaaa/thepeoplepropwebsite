@@ -191,7 +191,7 @@ export default function V2Page() {
             {/* Left small image */}
             <Reveal className="hidden md:block md:col-span-3 lg:col-span-2">
               <div className="aspect-[9/10] w-full rounded-2xl lg:rounded-3xl overflow-hidden bg-[#e5ddd0]">
-                <img src="/images/dashboard-mockup.webp" alt="Dashboard" className="w-full h-full object-cover" loading="lazy" />
+                <img src="/images/dashboard-v2.webp" alt="Dashboard" className="w-full h-full object-cover" loading="lazy" />
               </div>
             </Reveal>
 
@@ -215,7 +215,7 @@ export default function V2Page() {
                   {/* Main image */}
                   <div className="relative w-full">
                     <div className="relative z-10 overflow-hidden w-full rounded-2xl lg:rounded-3xl aspect-[4/3] bg-[#e5ddd0]">
-                      <img src="/images/dashboard-mockup.webp" alt="TPP Dashboard" className="w-full h-full object-cover relative z-0" loading="lazy" />
+                      <img src="/images/dashboard-v2.webp" alt="TPP Dashboard" className="w-full h-full object-cover relative z-0" loading="lazy" />
                     </div>
                   </div>
 
