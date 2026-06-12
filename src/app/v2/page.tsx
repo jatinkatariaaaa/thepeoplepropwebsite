@@ -302,88 +302,135 @@ export default function V2Page() {
               {/* Header */}
               <Reveal>
                 <div className="pb-16 lg:pb-24 text-center">
-                  <div className="text-lg font-medium text-white mb-4">How It Works</div>
+                  <div className="text-lg font-medium text-[#bcff2e] mb-4 tracking-widest uppercase">Why TPP</div>
                   <h2 className="tracking-[-0.03em] text-white font-medium" style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}>
-                    Three steps from signup
-                    <br />to <span className="text-[#bcff2e]">funded</span>
+                    Built different from
+                    <br />every other <span className="text-[#bcff2e]">prop firm</span>
                   </h2>
                 </div>
               </Reveal>
 
-              {/* Bento Box Grid */}
+              {/* Stat-Driven Feature Grid */}
               <div className="w-full max-w-[1100px] mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid grid-cols-1 md:grid-cols-6 auto-rows-[200px] md:auto-rows-[160px] gap-4 md:gap-5 lg:gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
                   {[
-                    /* Row 1 (2 cards) */
                     { 
-                      id: 1, 
-                      span: "md:col-span-3 md:row-span-2", 
-                      bg: "dark", 
+                      stat: "0.0", 
+                      unit: "pips", 
+                      title: "Raw Spreads", 
+                      desc: "Tier-1 liquidity, zero markup. Your edge stays yours.", 
                       icon: TrendingUp,
-                      title: <>Raw Spreads,<br />Zero Markup</>, 
-                      subtitle: <><span className="text-[#bcff2e]">Tier-1</span> liquidity with spreads from 0.0 pips</>,
-                      image: "/images/coins-card.webp",
-                      imageClassName: "w-[65%] sm:w-[55%] md:w-[60%] absolute bottom-[-10%] right-[-5%] object-contain drop-shadow-2xl transition-transform duration-500 group-hover:-translate-y-2 group-hover:-translate-x-2"
+                      accent: false 
                     },
-                    { id: 2, span: "md:col-span-3 md:row-span-2", bg: "dark", icon: CalendarOff, title: <>No Minimum<br />Trading Days</>, subtitle: "Pass in 1 day or 100 — we never rush your strategy" },
-                    /* Row 2 (3 cards) */
-                    { id: 3, span: "md:col-span-2 md:row-span-2", bg: "dark", icon: Monitor, title: <>All Major<br />Platforms</>, subtitle: "MT4 · MT5 · DXTrade" },
-                    { id: 4, span: "md:col-span-2 md:row-span-2", bg: "lime", icon: Newspaper, title: <>News Trading<br />Allowed</>, subtitle: "Trade NFP, FOMC & every high-impact event" },
-                    { id: 5, span: "md:col-span-2 md:row-span-2", bg: "dark", icon: MoonStar, title: <>Weekend &<br />Overnight</>, subtitle: "Hold through swaps, weekends & holidays" },
-                    /* Row 3 (2 cards) */
-                    { id: 6, span: "md:col-span-3 md:row-span-2", bg: "dark", icon: RotateCcw, title: <>Free Retry<br />On Us</>, subtitle: <><span className="text-[#bcff2e]">Missed by 1%?</span> We give you another shot — no extra fee</> },
-                    { id: 7, span: "md:col-span-3 md:row-span-2", bg: "dark", icon: BadgeDollarSign, title: <>Pass First,<br />Pay Later</>, subtitle: <>Clear the challenge, <span className="text-[#bcff2e]">then</span> pay — zero upfront risk</> },
-                  ].map((s, i) => (
-                    <Reveal key={s.id} delay={i * 0.1} className={cn("w-full h-full", s.span)}>
-                      <div 
-                        className={cn(
-                          "relative w-full h-full rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-8 flex flex-col justify-between transition-all duration-300 hover:scale-[1.02] overflow-hidden group cursor-pointer border",
-                          s.bg === "lime" 
-                            ? "bg-[#bcff2e] shadow-[0_0_30px_rgba(188,255,46,0.15)] border-transparent" 
-                            : "bg-[#1A2326] border-white/[0.05]"
-                        )}
-                      >
-                        {/* Icon */}
-                        <div className="relative z-10 mb-1">
+                    { 
+                      stat: "0", 
+                      unit: "days min", 
+                      title: "No Time Pressure", 
+                      desc: "Pass in a day or a year — your pace, your rules.", 
+                      icon: CalendarOff,
+                      accent: false 
+                    },
+                    { 
+                      stat: "FREE", 
+                      unit: "retry", 
+                      title: "Second Chance, On Us", 
+                      desc: "Missed by a hair? We reset your challenge at zero cost.", 
+                      icon: RotateCcw,
+                      accent: true 
+                    },
+                    { 
+                      stat: "$0", 
+                      unit: "upfront", 
+                      title: "Pass First, Pay Later", 
+                      desc: "Prove your skill first. We only charge after you pass.", 
+                      icon: BadgeDollarSign,
+                      accent: true 
+                    },
+                    { 
+                      stat: "NFP", 
+                      unit: "& FOMC", 
+                      title: "News Trading Allowed", 
+                      desc: "No restrictions on high-impact events. Trade the volatility.", 
+                      icon: Newspaper,
+                      accent: false 
+                    },
+                    { 
+                      stat: "24/7", 
+                      unit: "hold", 
+                      title: "Weekend & Overnight", 
+                      desc: "Keep positions through swaps, weekends & holidays.", 
+                      icon: MoonStar,
+                      accent: false 
+                    },
+                    { 
+                      stat: "3", 
+                      unit: "platforms", 
+                      title: "MT4 · MT5 · DXTrade", 
+                      desc: "Trade on the platform you already know and trust.", 
+                      icon: Monitor,
+                      accent: false,
+                      fullWidth: true 
+                    },
+                  ].map((item, i) => (
+                    <Reveal key={item.title} delay={i * 0.07} className={cn("w-full", item.fullWidth && "sm:col-span-2")}>
+                      <div className={cn(
+                        "relative rounded-2xl md:rounded-3xl p-6 md:p-8 group cursor-pointer transition-all duration-300 hover:scale-[1.02] overflow-hidden border",
+                        item.accent 
+                          ? "bg-[#bcff2e] border-transparent" 
+                          : "bg-[#1A2326] border-white/[0.06] hover:border-white/[0.12]"
+                      )}>
+                        <div className="flex items-start justify-between gap-4">
+                          {/* Left: Stat + Text */}
+                          <div className="flex-1 min-w-0">
+                            {/* Big Stat */}
+                            <div className="flex items-baseline gap-2 mb-3">
+                              <span className={cn(
+                                "font-black tracking-[-0.04em] leading-none",
+                                item.accent ? "text-[#0c0c0c]" : "text-white",
+                                item.fullWidth ? "text-4xl md:text-5xl" : "text-4xl md:text-[56px]"
+                              )}>
+                                {item.stat}
+                              </span>
+                              <span className={cn(
+                                "text-sm md:text-base font-semibold uppercase tracking-wider",
+                                item.accent ? "text-[#0c0c0c]/50" : "text-[#bcff2e]/70"
+                              )}>
+                                {item.unit}
+                              </span>
+                            </div>
+                            
+                            {/* Title */}
+                            <h3 className={cn(
+                              "text-[17px] md:text-lg font-bold tracking-tight mb-1.5",
+                              item.accent ? "text-[#0c0c0c]" : "text-white"
+                            )}>
+                              {item.title}
+                            </h3>
+                            
+                            {/* Description */}
+                            <p className={cn(
+                              "text-[13px] md:text-[14px] leading-relaxed max-w-md",
+                              item.accent ? "text-[#0c0c0c]/60" : "text-white/50"
+                            )}>
+                              {item.desc}
+                            </p>
+                          </div>
+
+                          {/* Right: Icon */}
                           <div className={cn(
-                            "w-10 h-10 rounded-xl flex items-center justify-center mb-4",
-                            s.bg === "lime" ? "bg-[#0c0c0c]/10" : "bg-white/[0.06]"
+                            "w-11 h-11 rounded-xl flex items-center justify-center shrink-0 mt-1",
+                            item.accent ? "bg-[#0c0c0c]/10" : "bg-white/[0.06]"
                           )}>
-                            <s.icon className={cn(
+                            <item.icon className={cn(
                               "w-5 h-5",
-                              s.bg === "lime" ? "text-[#0c0c0c]" : "text-[#bcff2e]"
+                              item.accent ? "text-[#0c0c0c]/70" : "text-[#bcff2e]"
                             )} strokeWidth={2} />
                           </div>
                         </div>
 
-                        {/* Text Content */}
-                        <div className="relative z-10">
-                          <h3 className={cn(
-                            "text-2xl md:text-[28px] leading-[1.1] font-bold tracking-tight mb-2.5", 
-                            s.bg === "lime" ? "text-[#0c0c0c]" : "text-white"
-                          )}>
-                            {s.title}
-                          </h3>
-                          <p className={cn(
-                            "text-[14px] md:text-[15px] font-medium leading-snug", 
-                            s.bg === "lime" ? "text-[#0c0c0c]/70" : "text-white/55"
-                          )}>
-                            {s.subtitle}
-                          </p>
-                        </div>
-                        
-                        {/* Image or subtle glow */}
-                        {s.image ? (
-                          <div className="absolute inset-0 w-full h-full overflow-hidden rounded-[1.5rem] md:rounded-[2rem] pointer-events-none">
-                            <img src={s.image} className={s.imageClassName} alt="" loading="lazy" />
-                          </div>
-                        ) : (
-                          <div className="absolute right-0 bottom-0 w-1/2 h-1/2 opacity-[0.08] group-hover:opacity-[0.15] transition-opacity duration-500 pointer-events-none">
-                            <div className={cn(
-                              "w-full h-full rounded-tl-full blur-3xl", 
-                              s.bg === "lime" ? "bg-white/60" : "bg-[#bcff2e]/40"
-                            )} />
-                          </div>
+                        {/* Subtle bottom glow on dark cards */}
+                        {!item.accent && (
+                          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-[1px] bg-gradient-to-r from-transparent via-[#bcff2e]/20 to-transparent" />
                         )}
                       </div>
                     </Reveal>
