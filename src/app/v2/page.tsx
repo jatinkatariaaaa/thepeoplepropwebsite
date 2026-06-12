@@ -323,7 +323,7 @@ export default function V2Page() {
                           "relative w-full h-full rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-8 flex flex-col justify-between transition-all duration-300 hover:scale-[1.02] overflow-hidden group cursor-pointer",
                           s.bg === "lime" 
                             ? "bg-[#bcff2e] shadow-[0_0_30px_rgba(188,255,46,0.15)]" 
-                            : "bg-[#111111] border border-white/[0.08]"
+                            : "bg-white/[0.04] hover:bg-white/[0.06] backdrop-blur-xl border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]"
                         )}
                       >
                         {/* Text Content */}
