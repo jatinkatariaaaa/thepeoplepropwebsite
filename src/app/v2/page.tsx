@@ -57,7 +57,7 @@ function AnimatedCounter({ end, suffix = "" }: { end: number; suffix?: string })
 }
 
 /* ---------- Section Reveal ---------- */
-function Reveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+function Reveal({ children, className = "", delay = 0, style }: { children: React.ReactNode; className?: string; delay?: number; style?: React.CSSProperties }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -65,6 +65,7 @@ function Reveal({ children, className = "", delay = 0 }: { children: React.React
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] }}
       className={className}
+      style={style}
     >
       {children}
     </motion.div>
