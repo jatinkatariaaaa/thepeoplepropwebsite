@@ -8,14 +8,11 @@ import {
   ArrowUpRight,
   TrendingUp,
   Shield,
-  Zap,
-  DollarSign,
   Clock,
   CheckCircle2,
   Award,
   ChevronUp,
   Menu,
-  Target,
 } from "lucide-react";
 
 import { V2ChallengeCalculator } from "@/components/landing/V2ChallengeCalculator";
@@ -300,26 +297,9 @@ export default function V2Page() {
                 </div>
               </Reveal>
 
-              {/* Step Cards */}
+              {/* Step Cards - Removed for now, new cards will be added later */}
               <div className="flex flex-col items-center gap-16 lg:gap-[12vh]">
-                {[
-                  { step: "01", title: "Pass the Evaluation", desc: "Hit 10% profit target with 4% daily / 8% max drawdown. Min 3 trading days. No time limit.", icon: Target, img: "/images/steps/11.webp" },
-                  { step: "02", title: "Get Your Funded Account", desc: "Receive credentials in under 24 hours. Up to $200,000 in real trading capital.", icon: Zap, img: "/images/steps/22.webp" },
-                  { step: "03", title: "Trade & Get Paid", desc: "First payout in 14 days. Up to 90% profit split. 100% fee refund on first payout.", icon: DollarSign, img: "/images/steps/33.webp" },
-                ].map((s, i) => (
-                  <Reveal key={s.step} delay={i * 0.1} className="w-full lg:w-[700px] 2xl:w-[800px]">
-                    <div className="relative">
-                      <div className="aspect-[4/3] w-full overflow-hidden rounded-2xl lg:rounded-3xl bg-[#1a1a1a]">
-                        <img src={s.img} alt={s.title} className="w-full h-full object-cover" loading="lazy" />
-                      </div>
-                      <div className="flex justify-between pt-3 text-white">
-                        <span className="text-base font-medium">Step {s.step} · {s.title}</span>
-                        <span className="text-sm text-white/60 hidden sm:block max-w-[280px] text-right">{s.desc}</span>
-                      </div>
-                      <p className="sm:hidden text-sm text-white/60 mt-1">{s.desc}</p>
-                    </div>
-                  </Reveal>
-                ))}
+                {/* New cards will be inserted here */}
               </div>
 
               {/* View More */}
