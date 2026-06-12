@@ -93,9 +93,14 @@ export default function V2Page() {
           <Link href="/v2" className="text-white font-bold text-xl tracking-tight hover:text-[#bcff2e] transition-colors z-30 relative">
             TPP
           </Link>
-          <p className="hidden lg:block absolute left-1/2 top-1/2 -translate-y-1/2 text-[15px] font-medium text-white z-30">
-            Your friendly neighbourhood<br />prop trading firm
-          </p>
+          <div className="hidden lg:flex absolute left-1/2 top-1/2 -translate-y-1/2 items-center gap-6 z-30">
+            <Link href="/v2" className="text-white/70 hover:text-white text-[14px] font-medium transition-colors">Home</Link>
+            <Link href="/challenges" className="text-white/70 hover:text-white text-[14px] font-medium transition-colors">Challenges</Link>
+            <Link href="/rules" className="text-white/70 hover:text-white text-[14px] font-medium transition-colors">Rules</Link>
+            <Link href="/referral" className="text-white/70 hover:text-white text-[14px] font-medium transition-colors">Referrals</Link>
+            <Link href="/heatmap" className="text-white/70 hover:text-white text-[14px] font-medium transition-colors">Heatmap</Link>
+            <Link href="/contact" className="text-white/70 hover:text-white text-[14px] font-medium transition-colors">Contact</Link>
+          </div>
           <div className="ml-auto flex items-center gap-4 lg:gap-6 z-30 relative">
             <Link
               href="/login"
