@@ -400,21 +400,60 @@ export default function V2Page() {
                 </div>
               </Reveal>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                {[
-                  { icon: TrendingUp, title: "Tier-1 Liquidity", desc: "Raw spreads, no re-quotes. Your strategy deserves real market conditions." },
-                  { icon: Shield, title: "Transparent Rules", desc: "4% daily drawdown, 8% max. No hidden gotchas. What you see is what you get." },
-                  { icon: Clock, title: "No Time Limit", desc: "Trade at your own pace. Pass the evaluation whenever you're ready." },
-                  { icon: Award, title: "Auto-Scaling", desc: "Hit targets and grow automatically. $25K → $50K → $100K → $200K." },
-                ].map((f, i) => (
-                  <Reveal key={f.title} delay={i * 0.08}>
-                    <div className="rounded-2xl bg-[#0c0c0c] p-8 lg:p-10 h-full group hover:scale-[1.02] transition-transform duration-500">
-                      <f.icon className="w-7 h-7 text-[#bcff2e] mb-5" strokeWidth={1.5} />
-                      <h3 className="text-xl font-medium text-white mb-2 tracking-tight">{f.title}</h3>
-                      <p className="text-white/60 text-[15px] leading-relaxed">{f.desc}</p>
+              <div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-10 max-w-6xl mx-auto">
+                {/* Left Column */}
+                <div className="w-full lg:w-[35%] flex flex-col gap-4">
+                  {[
+                    { icon: TrendingUp, title: "Tier-1 Liquidity", desc: "Raw spreads, no re-quotes. Your strategy deserves real market conditions." },
+                    { icon: Shield, title: "Transparent Rules", desc: "4% daily drawdown, 8% max. No hidden gotchas. What you see is what you get." },
+                  ].map((f, i) => (
+                    <Reveal key={f.title} delay={i * 0.08}>
+                      <div className="rounded-2xl bg-[#0c0c0c] p-6 flex items-start gap-4 hover:scale-[1.02] transition-transform duration-500 border border-white/[0.05] shadow-lg">
+                        <div className="pt-0.5 shrink-0">
+                          <f.icon className="w-6 h-6 text-[#bcff2e]" strokeWidth={2} />
+                        </div>
+                        <div>
+                          <h3 className="text-[17px] font-bold text-white mb-1.5 tracking-tight">{f.title}</h3>
+                          <p className="text-white/60 text-[14px] leading-snug">{f.desc}</p>
+                        </div>
+                      </div>
+                    </Reveal>
+                  ))}
+                </div>
+
+                {/* Center Graphic */}
+                <div className="hidden lg:flex w-[30%] justify-center items-center relative">
+                  <div className="relative w-[300px] h-[300px] flex items-center justify-center">
+                    {/* Glowing Rings */}
+                    <div className="absolute inset-0 rounded-full border border-[#0c0c0c]/10 animate-[spin_8s_linear_infinite]" />
+                    <div className="absolute inset-4 rounded-full border border-[#0c0c0c]/20 animate-[spin_12s_linear_infinite_reverse]" />
+                    
+                    {/* Center Circle */}
+                    <div className="w-[180px] h-[180px] rounded-full bg-[#0c0c0c] shadow-[0_0_80px_rgba(0,0,0,0.15)] flex items-center justify-center relative z-10 border border-white/[0.05]">
+                      <span className="text-[#bcff2e] font-display font-bold text-5xl tracking-tighter">TPP</span>
                     </div>
-                  </Reveal>
-                ))}
+                  </div>
+                </div>
+
+                {/* Right Column */}
+                <div className="w-full lg:w-[35%] flex flex-col gap-4">
+                  {[
+                    { icon: Clock, title: "No Time Limit", desc: "Trade at your own pace. Pass the evaluation whenever you're ready." },
+                    { icon: Award, title: "Auto-Scaling", desc: "Hit targets and grow automatically. $25K → $50K → $100K → $200K." },
+                  ].map((f, i) => (
+                    <Reveal key={f.title} delay={i * 0.08}>
+                      <div className="rounded-2xl bg-[#0c0c0c] p-6 flex items-start gap-4 hover:scale-[1.02] transition-transform duration-500 border border-white/[0.05] shadow-lg">
+                        <div className="pt-0.5 shrink-0">
+                          <f.icon className="w-6 h-6 text-[#bcff2e]" strokeWidth={2} />
+                        </div>
+                        <div>
+                          <h3 className="text-[17px] font-bold text-white mb-1.5 tracking-tight">{f.title}</h3>
+                          <p className="text-white/60 text-[14px] leading-snug">{f.desc}</p>
+                        </div>
+                      </div>
+                    </Reveal>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
