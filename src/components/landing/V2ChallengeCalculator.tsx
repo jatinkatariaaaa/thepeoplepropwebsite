@@ -255,7 +255,7 @@ export function V2ChallengeCalculator() {
         />
 
         {/* Program type pills (Atlas-style hero bar) - Desktop */}
-        <div className="hidden md:flex mx-auto mb-5 w-full max-w-3xl flex-wrap items-center justify-center gap-2 rounded-full border border-[var(--border)] bg-white p-1.5 shadow-[0_2px_0_rgba(11,15,26,0.02)]">
+        <div className="hidden md:flex mx-auto mb-5 w-full max-w-3xl flex-wrap items-center justify-center gap-2 rounded-xl border border-[var(--border)] bg-white p-1.5 shadow-[0_2px_0_rgba(11,15,26,0.02)]">
           {programs.map((p) => {
             const active = p.key === program.key;
             return (
@@ -265,7 +265,7 @@ export function V2ChallengeCalculator() {
                 onClick={() => selectProgram(p.key)}
                 aria-pressed={active}
                 className={cn(
-                  "relative inline-flex items-center gap-2 rounded-full px-4 md:px-5 py-2 text-[13px] md:text-[13.5px] font-medium transition-colors",
+                  "relative inline-flex items-center gap-2 rounded-xl px-4 md:px-5 py-2 text-[13px] md:text-[13.5px] font-medium transition-colors",
                   active
                     ? "bg-[#bcff2e] text-[#0c0c0c]"
                     : "text-[var(--ink-600)] hover:text-[var(--ink-950)]",
@@ -290,7 +290,7 @@ export function V2ChallengeCalculator() {
         </div>
 
         {/* Program type segmented control - Mobile */}
-        <div className="md:hidden mx-auto mb-5 flex w-full max-w-full bg-[var(--paper-2)] p-1 rounded-full items-center shadow-inner border border-black/[0.04]">
+        <div className="md:hidden mx-auto mb-5 flex w-full max-w-full bg-[var(--paper-2)] p-1 rounded-xl items-center shadow-inner border border-black/[0.04]">
           {programs.map((p) => {
             const active = p.key === program.key;
             return (
@@ -300,7 +300,7 @@ export function V2ChallengeCalculator() {
                 onClick={() => selectProgram(p.key)}
                 aria-pressed={active}
                 className={cn(
-                  "relative inline-flex items-center justify-center whitespace-nowrap rounded-full px-2 py-2.5 transition-all flex-1",
+                  "relative inline-flex items-center justify-center whitespace-nowrap rounded-xl px-2 py-2.5 transition-all flex-1",
                   active
                     ? "bg-white text-[var(--ink-950)] shadow-[0_2px_8px_-2px_rgba(11,15,26,0.08)]"
                     : "text-[var(--ink-500)] hover:text-[var(--ink-950)]",
@@ -454,7 +454,7 @@ export function V2ChallengeCalculator() {
                       "relative rounded-xl border px-3 py-3.5 text-center transition-all duration-200 lift",
                       !offered && "opacity-35 cursor-not-allowed",
                       active
-                        ? "border-[#bcff2e] bg-[#bcff2e20] text-[var(--ink-950)] shadow-[0_8px_22px_-14px_rgba(37,99,235,0.45)]"
+                        ? "border-[#bcff2e] bg-[#bcff2e] text-[#0c0c0c] shadow-[0_8px_22px_-14px_rgba(188,255,46,0.45)]"
                         : "border-[var(--border)] bg-white text-[var(--ink-950)] hover:border-[var(--ink-950)]",
                     )}
                   >
