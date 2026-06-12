@@ -93,13 +93,23 @@ export default function V2Page() {
           <Link href="/v2" className="text-white font-bold text-xl tracking-tight hover:text-[#bcff2e] transition-colors z-30 relative">
             TPP
           </Link>
-          <div className="hidden lg:flex absolute left-1/2 top-1/2 -translate-y-1/2 items-center gap-6 z-30">
-            <Link href="/v2" className="text-white/70 hover:text-white text-[14px] font-medium transition-colors">Home</Link>
-            <Link href="/challenges" className="text-white/70 hover:text-white text-[14px] font-medium transition-colors">Challenges</Link>
-            <Link href="/rules" className="text-white/70 hover:text-white text-[14px] font-medium transition-colors">Rules</Link>
-            <Link href="/referral" className="text-white/70 hover:text-white text-[14px] font-medium transition-colors">Referrals</Link>
-            <Link href="/heatmap" className="text-white/70 hover:text-white text-[14px] font-medium transition-colors">Heatmap</Link>
-            <Link href="/contact" className="text-white/70 hover:text-white text-[14px] font-medium transition-colors">Contact</Link>
+          <div className="hidden lg:flex absolute left-1/2 top-1/2 -translate-y-1/2 items-center p-1.5 rounded-full border border-white/10 bg-white/[0.03] backdrop-blur-md z-30 shadow-2xl">
+            {[
+              { name: "Home", path: "/v2" },
+              { name: "Challenges", path: "/challenges" },
+              { name: "Rules", path: "/rules" },
+              { name: "Referrals", path: "/referral" },
+              { name: "Heatmap", path: "/heatmap" },
+              { name: "Contact", path: "/contact" },
+            ].map((link) => (
+              <Link 
+                key={link.name} 
+                href={link.path} 
+                className="relative px-4 py-1.5 text-white/60 hover:text-white text-[13px] font-medium tracking-wide transition-all duration-300 rounded-full hover:bg-white/10 hover:shadow-inner"
+              >
+                {link.name}
+              </Link>
+            ))}
           </div>
           <div className="ml-auto flex items-center gap-4 lg:gap-6 z-30 relative">
             <Link
