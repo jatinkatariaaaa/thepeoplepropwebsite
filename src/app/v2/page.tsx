@@ -160,11 +160,13 @@ export default function V2Page() {
                   </h2>
                 </div>
 
-                <Reveal delay={0.1} className="flex flex-col items-center gap-y-8 -mt-6 md:-mt-[4vw] lg:-mt-[5vw] lg:px-[12.5%] relative z-10">
+                <Reveal delay={0.1} className="flex flex-col items-center gap-y-8 -mt-2 md:-mt-6 lg:-mt-8 lg:px-[12.5%] relative z-10">
                   {/* Main image */}
                   <div className="relative w-full">
                     <div className="relative z-10 overflow-hidden w-full rounded-2xl lg:rounded-3xl aspect-[4/3] bg-[#e5ddd0]">
-                      <img src="/images/dashboard-mockup.webp" alt="TPP Dashboard" className="w-full h-full object-cover" loading="lazy" />
+                      {/* Dark overlay at the top so the mix-blend text turns light over it instead of black */}
+                      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent z-10" />
+                      <img src="/images/dashboard-mockup.webp" alt="TPP Dashboard" className="w-full h-full object-cover relative z-0" loading="lazy" />
                     </div>
                   </div>
 
