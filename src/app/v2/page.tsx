@@ -153,13 +153,12 @@ export default function V2Page() {
             {/* Center content */}
             <div className="md:col-span-6 lg:col-span-8">
               <div className="relative">
-                <Reveal>
-                  <div className="relative z-20 text-center mix-blend-difference">
-                    <h2 className="tracking-tight text-white font-medium" style={{ fontSize: "clamp(3rem, 10vw, 8rem)", lineHeight: "1" }}>
-                      We&apos;re The People Prop
-                    </h2>
-                  </div>
-                </Reveal>
+                {/* Removing Reveal here because Framer Motion's transform/opacity creates a stacking context that breaks mix-blend-mode against siblings */}
+                <div className="relative z-20 text-center mix-blend-difference pointer-events-none">
+                  <h2 className="tracking-tight text-white font-medium" style={{ fontSize: "clamp(3rem, 10vw, 8rem)", lineHeight: "1" }}>
+                    We&apos;re The People Prop
+                  </h2>
+                </div>
 
                 <Reveal delay={0.1} className="flex flex-col items-center gap-y-8 -mt-6 md:-mt-[4vw] lg:-mt-[5vw] lg:px-[12.5%] relative z-10">
                   {/* Main image */}
