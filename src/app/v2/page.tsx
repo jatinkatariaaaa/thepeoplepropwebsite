@@ -8,6 +8,7 @@ import {
   Shield,
   Clock,
   Award,
+  CheckCircle2,
   CalendarOff,
   Monitor,
   Newspaper,
