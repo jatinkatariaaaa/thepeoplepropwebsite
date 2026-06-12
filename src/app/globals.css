@@ -1366,7 +1366,7 @@ html.lenis body {
 
 /* When V2 is active, override everything */
 body.v2-active {
-  background: #0c0c0c !important;
+  background: #f1eade !important;
   background-image: none !important;
 }
 
