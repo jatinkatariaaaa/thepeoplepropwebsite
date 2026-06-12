@@ -136,7 +136,7 @@ export function V2ChallengeCalculator() {
         </div>
 
         {/* 3-Column Grid */}
-        <div className="w-full grid grid-cols-1 lg:grid-cols-[240px_280px_1fr] gap-8 xl:gap-12 items-start">
+        <div className="w-full grid grid-cols-1 lg:grid-cols-[240px_280px_1fr] gap-4 xl:gap-6 items-start">
           
           {/* Column 1: Platforms */}
           <div className="flex flex-col gap-4">
