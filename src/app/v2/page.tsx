@@ -472,7 +472,7 @@ export default function V2Page() {
                     { icon: Shield, title: "Transparent Rules", desc: "4% daily drawdown, 8% max. No hidden gotchas. What you see is what you get." },
                   ].map((f, i) => (
                     <Reveal key={f.title} delay={i * 0.08}>
-                      <div className="rounded-2xl md:rounded-3xl bg-[#0c0c0c] p-5 md:p-6 hover:scale-[1.02] transition-all duration-500 border border-white/[0.05] shadow-xl relative overflow-hidden group">
+                      <div className="rounded-2xl md:rounded-3xl bg-[#0c0c0c] p-6 md:p-8 min-h-[200px] flex flex-col hover:scale-[1.02] transition-all duration-500 border border-white/[0.05] shadow-xl relative overflow-hidden group">
                         {/* Icon Box */}
                         <div className="w-10 h-10 rounded-xl bg-white/[0.06] flex items-center justify-center mb-4">
                           <f.icon className="w-5 h-5 text-[#bcff2e]" strokeWidth={2} />
@@ -538,7 +538,7 @@ export default function V2Page() {
                     { icon: Award, title: "Auto-Scaling", desc: "Hit targets and grow automatically. $25K → $50K → $100K → $200K." },
                   ].map((f, i) => (
                     <Reveal key={f.title} delay={i * 0.08}>
-                      <div className="rounded-2xl md:rounded-3xl bg-[#0c0c0c] p-5 md:p-6 hover:scale-[1.02] transition-all duration-500 border border-white/[0.05] shadow-xl relative overflow-hidden group">
+                      <div className="rounded-2xl md:rounded-3xl bg-[#0c0c0c] p-6 md:p-8 min-h-[200px] flex flex-col hover:scale-[1.02] transition-all duration-500 border border-white/[0.05] shadow-xl relative overflow-hidden group">
                         {/* Icon Box */}
                         <div className="w-10 h-10 rounded-xl bg-white/[0.06] flex items-center justify-center mb-4">
                           <f.icon className="w-5 h-5 text-[#bcff2e]" strokeWidth={2} />
