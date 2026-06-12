@@ -321,12 +321,10 @@ export default function V2Page() {
                     <Reveal key={s.id} delay={i * 0.1} className={cn("w-full h-full", s.span)}>
                       <div 
                         className={cn(
-                          "relative w-full h-full rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-8 flex flex-col justify-between transition-all duration-300 hover:scale-[1.02] overflow-hidden group cursor-pointer border border-white/[0.05]",
-                          s.bg === "lime" && "bg-[#bcff2e] shadow-[0_0_30px_rgba(188,255,46,0.15)] border-transparent",
-                          s.bg === "var1" && "bg-[#161D20] shadow-inner shadow-white/[0.02]",
-                          s.bg === "var2" && "bg-[#1A2326] shadow-inner shadow-white/[0.02]",
-                          s.bg === "var3" && "bg-[#1E292D] shadow-inner shadow-white/[0.02]",
-                          s.bg === "var4" && "bg-[#233034] shadow-inner shadow-white/[0.02]",
+                          "relative w-full h-full rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-8 flex flex-col justify-between transition-all duration-300 hover:scale-[1.02] overflow-hidden group cursor-pointer border",
+                          s.bg === "lime" 
+                            ? "bg-[#bcff2e] shadow-[0_0_30px_rgba(188,255,46,0.15)] border-transparent" 
+                            : "bg-[#1A2326] border-white/[0.05] shadow-inner shadow-white/[0.02]"
                         )}
                       >
                         {/* Text Content */}
@@ -349,7 +347,7 @@ export default function V2Page() {
                         <div className="absolute right-0 bottom-0 w-3/4 h-3/4 opacity-[0.15] group-hover:opacity-30 transition-opacity duration-500 pointer-events-none flex items-end justify-end p-4">
                           <div className={cn(
                             "w-full h-full rounded-tl-full blur-3xl", 
-                            s.bg === "lime" ? "bg-white/60" : "bg-[#bcff2e]/20"
+                            s.bg === "lime" ? "bg-white/60" : "bg-white/20"
                           )} />
                         </div>
                       </div>
