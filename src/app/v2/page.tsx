@@ -15,6 +15,7 @@ import {
   Menu,
 } from "lucide-react";
 
+import { cn } from "@/lib/utils";
 import { V2ChallengeCalculator } from "@/components/landing/V2ChallengeCalculator";
 
 /* ═══════════════════════════════════════════════════════════════
