@@ -363,10 +363,10 @@ export default function V2Page() {
                       accent: false 
                     },
                     { 
-                      stat: "4", 
+                      stat: "3", 
                       unit: "platforms", 
-                      title: "MT4 · MT5 · DXTrade · TPP Dashboard", 
-                      desc: "Trade on the platform you trust, plus our own proprietary dashboard.", 
+                      title: "MT5 · DXTrade · TPP Terminal", 
+                      desc: "Trade on the platform you trust, plus our own proprietary terminal.", 
                       icon: Monitor,
                       accent: false,
                       fullWidth: true 
@@ -491,13 +491,42 @@ export default function V2Page() {
 
                 {/* Center Graphic */}
                 <div className="hidden lg:flex w-[30%] justify-center items-center relative">
-                  <div className="relative w-[300px] h-[300px] flex items-center justify-center">
-                    {/* Glowing Rings */}
-                    <div className="absolute inset-0 rounded-full border border-[#0c0c0c]/10 animate-[spin_8s_linear_infinite]" />
-                    <div className="absolute inset-4 rounded-full border border-[#0c0c0c]/20 animate-[spin_12s_linear_infinite_reverse]" />
+                  <div className="relative w-[340px] h-[340px] flex items-center justify-center">
+                    {/* Outer Orbit Ring with Platform Icons */}
+                    <div className="absolute inset-[-30px] animate-[spin_20s_linear_infinite]">
+                      {/* Ring border */}
+                      <div className="absolute inset-0 rounded-full border border-[#0c0c0c]/10" />
+                      
+                      {/* MT5 Icon - top */}
+                      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-[spin_20s_linear_infinite_reverse]">
+                        <div className="w-12 h-12 rounded-xl bg-[#0c0c0c] shadow-lg flex items-center justify-center border border-white/10 overflow-hidden">
+                          <img src="/images/icon-mt5.svg" alt="MT5" className="w-8 h-8 rounded-lg" />
+                        </div>
+                      </div>
+                      
+                      {/* DXTrade Icon - bottom-left */}
+                      <div className="absolute bottom-[13%] left-[3%] -translate-x-1/2 animate-[spin_20s_linear_infinite_reverse]">
+                        <div className="w-12 h-12 rounded-xl bg-[#0c0c0c] shadow-lg flex items-center justify-center border border-white/10 overflow-hidden">
+                          <img src="/images/icon-dxtrade.svg" alt="DXTrade" className="w-8 h-8 rounded-lg" />
+                        </div>
+                      </div>
+                      
+                      {/* TPP Terminal Icon - bottom-right */}
+                      <div className="absolute bottom-[13%] right-[3%] translate-x-1/2 animate-[spin_20s_linear_infinite_reverse]">
+                        <div className="w-12 h-12 rounded-xl bg-[#0c0c0c] shadow-lg flex items-center justify-center border border-white/10 overflow-hidden">
+                          <img src="/images/icon-tpp-terminal.webp" alt="TPP Terminal" className="w-10 h-10 rounded-lg object-cover" />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Middle Ring */}
+                    <div className="absolute inset-4 rounded-full border border-[#0c0c0c]/15 animate-[spin_12s_linear_infinite_reverse]" />
+                    
+                    {/* Inner Ring */}
+                    <div className="absolute inset-10 rounded-full border border-[#0c0c0c]/20 animate-[spin_8s_linear_infinite]" />
                     
                     {/* Center Circle */}
-                    <div className="w-[180px] h-[180px] rounded-full bg-[#0c0c0c] shadow-[0_0_80px_rgba(0,0,0,0.15)] flex items-center justify-center relative z-10 border border-white/[0.05]">
+                    <div className="w-[160px] h-[160px] rounded-full bg-[#0c0c0c] shadow-[0_0_80px_rgba(0,0,0,0.15)] flex items-center justify-center relative z-10 border border-white/[0.05]">
                       <span className="text-[#bcff2e] font-display font-bold text-5xl tracking-tighter">TPP</span>
                     </div>
                   </div>
