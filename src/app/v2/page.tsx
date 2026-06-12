@@ -306,16 +306,6 @@ export default function V2Page() {
                     { id: 1, span: "md:col-span-1 md:row-span-2", bg: "dark", title: "Card Title 1", subtitle: "Tall placeholder card" },
                     { id: 2, span: "md:col-span-2 md:row-span-1", bg: "dark", title: "Card Title 2", subtitle: "Wide placeholder card" },
                     { id: 3, span: "md:col-span-2 md:row-span-1", bg: "dark", title: "Card Title 3", subtitle: "Wide placeholder card" },
-                    
-                    /* Block 2: Three equal squares */
-                    { id: 4, span: "md:col-span-1 md:row-span-1", bg: "dark", title: "Card Title 4", subtitle: "Square card" },
-                    { id: 5, span: "md:col-span-1 md:row-span-1", bg: "lime", title: "Card Title 5", subtitle: "Highlight square" },
-                    { id: 6, span: "md:col-span-1 md:row-span-1", bg: "dark", title: "Card Title 6", subtitle: "Square card" },
-
-                    /* Block 3: Left Two Wides, Right Tall */
-                    { id: 7, span: "md:col-span-2 md:row-span-1", bg: "dark", title: "Card Title 7", subtitle: "Wide placeholder card" },
-                    { id: 8, span: "md:col-span-1 md:row-span-2", bg: "dark", title: "Card Title 8", subtitle: "Tall placeholder card" },
-                    { id: 9, span: "md:col-span-2 md:row-span-1", bg: "lime", title: "Card Title 9", subtitle: "Highlight wide card" },
                   ].map((s, i) => (
                     <Reveal key={s.id} delay={i * 0.1} className={cn("w-full h-full", s.span)}>
                       <div 
