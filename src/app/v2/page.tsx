@@ -153,19 +153,23 @@ export default function V2Page() {
             {/* Center content */}
             <div className="md:col-span-6 lg:col-span-8">
               <div className="relative">
-                {/* Removing Reveal here because Framer Motion's transform/opacity creates a stacking context that breaks mix-blend-mode against siblings */}
-                <div className="relative z-20 text-center mix-blend-difference pointer-events-none">
-                  <h2 className="tracking-tight text-white font-medium" style={{ fontSize: "clamp(3rem, 10vw, 8rem)", lineHeight: "1" }}>
+                {/* Use a linear-gradient to color the exact overlapping portion of the text, bypassing CSS blend mode limitations on light backgrounds */}
+                <div className="relative z-20 text-center pointer-events-none">
+                  <h2 className="tracking-tight font-medium text-transparent bg-clip-text" style={{ 
+                    fontSize: "clamp(3rem, 10vw, 8rem)", 
+                    lineHeight: "1",
+                    backgroundImage: "linear-gradient(to bottom, #0c0c0c calc(100% - 3vw), #38bdf8 calc(100% - 3vw))",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent"
+                  }}>
                     We&apos;re The People Prop
                   </h2>
                 </div>
 
-                <Reveal delay={0.1} className="flex flex-col items-center gap-y-8 -mt-2 md:-mt-6 lg:-mt-8 lg:px-[12.5%] relative z-10">
+                <Reveal delay={0.1} className="flex flex-col items-center gap-y-8 relative z-10 lg:px-[12.5%]" style={{ marginTop: "-3vw" }}>
                   {/* Main image */}
                   <div className="relative w-full">
                     <div className="relative z-10 overflow-hidden w-full rounded-2xl lg:rounded-3xl aspect-[4/3] bg-[#e5ddd0]">
-                      {/* Dark overlay at the top so the mix-blend text turns light over it instead of black */}
-                      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent z-10" />
                       <img src="/images/dashboard-mockup.webp" alt="TPP Dashboard" className="w-full h-full object-cover relative z-0" loading="lazy" />
                     </div>
                   </div>
