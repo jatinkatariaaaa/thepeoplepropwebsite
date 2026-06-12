@@ -372,7 +372,7 @@ export function V2ChallengeCalculator() {
                       className={cn(
                         "block text-[13px] font-medium",
                         active && !disabled
-                          ? "text-white"
+                          ? "text-[#0c0c0c]"
                           : "text-[var(--ink-950)]",
                       )}
                     >
@@ -382,7 +382,7 @@ export function V2ChallengeCalculator() {
                       className={cn(
                         "block text-[11px] mt-0.5",
                         active && !disabled
-                          ? "text-white/55"
+                          ? "text-[#0c0c0c]/70"
                           : "text-[var(--ink-500)]",
                       )}
                     >
