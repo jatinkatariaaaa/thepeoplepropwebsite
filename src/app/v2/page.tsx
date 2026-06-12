@@ -93,8 +93,8 @@ export default function V2Page() {
       {/* ═══════════════ FIXED HEADER ═══════════════ */}
       <header className="fixed top-0 left-0 w-full z-50 h-20 lg:h-[7.5rem] px-[5px] lg:px-[10px]">
         <div className="relative z-20 flex h-full w-full items-center px-[10px] lg:px-[25px]">
-          <Link href="/v2" className="text-white font-bold text-xl tracking-tight hover:text-[#bcff2e] transition-colors z-30 relative">
-            TPP
+          <Link href="/v2" className="transition-opacity hover:opacity-80 z-30 relative flex items-center">
+            <img src="/images/logo-v2.png" alt="TPP Logo" className="h-6 md:h-8 w-auto object-contain" />
           </Link>
           <div className="hidden lg:flex absolute left-1/2 top-1/2 -translate-y-1/2 items-center p-1.5 rounded-full border border-white/10 bg-white/[0.03] backdrop-blur-md z-30 shadow-2xl">
             {[
