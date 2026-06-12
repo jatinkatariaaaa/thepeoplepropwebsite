@@ -303,22 +303,30 @@ export default function V2Page() {
                 </div>
               </Reveal>
 
-              {/* Bento Box Grid - Blank Cards for Future Content */}
+              {/* Bento Box Grid */}
               <div className="w-full max-w-[1100px] mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid grid-cols-1 md:grid-cols-3 auto-rows-[240px] gap-4 md:gap-5 lg:gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-6 auto-rows-[200px] md:auto-rows-[160px] gap-4 md:gap-5 lg:gap-6">
                   {[
-                    /* Block 1: Left Tall, Right Two Wides */
-                    { id: 1, span: "md:col-span-1 md:row-span-2", bg: "dark", title: "Card Title 1", subtitle: "Tall placeholder card" },
-                    { id: 2, span: "md:col-span-2 md:row-span-1", bg: "dark", title: "Card Title 2", subtitle: "Wide placeholder card" },
-                    { id: 3, span: "md:col-span-2 md:row-span-1", bg: "dark", title: "Card Title 3", subtitle: "Wide placeholder card" },
+                    /* Row 1 (2 cards) */
+                    { id: 1, span: "md:col-span-3 md:row-span-2", bg: "var1", title: "Best Trading Conditions", subtitle: "Lowest spreads" },
+                    { id: 2, span: "md:col-span-3 md:row-span-2", bg: "var2", title: "No Minimum Trading Days", subtitle: "Take your time" },
+                    /* Row 2 (3 cards) */
+                    { id: 3, span: "md:col-span-2 md:row-span-2", bg: "var3", title: "Trading Platforms", subtitle: "MT4, MT5, DXTrade" },
+                    { id: 4, span: "md:col-span-2 md:row-span-2", bg: "lime", title: "News Trading", subtitle: "Allowed on all accounts" },
+                    { id: 5, span: "md:col-span-2 md:row-span-2", bg: "var4", title: "Weekend Holding", subtitle: "Keep trades open" },
+                    /* Row 3 (2 cards) */
+                    { id: 6, span: "md:col-span-3 md:row-span-2", bg: "var2", title: "Instant Funding", subtitle: "Skip the challenge & get funded right now" },
+                    { id: 7, span: "md:col-span-3 md:row-span-2", bg: "var1", title: "Access Challenge", subtitle: "Only pay after you pass" },
                   ].map((s, i) => (
                     <Reveal key={s.id} delay={i * 0.1} className={cn("w-full h-full", s.span)}>
                       <div 
                         className={cn(
-                          "relative w-full h-full rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-8 flex flex-col justify-between transition-all duration-300 hover:scale-[1.02] overflow-hidden group cursor-pointer",
-                          s.bg === "lime" 
-                            ? "bg-[#bcff2e] shadow-[0_0_30px_rgba(188,255,46,0.15)]" 
-                            : "bg-white/[0.04] hover:bg-white/[0.06] backdrop-blur-xl border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]"
+                          "relative w-full h-full rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-8 flex flex-col justify-between transition-all duration-300 hover:scale-[1.02] overflow-hidden group cursor-pointer border border-white/[0.05]",
+                          s.bg === "lime" && "bg-[#bcff2e] shadow-[0_0_30px_rgba(188,255,46,0.15)] border-transparent",
+                          s.bg === "var1" && "bg-[#161D20] shadow-inner shadow-white/[0.02]",
+                          s.bg === "var2" && "bg-[#1A2326] shadow-inner shadow-white/[0.02]",
+                          s.bg === "var3" && "bg-[#1E292D] shadow-inner shadow-white/[0.02]",
+                          s.bg === "var4" && "bg-[#233034] shadow-inner shadow-white/[0.02]",
                         )}
                       >
                         {/* Text Content */}
@@ -331,17 +339,17 @@ export default function V2Page() {
                           </h3>
                           <p className={cn(
                             "text-sm md:text-[15px] font-medium leading-snug", 
-                            s.bg === "lime" ? "text-[#0c0c0c]/70" : "text-white/50"
+                            s.bg === "lime" ? "text-[#0c0c0c]/70" : "text-white/60"
                           )}>
                             {s.subtitle}
                           </p>
                         </div>
                         
                         {/* Placeholder for future PNG/3D Image */}
-                        <div className="absolute right-0 bottom-0 w-3/4 h-3/4 opacity-10 group-hover:opacity-30 transition-opacity duration-500 pointer-events-none flex items-end justify-end p-4">
+                        <div className="absolute right-0 bottom-0 w-3/4 h-3/4 opacity-[0.15] group-hover:opacity-30 transition-opacity duration-500 pointer-events-none flex items-end justify-end p-4">
                           <div className={cn(
                             "w-full h-full rounded-tl-full blur-3xl", 
-                            s.bg === "lime" ? "bg-white/60" : "bg-white/20"
+                            s.bg === "lime" ? "bg-white/60" : "bg-[#bcff2e]/20"
                           )} />
                         </div>
                       </div>
