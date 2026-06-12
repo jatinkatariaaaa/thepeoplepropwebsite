@@ -198,14 +198,11 @@ export default function V2Page() {
             {/* Center content */}
             <div className="md:col-span-6 lg:col-span-8">
               <div className="relative">
-                {/* Removed mix-blend so it doesn't disappear into the dark image, and changed the overlap color to bright white for maximum visibility. */}
-                <div className="relative z-20 text-center pointer-events-none">
-                  <h2 className="tracking-tight font-medium text-transparent bg-clip-text drop-shadow-sm" style={{ 
+                {/* mix-blend-difference with white text automatically becomes dark on the light background and light on the dark image, flawlessly. */}
+                <div className="relative z-20 text-center pointer-events-none mix-blend-difference">
+                  <h2 className="tracking-tight font-medium text-white" style={{ 
                     fontSize: "clamp(3rem, 10vw, 8rem)", 
-                    lineHeight: "1",
-                    backgroundImage: "linear-gradient(to bottom, #0c0c0c calc(100% - 5vw), #ffffff calc(100% - 5vw))",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent"
+                    lineHeight: "1"
                   }}>
                     We&apos;re The People Prop
                   </h2>
