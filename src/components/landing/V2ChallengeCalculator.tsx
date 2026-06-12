@@ -763,9 +763,8 @@ export function V2ChallengeCalculator() {
                 <Button
                   onClick={() => router.push('/dashboard/new-challenge')}
                   disabled={total == null}
-                  variant="primary"
                   size="lg"
-                  className="w-full flex items-center justify-center gap-2"
+                  className="w-full flex items-center justify-center gap-2 rounded-full bg-[var(--ink-950)] hover:bg-[#bcff2e] text-white hover:text-[var(--ink-950)] transition-colors border border-[var(--ink-950)]"
                 >
                   Get Funded
                 </Button>
@@ -804,7 +803,7 @@ export function V2ChallengeCalculator() {
           <div className="lg:hidden mt-2 bg-white rounded-[24px] border border-[var(--border)] p-5 relative shadow-[0_4px_24px_rgba(11,15,26,0.04)]">
             {/* Top Badge */}
             <div className="mb-4">
-              <span className="inline-flex items-center rounded-full bg-[#415C9C] px-3.5 py-1 text-[10px] font-bold tracking-widest text-white uppercase">
+              <span className="inline-flex items-center rounded-full bg-[#bcff2e] px-3.5 py-1 text-[10px] font-bold tracking-widest text-[#0c0c0c] uppercase">
                 Most Popular
               </span>
             </div>
@@ -833,7 +832,7 @@ export function V2ChallengeCalculator() {
             <Button
               onClick={() => router.push('/dashboard/new-challenge')}
               disabled={total == null}
-              className="w-full bg-[#0B1E4A] hover:bg-[#061230] text-white rounded-[18px] h-[54px] text-[15px] font-semibold mb-6 shadow-md"
+              className="w-full bg-[var(--ink-950)] hover:bg-[#bcff2e] hover:text-[var(--ink-950)] text-white rounded-full h-[54px] text-[15px] font-semibold mb-6 shadow-md transition-colors"
             >
               Get Funded
             </Button>
