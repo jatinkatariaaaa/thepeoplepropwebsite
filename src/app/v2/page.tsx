@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 
 import { V2ChallengeCalculator } from "@/components/landing/V2ChallengeCalculator";
+import { Globe } from "@/components/ui/Globe";
 
 /* ═══════════════════════════════════════════════════════════════
    V2 Landing Page — Noramble Card-Stacking Design
@@ -143,6 +144,8 @@ export default function V2Page() {
           {/* Ambient Glow Orbs */}
           <div className="absolute top-[20%] left-[10%] w-[45vw] h-[45vw] bg-[#bcff2e]/[0.06] rounded-full blur-[120px] pointer-events-none" />
           <div className="absolute bottom-[-10%] right-[10%] w-[35vw] h-[35vw] bg-[#bcff2e]/[0.08] rounded-full blur-[100px] pointer-events-none" />
+          
+          <Globe />
           
           {/* Subtle Grid / Noise Overlay (Optional CSS pattern) */}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03)_1px,transparent_1px)]" style={{ backgroundSize: '32px 32px' }} pointer-events-none="true" />
