@@ -308,15 +308,23 @@ export default function V2Page() {
                 <div className="grid grid-cols-1 md:grid-cols-6 auto-rows-[200px] md:auto-rows-[160px] gap-4 md:gap-5 lg:gap-6">
                   {[
                     /* Row 1 (2 cards) */
-                    { id: 1, span: "md:col-span-3 md:row-span-2", bg: "var1", title: "Best Trading Conditions", subtitle: "Lowest spreads" },
+                    { 
+                      id: 1, 
+                      span: "md:col-span-3 md:row-span-2", 
+                      bg: "var1", 
+                      title: <>Best Trading<br />Conditions</>, 
+                      subtitle: <><span className="text-[#bcff2e]">Lowest</span> spreads</>,
+                      image: "/images/coins-card.webp",
+                      imageClassName: "w-[65%] sm:w-[55%] md:w-[60%] absolute bottom-[-10%] right-[-5%] object-contain drop-shadow-2xl transition-transform duration-500 group-hover:-translate-y-2 group-hover:-translate-x-2"
+                    },
                     { id: 2, span: "md:col-span-3 md:row-span-2", bg: "var2", title: "No Minimum Trading Days", subtitle: "Take your time" },
                     /* Row 2 (3 cards) */
-                    { id: 3, span: "md:col-span-2 md:row-span-2", bg: "var3", title: "Trading Platforms", subtitle: "MT4, MT5, DXTrade" },
-                    { id: 4, span: "md:col-span-2 md:row-span-2", bg: "lime", title: "News Trading", subtitle: "Allowed on all accounts" },
-                    { id: 5, span: "md:col-span-2 md:row-span-2", bg: "var4", title: "Weekend Holding", subtitle: "Keep trades open" },
+                    { id: 3, span: "md:col-span-2 md:row-span-2", bg: "var3", title: <>Trading<br />Platforms</>, subtitle: "MT4, MT5, DXTrade" },
+                    { id: 4, span: "md:col-span-2 md:row-span-2", bg: "lime", title: <>News<br />Trading</>, subtitle: "Allowed on all accounts" },
+                    { id: 5, span: "md:col-span-2 md:row-span-2", bg: "var4", title: <>Weekend<br />Holding</>, subtitle: "Keep trades open" },
                     /* Row 3 (2 cards) */
-                    { id: 6, span: "md:col-span-3 md:row-span-2", bg: "var2", title: "Instant Funding", subtitle: "Skip the challenge & get funded right now" },
-                    { id: 7, span: "md:col-span-3 md:row-span-2", bg: "var1", title: "Access Challenge", subtitle: "Only pay after you pass" },
+                    { id: 6, span: "md:col-span-3 md:row-span-2", bg: "var2", title: "Instant Funding", subtitle: <>Skip the challenge & <span className="text-[#bcff2e]">get funded right now</span></> },
+                    { id: 7, span: "md:col-span-3 md:row-span-2", bg: "var1", title: "Access Challenge", subtitle: <>Only pay <span className="text-[#bcff2e]">after</span> you pass</> },
                   ].map((s, i) => (
                     <Reveal key={s.id} delay={i * 0.1} className={cn("w-full h-full", s.span)}>
                       <div 
@@ -330,26 +338,32 @@ export default function V2Page() {
                         {/* Text Content */}
                         <div className="relative z-10">
                           <h3 className={cn(
-                            "text-xl md:text-2xl font-bold tracking-tight mb-2", 
+                            "text-2xl md:text-[28px] leading-[1.1] font-bold tracking-tight mb-2.5", 
                             s.bg === "lime" ? "text-[#0c0c0c]" : "text-white"
                           )}>
                             {s.title}
                           </h3>
                           <p className={cn(
-                            "text-sm md:text-[15px] font-medium leading-snug", 
+                            "text-[15px] md:text-[16px] font-medium leading-snug", 
                             s.bg === "lime" ? "text-[#0c0c0c]/70" : "text-white/60"
                           )}>
                             {s.subtitle}
                           </p>
                         </div>
                         
-                        {/* Placeholder for future PNG/3D Image */}
-                        <div className="absolute right-0 bottom-0 w-3/4 h-3/4 opacity-[0.15] group-hover:opacity-30 transition-opacity duration-500 pointer-events-none flex items-end justify-end p-4">
-                          <div className={cn(
-                            "w-full h-full rounded-tl-full blur-3xl", 
-                            s.bg === "lime" ? "bg-white/60" : "bg-white/20"
-                          )} />
-                        </div>
+                        {/* Image or Placeholder */}
+                        {s.image ? (
+                          <div className="absolute inset-0 w-full h-full overflow-hidden rounded-[1.5rem] md:rounded-[2rem] pointer-events-none">
+                            <img src={s.image} className={s.imageClassName} alt="" loading="lazy" />
+                          </div>
+                        ) : (
+                          <div className="absolute right-0 bottom-0 w-3/4 h-3/4 opacity-[0.15] group-hover:opacity-30 transition-opacity duration-500 pointer-events-none flex items-end justify-end p-4">
+                            <div className={cn(
+                              "w-full h-full rounded-tl-full blur-3xl", 
+                              s.bg === "lime" ? "bg-white/60" : "bg-white/20"
+                            )} />
+                          </div>
+                        )}
                       </div>
                     </Reveal>
                   ))}
