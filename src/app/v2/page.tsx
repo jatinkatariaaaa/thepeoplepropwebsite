@@ -138,12 +138,36 @@ export default function V2Page() {
           SECTION 1: HERO — Black Card on Cream
           ═══════════════════════════════════════════════ */}
       <section className="h-dvh px-[5px] py-[5px]">
-        <div className="flex h-full items-center justify-center rounded-xl lg:rounded-2xl bg-black px-6 lg:px-10 py-20">
+        <div className="relative flex flex-col h-full items-center justify-center rounded-xl lg:rounded-2xl bg-black px-6 lg:px-10 py-20 overflow-hidden">
+          
+          {/* Ambient Glow Orbs */}
+          <div className="absolute top-[20%] left-[10%] w-[45vw] h-[45vw] bg-[#bcff2e]/[0.06] rounded-full blur-[120px] pointer-events-none" />
+          <div className="absolute bottom-[-10%] right-[10%] w-[35vw] h-[35vw] bg-[#bcff2e]/[0.08] rounded-full blur-[100px] pointer-events-none" />
+          
+          {/* Subtle Grid / Noise Overlay (Optional CSS pattern) */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03)_1px,transparent_1px)]" style={{ backgroundSize: '32px 32px' }} pointer-events-none="true" />
+
+          {/* Floating Trust Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="mb-8 relative z-10"
+          >
+            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/[0.03] border border-white/[0.08] backdrop-blur-md">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#bcff2e] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#bcff2e]"></span>
+              </span>
+              <span className="text-white/80 text-[13px] font-medium tracking-wide">Evaluating traders in 150+ countries</span>
+            </div>
+          </motion.div>
+
           <motion.h1
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-            className="text-white font-medium tracking-[-0.03em] text-center w-full max-w-[1300px] leading-[0.88]"
+            transition={{ duration: 1, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="relative z-10 text-white font-medium tracking-[-0.03em] text-center w-full max-w-[1300px] leading-[0.88]"
             style={{ fontSize: "clamp(2.8rem, 9vw, 9rem)" }}
           >
             The <span className="text-[#bcff2e]">prop firm</span>
