@@ -747,12 +747,6 @@ export function V2ChallengeCalculator() {
                         </span>
                       </motion.div>
                     </AnimatePresence>
-                        base ${base} + add-ons $
-                        {addOnFees
-                          .reduce((s, a) => s + a.amount, 0)
-                          .toLocaleString("en-US")}
-                      </p>
-                    )}
                   </div>
                 </div>
 
