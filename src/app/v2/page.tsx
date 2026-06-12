@@ -297,9 +297,55 @@ export default function V2Page() {
                 </div>
               </Reveal>
 
-              {/* Step Cards - Removed for now, new cards will be added later */}
-              <div className="flex flex-col items-center gap-16 lg:gap-[12vh]">
-                {/* New cards will be inserted here */}
+              {/* Bento Box Grid - Blank Cards for Future Content */}
+              <div className="w-full max-w-[1200px] mx-auto px-2 md:px-8 lg:px-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 auto-rows-[220px] md:auto-rows-[260px] gap-4 md:gap-6">
+                  {[
+                    { id: 1, span: "md:col-span-2 md:row-span-2", bg: "dark", title: "Card Title 1", subtitle: "Subtitle or description placeholder here." },
+                    { id: 2, span: "md:col-span-2 md:row-span-1", bg: "dark", title: "Card Title 2", subtitle: "Subtitle or description placeholder here." },
+                    { id: 3, span: "md:col-span-1 md:row-span-1", bg: "dark", title: "Card Title 3", subtitle: "Placeholder." },
+                    { id: 4, span: "md:col-span-1 md:row-span-1", bg: "lime", title: "Card Title 4", subtitle: "Placeholder." },
+                    { id: 5, span: "md:col-span-2 md:row-span-2", bg: "dark", title: "Card Title 5", subtitle: "Subtitle or description placeholder here." },
+                    { id: 6, span: "md:col-span-1 md:row-span-2", bg: "dark", title: "Card Title 6", subtitle: "Subtitle placeholder here." },
+                    { id: 7, span: "md:col-span-1 md:row-span-1", bg: "dark", title: "Card Title 7", subtitle: "Placeholder." },
+                    { id: 8, span: "md:col-span-1 md:row-span-1", bg: "lime", title: "Card Title 8", subtitle: "Placeholder." },
+                  ].map((s, i) => (
+                    <Reveal key={s.id} delay={i * 0.1} className={cn("w-full h-full", s.span)}>
+                      <div 
+                        className={cn(
+                          "relative w-full h-full rounded-[2rem] p-6 md:p-8 flex flex-col transition-all duration-300 hover:scale-[1.02] overflow-hidden group cursor-pointer",
+                          s.bg === "lime" 
+                            ? "bg-[#bcff2e] shadow-[0_0_40px_rgba(188,255,46,0.15)]" 
+                            : "bg-[#111111] border border-white/[0.08]"
+                        )}
+                      >
+                        {/* Text Content */}
+                        <div className="relative z-10">
+                          <h3 className={cn(
+                            "text-xl md:text-2xl font-bold tracking-tight mb-2", 
+                            s.bg === "lime" ? "text-[#0c0c0c]" : "text-white"
+                          )}>
+                            {s.title}
+                          </h3>
+                          <p className={cn(
+                            "text-sm md:text-[15px] font-medium leading-snug", 
+                            s.bg === "lime" ? "text-[#0c0c0c]/70" : "text-white/50"
+                          )}>
+                            {s.subtitle}
+                          </p>
+                        </div>
+                        
+                        {/* Placeholder for future PNG/3D Image */}
+                        <div className="absolute right-0 bottom-0 w-3/4 h-3/4 opacity-10 group-hover:opacity-30 transition-opacity duration-500 pointer-events-none flex items-end justify-end p-4">
+                          <div className={cn(
+                            "w-full h-full rounded-tl-full blur-3xl", 
+                            s.bg === "lime" ? "bg-white/60" : "bg-white/20"
+                          )} />
+                        </div>
+                      </div>
+                    </Reveal>
+                  ))}
+                </div>
               </div>
 
               {/* View More */}
