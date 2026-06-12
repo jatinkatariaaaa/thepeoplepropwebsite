@@ -299,24 +299,30 @@ export default function V2Page() {
               </Reveal>
 
               {/* Bento Box Grid - Blank Cards for Future Content */}
-              <div className="w-full max-w-[1200px] mx-auto px-2 md:px-8 lg:px-12">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 auto-rows-[220px] md:auto-rows-[260px] gap-4 md:gap-6">
+              <div className="w-full max-w-[1100px] mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 auto-rows-[240px] gap-4 md:gap-5 lg:gap-6">
                   {[
-                    { id: 1, span: "md:col-span-2 md:row-span-2", bg: "dark", title: "Card Title 1", subtitle: "Subtitle or description placeholder here." },
-                    { id: 2, span: "md:col-span-2 md:row-span-1", bg: "dark", title: "Card Title 2", subtitle: "Subtitle or description placeholder here." },
-                    { id: 3, span: "md:col-span-1 md:row-span-1", bg: "dark", title: "Card Title 3", subtitle: "Placeholder." },
-                    { id: 4, span: "md:col-span-1 md:row-span-1", bg: "lime", title: "Card Title 4", subtitle: "Placeholder." },
-                    { id: 5, span: "md:col-span-2 md:row-span-2", bg: "dark", title: "Card Title 5", subtitle: "Subtitle or description placeholder here." },
-                    { id: 6, span: "md:col-span-1 md:row-span-2", bg: "dark", title: "Card Title 6", subtitle: "Subtitle placeholder here." },
-                    { id: 7, span: "md:col-span-1 md:row-span-1", bg: "dark", title: "Card Title 7", subtitle: "Placeholder." },
-                    { id: 8, span: "md:col-span-1 md:row-span-1", bg: "lime", title: "Card Title 8", subtitle: "Placeholder." },
+                    /* Block 1: Left Tall, Right Two Wides */
+                    { id: 1, span: "md:col-span-1 md:row-span-2", bg: "dark", title: "Card Title 1", subtitle: "Tall placeholder card" },
+                    { id: 2, span: "md:col-span-2 md:row-span-1", bg: "dark", title: "Card Title 2", subtitle: "Wide placeholder card" },
+                    { id: 3, span: "md:col-span-2 md:row-span-1", bg: "dark", title: "Card Title 3", subtitle: "Wide placeholder card" },
+                    
+                    /* Block 2: Three equal squares */
+                    { id: 4, span: "md:col-span-1 md:row-span-1", bg: "dark", title: "Card Title 4", subtitle: "Square card" },
+                    { id: 5, span: "md:col-span-1 md:row-span-1", bg: "lime", title: "Card Title 5", subtitle: "Highlight square" },
+                    { id: 6, span: "md:col-span-1 md:row-span-1", bg: "dark", title: "Card Title 6", subtitle: "Square card" },
+
+                    /* Block 3: Left Two Wides, Right Tall */
+                    { id: 7, span: "md:col-span-2 md:row-span-1", bg: "dark", title: "Card Title 7", subtitle: "Wide placeholder card" },
+                    { id: 8, span: "md:col-span-1 md:row-span-2", bg: "dark", title: "Card Title 8", subtitle: "Tall placeholder card" },
+                    { id: 9, span: "md:col-span-2 md:row-span-1", bg: "lime", title: "Card Title 9", subtitle: "Highlight wide card" },
                   ].map((s, i) => (
                     <Reveal key={s.id} delay={i * 0.1} className={cn("w-full h-full", s.span)}>
                       <div 
                         className={cn(
-                          "relative w-full h-full rounded-[2rem] p-6 md:p-8 flex flex-col transition-all duration-300 hover:scale-[1.02] overflow-hidden group cursor-pointer",
+                          "relative w-full h-full rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-8 flex flex-col justify-between transition-all duration-300 hover:scale-[1.02] overflow-hidden group cursor-pointer",
                           s.bg === "lime" 
-                            ? "bg-[#bcff2e] shadow-[0_0_40px_rgba(188,255,46,0.15)]" 
+                            ? "bg-[#bcff2e] shadow-[0_0_30px_rgba(188,255,46,0.15)]" 
                             : "bg-[#111111] border border-white/[0.08]"
                         )}
                       >
