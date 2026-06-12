@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 
-const HIDDEN_ROUTES = ["/login", "/referral", "/dashboard"];
+const HIDDEN_ROUTES = ["/login", "/referral", "/dashboard", "/v2"];
 
 /** Renders children only on routes where the global chrome should appear. */
 export function ChromeGate({ children }: { children: React.ReactNode }) {
