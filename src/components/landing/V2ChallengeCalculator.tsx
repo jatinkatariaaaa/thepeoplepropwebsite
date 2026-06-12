@@ -255,7 +255,7 @@ export function V2ChallengeCalculator() {
         />
 
         {/* Program type pills (Atlas-style hero bar) - Desktop */}
-        <div className="hidden md:flex mx-auto mb-5 w-full max-w-3xl flex-wrap items-center justify-center gap-2 rounded-xl border border-[var(--border)] bg-white p-1.5 shadow-[0_2px_0_rgba(11,15,26,0.02)]">
+        <div className="hidden md:flex mx-auto mb-5 w-full max-w-3xl flex-wrap items-center justify-center gap-2 rounded-full border border-[var(--border)] bg-white p-1.5 shadow-[0_2px_0_rgba(11,15,26,0.02)]">
           {programs.map((p) => {
             const active = p.key === program.key;
             return (
@@ -265,7 +265,7 @@ export function V2ChallengeCalculator() {
                 onClick={() => selectProgram(p.key)}
                 aria-pressed={active}
                 className={cn(
-                  "relative inline-flex items-center gap-2 rounded-xl px-4 md:px-5 py-2 text-[13px] md:text-[13.5px] font-medium transition-colors",
+                  "relative inline-flex items-center gap-2 rounded-full px-4 md:px-5 py-2 text-[13px] md:text-[13.5px] font-medium transition-colors",
                   active
                     ? "bg-[#bcff2e] text-[#0c0c0c]"
                     : "text-[var(--ink-600)] hover:text-[var(--ink-950)]",
@@ -290,7 +290,7 @@ export function V2ChallengeCalculator() {
         </div>
 
         {/* Program type segmented control - Mobile */}
-        <div className="md:hidden mx-auto mb-5 flex w-full max-w-full bg-[var(--paper-2)] p-1 rounded-xl items-center shadow-inner border border-black/[0.04]">
+        <div className="md:hidden mx-auto mb-5 flex w-full max-w-full bg-[var(--paper-2)] p-1 rounded-full items-center shadow-inner border border-black/[0.04]">
           {programs.map((p) => {
             const active = p.key === program.key;
             return (
@@ -300,7 +300,7 @@ export function V2ChallengeCalculator() {
                 onClick={() => selectProgram(p.key)}
                 aria-pressed={active}
                 className={cn(
-                  "relative inline-flex items-center justify-center whitespace-nowrap rounded-xl px-2 py-2.5 transition-all flex-1",
+                  "relative inline-flex items-center justify-center whitespace-nowrap rounded-full px-2 py-2.5 transition-all flex-1",
                   active
                     ? "bg-white text-[var(--ink-950)] shadow-[0_2px_8px_-2px_rgba(11,15,26,0.08)]"
                     : "text-[var(--ink-500)] hover:text-[var(--ink-950)]",
@@ -361,7 +361,7 @@ export function V2ChallengeCalculator() {
                     onClick={() => !disabled && setPlatformKey(p.key)}
                     aria-pressed={active}
                     className={cn(
-                      "relative w-full rounded-full sm:rounded-xl border px-3.5 py-3 text-left transition-all lift",
+                      "relative w-full rounded-full border px-3.5 py-3 text-left transition-all lift",
                       disabled && "opacity-55 cursor-not-allowed",
                       active && !disabled
                         ? "border-[#bcff2e] bg-[#bcff2e] text-[#0c0c0c]"
@@ -451,7 +451,7 @@ export function V2ChallengeCalculator() {
                     disabled={!offered}
                     aria-pressed={active}
                     className={cn(
-                      "relative rounded-xl border px-3 py-3.5 text-center transition-all duration-200 lift",
+                      "relative rounded-full border px-3 py-3.5 text-center transition-all duration-200 lift",
                       !offered && "opacity-35 cursor-not-allowed",
                       active
                         ? "border-[#bcff2e] bg-[#bcff2e] text-[#0c0c0c] shadow-[0_8px_22px_-14px_rgba(188,255,46,0.45)]"
@@ -524,18 +524,18 @@ export function V2ChallengeCalculator() {
                       onClick={() => toggleAddOn(a.key)}
                       aria-pressed={active}
                       className={cn(
-                        "group relative rounded-[28px] sm:rounded-xl border p-3 sm:p-3 text-left transition-all lift flex flex-col sm:block justify-between min-h-[85px] sm:min-h-0",
+                        "group relative rounded-full border p-3 sm:py-2.5 sm:px-4 text-left transition-all lift flex flex-col sm:block justify-between min-h-[85px] sm:min-h-0",
                         active
                           ? "border-[var(--ink-950)] bg-[var(--ink-950)] text-white"
                           : "border-[var(--border)] bg-white hover:border-[var(--ink-950)]",
                       )}
                     >
                       {/* Desktop layout wrapper & Mobile top row */}
-                      <div className="flex items-start sm:items-start justify-between w-full sm:w-auto gap-3">
+                      <div className="flex items-center sm:items-center justify-between w-full sm:w-auto gap-3">
                         {/* Mobile percentage (hidden on desktop) */}
                         <span
                           className={cn(
-                            "sm:hidden text-[11px] font-bold tabular-nums mt-0.5",
+                            "sm:hidden text-[11px] font-bold tabular-nums mt-0",
                             active ? "text-[#a5e622]" : "text-[#0c0c0c]",
                           )}
                         >
@@ -551,16 +551,6 @@ export function V2ChallengeCalculator() {
                             )}
                           >
                             {a.label}
-                          </p>
-                          <p
-                            className={cn(
-                              "text-[11.5px] mt-1 leading-snug",
-                              active
-                                ? "text-white/60"
-                                : "text-[var(--ink-500)]",
-                            )}
-                          >
-                            {a.description}
                           </p>
                         </div>
 
