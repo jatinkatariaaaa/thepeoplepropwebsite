@@ -1364,20 +1364,29 @@ html.lenis body {
    V2 Dark Theme Override
    ══════════════════════════════════════ */
 
-/* When a v2-root wrapper is present, hide the main site chrome */
-body:has(.v2-root) {
+/* When V2 is active, override everything */
+body.v2-active {
   background: #0c0c0c !important;
   background-image: none !important;
 }
 
-body:has(.v2-root) > div > nav,
-body:has(.v2-root) > div > footer,
-body:has(.v2-root) header.glass-strong {
+/* Hide ALL navbars and footers from the main site */
+body.v2-active nav,
+body.v2-active > div > div > nav,
+body.v2-active > div > div > footer,
+body.v2-active > * > * > nav,
+body.v2-active > * > * > footer {
   display: none !important;
 }
 
-/* Also hide Navbar and Footer rendered by ChromeGate */
-.v2-root ~ nav,
-.v2-root ~ footer {
-  display: none !important;
-}
+/* But keep items INSIDE .v2-root visible */
+body.v2-active .v2-root nav,
+body.v2-active .v2-root footer,
+body.v2-active .v2-root header {
+  display: flex !important;
+}
+
+body.v2-active .v2-page footer {
+  display: block !important;
+}
+
