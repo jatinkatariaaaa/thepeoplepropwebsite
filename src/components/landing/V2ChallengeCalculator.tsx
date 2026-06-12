@@ -224,9 +224,7 @@ export function V2ChallengeCalculator() {
               </div>
             </button>
             
-            <p className="text-center text-[#6c6a68] text-[14px] font-medium mb-8">
-              This purchase earns you <span className="inline-flex items-center mx-1"><span className="w-4 h-4 bg-gray-800 rounded-sm inline-block rotate-12"></span></span> 43 Tickets
-            </p>
+
 
             {/* Payment Methods */}
             <div className="flex flex-wrap items-center justify-center gap-3">
