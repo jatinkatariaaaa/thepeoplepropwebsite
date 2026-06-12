@@ -154,14 +154,14 @@ export default function V2Page() {
             <div className="md:col-span-6 lg:col-span-8">
               <div className="relative">
                 <Reveal>
-                  <div className="relative z-20 text-center">
-                    <h2 className="tracking-[-0.03em] text-[#0c0c0c] font-medium" style={{ fontSize: "clamp(2.5rem, 7vw, 5rem)" }}>
+                  <div className="relative z-20 text-center mix-blend-difference">
+                    <h2 className="tracking-tight text-white font-medium" style={{ fontSize: "clamp(3rem, 10vw, 8rem)", lineHeight: "1" }}>
                       We&apos;re The People Prop
                     </h2>
                   </div>
                 </Reveal>
 
-                <Reveal delay={0.1} className="flex flex-col items-center gap-y-8 -mt-2 lg:px-[12.5%]">
+                <Reveal delay={0.1} className="flex flex-col items-center gap-y-8 -mt-6 md:-mt-[4vw] lg:-mt-[5vw] lg:px-[12.5%] relative z-10">
                   {/* Main image */}
                   <div className="relative w-full">
                     <div className="relative z-10 overflow-hidden w-full rounded-2xl lg:rounded-3xl aspect-[4/3] bg-[#e5ddd0]">
