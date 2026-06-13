@@ -4,7 +4,6 @@ import {
   useRef,
   useEffect,
   useState,
-  useCallback,
   type ReactNode,
   type CSSProperties,
 } from "react";
@@ -15,7 +14,6 @@ import {
   useTransform,
   useSpring,
   useMotionValue,
-  type MotionStyle,
 } from "framer-motion";
 import Link from "next/link";
 import gsap from "gsap";
@@ -214,86 +212,26 @@ function GsapWords({
 }
 
 /* ─────────────────────────────────────────────────────────────
-   TiltCard — pointer-driven 3D tilt with spring physics.
-   Disabled on touch / reduced-motion for safety.
+   TiltCard — neutral wrapper.
+   Hover 3D tilt + lime glare were intentionally removed for a
+   calmer, more stable feel. Kept as a passthrough so existing
+   call sites (and their `intensity` / `glare` props) stay valid.
    ───────────────────────────────────────────────────────────── */
 function TiltCard({
   children,
   className = "",
-  intensity = 8,
-  glare = true,
 }: {
   children: ReactNode;
   className?: string;
+  /** Accepted for API compatibility; no longer used. */
   intensity?: number;
+  /** Accepted for API compatibility; no longer used. */
   glare?: boolean;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
-
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const glareX = useMotionValue(50);
-  const glareY = useMotionValue(50);
-
-  const rotX = useSpring(useTransform(y, [-0.5, 0.5], [intensity, -intensity]), {
-    stiffness: 200,
-    damping: 20,
-  });
-  const rotY = useSpring(useTransform(x, [-0.5, 0.5], [-intensity, intensity]), {
-    stiffness: 200,
-    damping: 20,
-  });
-
-  const handleMove = useCallback(
-    (e: React.PointerEvent) => {
-      if (reduced || !ref.current) return;
-      const rect = ref.current.getBoundingClientRect();
-      const px = (e.clientX - rect.left) / rect.width;
-      const py = (e.clientY - rect.top) / rect.height;
-      x.set(px - 0.5);
-      y.set(py - 0.5);
-      glareX.set(px * 100);
-      glareY.set(py * 100);
-    },
-    [reduced, x, y, glareX, glareY]
-  );
-
-  const handleLeave = useCallback(() => {
-    x.set(0);
-    y.set(0);
-    glareX.set(50);
-    glareY.set(50);
-  }, [x, y, glareX, glareY]);
-
-  const glareBg = useTransform(
-    [glareX, glareY],
-    ([gx, gy]) =>
-      `radial-gradient(circle at ${gx}% ${gy}%, rgba(188,255,46,0.18), transparent 45%)`
-  );
-
   return (
-    <motion.div
-      ref={ref}
-      onPointerMove={handleMove}
-      onPointerLeave={handleLeave}
-      style={{
-        rotateX: reduced ? 0 : rotX,
-        rotateY: reduced ? 0 : rotY,
-        transformStyle: "preserve-3d",
-        transformPerspective: 1000,
-      }}
-      className={cn("relative will-change-transform", className)}
-    >
+    <div className={cn("relative", className)}>
       {children}
-      {glare && !reduced && (
-        <motion.span
-          aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-[inherit]"
-          style={{ background: glareBg as unknown as MotionStyle["background"] }}
-        />
-      )}
-    </motion.div>
+    </div>
   );
 }
 
@@ -307,7 +245,7 @@ function Floating({
   duration = 6,
   delay = 0,
 }: {
-  children?: ReactNode;
+  children: ReactNode;
   className?: string;
   amplitude?: number;
   duration?: number;
@@ -972,13 +910,10 @@ export default function V3Page() {
                               {item.desc}
                             </p>
                           </div>
-                          <div className={cn("mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110", item.accent ? "bg-[#0c0c0c]/10" : "bg-white/[0.06]")}>
+                          <div className={cn("mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl", item.accent ? "bg-[#0c0c0c]/10" : "bg-white/[0.06]")}>
                             <item.icon className={cn("h-5 w-5", item.accent ? "text-[#0c0c0c]/70" : "text-[#bcff2e]")} strokeWidth={2} />
                           </div>
                         </div>
-                        {!item.accent && (
-                          <div className="absolute bottom-0 left-1/2 h-[1px] w-1/2 -translate-x-1/2 bg-gradient-to-r from-transparent via-[#bcff2e]/20 to-transparent" />
-                        )}
                       </div>
                     </TiltCard>
                   </Reveal>
@@ -1130,14 +1065,13 @@ export default function V3Page() {
                   { icon: Shield, title: "Transparent Rules", desc: "4% daily drawdown, 8% max. No hidden gotchas. What you see is what you get." },
                 ].map((f, i) => (
                   <Reveal key={f.title} delay={i * 0.08}>
-                    <TiltCard intensity={6}>
-                      <div className="group relative flex min-h-[200px] flex-col overflow-hidden rounded-3xl border border-white/[0.05] bg-[#0c0c0c] p-7 shadow-xl">
-                        <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06] transition-transform duration-300 group-hover:scale-110">
+                    <TiltCard>
+                      <div className="flex min-h-[200px] flex-col overflow-hidden rounded-3xl border border-white/[0.05] bg-[#0c0c0c] p-7">
+                        <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06]">
                           <f.icon className="h-5 w-5 text-[#bcff2e]" strokeWidth={2} />
                         </div>
                         <h3 className="mb-1.5 text-lg font-bold tracking-tight text-white">{f.title}</h3>
                         <p className="text-[13px] leading-relaxed text-white/50">{f.desc}</p>
-                        <div className="absolute bottom-0 left-1/2 h-[1px] w-1/2 -translate-x-1/2 bg-gradient-to-r from-transparent via-[#bcff2e]/20 to-transparent" />
                       </div>
                     </TiltCard>
                   </Reveal>
@@ -1168,7 +1102,7 @@ export default function V3Page() {
                     </div>
                     <div className="absolute inset-4 rounded-full border border-[#0c0c0c]/15 animate-[spin_12s_linear_infinite_reverse]" />
                     <div className="absolute inset-10 rounded-full border border-[#0c0c0c]/20 animate-[spin_8s_linear_infinite]" />
-                    <div className="relative z-10 flex h-[160px] w-[160px] items-center justify-center rounded-full border border-white/[0.05] bg-[#0c0c0c] shadow-[0_0_80px_rgba(0,0,0,0.15)]">
+                    <div className="relative z-10 flex h-[160px] w-[160px] items-center justify-center rounded-full border border-white/[0.05] bg-[#0c0c0c]">
                       <span className="text-5xl font-bold tracking-tighter text-[#bcff2e]">TPP</span>
                     </div>
                   </div>
@@ -1181,14 +1115,13 @@ export default function V3Page() {
                   { icon: Award, title: "Auto-Scaling", desc: "Hit targets and grow automatically. $25K → $50K → $100K → $200K." },
                 ].map((f, i) => (
                   <Reveal key={f.title} delay={i * 0.08}>
-                    <TiltCard intensity={6}>
-                      <div className="group relative flex min-h-[200px] flex-col overflow-hidden rounded-3xl border border-white/[0.05] bg-[#0c0c0c] p-7 shadow-xl">
-                        <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06] transition-transform duration-300 group-hover:scale-110">
+                    <TiltCard>
+                      <div className="flex min-h-[200px] flex-col overflow-hidden rounded-3xl border border-white/[0.05] bg-[#0c0c0c] p-7">
+                        <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06]">
                           <f.icon className="h-5 w-5 text-[#bcff2e]" strokeWidth={2} />
                         </div>
                         <h3 className="mb-1.5 text-lg font-bold tracking-tight text-white">{f.title}</h3>
                         <p className="text-[13px] leading-relaxed text-white/50">{f.desc}</p>
-                        <div className="absolute bottom-0 left-1/2 h-[1px] w-1/2 -translate-x-1/2 bg-gradient-to-r from-transparent via-[#bcff2e]/20 to-transparent" />
                       </div>
                     </TiltCard>
                   </Reveal>
