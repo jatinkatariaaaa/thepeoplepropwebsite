@@ -663,9 +663,9 @@ export default function V3Page() {
           style={{ scale: reduced ? 1 : heroScale }}
           className="relative flex h-full flex-col items-center justify-center overflow-hidden rounded-xl bg-black px-6 py-20 lg:rounded-2xl lg:px-10"
         >
-          {/* Ambient parallax orbs */}
-          <Floating className="pointer-events-none absolute left-[8%] top-[16%] h-[46vw] w-[46vw] rounded-full bg-[#bcff2e]/[0.07] blur-[120px]" amplitude={24} duration={9} />
-          <Floating className="pointer-events-none absolute bottom-[-12%] right-[8%] h-[36vw] w-[36vw] rounded-full bg-[#bcff2e]/[0.09] blur-[100px]" amplitude={30} duration={11} delay={1} />
+          {/* Ambient parallax orbs - hidden on mobile to fix GPU lag */}
+          <Floating className="pointer-events-none absolute left-[8%] top-[16%] hidden h-[46vw] w-[46vw] rounded-full bg-[#bcff2e]/[0.07] blur-[120px] md:block" amplitude={24} duration={9} />
+          <Floating className="pointer-events-none absolute bottom-[-12%] right-[8%] hidden h-[36vw] w-[36vw] rounded-full bg-[#bcff2e]/[0.09] blur-[100px] md:block" amplitude={30} duration={11} delay={1} />
 
           {/* Subtle grid texture */}
           <div
