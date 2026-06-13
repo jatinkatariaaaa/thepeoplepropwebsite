@@ -761,8 +761,8 @@ export default function V2Page() {
             </div>
           </Reveal>
 
-          <div className="grid gap-4 md:gap-5 sm:grid-cols-2">
-            <Reveal>
+          <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 [-ms-overflow-style:none] [scrollbar-width:none] sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:pb-0 [&::-webkit-scrollbar]:hidden">
+            <Reveal className="min-w-[85%] snap-center sm:min-w-0">
               <div className="flex h-full flex-col rounded-3xl border border-[#0c0c0c]/10 bg-white/40 p-7 backdrop-blur-sm shadow-sm">
                 <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#bcff2e]">Step 01</span>
                 <h3 className="mb-4 text-xl font-bold tracking-tight text-[#0c0c0c]">Pass the evaluation</h3>
@@ -770,7 +770,7 @@ export default function V2Page() {
               </div>
             </Reveal>
 
-            <Reveal delay={0.1}>
+            <Reveal delay={0.1} className="min-w-[85%] snap-center sm:min-w-0">
               <div className="flex h-full flex-col rounded-3xl bg-[#0c0c0c] p-7 shadow-sm">
                 <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#bcff2e] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#0c0c0c]">Step 02</span>
                 <h3 className="mb-6 text-xl font-bold tracking-tight text-white">Unlock funded account</h3>
@@ -778,7 +778,7 @@ export default function V2Page() {
               </div>
             </Reveal>
 
-            <Reveal delay={0.2}>
+            <Reveal delay={0.2} className="min-w-[85%] snap-center sm:min-w-0">
               <div className="flex h-full flex-col rounded-3xl border border-[#0c0c0c]/10 bg-white/40 p-7 backdrop-blur-sm shadow-sm">
                 <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#bcff2e]">Step 03</span>
                 <h3 className="mb-4 text-xl font-bold tracking-tight text-[#0c0c0c]">Trade &amp; get paid</h3>

@@ -960,9 +960,9 @@ export default function V3Page() {
             </div>
           </Reveal>
 
-          <div className="grid gap-4 md:gap-5 sm:grid-cols-2">
+          <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 [-ms-overflow-style:none] [scrollbar-width:none] sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:pb-0 [&::-webkit-scrollbar]:hidden">
             {/* Step 01 */}
-            <Reveal>
+            <Reveal className="min-w-[85%] snap-center sm:min-w-0">
               <TiltCard intensity={5} glare={false} className="h-full">
                 <div className="flex h-full flex-col rounded-3xl border border-[#0c0c0c]/10 bg-white/40 p-7 backdrop-blur-sm">
                   <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#bcff2e]">Step 01</span>
@@ -989,7 +989,7 @@ export default function V3Page() {
             </Reveal>
 
             {/* Step 02 */}
-            <Reveal delay={0.1}>
+            <Reveal delay={0.1} className="min-w-[85%] snap-center sm:min-w-0">
               <TiltCard intensity={5} className="h-full">
                 <div className="flex h-full flex-col rounded-3xl bg-[#0c0c0c] p-7">
                   <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#bcff2e] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#0c0c0c]">Step 02</span>
@@ -1014,7 +1014,7 @@ export default function V3Page() {
             </Reveal>
 
             {/* Step 03 */}
-            <Reveal delay={0.2}>
+            <Reveal delay={0.2} className="min-w-[85%] snap-center sm:min-w-0">
               <TiltCard intensity={5} glare={false} className="h-full">
                 <div className="flex h-full flex-col rounded-3xl border border-[#0c0c0c]/10 bg-white/40 p-7 backdrop-blur-sm">
                   <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#bcff2e]">Step 03</span>
