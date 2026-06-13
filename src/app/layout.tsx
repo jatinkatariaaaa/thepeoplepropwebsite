@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter, Instrument_Serif, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
 import { ChromeGate } from "@/components/layout/ChromeGate";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
 
@@ -63,9 +62,6 @@ export default function RootLayout({
             <Navbar />
           </ChromeGate>
           <main className="flex-1">{children}</main>
-          <ChromeGate>
-            <Footer />
-          </ChromeGate>
         </SmoothScroll>
       </body>
     </html>
