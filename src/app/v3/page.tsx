@@ -53,7 +53,7 @@ import { V2ChallengeCalculator } from "@/components/landing/V2ChallengeCalculato
    • Page bg = warm cream (#f1eade)
    • Full-width ROUNDED CARDS with tiny inset, alternating
      BLACK → CREAM → BLACK → LIME
-   • Matte dark #0c0c0c + neon lime #bcff2e accent
+   • Matte dark #0c0c0c + neon lime #cbfb45 accent
    • Giant, tight-tracked typography
 
    What V3 adds:
@@ -69,7 +69,7 @@ import { V2ChallengeCalculator } from "@/components/landing/V2ChallengeCalculato
 gsap.registerPlugin(ScrollTrigger);
 
 const EASE = [0.22, 1, 0.36, 1] as const;
-const LIME = "#bcff2e";
+const LIME = "#cbfb45";
 
 /* ─────────────────────────────────────────────────────────────
    Hook: prefers-reduced-motion (respect accessibility)
@@ -200,7 +200,7 @@ function GsapWords({
             data-word
             className={cn(
               "inline-block",
-              highlight.includes(w) && "text-[#bcff2e]"
+              highlight.includes(w) && "text-[#cbfb45]"
             )}
           >
             {w}
@@ -309,7 +309,7 @@ function FaqRow({
     <div
       className={cn(
         "rounded-2xl border transition-colors duration-300",
-        open ? "border-[#bcff2e]/40 bg-white/[0.05]" : "border-white/[0.08] bg-white/[0.02]"
+        open ? "border-[#cbfb45]/40 bg-white/[0.05]" : "border-white/[0.08] bg-white/[0.02]"
       )}
     >
       <button
@@ -322,7 +322,7 @@ function FaqRow({
           className={cn(
             "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-all duration-300",
             open
-              ? "rotate-180 border-[#bcff2e] bg-[#bcff2e] text-[#0c0c0c]"
+              ? "rotate-180 border-[#cbfb45] bg-[#cbfb45] text-[#0c0c0c]"
               : "border-white/20 text-white/60"
           )}
         >
@@ -386,7 +386,7 @@ function CustomCursor() {
       <style>{`.v3-has-cursor, .v3-has-cursor * { cursor: none !important; }`}</style>
       <motion.div
         aria-hidden
-        className="pointer-events-none fixed left-0 top-0 z-[9999] rounded-full border border-[#bcff2e] mix-blend-difference"
+        className="pointer-events-none fixed left-0 top-0 z-[9999] rounded-full border border-[#cbfb45] mix-blend-difference"
         style={{ x: ringX, y: ringY, translateX: "-50%", translateY: "-50%" }}
         animate={{
           width: hovering ? 56 : 34,
@@ -397,7 +397,7 @@ function CustomCursor() {
       />
       <motion.div
         aria-hidden
-        className="pointer-events-none fixed left-0 top-0 z-[9999] h-2 w-2 rounded-full bg-[#bcff2e]"
+        className="pointer-events-none fixed left-0 top-0 z-[9999] h-2 w-2 rounded-full bg-[#cbfb45]"
         style={{ x: dotX, y: dotY, translateX: "-50%", translateY: "-50%" }}
         animate={{ opacity: hidden ? 0 : 1, scale: hovering ? 0.4 : 1 }}
         transition={{ type: "spring", stiffness: 500, damping: 30 }}
@@ -452,7 +452,7 @@ function StepBullets({ step }: { step: Step }) {
       {step.bullets.map((b) => (
         <div key={b.t} className="flex gap-3">
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#0c0c0c]">
-            <b.icon className="h-4 w-4 text-[#bcff2e]" strokeWidth={2} />
+            <b.icon className="h-4 w-4 text-[#cbfb45]" strokeWidth={2} />
           </span>
           <div>
             <div className={cn("text-[14px] font-semibold", step.dark ? "text-white" : "text-[#0c0c0c]")}>{b.t}</div>
@@ -526,7 +526,7 @@ function PinnedSteps() {
             <h2 className="font-bold tracking-[-0.03em] text-[#0c0c0c]" style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}>
               Three steps from
               <br />
-              signup to <span className="text-[#bcff2e]">funded</span>
+              signup to <span className="text-[#cbfb45]">funded</span>
             </h2>
             <p className="mt-5 max-w-md text-[15px] leading-relaxed text-[#6c6a68]">
               No second phases. No 60-day clocks. No hidden gotchas. Just keep scrolling — then trade and get paid.
@@ -557,7 +557,7 @@ function PinnedSteps() {
                 <span
                   className={cn(
                     "mb-5 inline-flex w-fit items-center rounded-full px-3 py-1 text-[12px] font-semibold uppercase tracking-wider",
-                    step.dark ? "bg-[#bcff2e] text-[#0c0c0c]" : "bg-[#0c0c0c] text-[#bcff2e]"
+                    step.dark ? "bg-[#cbfb45] text-[#0c0c0c]" : "bg-[#0c0c0c] text-[#cbfb45]"
                   )}
                 >
                   {step.badge}
@@ -657,9 +657,9 @@ export default function V3Page() {
             <Magnetic>
               <Link
                 href="/login"
-                className="group inline-flex h-8 items-center gap-2 rounded-full border border-white/40 pl-1 pr-3 text-[15px] text-white transition-all duration-300 hover:rounded-lg hover:border-[#bcff2e]"
+                className="group inline-flex h-8 items-center gap-2 rounded-full border border-white/40 pl-1 pr-3 text-[15px] text-white transition-all duration-300 hover:rounded-lg hover:border-[#cbfb45]"
               >
-                <span className="h-6 w-6 shrink-0 rounded-full bg-[#bcff2e] transition-all duration-300 group-hover:rounded-sm" />
+                <span className="h-6 w-6 shrink-0 rounded-full bg-[#cbfb45] transition-all duration-300 group-hover:rounded-sm" />
                 Let&apos;s trade
               </Link>
             </Magnetic>
@@ -675,8 +675,8 @@ export default function V3Page() {
           className="relative flex h-full flex-col items-center justify-center overflow-hidden rounded-xl bg-black px-6 py-20 lg:rounded-2xl lg:px-10"
         >
           {/* Ambient parallax orbs - hidden on mobile to fix GPU lag */}
-          <Floating className="pointer-events-none absolute left-[8%] top-[16%] hidden h-[46vw] w-[46vw] rounded-full bg-[#bcff2e]/[0.07] blur-[120px] md:block" amplitude={24} duration={9} />
-          <Floating className="pointer-events-none absolute bottom-[-12%] right-[8%] hidden h-[36vw] w-[36vw] rounded-full bg-[#bcff2e]/[0.09] blur-[100px] md:block" amplitude={30} duration={11} delay={1} />
+          <Floating className="pointer-events-none absolute left-[8%] top-[16%] hidden h-[46vw] w-[46vw] rounded-full bg-[#cbfb45]/[0.07] blur-[120px] md:block" amplitude={24} duration={9} />
+          <Floating className="pointer-events-none absolute bottom-[-12%] right-[8%] hidden h-[36vw] w-[36vw] rounded-full bg-[#cbfb45]/[0.09] blur-[100px] md:block" amplitude={30} duration={11} delay={1} />
 
           {/* Subtle grid texture */}
           <div
@@ -700,8 +700,8 @@ export default function V3Page() {
             >
               <div className="inline-flex items-center gap-2.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 md:backdrop-blur-md">
                 <span className="relative flex h-2.5 w-2.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#bcff2e] opacity-75" />
-                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#bcff2e]" />
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#cbfb45] opacity-75" />
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#cbfb45]" />
                 </span>
                 <span className="text-[13px] font-medium tracking-wide text-white/80">
                   Evaluating traders in 150+ countries
@@ -737,10 +737,10 @@ export default function V3Page() {
               <Magnetic>
                 <Link
                   href="/dashboard/new-challenge"
-                  className="group relative inline-flex h-12 items-center gap-2 overflow-hidden rounded-full bg-[#bcff2e] pl-2 pr-5 text-[15px] font-semibold text-[#0c0c0c] transition-all duration-300 hover:rounded-xl"
+                  className="group relative inline-flex h-12 items-center gap-2 overflow-hidden rounded-full bg-[#cbfb45] pl-2 pr-5 text-[15px] font-semibold text-[#0c0c0c] transition-all duration-300 hover:rounded-xl"
                 >
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0c0c0c] transition-all duration-300 group-hover:rounded-md">
-                    <ArrowUpRight className="h-4 w-4 text-[#bcff2e] transition-transform duration-300 group-hover:rotate-45" />
+                    <ArrowUpRight className="h-4 w-4 text-[#cbfb45] transition-transform duration-300 group-hover:rotate-45" />
                   </span>
                   Start your challenge
                 </Link>
@@ -766,7 +766,7 @@ export default function V3Page() {
               transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
               className="flex h-9 w-6 items-start justify-center rounded-full border border-white/25 p-1.5"
             >
-              <span className="h-1.5 w-1 rounded-full bg-[#bcff2e]" />
+              <span className="h-1.5 w-1 rounded-full bg-[#cbfb45]" />
             </motion.div>
           </motion.div>
         </motion.div>
@@ -814,7 +814,7 @@ export default function V3Page() {
                   <div className="flex flex-wrap justify-center gap-2">
                     <Magnetic>
                       <Link href="/dashboard/new-challenge" className="group inline-flex h-9 items-center gap-2 rounded-full border border-[#0c0c0c] bg-[#0c0c0c] pl-1.5 pr-4 text-[15px] font-medium text-white transition-all duration-300 hover:rounded-lg">
-                        <span className="h-6 w-6 shrink-0 rounded-full bg-[#bcff2e] transition-all duration-300 group-hover:rounded-sm" />
+                        <span className="h-6 w-6 shrink-0 rounded-full bg-[#cbfb45] transition-all duration-300 group-hover:rounded-sm" />
                         Start trading
                       </Link>
                     </Magnetic>
@@ -857,7 +857,7 @@ export default function V3Page() {
             <Reveal delay={0.2} className="flex-1 md:mt-12">
               <div className="flex flex-col items-center gap-2 md:items-start lg:gap-4">
                 <div className="text-6xl font-medium leading-none tracking-tight text-[#0c0c0c] lg:text-[8rem]">
-                  5<span className="text-[#bcff2e]">*</span>
+                  5<span className="text-[#cbfb45]">*</span>
                 </div>
                 <span className="text-base font-medium text-[#6c6a68] lg:text-lg">Trader rating</span>
               </div>
@@ -875,7 +875,7 @@ export default function V3Page() {
           <div className="relative overflow-hidden rounded-2xl bg-black px-[15px] py-20 lg:px-[35px] xl:py-32">
             <Reveal>
               <div className="pb-12 text-center lg:pb-20">
-                <div className="mb-4 text-sm font-medium uppercase tracking-[0.3em] text-[#bcff2e]">Why TPP</div>
+                <div className="mb-4 text-sm font-medium uppercase tracking-[0.3em] text-[#cbfb45]">Why TPP</div>
                 <GsapWords
                   text="Built different from every other prop firm"
                   highlight={["prop", "firm"]}
@@ -903,7 +903,7 @@ export default function V3Page() {
                         className={cn(
                           "group relative h-full overflow-hidden rounded-2xl border p-6 transition-all duration-300 md:rounded-3xl md:p-8",
                           item.accent
-                            ? "border-transparent bg-[#bcff2e]"
+                            ? "border-transparent bg-[#cbfb45]"
                             : "border-white/[0.06] bg-[#1A2326] hover:border-white/[0.12]"
                         )}
                       >
@@ -913,7 +913,7 @@ export default function V3Page() {
                               <span className={cn("font-black leading-none tracking-[-0.04em]", item.accent ? "text-[#0c0c0c]" : "text-white", item.fullWidth ? "text-4xl md:text-5xl" : "text-4xl md:text-[56px]")}>
                                 {item.stat}
                               </span>
-                              <span className={cn("text-sm font-semibold uppercase tracking-wider md:text-base", item.accent ? "text-[#0c0c0c]/50" : "text-[#bcff2e]/70")}>
+                              <span className={cn("text-sm font-semibold uppercase tracking-wider md:text-base", item.accent ? "text-[#0c0c0c]/50" : "text-[#cbfb45]/70")}>
                                 {item.unit}
                               </span>
                             </div>
@@ -925,7 +925,7 @@ export default function V3Page() {
                             </p>
                           </div>
                           <div className={cn("mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl", item.accent ? "bg-[#0c0c0c]/10" : "bg-white/[0.06]")}>
-                            <item.icon className={cn("h-5 w-5", item.accent ? "text-[#0c0c0c]/70" : "text-[#bcff2e]")} strokeWidth={2} />
+                            <item.icon className={cn("h-5 w-5", item.accent ? "text-[#0c0c0c]/70" : "text-[#cbfb45]")} strokeWidth={2} />
                           </div>
                         </div>
                       </div>
@@ -936,7 +936,7 @@ export default function V3Page() {
             </div>
 
             <Reveal className="mt-12 text-center lg:mt-16">
-              <Link href="/rules" className="text-lg font-medium text-white underline underline-offset-4 transition-colors hover:text-[#bcff2e]">
+              <Link href="/rules" className="text-lg font-medium text-white underline underline-offset-4 transition-colors hover:text-[#cbfb45]">
                 Read the full rules
               </Link>
             </Reveal>
@@ -979,7 +979,7 @@ export default function V3Page() {
             <Reveal>
               <TiltCard intensity={5} glare={false} className="h-full">
                 <div className="flex h-full flex-col rounded-3xl border border-[#0c0c0c]/10 bg-white/40 p-7 md:backdrop-blur-sm">
-                  <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#bcff2e]">Step 01</span>
+                  <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#cbfb45]">Step 01</span>
                   <h3 className="mb-4 text-xl font-bold tracking-tight text-[#0c0c0c]">Pass the evaluation</h3>
                   <div className="flex flex-col gap-4">
                     {[
@@ -989,7 +989,7 @@ export default function V3Page() {
                     ].map((b) => (
                       <div key={b.t} className="flex gap-3">
                         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#0c0c0c]">
-                          <b.icon className="h-4 w-4 text-[#bcff2e]" strokeWidth={2} />
+                          <b.icon className="h-4 w-4 text-[#cbfb45]" strokeWidth={2} />
                         </span>
                         <div>
                           <div className="text-[14px] font-semibold text-[#0c0c0c]">{b.t}</div>
@@ -1006,7 +1006,7 @@ export default function V3Page() {
             <Reveal delay={0.1}>
               <TiltCard intensity={5} className="h-full">
                 <div className="flex h-full flex-col rounded-3xl bg-[#0c0c0c] p-7">
-                  <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#bcff2e] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#0c0c0c]">Step 02</span>
+                  <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#cbfb45] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#0c0c0c]">Step 02</span>
                   <h3 className="mb-6 text-xl font-bold tracking-tight text-white">Unlock funded account</h3>
                   <div className="flex flex-col gap-4">
                     {[
@@ -1016,7 +1016,7 @@ export default function V3Page() {
                     ].map((s) => (
                       <div key={s.label} className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-4">
                         <span className="mb-2 flex h-9 w-9 items-center justify-center rounded-lg bg-white/[0.06]">
-                          <s.icon className="h-4 w-4 text-[#bcff2e]" strokeWidth={1.8} />
+                          <s.icon className="h-4 w-4 text-[#cbfb45]" strokeWidth={1.8} />
                         </span>
                         <div className="text-[14px] font-semibold text-white">{s.label}</div>
                         <div className="text-[13px] text-white/45">{s.value}</div>
@@ -1031,7 +1031,7 @@ export default function V3Page() {
             <Reveal delay={0.2}>
               <TiltCard intensity={5} glare={false} className="h-full">
                 <div className="flex h-full flex-col rounded-3xl border border-[#0c0c0c]/10 bg-white/40 p-7 md:backdrop-blur-sm">
-                  <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#bcff2e]">Step 03</span>
+                  <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#cbfb45]">Step 03</span>
                   <h3 className="mb-4 text-xl font-bold tracking-tight text-[#0c0c0c]">Trade &amp; get paid</h3>
                   <div className="flex flex-col gap-4">
                     {[
@@ -1041,7 +1041,7 @@ export default function V3Page() {
                     ].map((b) => (
                       <div key={b.t} className="flex gap-3">
                         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#0c0c0c]">
-                          <b.icon className="h-4 w-4 text-[#bcff2e]" strokeWidth={2} />
+                          <b.icon className="h-4 w-4 text-[#cbfb45]" strokeWidth={2} />
                         </span>
                         <div>
                           <div className="text-[14px] font-semibold text-[#0c0c0c]">{b.t}</div>
@@ -1060,7 +1060,7 @@ export default function V3Page() {
       {/* ═══════════════ SECTION 7 — FEATURES (lime card, orbit) ═══════════════ */}
       <section className="w-full pb-16 lg:pb-24">
         <div className="px-[5px] py-[5px]">
-          <div className="rounded-[2rem] bg-[#bcff2e] px-[15px] py-20 lg:rounded-[3.5rem] lg:px-[35px] xl:py-32">
+          <div className="rounded-[2rem] bg-[#cbfb45] px-[15px] py-20 lg:rounded-[3.5rem] lg:px-[35px] xl:py-32">
             <Reveal>
               <div className="mb-16 text-center">
                 <div className="mb-4 text-sm font-medium uppercase tracking-[0.3em] text-[#0c0c0c]/60">Why TPP</div>
@@ -1082,7 +1082,7 @@ export default function V3Page() {
                     <TiltCard>
                       <div className="flex min-h-[200px] flex-col overflow-hidden rounded-3xl border border-white/[0.05] bg-[#0c0c0c] p-7">
                         <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06]">
-                          <f.icon className="h-5 w-5 text-[#bcff2e]" strokeWidth={2} />
+                          <f.icon className="h-5 w-5 text-[#cbfb45]" strokeWidth={2} />
                         </div>
                         <h3 className="mb-1.5 text-lg font-bold tracking-tight text-white">{f.title}</h3>
                         <p className="text-[13px] leading-relaxed text-white/50">{f.desc}</p>
@@ -1117,7 +1117,7 @@ export default function V3Page() {
                     <div className="absolute inset-4 rounded-full border border-[#0c0c0c]/15 animate-[spin_12s_linear_infinite_reverse]" />
                     <div className="absolute inset-10 rounded-full border border-[#0c0c0c]/20 animate-[spin_8s_linear_infinite]" />
                     <div className="relative z-10 flex h-[160px] w-[160px] items-center justify-center rounded-full border border-white/[0.05] bg-[#0c0c0c]">
-                      <span className="text-5xl font-bold tracking-tighter text-[#bcff2e]">TPP</span>
+                      <span className="text-5xl font-bold tracking-tighter text-[#cbfb45]">TPP</span>
                     </div>
                   </div>
                 </Floating>
@@ -1132,7 +1132,7 @@ export default function V3Page() {
                     <TiltCard>
                       <div className="flex min-h-[200px] flex-col overflow-hidden rounded-3xl border border-white/[0.05] bg-[#0c0c0c] p-7">
                         <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06]">
-                          <f.icon className="h-5 w-5 text-[#bcff2e]" strokeWidth={2} />
+                          <f.icon className="h-5 w-5 text-[#cbfb45]" strokeWidth={2} />
                         </div>
                         <h3 className="mb-1.5 text-lg font-bold tracking-tight text-white">{f.title}</h3>
                         <p className="text-[13px] leading-relaxed text-white/50">{f.desc}</p>
@@ -1172,7 +1172,7 @@ export default function V3Page() {
             transition={{ repeat: Infinity, ease: "linear", duration: 40 }}
           >
             {[...testimonials, ...testimonials].map((t, i) => (
-              <div key={i} className="flex h-[180px] w-[300px] flex-col justify-between rounded-[1rem] bg-[#bcff2e] p-6 text-[#0c0c0c] shadow-sm md:h-[200px] md:w-[350px]">
+              <div key={i} className="flex h-[180px] w-[300px] flex-col justify-between rounded-[1rem] bg-[#cbfb45] p-6 text-[#0c0c0c] shadow-sm md:h-[200px] md:w-[350px]">
                 <p className="text-[13px] font-semibold leading-relaxed md:text-[14px]">&ldquo;{t.body}&rdquo;</p>
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0c0c0c] text-[13px] font-bold text-white">
@@ -1196,7 +1196,7 @@ export default function V3Page() {
             transition={{ repeat: Infinity, ease: "linear", duration: 45 }}
           >
             {[...testimonials.slice().reverse(), ...testimonials.slice().reverse()].map((t, i) => (
-              <div key={i} className="flex h-[180px] w-[300px] flex-col justify-between rounded-[1rem] bg-[#bcff2e] p-6 text-[#0c0c0c] shadow-sm md:h-[200px] md:w-[350px]">
+              <div key={i} className="flex h-[180px] w-[300px] flex-col justify-between rounded-[1rem] bg-[#cbfb45] p-6 text-[#0c0c0c] shadow-sm md:h-[200px] md:w-[350px]">
                 <p className="text-[13px] font-semibold leading-relaxed md:text-[14px]">&ldquo;{t.body}&rdquo;</p>
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0c0c0c] text-[13px] font-bold text-white">
@@ -1222,7 +1222,7 @@ export default function V3Page() {
             <div className="mx-auto grid max-w-5xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
               <Reveal>
                 <div className="lg:sticky lg:top-32">
-                  <div className="mb-4 text-sm font-medium uppercase tracking-[0.3em] text-[#bcff2e]">Frequently Asked</div>
+                  <div className="mb-4 text-sm font-medium uppercase tracking-[0.3em] text-[#cbfb45]">Frequently Asked</div>
                   <GsapWords
                     text="The questions traders ask first"
                     highlight={["traders"]}
@@ -1233,7 +1233,7 @@ export default function V3Page() {
                     Everything you need to know before getting started. For the full list, see the rules page.
                   </p>
                   <Magnetic className="mt-8 hidden lg:inline-block">
-                    <Link href="/rules" className="inline-flex h-11 items-center gap-2 rounded-full border border-white/20 px-5 text-[15px] font-medium text-white transition-all duration-300 hover:rounded-lg hover:border-[#bcff2e] hover:text-[#bcff2e]">
+                    <Link href="/rules" className="inline-flex h-11 items-center gap-2 rounded-full border border-white/20 px-5 text-[15px] font-medium text-white transition-all duration-300 hover:rounded-lg hover:border-[#cbfb45] hover:text-[#cbfb45]">
                       See all questions
                       <ArrowRight className="h-4 w-4" />
                     </Link>
@@ -1246,7 +1246,7 @@ export default function V3Page() {
                   {faqItems.map((item, i) => (
                     <FaqRow key={item.q} item={item} open={openFaq === i} onToggle={() => setOpenFaq(openFaq === i ? null : i)} />
                   ))}
-                  <Link href="/rules" className="mt-3 inline-flex items-center justify-center gap-2 text-[15px] font-medium text-[#bcff2e] underline underline-offset-4 lg:hidden">
+                  <Link href="/rules" className="mt-3 inline-flex items-center justify-center gap-2 text-[15px] font-medium text-[#cbfb45] underline underline-offset-4 lg:hidden">
                     See all questions
                     <ArrowRight className="h-4 w-4" />
                   </Link>
@@ -1274,7 +1274,7 @@ export default function V3Page() {
               <div className="flex flex-wrap justify-center gap-3">
                 <Magnetic>
                   <Link href="/dashboard/new-challenge" className="group inline-flex h-12 items-center gap-2 rounded-full bg-[#0c0c0c] pl-2 pr-5 text-[15px] font-semibold text-white transition-all duration-300 hover:rounded-xl">
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#bcff2e] transition-all duration-300 group-hover:rounded-md">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#cbfb45] transition-all duration-300 group-hover:rounded-md">
                       <ArrowUpRight className="h-4 w-4 text-[#0c0c0c] transition-transform duration-300 group-hover:rotate-45" />
                     </span>
                     Start your challenge
@@ -1292,7 +1292,7 @@ export default function V3Page() {
       </section>
 
       {/* ═══════════════ FOOTER ═══════════════ */}
-      <footer className="mt-4 rounded-t-[2rem] bg-[#bcff2e] text-[#0c0c0c] lg:rounded-t-[3rem]">
+      <footer className="mt-4 rounded-t-[2rem] bg-[#cbfb45] text-[#0c0c0c] lg:rounded-t-[3rem]">
         <div className="mx-auto max-w-[1440px] px-5 pb-8 pt-16 lg:px-10 lg:pt-24">
           
           <div className="mb-16 grid grid-cols-1 gap-12 lg:grid-cols-[1fr_2fr]">
@@ -1310,25 +1310,25 @@ export default function V3Page() {
               </div>
 
               <div className="flex gap-4">
-                <Link href="#" className="flex h-10 w-10 items-center justify-center rounded-full border border-[#0c0c0c]/20 transition-all hover:bg-[#0c0c0c] hover:text-[#bcff2e]" aria-label="X (Twitter)">
+                <Link href="#" className="flex h-10 w-10 items-center justify-center rounded-full border border-[#0c0c0c]/20 transition-all hover:bg-[#0c0c0c] hover:text-[#cbfb45]" aria-label="X (Twitter)">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                   </svg>
                 </Link>
-                <Link href="#" className="flex h-10 w-10 items-center justify-center rounded-full border border-[#0c0c0c]/20 transition-all hover:bg-[#0c0c0c] hover:text-[#bcff2e]" aria-label="Instagram">
+                <Link href="#" className="flex h-10 w-10 items-center justify-center rounded-full border border-[#0c0c0c]/20 transition-all hover:bg-[#0c0c0c] hover:text-[#cbfb45]" aria-label="Instagram">
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
                     <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
                     <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
                   </svg>
                 </Link>
-                <Link href="#" className="flex h-10 w-10 items-center justify-center rounded-full border border-[#0c0c0c]/20 transition-all hover:bg-[#0c0c0c] hover:text-[#bcff2e]" aria-label="YouTube">
+                <Link href="#" className="flex h-10 w-10 items-center justify-center rounded-full border border-[#0c0c0c]/20 transition-all hover:bg-[#0c0c0c] hover:text-[#cbfb45]" aria-label="YouTube">
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path>
                     <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
                   </svg>
                 </Link>
-                <Link href="#" className="flex h-10 w-10 items-center justify-center rounded-full border border-[#0c0c0c]/20 transition-all hover:bg-[#0c0c0c] hover:text-[#bcff2e]" aria-label="Discord">
+                <Link href="#" className="flex h-10 w-10 items-center justify-center rounded-full border border-[#0c0c0c]/20 transition-all hover:bg-[#0c0c0c] hover:text-[#cbfb45]" aria-label="Discord">
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/>
                   </svg>
