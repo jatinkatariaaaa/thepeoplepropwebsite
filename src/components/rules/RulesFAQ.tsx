@@ -23,7 +23,7 @@ export function RulesFAQ() {
       <label className="relative block mb-5">
         <span className="sr-only">Search FAQ</span>
         <Search
-          className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#0c0c0c]/40"
+          className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--ink-400)]"
           strokeWidth={2.2}
         />
         <input
@@ -31,12 +31,12 @@ export function RulesFAQ() {
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Search the FAQ..."
-          className="w-full h-12 pl-12 pr-4 rounded-full bg-white/50 border border-[#0c0c0c]/10 text-[14px] text-[#0c0c0c] placeholder:text-[#0c0c0c]/40 focus:border-[#0c0c0c]/30 focus:outline-none transition-colors"
+          className="w-full h-12 pl-12 pr-4 rounded-full bg-white border border-[var(--border-strong)] text-[14px] text-[var(--ink-950)] placeholder:text-[var(--ink-400)] focus:border-[var(--accent)] focus:outline-none transition-colors"
         />
       </label>
 
       {filtered.length === 0 ? (
-        <div className="rounded-2xl border border-[#0c0c0c]/10 bg-white/40 p-8 text-center text-[14px] text-[#0c0c0c]/60 font-medium">
+        <div className="rounded-2xl border border-[var(--border)] bg-white p-8 text-center text-[14px] text-[var(--ink-500)]">
           No questions match &ldquo;{q}&rdquo;. Try a different keyword.
         </div>
       ) : (

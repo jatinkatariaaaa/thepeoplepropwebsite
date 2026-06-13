@@ -6,8 +6,6 @@ import { Mail, Send, Clock, ArrowRight, Check } from "lucide-react";
 import { PageHero } from "@/components/PageHero";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
-import { V3Navbar } from "@/components/layout/V3Navbar";
-import { V3Footer } from "@/components/layout/V3Footer";
 
 const subjects = [
   "General inquiry",
@@ -35,7 +33,12 @@ function DiscordIcon({ className }: { className?: string }) {
 
 export default function ContactPage() {
   const [sent, setSent] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", subject: subjects[0], message: "" });
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    subject: subjects[0],
+    message: "",
+  });
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -44,132 +47,253 @@ export default function ContactPage() {
     setForm({ name: "", email: "", subject: subjects[0], message: "" });
   }
 
-  const inputCls = "w-full h-12 px-4 rounded-xl bg-white border border-[#0c0c0c]/10 text-[14px] text-[#0c0c0c] placeholder:text-[#0c0c0c]/40 focus:border-[#0c0c0c]/30 focus:outline-none transition-colors";
+  const inputCls =
+    "w-full h-12 px-4 rounded-xl bg-white border border-[var(--border-strong)] text-[14px] text-[var(--ink-950)] placeholder:text-[var(--ink-400)] focus:border-[var(--accent)] focus:outline-none transition-colors";
 
   return (
-    <div className="v3-page min-h-screen bg-[#f1eade] text-[#0c0c0c] antialiased">
-      <V3Navbar />
-      
-      {/* 1. Hero wrapped in Black card */}
-      <section className="pt-24 lg:pt-32 px-[5px] pb-[5px]">
-        <div className="rounded-2xl bg-[#0c0c0c] text-white py-16 md:py-24 px-6 md:px-10 relative overflow-hidden">
-          <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.04]" style={{ backgroundImage: "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)", backgroundSize: "64px 64px", maskImage: "radial-gradient(ellipse at center, black 30%, transparent 75%)" }} />
-          
-          <div className="relative z-10 max-w-4xl mx-auto text-center flex flex-col items-center">
-            <span className="inline-flex items-center gap-2.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 mb-8 text-[13px] font-medium text-white/80">Contact</span>
-            <h1 className="text-[clamp(2.5rem,6vw,5rem)] font-bold leading-[0.95] tracking-[-0.03em] text-white mb-6">
-              Talk to a real<br/>
-              <span className="font-serif italic text-[#0c0c0c] px-2 bg-[#cbfb45] rounded-xl rotate-1 inline-block">TPP trader</span>.
-            </h1>
-            <p className="max-w-2xl text-[15px] leading-relaxed text-white/60">
-              The fastest way to reach us is Telegram or Discord — average reply under five minutes. For everything else, the form below routes directly to our team.
-            </p>
-          </div>
-        </div>
-      </section>
+    <>
+      <PageHero
+        eyebrow="Contact"
+        title={
+          <>
+            Talk to a real
+            <br />
+            <span className="word-serif">TPP trader</span>.
+          </>
+        }
+        description="The fastest way to reach us is Telegram or Discord — average reply under five minutes. For everything else, the form below routes directly to our team."
+        breadcrumb={[
+          { label: "Home", href: "/" },
+          { label: "Contact", href: "/contact" },
+        ]}
+      />
 
-      {/* 2. Contact form in Creme card */}
-      <section className="px-[5px] pb-[5px]">
-        <div className="rounded-2xl bg-[#f1eade] border border-[#0c0c0c]/10 py-16 md:py-24 px-6 md:px-10">
-          <div className="mx-auto max-w-7xl">
-            <div className="grid lg:grid-cols-[1fr_1.4fr] gap-10 lg:gap-16">
-              {/* Left: contact methods */}
-              <aside className="space-y-5">
-                <div className="rounded-2xl bg-[#0c0c0c] text-white p-6 relative overflow-hidden">
-                  <div aria-hidden="true" className="absolute -bottom-12 -right-10 w-48 h-48 rounded-full" style={{ background: "radial-gradient(closest-side, rgba(203,251,69,0.18), transparent)" }} />
-                  <div className="flex items-center gap-3 mb-3">
-                    <Clock className="w-4 h-4 text-[#cbfb45]" strokeWidth={2.2} />
-                    <span className="text-[11px] uppercase tracking-widest font-bold text-[#cbfb45]">Avg. response time</span>
-                  </div>
-                  <div className="font-medium text-[32px] tabular-nums tracking-tight">&lt; 5 minutes</div>
-                  <p className="text-[13px] text-white/60 mt-1">on Discord & Telegram</p>
+      <section className="relative py-16 md:py-24">
+        <div className="mx-auto max-w-7xl px-5 md:px-8">
+          <div className="grid lg:grid-cols-[1fr_1.4fr] gap-10 lg:gap-16">
+            {/* Left: contact methods */}
+            <aside className="space-y-5">
+              <div className="rounded-2xl bg-[var(--ink-950)] text-white p-6 relative overflow-hidden">
+                <div
+                  aria-hidden="true"
+                  className="absolute -bottom-12 -right-10 w-48 h-48 rounded-full"
+                  style={{
+                    background:
+                      "radial-gradient(closest-side, rgba(216,242,107,0.18), transparent)",
+                  }}
+                />
+                <div className="flex items-center gap-3 mb-3">
+                  <Clock
+                    className="w-4 h-4 text-[#D8F26B]"
+                    strokeWidth={2.2}
+                  />
+                  <span className="text-[11px] tracking-eyebrow text-[#D8F26B]">
+                    Avg. response time
+                  </span>
                 </div>
-
-                <div className="space-y-3">
-                  <a href="#" className="flex items-center justify-between p-4 rounded-2xl border border-[#0c0c0c]/10 bg-white/50 hover:bg-white transition-colors group">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-[#0088cc]/10 flex items-center justify-center text-[#0088cc]">
-                        <TelegramIcon />
-                      </div>
-                      <div className="text-[14px] font-medium text-[#0c0c0c]">Telegram Support</div>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-[#0c0c0c]/40 group-hover:text-[#0c0c0c] transition-colors" />
-                  </a>
-
-                  <a href="#" className="flex items-center justify-between p-4 rounded-2xl border border-[#0c0c0c]/10 bg-white/50 hover:bg-white transition-colors group">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-[#5865F2]/10 flex items-center justify-center text-[#5865F2]">
-                        <DiscordIcon />
-                      </div>
-                      <div className="text-[14px] font-medium text-[#0c0c0c]">Discord Community</div>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-[#0c0c0c]/40 group-hover:text-[#0c0c0c] transition-colors" />
-                  </a>
-
-                  <a href="mailto:support@thepeopleprop.com" className="flex items-center justify-between p-4 rounded-2xl border border-[#0c0c0c]/10 bg-white/50 hover:bg-white transition-colors group">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-[#0c0c0c]/5 flex items-center justify-center text-[#0c0c0c]">
-                        <Mail className="w-4 h-4" />
-                      </div>
-                      <div className="text-[14px] font-medium text-[#0c0c0c]">support@thepeopleprop.com</div>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-[#0c0c0c]/40 group-hover:text-[#0c0c0c] transition-colors" />
-                  </a>
+                <div className="font-medium text-[32px] tabular-nums tracking-tight">
+                  &lt; 5 minutes
                 </div>
-              </aside>
+                <p className="mt-2 text-[13.5px] text-white/65 leading-relaxed">
+                  Live support 24/7 on Telegram & Discord. Email tickets
+                  answered within four hours, seven days a week.
+                </p>
+              </div>
 
-              {/* Right: form */}
-              <div className="rounded-2xl border border-[#0c0c0c]/10 bg-white/50 p-6 md:p-8 lg:p-10">
-                <h2 className="text-[20px] font-bold tracking-tight text-[#0c0c0c] mb-6">Send us a message</h2>
-                {sent ? (
-                  <div className="rounded-xl bg-[#cbfb45]/10 border border-[#cbfb45]/30 p-8 text-center animate-in fade-in zoom-in duration-300">
-                    <div className="w-12 h-12 rounded-full bg-[#cbfb45] text-[#0c0c0c] flex items-center justify-center mx-auto mb-4">
-                      <Check className="w-6 h-6" strokeWidth={3} />
+              {[
+                {
+                  icon: Mail,
+                  label: "Email",
+                  primary: "support@thepeopleprop.com",
+                  detail: "All inquiries · 4h SLA",
+                  href: "mailto:support@thepeopleprop.com",
+                },
+                {
+                  icon: TelegramIcon,
+                  label: "Telegram",
+                  primary: "@thepeopleprop",
+                  detail: "Instant replies · 24/7",
+                  href: "#",
+                },
+                {
+                  icon: DiscordIcon,
+                  label: "Discord",
+                  primary: "discord.gg/peopleprop",
+                  detail: "Community · 12k members",
+                  href: "#",
+                },
+              ].map((c, i) => {
+                const Icon = c.icon as React.ComponentType<{ className?: string }>;
+                return (
+                  <a
+                    key={i}
+                    href={c.href}
+                    className="group flex items-start gap-4 surface-card p-5 hover:border-[var(--border-strong)] hover:shadow-[0_18px_36px_-22px_rgba(11,15,26,0.12)] transition-all"
+                  >
+                    <div className="grid place-items-center w-10 h-10 rounded-xl bg-[var(--accent-50)] text-[var(--accent-700)] border border-[rgba(14,124,92,0.18)] shrink-0">
+                      <Icon className="w-4 h-4" />
                     </div>
-                    <h3 className="text-[17px] font-bold text-[#0c0c0c] mb-2">Message sent</h3>
-                    <p className="text-[14px] text-[#0c0c0c]/60">We'll get back to you at {form.email} as soon as possible.</p>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[11px] tracking-eyebrow text-[var(--ink-400)]">
+                        {c.label}
+                      </div>
+                      <div className="text-[14px] text-[var(--ink-950)] mt-1 truncate font-medium">
+                        {c.primary}
+                      </div>
+                      <div className="text-[12px] text-[var(--ink-500)] mt-0.5">
+                        {c.detail}
+                      </div>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-[var(--ink-300)] group-hover:text-[var(--accent)] group-hover:translate-x-0.5 transition-all" />
+                  </a>
+                );
+              })}
+
+              <div className="surface-quiet p-5">
+                <p className="text-[13.5px] text-[var(--ink-700)] leading-relaxed">
+                  Looking for self-serve answers? Most questions are already
+                  covered in the rulebook.
+                </p>
+                <Link
+                  href="/rules"
+                  className="mt-3 inline-flex items-center gap-1.5 text-[13.5px] text-[var(--accent-700)] hover:text-[var(--ink-950)] font-medium"
+                >
+                  Browse the FAQ <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </aside>
+
+            {/* Right: form */}
+            <div>
+              <div className="surface-elevated p-7 md:p-9">
+                <h2 className="font-medium text-[24px] md:text-[28px] tracking-tight text-[var(--ink-950)] mb-2">
+                  Send us a message
+                </h2>
+                <p className="text-[14px] text-[var(--ink-500)] mb-8">
+                  Fill out the form and a TPP team member will respond within
+                  four hours.
+                </p>
+
+                <form onSubmit={onSubmit} className="space-y-5">
+                  <div className="grid md:grid-cols-2 gap-5">
+                    <div>
+                      <label
+                        htmlFor="name"
+                        className="text-[11px] tracking-eyebrow text-[var(--ink-500)] mb-2 block"
+                      >
+                        Full name
+                      </label>
+                      <input
+                        id="name"
+                        type="text"
+                        required
+                        value={form.name}
+                        onChange={(e) =>
+                          setForm({ ...form, name: e.target.value })
+                        }
+                        placeholder="Marcus Adeyemi"
+                        className={inputCls}
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="cemail"
+                        className="text-[11px] tracking-eyebrow text-[var(--ink-500)] mb-2 block"
+                      >
+                        Email address
+                      </label>
+                      <input
+                        id="cemail"
+                        type="email"
+                        required
+                        value={form.email}
+                        onChange={(e) =>
+                          setForm({ ...form, email: e.target.value })
+                        }
+                        placeholder="you@domain.com"
+                        className={inputCls}
+                      />
+                    </div>
                   </div>
-                ) : (
-                  <form onSubmit={onSubmit} className="space-y-4">
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-1.5">
-                        <label className="text-[12px] font-medium text-[#0c0c0c]/80 ml-1">Your name</label>
-                        <input required type="text" placeholder="Jane Doe" className={inputCls} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[12px] font-medium text-[#0c0c0c]/80 ml-1">Email address</label>
-                        <input required type="email" placeholder="jane@example.com" className={inputCls} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-                      </div>
-                    </div>
 
-                    <div className="space-y-1.5">
-                      <label className="text-[12px] font-medium text-[#0c0c0c]/80 ml-1">Topic</label>
-                      <select className={cn(inputCls, "appearance-none bg-no-repeat")} style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9' /%3E%3C/svg%3E")`, backgroundPosition: "right 16px center", backgroundSize: "16px" }} value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })}>
-                        {subjects.map((s) => (
-                          <option key={s} value={s}>{s}</option>
-                        ))}
-                      </select>
-                    </div>
+                  <div>
+                    <label
+                      htmlFor="subject"
+                      className="text-[11px] tracking-eyebrow text-[var(--ink-500)] mb-2 block"
+                    >
+                      Subject
+                    </label>
+                    <select
+                      id="subject"
+                      value={form.subject}
+                      onChange={(e) =>
+                        setForm({ ...form, subject: e.target.value })
+                      }
+                      className={inputCls}
+                    >
+                      {subjects.map((s) => (
+                        <option key={s} value={s}>
+                          {s}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
-                    <div className="space-y-1.5">
-                      <label className="text-[12px] font-medium text-[#0c0c0c]/80 ml-1">Message</label>
-                      <textarea required placeholder="How can we help?" rows={5} className={cn(inputCls, "h-auto py-3 resize-none")} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
-                    </div>
+                  <div>
+                    <label
+                      htmlFor="message"
+                      className="text-[11px] tracking-eyebrow text-[var(--ink-500)] mb-2 block"
+                    >
+                      Message
+                    </label>
+                    <textarea
+                      id="message"
+                      required
+                      rows={6}
+                      value={form.message}
+                      onChange={(e) =>
+                        setForm({ ...form, message: e.target.value })
+                      }
+                      placeholder="Tell us what we can help with..."
+                      className="w-full px-4 py-3 rounded-xl bg-white border border-[var(--border-strong)] text-[14px] text-[var(--ink-950)] placeholder:text-[var(--ink-400)] focus:border-[var(--accent)] focus:outline-none transition-colors resize-none"
+                    />
+                  </div>
 
-                    <div className="pt-2">
-                      <Button type="submit" className="w-full h-12 bg-[#cbfb45] hover:bg-[#b5e530] text-[#0c0c0c] font-bold rounded-xl flex items-center justify-center gap-2">
-                        Send message <Send className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </form>
-                )}
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2">
+                    <p className="text-[12px] text-[var(--ink-400)]">
+                      By submitting, you accept our{" "}
+                      <Link
+                        href="#"
+                        className="text-[var(--ink-950)] underline underline-offset-2"
+                      >
+                        privacy policy
+                      </Link>
+                      .
+                    </p>
+                    <Button type="submit" variant="primary" size="md">
+                      <span
+                        className={cn(
+                          "inline-flex items-center gap-2 transition-opacity",
+                          sent && "opacity-0",
+                        )}
+                      >
+                        Send message
+                        <Send className="w-4 h-4" />
+                      </span>
+                      {sent && (
+                        <span className="absolute inline-flex items-center gap-2">
+                          <Check className="w-4 h-4" />
+                          Message sent
+                        </span>
+                      )}
+                    </Button>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
         </div>
       </section>
-
-      <V3Footer />
-    </div>
+    </>
   );
 }

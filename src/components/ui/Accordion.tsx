@@ -22,7 +22,7 @@ export function Accordion({
   return (
     <div
       className={cn(
-        "divide-y divide-[#0c0c0c]/10 rounded-2xl border border-[#0c0c0c]/10 bg-transparent overflow-hidden",
+        "divide-y divide-[var(--border)] rounded-2xl border border-[var(--border)] bg-white shadow-[var(--shadow-sm)]",
         className,
       )}
     >
@@ -30,31 +30,31 @@ export function Accordion({
         const isOpen = open === i;
         const id = `acc-${i}`;
         return (
-          <div key={i} className="bg-white/40 backdrop-blur-sm transition-colors">
+          <div key={i}>
             <button
               type="button"
               aria-expanded={isOpen}
               aria-controls={`${id}-panel`}
               id={`${id}-button`}
               onClick={() => setOpen(isOpen ? null : i)}
-              className="w-full flex items-start justify-between gap-6 text-left px-5 md:px-7 py-5 md:py-6 group hover:bg-[#0c0c0c]/5 transition-colors"
+              className="w-full flex items-start justify-between gap-6 text-left px-5 md:px-7 py-5 md:py-6 group hover:bg-[var(--ink-50)]/60 transition-colors"
             >
-              <span className="text-[16px] md:text-[17px] font-bold text-[#0c0c0c] pr-4 leading-snug">
+              <span className="text-[16px] md:text-[17px] font-medium text-[var(--ink-950)] pr-4 leading-snug">
                 {item.q}
               </span>
               <span
                 className={cn(
                   "shrink-0 mt-0.5 grid place-items-center w-8 h-8 rounded-full border transition-all duration-300",
                   isOpen
-                    ? "bg-[#0c0c0c] border-[#0c0c0c] rotate-45"
-                    : "bg-transparent border-[#0c0c0c]/20 group-hover:border-[#0c0c0c]",
+                    ? "bg-[var(--accent)] border-[var(--accent)] rotate-45"
+                    : "bg-white border-[var(--border-strong)] group-hover:border-[var(--ink-700)]",
                 )}
                 aria-hidden="true"
               >
                 <Plus
                   className={cn(
                     "w-4 h-4 transition-colors",
-                    isOpen ? "text-[#cbfb45]" : "text-[#0c0c0c]",
+                    isOpen ? "text-white" : "text-[var(--ink-700)]",
                   )}
                 />
               </span>
@@ -72,7 +72,7 @@ export function Accordion({
                   transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                   className="overflow-hidden"
                 >
-                  <div className="px-5 md:px-7 pb-6 text-[#0c0c0c]/60 text-[15px] leading-relaxed max-w-3xl font-medium">
+                  <div className="px-5 md:px-7 pb-6 text-[var(--ink-500)] text-[15px] leading-relaxed max-w-3xl">
                     {item.a}
                   </div>
                 </motion.div>
