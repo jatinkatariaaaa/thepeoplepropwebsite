@@ -307,7 +307,7 @@ function Floating({
   duration = 6,
   delay = 0,
 }: {
-  children: ReactNode;
+  children?: ReactNode;
   className?: string;
   amplitude?: number;
   duration?: number;
