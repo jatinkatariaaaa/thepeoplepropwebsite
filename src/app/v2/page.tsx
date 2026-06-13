@@ -16,7 +16,18 @@ import {
   MoonStar,
   RotateCcw,
   BadgeDollarSign,
+  Target,
+  KeyRound,
+  DollarSign,
+  Percent,
+  CalendarCheck,
+  ArrowRight,
 } from "lucide-react";
+
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 import { cn } from "@/lib/utils";
 import { V2ChallengeCalculator } from "@/components/landing/V2ChallengeCalculator";
@@ -32,6 +43,176 @@ import { V2ChallengeCalculator } from "@/components/landing/V2ChallengeCalculato
    • Giant typography, tight tracking
    • Neon lime (#bcff2e) accent
    ═══════════════════════════════════════════════════════════════ */
+
+/* ---------- GSAP / ScrollTrigger Helpers ---------- */
+function useReducedMotion() {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReduced(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  return reduced;
+}
+
+type StepBullet = { icon: any; t: string; s: string };
+type Step = { badge: string; title: string; dark: boolean; bullets: StepBullet[] };
+
+const STEPS: Step[] = [
+  {
+    badge: "Step 01",
+    title: "Pass the evaluation",
+    dark: false,
+    bullets: [
+      { icon: Target, t: "Hit a 10% profit target", s: "Reach and maintain a 10% profit target." },
+      { icon: Shield, t: "Respect 4% daily / 8% max drawdown", s: "Stay within 4% daily and 8% overall limits." },
+      { icon: Clock, t: "Minimum 3 trading days, no time limit", s: "Trade for at least 3 days. No time limit." },
+    ],
+  },
+  {
+    badge: "Step 02",
+    title: "Unlock funded account",
+    dark: true,
+    bullets: [
+      { icon: KeyRound, t: "Account credentials", s: "Delivered in under 24 hours." },
+      { icon: DollarSign, t: "Up to $200,000", s: "In scaled capital." },
+      { icon: Shield, t: "Same rules", s: "No daily target pressure." },
+    ],
+  },
+  {
+    badge: "Step 03",
+    title: "Trade & get paid",
+    dark: false,
+    bullets: [
+      { icon: CalendarCheck, t: "First payout 14 days", s: "Receive your first payout 14 days after your first trade." },
+      { icon: Percent, t: "Up to 90% profit split", s: "Keep up to 90% of profits. Paid bi-weekly." },
+      { icon: RotateCcw, t: "100% refund on payout #1", s: "We refund your full challenge fee with payout #1." },
+    ],
+  },
+];
+
+function StepBullets({ step }: { step: Step }) {
+  return (
+    <div className="flex flex-col gap-4">
+      {step.bullets.map((b) => (
+        <div key={b.t} className="flex gap-3">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#0c0c0c]">
+            <b.icon className="h-4 w-4 text-[#bcff2e]" strokeWidth={2} />
+          </span>
+          <div>
+            <div className={cn("text-[14px] font-semibold", step.dark ? "text-white" : "text-[#0c0c0c]")}>{b.t}</div>
+            <div className={cn("text-[13px]", step.dark ? "text-white/45" : "text-[#6c6a68]")}>{b.s}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function PinnedSteps() {
+  const reduced = useReducedMotion();
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (reduced || !sectionRef.current || !trackRef.current) return;
+    const ctx = gsap.context(() => {
+      const track = trackRef.current!;
+      const getShift = () => Math.max(0, track.scrollWidth - window.innerWidth);
+
+      gsap.to(track, {
+        x: () => -getShift(),
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: () => "+=" + getShift(),
+          scrub: 1,
+          pin: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      gsap.fromTo(
+        "[data-steps-progress]",
+        { scaleX: 0 },
+        {
+          scaleX: 1,
+          ease: "none",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top top",
+            end: () => "+=" + getShift(),
+            scrub: 1,
+          },
+        }
+      );
+    }, sectionRef);
+    return () => ctx.revert();
+  }, [reduced]);
+
+  return (
+    <div ref={sectionRef} className="relative hidden h-dvh overflow-hidden lg:block bg-[#f1eade]">
+      <div className="absolute left-10 right-10 top-[calc(7.5rem+1rem)] z-20 h-[2px] bg-[#0c0c0c]/10">
+        <div data-steps-progress className="h-full w-full origin-left scale-x-0 bg-[#0c0c0c]" />
+      </div>
+
+      <div ref={trackRef} className="flex h-full w-max items-center will-change-transform">
+        <div className="flex h-full w-screen shrink-0 flex-col justify-center px-10 xl:px-20">
+          <div className="max-w-xl">
+            <div className="mb-3 text-sm font-medium uppercase tracking-[0.3em] text-[#6c6a68]">How It Works</div>
+            <h2 className="font-medium tracking-[-0.03em] text-[#0c0c0c]" style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}>
+              Three steps from
+              <br />
+              signup to <span className="text-[#bcff2e]">funded</span>
+            </h2>
+            <p className="mt-5 max-w-md text-[15px] leading-relaxed text-[#6c6a68]">
+              No second phases. No 60-day clocks. No hidden gotchas. Just keep scrolling — then trade and get paid.
+            </p>
+            <div className="mt-8 inline-flex items-center gap-2 text-[14px] font-medium text-[#0c0c0c]/50">
+              Scroll to explore <ArrowRight className="h-4 w-4" />
+            </div>
+          </div>
+        </div>
+
+        {STEPS.map((step, i) => (
+          <div key={step.badge} className="flex h-full w-screen shrink-0 items-center px-10 xl:px-20">
+            <div className="grid w-full max-w-6xl grid-cols-[auto_1fr] items-center gap-10 xl:gap-16">
+              <div
+                className="select-none font-black leading-none tracking-[-0.05em] text-[#0c0c0c]/[0.08]"
+                style={{ fontSize: "clamp(8rem, 20vw, 22rem)" }}
+              >
+                {String(i + 1).padStart(2, "0")}
+              </div>
+              <div
+                className={cn(
+                  "max-w-md rounded-[2rem] p-9 shadow-xl",
+                  step.dark ? "bg-[#0c0c0c]" : "border border-[#0c0c0c]/10 bg-white/50 backdrop-blur-sm"
+                )}
+              >
+                <span
+                  className={cn(
+                    "mb-5 inline-flex w-fit items-center rounded-full px-3 py-1 text-[12px] font-semibold uppercase tracking-wider",
+                    step.dark ? "bg-[#bcff2e] text-[#0c0c0c]" : "bg-[#0c0c0c] text-[#bcff2e]"
+                  )}
+                >
+                  {step.badge}
+                </span>
+                <h3 className={cn("mb-6 text-2xl font-bold tracking-tight", step.dark ? "text-white" : "text-[#0c0c0c]")}>
+                  {step.title}
+                </h3>
+                <StepBullets step={step} />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 /* ---------- Animated Counter ---------- */
 function AnimatedCounter({ end, suffix = "" }: { end: number; suffix?: string }) {
@@ -555,6 +736,55 @@ export default function V2Page() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════
+          SECTION 6.5: EVALUATION STEPS
+          ═══════════════════════════════════════════════ */}
+      <PinnedSteps />
+      
+      <section className="w-full pb-16 lg:hidden">
+        <div className="w-full px-5">
+          <Reveal>
+            <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
+              <div className="max-w-xl">
+                <div className="mb-3 text-sm font-medium uppercase tracking-[0.3em] text-[#6c6a68]">How It Works</div>
+                <h2 className="font-medium tracking-[-0.03em] text-[#0c0c0c]" style={{ fontSize: "clamp(2rem, 5vw, 3.25rem)" }}>
+                  Three steps from signup to <span className="text-[#bcff2e]">funded</span>
+                </h2>
+                <p className="mt-4 max-w-md text-[15px] leading-relaxed text-[#6c6a68]">
+                  No second phases. No 60-day clocks. No hidden gotchas. Just trade — and get paid.
+                </p>
+              </div>
+            </div>
+          </Reveal>
+
+          <div className="grid gap-4 md:gap-5 sm:grid-cols-2">
+            <Reveal>
+              <div className="flex h-full flex-col rounded-3xl border border-[#0c0c0c]/10 bg-white/40 p-7 backdrop-blur-sm shadow-sm">
+                <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#bcff2e]">Step 01</span>
+                <h3 className="mb-4 text-xl font-bold tracking-tight text-[#0c0c0c]">Pass the evaluation</h3>
+                <StepBullets step={STEPS[0]} />
+              </div>
+            </Reveal>
+
+            <Reveal delay={0.1}>
+              <div className="flex h-full flex-col rounded-3xl bg-[#0c0c0c] p-7 shadow-sm">
+                <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#bcff2e] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#0c0c0c]">Step 02</span>
+                <h3 className="mb-6 text-xl font-bold tracking-tight text-white">Unlock funded account</h3>
+                <StepBullets step={STEPS[1]} />
+              </div>
+            </Reveal>
+
+            <Reveal delay={0.2}>
+              <div className="flex h-full flex-col rounded-3xl border border-[#0c0c0c]/10 bg-white/40 p-7 backdrop-blur-sm shadow-sm">
+                <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#bcff2e]">Step 03</span>
+                <h3 className="mb-4 text-xl font-bold tracking-tight text-[#0c0c0c]">Trade &amp; get paid</h3>
+                <StepBullets step={STEPS[2]} />
+              </div>
+            </Reveal>
           </div>
         </div>
       </section>
