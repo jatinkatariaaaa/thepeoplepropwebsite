@@ -1,4 +1,6 @@
-import type { Metadata } from "next";
+const fs = require('fs');
+
+let content = `import type { Metadata } from "next";
 import { PageHero } from "@/components/PageHero";
 import { V2ChallengeCalculator } from "@/components/landing/V2ChallengeCalculator";
 import { Accordion } from "@/components/ui/Accordion";
@@ -87,7 +89,7 @@ export default function ChallengesPage() {
                           const fee = p.fees[s];
                           return (
                             <td key={s} className="text-right px-4 py-4 text-white/80 border-l border-white/5">
-                              {fee != null ? <span className="font-medium">${fee.toLocaleString("en-US")}</span> : <span className="text-white/20 text-[11px] font-medium">—</span>}
+                              {fee != null ? <span className="font-medium">\${fee.toLocaleString("en-US")}</span> : <span className="text-white/20 text-[11px] font-medium">—</span>}
                             </td>
                           );
                         })}
@@ -125,3 +127,7 @@ export default function ChallengesPage() {
     </div>
   );
 }
+`;
+
+fs.writeFileSync('src/app/challenges/page.tsx', content, 'utf8');
+console.log('Challenges page completely rewritten into V3 card sections');
