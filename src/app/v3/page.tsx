@@ -41,6 +41,7 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 
+import { FeaturedIn } from "@/components/landing/FeaturedIn";
 import { cn } from "@/lib/utils";
 import { faq } from "@/data/faq";
 import { V2ChallengeCalculator } from "@/components/landing/V2ChallengeCalculator";
@@ -760,6 +761,9 @@ export default function V3Page() {
           </motion.div>
         </motion.div>
       </section>
+
+      {/* ═══════════════ FEATURED LOGOS ═══════════════ */}
+      <FeaturedIn />
 
       {/* ═══════════════ SECTION 2 — INTRO ═══════════════ */}
       <section className="w-full py-16 lg:py-24">
