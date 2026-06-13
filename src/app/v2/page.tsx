@@ -319,7 +319,7 @@ export default function V2Page() {
       {/* ═══════════════════════════════════════════════
           SECTION 1: HERO — Black Card on Cream
           ═══════════════════════════════════════════════ */}
-      <section className="h-dvh px-[5px] py-[5px]">
+      <section className="min-h-[100svh] lg:h-dvh px-[5px] py-[5px]">
         <div className="relative flex flex-col h-full items-center justify-center rounded-xl lg:rounded-2xl bg-black px-6 lg:px-10 py-20 overflow-hidden">
           
           {/* Ambient Glow Orbs */}

@@ -1389,4 +1389,9 @@ body.v2-active .v2-root header {
 body.v2-active .v2-page footer {
   display: block !important;
 }
-
+
+@layer base {
+  html, body {
+    overscroll-behavior-y: none;
+  }
+}

@@ -658,7 +658,7 @@ export default function V3Page() {
       </header>
 
       {/* ═══════════════ SECTION 1 — HERO ═══════════════ */}
-      <section ref={heroRef} className="h-dvh px-[5px] py-[5px]">
+      <section ref={heroRef} className="min-h-[100svh] lg:h-dvh px-[5px] py-[5px]">
         <motion.div
           style={{ scale: reduced ? 1 : heroScale }}
           className="relative flex h-full flex-col items-center justify-center overflow-hidden rounded-xl bg-black px-6 py-20 lg:rounded-2xl lg:px-10"
