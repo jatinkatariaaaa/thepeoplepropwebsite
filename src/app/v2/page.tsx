@@ -190,7 +190,7 @@ function PinnedSteps() {
               <div
                 className={cn(
                   "max-w-md rounded-[2rem] p-9 shadow-xl",
-                  step.dark ? "bg-[#0c0c0c]" : "border border-[#0c0c0c]/10 bg-white/50 backdrop-blur-sm"
+                  step.dark ? "bg-[#0c0c0c]" : "border border-[#0c0c0c]/10 bg-white/50 md:backdrop-blur-sm"
                 )}
               >
                 <span
@@ -277,7 +277,7 @@ export default function V2Page() {
           <Link href="/v2" className="transition-opacity hover:opacity-80 z-30 relative flex items-center">
             <img src="/images/logo-v2.png" alt="TPP Logo" className="h-6 md:h-8 w-auto object-contain" />
           </Link>
-          <div className="hidden lg:flex absolute left-1/2 top-1/2 -translate-y-1/2 items-center p-1.5 rounded-full border border-white/10 bg-white/[0.03] backdrop-blur-md z-30 shadow-2xl">
+          <div className="hidden lg:flex absolute left-1/2 top-1/2 -translate-y-1/2 items-center p-1.5 rounded-full border border-white/10 bg-white/[0.03] md:backdrop-blur-md z-30 shadow-2xl">
             {[
               { name: "Home", path: "/v2" },
               { name: "Challenges", path: "/challenges" },
@@ -313,7 +313,7 @@ export default function V2Page() {
           </div>
         </div>
         {/* Header bg card — visible only after scrolling */}
-        <div className="absolute inset-[5px] z-10 rounded-xl lg:rounded-2xl bg-black/90 backdrop-blur-sm" />
+        <div className="absolute inset-[5px] z-10 rounded-xl lg:rounded-2xl bg-black/90 md:backdrop-blur-sm" />
       </header>
 
       {/* ═══════════════════════════════════════════════
@@ -333,7 +333,7 @@ export default function V2Page() {
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="mb-8 relative z-10"
           >
-            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/[0.03] border border-white/[0.08] backdrop-blur-md">
+            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/[0.03] border border-white/[0.08] md:backdrop-blur-md">
               <span className="relative flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#bcff2e] opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#bcff2e]"></span>
@@ -763,7 +763,7 @@ export default function V2Page() {
 
           <div className="grid gap-4 md:gap-5 sm:grid-cols-2">
             <Reveal>
-              <div className="flex h-full flex-col rounded-3xl border border-[#0c0c0c]/10 bg-white/40 p-7 backdrop-blur-sm shadow-sm">
+              <div className="flex h-full flex-col rounded-3xl border border-[#0c0c0c]/10 bg-white/40 p-7 md:backdrop-blur-sm shadow-sm">
                 <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#bcff2e]">Step 01</span>
                 <h3 className="mb-4 text-xl font-bold tracking-tight text-[#0c0c0c]">Pass the evaluation</h3>
                 <StepBullets step={STEPS[0]} />
@@ -779,7 +779,7 @@ export default function V2Page() {
             </Reveal>
 
             <Reveal delay={0.2}>
-              <div className="flex h-full flex-col rounded-3xl border border-[#0c0c0c]/10 bg-white/40 p-7 backdrop-blur-sm shadow-sm">
+              <div className="flex h-full flex-col rounded-3xl border border-[#0c0c0c]/10 bg-white/40 p-7 md:backdrop-blur-sm shadow-sm">
                 <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#bcff2e]">Step 03</span>
                 <h3 className="mb-4 text-xl font-bold tracking-tight text-[#0c0c0c]">Trade &amp; get paid</h3>
                 <StepBullets step={STEPS[2]} />

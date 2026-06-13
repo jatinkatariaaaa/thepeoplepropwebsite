@@ -550,7 +550,7 @@ function PinnedSteps() {
                 data-cursor="hover"
                 className={cn(
                   "max-w-md rounded-[2rem] p-9 shadow-xl",
-                  step.dark ? "bg-[#0c0c0c]" : "border border-[#0c0c0c]/10 bg-white/50 backdrop-blur-sm"
+                  step.dark ? "bg-[#0c0c0c]" : "border border-[#0c0c0c]/10 bg-white/50 md:backdrop-blur-sm"
                 )}
               >
                 <span
@@ -624,7 +624,7 @@ export default function V3Page() {
           <Link href="/v3" className="relative z-30 flex items-center transition-opacity hover:opacity-80">
             <img src="/images/logo-v2.png" alt="TPP Logo" className="h-6 w-auto object-contain md:h-8" />
           </Link>
-          <nav className="absolute left-1/2 top-1/2 z-30 hidden -translate-x-1/2 -translate-y-1/2 items-center rounded-full border border-white/10 bg-white/[0.03] p-1.5 shadow-2xl backdrop-blur-md lg:flex">
+          <nav className="absolute left-1/2 top-1/2 z-30 hidden -translate-x-1/2 -translate-y-1/2 items-center rounded-full border border-white/10 bg-white/[0.03] p-1.5 shadow-2xl md:backdrop-blur-md lg:flex">
             {[
               { name: "Home", path: "/v3" },
               { name: "Challenges", path: "/challenges" },
@@ -654,7 +654,7 @@ export default function V3Page() {
             </Magnetic>
           </div>
         </div>
-        <div className="absolute inset-[5px] z-10 rounded-xl bg-black/90 backdrop-blur-sm lg:rounded-2xl" />
+        <div className="absolute inset-[5px] z-10 rounded-xl bg-black/90 md:backdrop-blur-sm lg:rounded-2xl" />
       </header>
 
       {/* ═══════════════ SECTION 1 — HERO ═══════════════ */}
@@ -687,7 +687,7 @@ export default function V3Page() {
               transition={{ duration: 0.8, ease: EASE }}
               className="mb-8"
             >
-              <div className="inline-flex items-center gap-2.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 backdrop-blur-md">
+              <div className="inline-flex items-center gap-2.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 md:backdrop-blur-md">
                 <span className="relative flex h-2.5 w-2.5">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#bcff2e] opacity-75" />
                   <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#bcff2e]" />
@@ -964,7 +964,7 @@ export default function V3Page() {
             {/* Step 01 */}
             <Reveal className="min-w-[85%] snap-center sm:min-w-0">
               <TiltCard intensity={5} glare={false} className="h-full">
-                <div className="flex h-full flex-col rounded-3xl border border-[#0c0c0c]/10 bg-white/40 p-7 backdrop-blur-sm">
+                <div className="flex h-full flex-col rounded-3xl border border-[#0c0c0c]/10 bg-white/40 p-7 md:backdrop-blur-sm">
                   <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#bcff2e]">Step 01</span>
                   <h3 className="mb-4 text-xl font-bold tracking-tight text-[#0c0c0c]">Pass the evaluation</h3>
                   <div className="flex flex-col gap-4">
@@ -1016,7 +1016,7 @@ export default function V3Page() {
             {/* Step 03 */}
             <Reveal delay={0.2} className="min-w-[85%] snap-center sm:min-w-0">
               <TiltCard intensity={5} glare={false} className="h-full">
-                <div className="flex h-full flex-col rounded-3xl border border-[#0c0c0c]/10 bg-white/40 p-7 backdrop-blur-sm">
+                <div className="flex h-full flex-col rounded-3xl border border-[#0c0c0c]/10 bg-white/40 p-7 md:backdrop-blur-sm">
                   <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#bcff2e]">Step 03</span>
                   <h3 className="mb-4 text-xl font-bold tracking-tight text-[#0c0c0c]">Trade &amp; get paid</h3>
                   <div className="flex flex-col gap-4">
