@@ -12,7 +12,7 @@ import {
   FaqRow,
   LIME,
 } from "@/components/v3";
-import { ChallengeCalculator } from "@/components/landing/ChallengeCalculator";
+import { V2ChallengeCalculator } from "@/components/landing/V2ChallengeCalculator";
 import { faq } from "@/data/faq";
 import { ALL_SIZES, formatSize, programs } from "@/data/programs";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
@@ -38,7 +38,7 @@ export default function ChallengesPage() {
       />
 
       {/* Calculator — already has V3 styling */}
-      <ChallengeCalculator />
+      <V2ChallengeCalculator />
 
       {/* ═══ Fee Matrix — dark section ═══ */}
       <V3Section variant="dark">
