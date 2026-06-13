@@ -1,4 +1,6 @@
-import type { Metadata } from "next";
+const fs = require('fs');
+
+const heatmapContent = `import type { Metadata } from "next";
 import { PageHero } from "@/components/PageHero";
 import ForexHeatmapWidget from "@/components/tradingview/ForexHeatmapWidget";
 import { V3Navbar } from "@/components/layout/V3Navbar";
@@ -45,4 +47,7 @@ export default function HeatmapPage() {
       <V3Footer />
     </div>
   );
-}
+}`;
+
+fs.writeFileSync('src/app/heatmap/page.tsx', heatmapContent, 'utf8');
+console.log('Heatmap page rewritten');

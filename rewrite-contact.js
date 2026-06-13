@@ -1,4 +1,6 @@
-"use client";
+const fs = require('fs');
+
+const contactContent = `"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -144,7 +146,7 @@ export default function ContactPage() {
 
                     <div className="space-y-1.5">
                       <label className="text-[12px] font-medium text-[#0c0c0c]/80 ml-1">Topic</label>
-                      <select className={cn(inputCls, "appearance-none bg-no-repeat")} style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9' /%3E%3C/svg%3E")`, backgroundPosition: "right 16px center", backgroundSize: "16px" }} value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })}>
+                      <select className={cn(inputCls, "appearance-none bg-no-repeat")} style={{ backgroundImage: \`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9' /%3E%3C/svg%3E")\`, backgroundPosition: "right 16px center", backgroundSize: "16px" }} value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })}>
                         {subjects.map((s) => (
                           <option key={s} value={s}>{s}</option>
                         ))}
@@ -173,3 +175,7 @@ export default function ContactPage() {
     </div>
   );
 }
+`;
+
+fs.writeFileSync('src/app/contact/page.tsx', contactContent, 'utf8');
+console.log('Contact page rewritten');

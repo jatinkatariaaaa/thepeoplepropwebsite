@@ -1,4 +1,6 @@
-import type { Metadata } from "next";
+const fs = require('fs');
+
+const rulesContent = `import type { Metadata } from "next";
 import { PageHero } from "@/components/PageHero";
 import { RuleCard } from "@/components/rules/RuleCard";
 import { RulesFAQ } from "@/components/rules/RulesFAQ";
@@ -74,4 +76,7 @@ export default function RulesPage() {
       <V3Footer />
     </div>
   );
-}
+}`;
+
+fs.writeFileSync('src/app/rules/page.tsx', rulesContent, 'utf8');
+console.log('Rules page completely rewritten into V3 card sections');
