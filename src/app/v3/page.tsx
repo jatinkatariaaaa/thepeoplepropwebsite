@@ -1291,56 +1291,88 @@ export default function V3Page() {
       </section>
 
       {/* ═══════════════ FOOTER ═══════════════ */}
-      <footer className="rounded-t-[2rem] bg-[#bcff2e] text-[#0c0c0c] lg:rounded-t-[3rem]">
-        <div className="mx-auto max-w-[1440px] px-5 pb-8 pt-16 lg:px-10">
-          <div className="mb-16 flex flex-col items-start justify-between gap-6 md:flex-row">
-            <div>
-              <span className="text-xl font-bold">The People Prop</span>
-              <p className="mt-1 text-[14px] opacity-60">Prop Trading · Global</p>
+      <footer className="mt-4 rounded-t-[2rem] bg-[#bcff2e] text-[#0c0c0c] lg:rounded-t-[3rem]">
+        <div className="mx-auto max-w-[1440px] px-5 pb-8 pt-16 lg:px-10 lg:pt-24">
+          
+          <div className="mb-16 grid grid-cols-1 gap-12 lg:grid-cols-[1fr_2fr]">
+            {/* Left Col - Brand & Newsletter */}
+            <div className="flex flex-col">
+              <span className="mb-2 text-3xl font-black tracking-tight">The People Prop</span>
+              <p className="mb-8 max-w-[300px] text-[15px] font-medium opacity-70">
+                Evaluating traders worldwide. Built by traders, for traders. No hidden rules, just real capital scaling.
+              </p>
+              
+              <h4 className="mb-4 text-[14px] font-bold uppercase tracking-widest opacity-50">Newsletter</h4>
+              <div className="mb-8 flex max-w-[320px] border-b-2 border-[#0c0c0c] pb-2">
+                <input type="email" placeholder="Enter your email" className="flex-1 bg-transparent text-base font-medium outline-none placeholder:text-[#0c0c0c]/40" />
+                <button className="text-xl font-medium transition-transform hover:translate-x-1" aria-label="Subscribe">→</button>
+              </div>
+
+              <div className="flex gap-4">
+                <Link href="#" className="flex h-10 w-10 items-center justify-center rounded-full border border-[#0c0c0c]/20 transition-all hover:bg-[#0c0c0c] hover:text-[#bcff2e]">
+                  <span className="text-sm font-bold">X</span>
+                </Link>
+                <Link href="#" className="flex h-10 w-10 items-center justify-center rounded-full border border-[#0c0c0c]/20 transition-all hover:bg-[#0c0c0c] hover:text-[#bcff2e]">
+                  <span className="text-sm font-bold">IG</span>
+                </Link>
+                <Link href="#" className="flex h-10 w-10 items-center justify-center rounded-full border border-[#0c0c0c]/20 transition-all hover:bg-[#0c0c0c] hover:text-[#bcff2e]">
+                  <span className="text-sm font-bold">YT</span>
+                </Link>
+                <Link href="#" className="flex h-10 w-10 items-center justify-center rounded-full border border-[#0c0c0c]/20 transition-all hover:bg-[#0c0c0c] hover:text-[#bcff2e]">
+                  <span className="text-sm font-bold">DC</span>
+                </Link>
+              </div>
             </div>
-            <Magnetic>
-              <Link href="/dashboard/new-challenge" className="group inline-flex h-8 items-center gap-2 rounded-full border border-[#0c0c0c]/30 pl-1 pr-3 text-[15px] text-[#0c0c0c] transition-all duration-300 hover:rounded-lg">
-                <span className="h-6 w-6 shrink-0 rounded-full bg-[#0c0c0c] transition-all duration-300 group-hover:rounded-sm" />
-                Start trading
-              </Link>
-            </Magnetic>
+
+            {/* Right Col - Navigation Links */}
+            <div className="grid grid-cols-2 gap-8 sm:grid-cols-4 lg:justify-items-end">
+              <div className="flex flex-col gap-4">
+                <h4 className="mb-2 text-[14px] font-bold uppercase tracking-widest opacity-50">Platform</h4>
+                <Link href="/dashboard" className="text-[15px] font-medium transition-opacity hover:opacity-60">Dashboard</Link>
+                <Link href="/challenges" className="text-[15px] font-medium transition-opacity hover:opacity-60">Challenges</Link>
+                <Link href="/heatmap" className="text-[15px] font-medium transition-opacity hover:opacity-60">Heatmap</Link>
+                <Link href="/leaderboard" className="text-[15px] font-medium transition-opacity hover:opacity-60">Leaderboard</Link>
+              </div>
+              <div className="flex flex-col gap-4">
+                <h4 className="mb-2 text-[14px] font-bold uppercase tracking-widest opacity-50">Resources</h4>
+                <Link href="/rules" className="text-[15px] font-medium transition-opacity hover:opacity-60">Trading Rules</Link>
+                <Link href="/faq" className="text-[15px] font-medium transition-opacity hover:opacity-60">FAQ</Link>
+                <Link href="/referral" className="text-[15px] font-medium transition-opacity hover:opacity-60">Affiliate</Link>
+                <Link href="/blog" className="text-[15px] font-medium transition-opacity hover:opacity-60">Blog</Link>
+              </div>
+              <div className="flex flex-col gap-4">
+                <h4 className="mb-2 text-[14px] font-bold uppercase tracking-widest opacity-50">Company</h4>
+                <Link href="/about" className="text-[15px] font-medium transition-opacity hover:opacity-60">About Us</Link>
+                <Link href="/contact" className="text-[15px] font-medium transition-opacity hover:opacity-60">Contact</Link>
+                <Link href="/careers" className="text-[15px] font-medium transition-opacity hover:opacity-60">Careers</Link>
+                <Link href="/reviews" className="text-[15px] font-medium transition-opacity hover:opacity-60">Reviews</Link>
+              </div>
+              <div className="flex flex-col gap-4">
+                <h4 className="mb-2 text-[14px] font-bold uppercase tracking-widest opacity-50">Legal</h4>
+                <Link href="/terms" className="text-[15px] font-medium transition-opacity hover:opacity-60">Terms</Link>
+                <Link href="/privacy" className="text-[15px] font-medium transition-opacity hover:opacity-60">Privacy Policy</Link>
+                <Link href="/refund" className="text-[15px] font-medium transition-opacity hover:opacity-60">Refund Policy</Link>
+                <Link href="/kyc" className="text-[15px] font-medium transition-opacity hover:opacity-60">KYC/AML</Link>
+              </div>
+            </div>
           </div>
 
-          <div className="mb-16 grid grid-cols-1 gap-12 md:grid-cols-[1.5fr_1fr]">
-            <div>
-              <h3 className="mb-6 max-w-[400px] text-3xl font-medium tracking-tight md:text-4xl">
-                Keep up to date with TPP news
-              </h3>
-              <div className="flex max-w-md border-b-2 border-[#0c0c0c] pb-3">
-                <input type="email" placeholder="Your email address" className="flex-1 bg-transparent text-lg outline-none placeholder:text-[#0c0c0c]/40" />
-                <button className="text-2xl font-medium" aria-label="Subscribe">→</button>
-              </div>
-            </div>
-            <div className="flex gap-12 md:gap-16">
-              <div className="flex flex-col gap-3">
-                <Link href="/challenges" className="font-medium transition-opacity hover:opacity-60">Challenges</Link>
-                <Link href="/rules" className="font-medium transition-opacity hover:opacity-60">Rules</Link>
-                <Link href="/contact" className="font-medium transition-opacity hover:opacity-60">Contact</Link>
-              </div>
-              <div className="flex flex-col gap-3">
-                <Link href="/login" className="font-medium transition-opacity hover:opacity-60">Dashboard</Link>
-                <Link href="/referral" className="font-medium transition-opacity hover:opacity-60">Referral</Link>
-                <Link href="#" className="font-medium transition-opacity hover:opacity-60">Discord</Link>
-              </div>
-            </div>
-          </div>
-
-          <h2 className="my-8 select-none text-center font-extrabold leading-[0.8] tracking-[-0.05em]" style={{ fontSize: "clamp(4rem, 18vw, 20rem)" }}>
+          <h2 className="my-8 select-none text-center font-black leading-[0.8] tracking-[-0.05em] text-[#0c0c0c]" style={{ fontSize: "clamp(5rem, 20vw, 22rem)" }}>
             TPP
           </h2>
 
-          <div className="flex flex-col items-center justify-between gap-4 border-t border-[#0c0c0c]/10 pt-8 text-[14px] opacity-60 sm:flex-row">
-            <span>&copy; 2026 The People Prop</span>
-            <Link href="#" className="transition-opacity hover:opacity-100">Privacy Policy</Link>
-            <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="inline-flex items-center gap-1 transition-opacity hover:opacity-100">
-              <ChevronUp className="h-4 w-4" /> Take me back to top
-            </button>
+          <div className="flex flex-col gap-8 border-t border-[#0c0c0c]/10 pt-8">
+            <p className="mx-auto max-w-6xl text-center text-[12px] leading-relaxed opacity-60 md:text-left">
+              <strong>Risk Warning:</strong> The People Prop provides simulated trading environments. All accounts provided to clients are simulated accounts. Trading in financial markets involves a high degree of risk and may not be suitable for all investors. The simulated capital provided is not real money and cannot be lost by the trader. Past performance is not indicative of future results. Please ensure you fully understand the risks involved and seek independent advice if necessary. The People Prop is not a broker and does not accept deposits.
+            </p>
+            <div className="flex flex-col items-center justify-between gap-4 text-[13px] font-medium opacity-80 sm:flex-row">
+              <span>&copy; {new Date().getFullYear()} The People Prop. All rights reserved.</span>
+              <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="inline-flex items-center gap-1.5 rounded-full bg-[#0c0c0c]/5 px-4 py-2 transition-opacity hover:opacity-100">
+                <ChevronUp className="h-4 w-4" strokeWidth={2.5} /> Back to top
+              </button>
+            </div>
           </div>
+
         </div>
       </footer>
     </div>
