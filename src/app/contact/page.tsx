@@ -6,6 +6,8 @@ import { Mail, Send, Clock, ArrowRight, Check } from "lucide-react";
 import { PageHero } from "@/components/PageHero";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import { V3Navbar } from "@/components/layout/V3Navbar";
+import { V3Footer } from "@/components/layout/V3Footer";
 
 const subjects = [
   "General inquiry",
@@ -51,14 +53,16 @@ export default function ContactPage() {
     "w-full h-12 px-4 rounded-xl bg-white border border-[var(--border-strong)] text-[14px] text-[var(--ink-950)] placeholder:text-[var(--ink-400)] focus:border-[var(--accent)] focus:outline-none transition-colors";
 
   return (
-    <>
+    <div className="v3-page min-h-screen bg-[#f1eade] text-[#0c0c0c] antialiased">
+      <V3Navbar />
+      <div className="pt-24 lg:pt-32 pb-16">
       <PageHero
         eyebrow="Contact"
         title={
           <>
             Talk to a real
             <br />
-            <span className="word-serif">TPP trader</span>.
+            <span className="font-serif italic text-[#cbfb45] px-2 bg-[#0c0c0c] rounded-xl rotate-1 inline-block">TPP trader</span>.
           </>
         }
         description="The fastest way to reach us is Telegram or Discord — average reply under five minutes. For everything else, the form below routes directly to our team."
@@ -294,6 +298,8 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
-    </>
+      </div>
+      <V3Footer />
+    </div>
   );
 }

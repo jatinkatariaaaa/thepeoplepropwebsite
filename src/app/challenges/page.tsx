@@ -9,6 +9,8 @@ import {
   formatSize,
   programs,
 } from "@/data/programs";
+import { V3Navbar } from "@/components/layout/V3Navbar";
+import { V3Footer } from "@/components/layout/V3Footer";
 
 export const metadata: Metadata = {
   title: "Challenges — The People Prop",
@@ -24,8 +26,10 @@ export default function ChallengesPage() {
     .slice(0, 6);
 
   return (
-    <>
-      <PageHero
+    <div className="v3-page min-h-screen bg-[#f1eade] text-[#0c0c0c] antialiased">
+      <V3Navbar />
+      <div className="pt-24 lg:pt-32 pb-16">
+        <PageHero
         eyebrow="Funded Accounts"
         title={
           <>
@@ -146,6 +150,8 @@ export default function ChallengesPage() {
           <Accordion items={challengeFaq} />
         </div>
       </section>
-    </>
+      </div>
+      <V3Footer />
+    </div>
   );
 }

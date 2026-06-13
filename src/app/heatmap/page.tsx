@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/PageHero";
 import ForexHeatmapWidget from "@/components/tradingview/ForexHeatmapWidget";
+import { V3Navbar } from "@/components/layout/V3Navbar";
+import { V3Footer } from "@/components/layout/V3Footer";
 
 export const metadata: Metadata = {
   title: "Forex Heatmap — The People Prop",
@@ -9,12 +11,14 @@ export const metadata: Metadata = {
 
 export default function HeatmapPage() {
   return (
-    <>
+    <div className="v3-page min-h-screen bg-[#f1eade] text-[#0c0c0c] antialiased">
+      <V3Navbar />
+      <div className="pt-24 lg:pt-32 pb-16">
       <PageHero
         eyebrow="Market Overview"
         title={
           <>
-            Forex <span className="word-serif">Heatmap</span>.
+            Forex <span className="font-serif italic text-[#cbfb45] px-2 bg-[#0c0c0c] rounded-xl rotate-1 inline-block">Heatmap</span>.
           </>
         }
         description="Track real-time currency strength and identify major market movers at a glance."
@@ -33,6 +37,8 @@ export default function HeatmapPage() {
           </div>
         </div>
       </section>
-    </>
+      </div>
+      <V3Footer />
+    </div>
   );
 }
