@@ -34,7 +34,7 @@ export default function ChallengesPage() {
         title={
           <>
             Five paths to a{" "}
-            <span className="word-serif">funded</span> account.
+            <span className="font-serif italic text-[#cbfb45] px-2 bg-[#0c0c0c] rounded-xl -rotate-2 inline-block">funded</span> account.
           </>
         }
         description="Pick the evaluation that fits how you trade — from the fastest 1-Step to our $5 Pay-After-You-Pass route. Up to $400K in scaled allocation, up to 100% split."
@@ -47,31 +47,31 @@ export default function ChallengesPage() {
       <ChallengeCalculator />
 
       {/* Compare-every-plan section — full fee matrix */}
-      <section className="relative py-16 md:py-24 border-t border-[var(--border)] bg-[var(--paper-2)]">
+      <section className="relative py-16 md:py-24 border-t border-[#0c0c0c]/10 bg-[#f1eade]">
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <SectionHeading
             eyebrow="Side by side"
             title={
               <>
-                Compare <span className="word-serif">every</span> plan.
+                Compare <span className="font-serif italic text-[#cbfb45] px-2 bg-[#0c0c0c] rounded-xl rotate-1 inline-block">every</span> plan.
               </>
             }
             description="Every program, every account size — one transparent table. All fees one-time, refunded on your first qualifying payout."
             className="mb-10 md:mb-14"
           />
 
-          <div className="surface-card rounded-2xl overflow-hidden">
+          <div className="rounded-2xl overflow-hidden border border-[#0c0c0c]/10 bg-white/50 backdrop-blur-sm">
             <div className="overflow-x-auto">
               <table className="w-full text-[13px] tabular-nums">
                 <thead>
-                  <tr className="bg-[var(--paper)] border-b border-[var(--border)]">
-                    <th className="text-left font-medium text-[var(--ink-700)] px-5 py-3.5 sticky left-0 bg-[var(--paper)]">
+                  <tr className="border-b border-[#0c0c0c]/10 bg-[#0c0c0c]/5">
+                    <th className="text-left font-bold text-[#0c0c0c] px-5 py-3.5 sticky left-0 bg-[#f1eade]/90 backdrop-blur-sm">
                       Program
                     </th>
                     {ALL_SIZES.map((s) => (
                       <th
                         key={s}
-                        className="text-right font-medium text-[var(--ink-700)] px-4 py-3.5 whitespace-nowrap"
+                        className="text-right font-bold text-[#0c0c0c] px-4 py-3.5 whitespace-nowrap"
                       >
                         {formatSize(s)}
                       </th>
@@ -84,22 +84,22 @@ export default function ChallengesPage() {
                       key={p.key}
                       className={
                         idx % 2 === 1
-                          ? "bg-[var(--paper)]"
-                          : "bg-white"
+                          ? "bg-[#0c0c0c]/[0.02]"
+                            : "bg-transparent"
                       }
                     >
-                      <td className="px-5 py-3.5 sticky left-0 bg-inherit">
+                      <td className="px-5 py-3.5 sticky left-0 bg-[#f1eade]/90 backdrop-blur-sm">
                         <div className="flex items-center gap-2">
-                          <span className="font-medium text-[var(--ink-950)]">
+                          <span className="font-bold text-[#0c0c0c]">
                             {p.shortLabel}
                           </span>
                           {p.badge && (
-                            <span className="rounded-full bg-[var(--accent-50)] text-[var(--accent-700)] text-[9.5px] tracking-eyebrow font-semibold px-1.5 py-0.5">
-                              {p.badge.toUpperCase()}
+                            <span className="rounded-full bg-[#cbfb45] text-[#0c0c0c] text-[9.5px] uppercase font-bold px-2 py-0.5">
+                              {p.badge}
                             </span>
                           )}
                         </div>
-                        <p className="text-[11.5px] text-[var(--ink-500)] mt-0.5">
+                        <p className="text-[11.5px] text-[#0c0c0c]/60 mt-0.5 font-medium">
                           {p.profitTarget} · {p.maxDrawdown} max DD
                         </p>
                       </td>
@@ -108,14 +108,14 @@ export default function ChallengesPage() {
                         return (
                           <td
                             key={s}
-                            className="text-right px-4 py-3.5 whitespace-nowrap"
+                            className="text-right px-4 py-3.5 text-[#0c0c0c]/80"
                           >
                             {fee != null ? (
-                              <span className="text-[var(--ink-950)]">
+                              <span className="font-medium">
                                 ${fee.toLocaleString("en-US")}
                               </span>
                             ) : (
-                              <span className="text-[var(--ink-400)]">—</span>
+                              <span className="text-[#0c0c0c]/30 text-[11px] font-medium">—</span>
                             )}
                           </td>
                         );
@@ -125,7 +125,7 @@ export default function ChallengesPage() {
                 </tbody>
               </table>
             </div>
-            <div className="px-5 py-3 border-t border-[var(--border)] bg-[var(--paper)] text-[11.5px] text-[var(--ink-500)]">
+            <div className="px-5 py-3 mt-2 rounded-xl border border-[#0c0c0c]/10 bg-white/30 backdrop-blur-sm text-[11.5px] text-[#0c0c0c]/60 font-medium">
               All prices in USD. One-time fee. Refunded with your first
               qualifying payout. Add-ons (100% split, on-demand payouts) sold
               separately at checkout.
@@ -134,13 +134,13 @@ export default function ChallengesPage() {
         </div>
       </section>
 
-      <section className="relative py-16 md:py-24 border-t border-[var(--border)]">
+      <section className="relative py-16 md:py-24 border-t border-[#0c0c0c]/10 bg-[#f1eade]">
         <div className="mx-auto max-w-5xl px-5 md:px-8">
           <SectionHeading
             eyebrow="Challenge questions"
             title={
               <>
-                What traders <span className="word-serif">ask</span> before
+                What traders <span className="font-serif italic text-[#cbfb45] px-2 bg-[#0c0c0c] rounded-xl -rotate-1 inline-block">ask</span> before
                 buying.
               </>
             }
