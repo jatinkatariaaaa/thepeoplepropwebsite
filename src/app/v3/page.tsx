@@ -1136,85 +1136,72 @@ export default function V3Page() {
         </div>
       </section>
 
-      {/* ═══════════════ SECTION 8 — TESTIMONIALS (swipe deck on mobile) ═══════════════ */}
-      <section className="w-full pb-16 lg:pb-24">
-        <div className="px-[5px] py-[5px]">
-          <div className="rounded-[2rem] bg-black px-[15px] py-20 lg:rounded-[3.5rem] lg:px-[35px] xl:py-32">
-            <Reveal>
-              <div className="mb-16 text-center">
-                <div className="mb-4 text-sm font-medium uppercase tracking-[0.3em] text-white/60">Trader Voices</div>
-                <GsapWords
-                  text="What our traders are saying"
-                  highlight={["saying"]}
-                  className="font-medium tracking-[-0.03em] text-white"
-                  style={{ fontSize: "clamp(2rem, 6vw, 3.5rem)" }}
-                />
-              </div>
-            </Reveal>
+      {/* ═══════════════ SECTION 8 — TESTIMONIALS (MARQUEE) ═══════════════ */}
+      <section className="w-full pb-16 pt-8 lg:pb-24">
+        <div className="mb-12 text-center">
+          <GsapWords
+            text="Trader Voices"
+            highlight={["Voices"]}
+            className="font-medium tracking-tight text-[#0c0c0c]"
+            style={{ fontSize: "clamp(2rem, 5vw, 3rem)" }}
+          />
+          <p className="mt-2 text-[15px] font-medium text-[#0c0c0c]/60">What our traders are saying</p>
+        </div>
 
-            {/* Mobile swipe deck */}
-            <div className="sm:hidden">
-              <div
-                className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-                onScroll={(e) => {
-                  const el = e.currentTarget;
-                  setActiveT(Math.round(el.scrollLeft / (el.scrollWidth / testimonials.length)));
-                }}
-              >
-                {testimonials.map((t) => (
-                  <div key={t.name} className="min-w-[85%] snap-center">
-                    <div className="h-full rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6">
-                      <div className="mb-3 flex items-center gap-3">
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#bcff2e] text-[12px] font-bold text-[#0c0c0c]">
-                          {t.name.split(" ").map((n) => n[0]).join("")}
-                        </div>
-                        <div>
-                          <p className="text-[14px] font-medium text-white">{t.name}</p>
-                          <p className="text-[12px] text-white/40">{t.handle}</p>
-                        </div>
-                      </div>
-                      <p className="mb-3 text-[13px] leading-relaxed text-white/60">&ldquo;{t.body}&rdquo;</p>
-                      <div className="flex items-center gap-1.5">
-                        <CheckCircle2 className="h-3.5 w-3.5 text-[#bcff2e]" strokeWidth={2.5} />
-                        <span className="text-[12px] font-semibold text-[#bcff2e]">{t.payout} paid</span>
-                      </div>
+        <div 
+          className="relative flex w-full flex-col gap-3 overflow-hidden py-4"
+          style={{
+            maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
+            WebkitMaskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)"
+          }}
+        >
+          {/* Row 1 */}
+          <motion.div
+            className="flex w-max items-center gap-3"
+            animate={{ x: ["0%", "-50%"] }}
+            transition={{ repeat: Infinity, ease: "linear", duration: 40 }}
+          >
+            {[...testimonials, ...testimonials].map((t, i) => (
+              <div key={i} className="flex h-[180px] w-[300px] flex-col justify-between rounded-[1rem] bg-[#bcff2e] p-6 text-[#0c0c0c] shadow-sm md:h-[200px] md:w-[350px]">
+                <p className="text-[13px] font-semibold leading-relaxed md:text-[14px]">&ldquo;{t.body}&rdquo;</p>
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0c0c0c] text-[13px] font-bold text-white">
+                    {t.name.split(" ").map((n) => n[0]).join("")}
+                  </div>
+                  <div>
+                    <div className="text-[14px] font-bold">{t.name}</div>
+                    <div className="flex items-center gap-1 text-[12px] font-semibold opacity-70">
+                      <CheckCircle2 className="h-3 w-3" strokeWidth={3} /> {t.payout} paid
                     </div>
                   </div>
-                ))}
+                </div>
               </div>
-              <div className="mt-5 flex justify-center gap-1.5">
-                {testimonials.map((_, i) => (
-                  <span key={i} className={cn("h-1.5 rounded-full transition-all duration-300", i === activeT ? "w-6 bg-[#bcff2e]" : "w-1.5 bg-white/20")} />
-                ))}
-              </div>
-            </div>
+            ))}
+          </motion.div>
 
-            {/* Desktop grid */}
-            <div className="mx-auto hidden max-w-6xl grid-cols-2 gap-5 sm:grid lg:grid-cols-3">
-              {testimonials.map((t, i) => (
-                <Reveal key={t.name} delay={i * 0.06}>
-                  <TiltCard intensity={6}>
-                    <div className="h-full rounded-3xl border border-white/[0.08] bg-white/[0.04] p-7 transition-colors duration-500 hover:bg-white/[0.08]">
-                      <div className="mb-3 flex items-center gap-3">
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#bcff2e] text-[12px] font-bold text-[#0c0c0c]">
-                          {t.name.split(" ").map((n) => n[0]).join("")}
-                        </div>
-                        <div>
-                          <p className="text-[14px] font-medium text-white">{t.name}</p>
-                          <p className="text-[12px] text-white/40">{t.handle}</p>
-                        </div>
-                      </div>
-                      <p className="mb-3 text-[13px] leading-relaxed text-white/60">&ldquo;{t.body}&rdquo;</p>
-                      <div className="flex items-center gap-1.5">
-                        <CheckCircle2 className="h-3.5 w-3.5 text-[#bcff2e]" strokeWidth={2.5} />
-                        <span className="text-[12px] font-semibold text-[#bcff2e]">{t.payout} paid</span>
-                      </div>
+          {/* Row 2 */}
+          <motion.div
+            className="flex w-max items-center gap-3"
+            animate={{ x: ["-50%", "0%"] }}
+            transition={{ repeat: Infinity, ease: "linear", duration: 45 }}
+          >
+            {[...testimonials.slice().reverse(), ...testimonials.slice().reverse()].map((t, i) => (
+              <div key={i} className="flex h-[180px] w-[300px] flex-col justify-between rounded-[1rem] bg-[#bcff2e] p-6 text-[#0c0c0c] shadow-sm md:h-[200px] md:w-[350px]">
+                <p className="text-[13px] font-semibold leading-relaxed md:text-[14px]">&ldquo;{t.body}&rdquo;</p>
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0c0c0c] text-[13px] font-bold text-white">
+                    {t.name.split(" ").map((n) => n[0]).join("")}
+                  </div>
+                  <div>
+                    <div className="text-[14px] font-bold">{t.name}</div>
+                    <div className="flex items-center gap-1 text-[12px] font-semibold opacity-70">
+                      <CheckCircle2 className="h-3 w-3" strokeWidth={3} /> {t.payout} paid
                     </div>
-                  </TiltCard>
-                </Reveal>
-              ))}
-            </div>
-          </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
