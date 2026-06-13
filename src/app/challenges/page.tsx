@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/PageHero";
-import { ChallengeCalculator } from "@/components/landing/ChallengeCalculator";
+import { V2ChallengeCalculator } from "@/components/landing/V2ChallengeCalculator";
 import { Accordion } from "@/components/ui/Accordion";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { faq } from "@/data/faq";
@@ -44,7 +44,7 @@ export default function ChallengesPage() {
         ]}
       />
 
-      <ChallengeCalculator />
+      <div className="mx-auto max-w-7xl px-5 py-8 md:px-8"><V2ChallengeCalculator /></div>
 
       {/* Compare-every-plan section — full fee matrix */}
       <section className="relative py-16 md:py-24 border-t border-[#0c0c0c]/10 bg-[#f1eade]">
