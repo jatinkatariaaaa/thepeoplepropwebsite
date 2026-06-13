@@ -579,6 +579,16 @@ function PinnedSteps() {
 
 export default function V3Page() {
   const reduced = useReducedMotion();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const skipHeroAnim = reduced || isMobile;
 
   /* Hero parallax */
   const heroRef = useRef<HTMLDivElement>(null);
@@ -661,7 +671,7 @@ export default function V3Page() {
       {/* ═══════════════ SECTION 1 — HERO ═══════════════ */}
       <section ref={heroRef} className="min-h-[100svh] lg:h-dvh px-[5px] py-[5px]">
         <motion.div
-          style={{ scale: reduced ? 1 : heroScale }}
+          style={{ scale: skipHeroAnim ? 1 : heroScale }}
           className="relative flex h-full flex-col items-center justify-center overflow-hidden rounded-xl bg-black px-6 py-20 lg:rounded-2xl lg:px-10"
         >
           {/* Ambient parallax orbs - hidden on mobile to fix GPU lag */}
@@ -680,7 +690,7 @@ export default function V3Page() {
             }}
           />
 
-          <motion.div style={{ y: reduced ? 0 : heroTitleY, opacity: reduced ? 1 : heroFade }} className="relative z-10 flex flex-col items-center">
+          <motion.div style={{ y: skipHeroAnim ? 0 : heroTitleY, opacity: skipHeroAnim ? 1 : heroFade }} className="relative z-10 flex flex-col items-center">
             {/* Trust badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -748,7 +758,7 @@ export default function V3Page() {
 
           {/* Scroll cue */}
           <motion.div
-            style={{ opacity: reduced ? 1 : heroFade }}
+            style={{ opacity: skipHeroAnim ? 1 : heroFade }}
             className="absolute bottom-7 left-1/2 -translate-x-1/2"
           >
             <motion.div
