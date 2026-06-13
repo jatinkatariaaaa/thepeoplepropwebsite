@@ -523,7 +523,7 @@ function PinnedSteps() {
         <div className="flex h-full w-screen shrink-0 flex-col justify-center px-10 xl:px-20">
           <div className="max-w-xl">
             <div className="mb-3 text-sm font-medium uppercase tracking-[0.3em] text-[#6c6a68]">How It Works</div>
-            <h2 className="font-medium tracking-[-0.03em] text-[#0c0c0c]" style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}>
+            <h2 className="font-bold tracking-[-0.03em] text-[#0c0c0c]" style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}>
               Three steps from
               <br />
               signup to <span className="text-[#bcff2e]">funded</span>
@@ -703,7 +703,7 @@ export default function V3Page() {
               as="h1"
               text="The prop firm that funds real traders"
               highlight={["prop", "firm", "real", "traders"]}
-              className="relative z-10 w-full max-w-[1300px] text-center font-medium leading-[0.9] tracking-[-0.03em] text-white"
+              className="relative z-10 w-full max-w-[1300px] text-center font-bold leading-[0.9] tracking-[-0.03em] text-white"
               style={{ fontSize: "clamp(2.8rem, 9vw, 9rem)" }}
             />
 
@@ -782,7 +782,7 @@ export default function V3Page() {
                 <div className="pointer-events-none relative z-20 text-center mix-blend-difference">
                   <GsapWords
                     text="We're The People Prop"
-                    className="font-medium tracking-tight text-white"
+                    className="font-bold tracking-tight text-white"
                     style={{ fontSize: "clamp(3rem, 10vw, 8rem)", lineHeight: 1 }}
                   />
                 </div>
@@ -794,7 +794,7 @@ export default function V3Page() {
                     </div>
                   </TiltCard>
 
-                  <h3 className="mx-auto max-w-[620px] text-center font-medium tracking-[-0.02em] text-[#0c0c0c]" style={{ fontSize: "clamp(1.4rem, 3vw, 2rem)" }}>
+                  <h3 className="mx-auto max-w-[620px] text-center font-bold tracking-[-0.02em] text-[#0c0c0c]" style={{ fontSize: "clamp(1.4rem, 3vw, 2rem)" }}>
                     The prop firm that rebels against industry cliches
                   </h3>
                   <p className="mx-auto max-w-[480px] text-center text-base leading-relaxed text-[#6c6a68]">
@@ -869,7 +869,7 @@ export default function V3Page() {
                 <GsapWords
                   text="Built different from every other prop firm"
                   highlight={["prop", "firm"]}
-                  className="font-medium tracking-[-0.03em] text-white"
+                  className="font-bold tracking-[-0.03em] text-white"
                   style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}
                 />
               </div>
@@ -948,7 +948,7 @@ export default function V3Page() {
                 <GsapWords
                   text="Three steps from signup to funded"
                   highlight={["funded"]}
-                  className="font-medium tracking-[-0.03em] text-[#0c0c0c]"
+                  className="font-bold tracking-[-0.03em] text-[#0c0c0c]"
                   style={{ fontSize: "clamp(2rem, 5vw, 3.25rem)" }}
                 />
                 <p className="mt-4 max-w-md text-[15px] leading-relaxed text-[#6c6a68]">
@@ -1056,7 +1056,7 @@ export default function V3Page() {
                 <div className="mb-4 text-sm font-medium uppercase tracking-[0.3em] text-[#0c0c0c]/60">Why TPP</div>
                 <GsapWords
                   text="Built for traders, not against them"
-                  className="font-medium tracking-[-0.03em] text-[#0c0c0c]"
+                  className="font-bold tracking-[-0.03em] text-[#0c0c0c]"
                   style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}
                 />
               </div>
@@ -1142,7 +1142,7 @@ export default function V3Page() {
           <GsapWords
             text="Trader Voices"
             highlight={["Voices"]}
-            className="font-medium tracking-tight text-[#0c0c0c]"
+            className="font-bold tracking-tight text-[#0c0c0c]"
             style={{ fontSize: "clamp(2rem, 5vw, 3rem)" }}
           />
           <p className="mt-2 text-[15px] font-medium text-[#0c0c0c]/60">What our traders are saying</p>
@@ -1216,7 +1216,7 @@ export default function V3Page() {
                   <GsapWords
                     text="The questions traders ask first"
                     highlight={["traders"]}
-                    className="font-medium tracking-[-0.03em] text-white"
+                    className="font-bold tracking-[-0.03em] text-white"
                     style={{ fontSize: "clamp(1.9rem, 4vw, 3rem)" }}
                   />
                   <p className="mt-4 max-w-sm text-[15px] leading-relaxed text-white/50">
@@ -1255,7 +1255,7 @@ export default function V3Page() {
               <GsapWords
                 text="Ready to get funded?"
                 highlight={["funded?"]}
-                className="mb-6 font-medium tracking-[-0.03em] text-[#0c0c0c]"
+                className="mb-6 font-bold tracking-[-0.03em] text-[#0c0c0c]"
                 style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}
               />
               <p className="mb-10 text-lg leading-relaxed text-[#6c6a68]">
