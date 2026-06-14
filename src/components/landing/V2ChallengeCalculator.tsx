@@ -820,7 +820,7 @@ export function V2ChallengeCalculator() {
 
             {/* Buy Button */}
             <Button
-              onClick={() => setShowCheckoutModal(true)}
+              onClick={() => router.push('/dashboard/new-challenge')}
               disabled={total == null}
               className="w-full bg-[#bcff2e] hover:bg-[#a5e622] text-[#0c0c0c] rounded-full h-[54px] text-[15px] font-semibold mb-6 shadow-[0_0_20px_rgba(188,255,46,0.15)] transition-colors"
             >
