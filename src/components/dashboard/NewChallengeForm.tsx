@@ -47,6 +47,7 @@ export function NewChallengeForm() {
   const [checkoutMessage, setCheckoutMessage] = useState("");
 
   const [livePrograms, setLivePrograms] = useState(programs);
+  const [livePlatforms, setLivePlatforms] = useState<any[]>([]);
   const [isLoadingPrograms, setIsLoadingPrograms] = useState(true);
 
   // Auth Check & Fetch Programs
@@ -57,16 +58,34 @@ export function NewChallengeForm() {
       }
     });
 
-    // Fetch live programs
-    const fetchLivePrograms = async () => {
+    // Fetch live programs and platforms
+    const fetchLiveProgramsAndPlatforms = async () => {
       try {
-        const { data, error } = await supabase
-          .from("tpp_programs")
-          .select("*, tpp_program_fees(*)")
-          .eq("is_active", true)
-          .order("created_at", { ascending: true });
+        const [programsRes, platformsRes] = await Promise.all([
+          supabase
+            .from("tpp_programs")
+            .select("*, tpp_program_fees(*)")
+            .eq("is_active", true)
+            .order("created_at", { ascending: true }),
+          supabase
+            .from("tpp_platforms")
+            .select("*")
+            .eq("is_active", true)
+            .order("created_at", { ascending: true })
+        ]);
 
-        if (error) throw error;
+        if (programsRes.error) throw programsRes.error;
+        if (platformsRes.error) throw platformsRes.error;
+
+        if (platformsRes.data && platformsRes.data.length > 0) {
+          setLivePlatforms(platformsRes.data);
+          // Auto-select the first available platform if the current one isn't valid
+          if (!platformsRes.data.find((p: any) => p.name === platform)) {
+            setPlatform(platformsRes.data[0].name);
+          }
+        }
+
+        const data = programsRes.data;
 
         if (data && data.length > 0) {
           const mappedPrograms = data.map((d: any) => {
@@ -98,13 +117,13 @@ export function NewChallengeForm() {
           setLivePrograms(mappedPrograms as any);
         }
       } catch (err) {
-        console.error("Error loading programs from DB:", err);
+        console.error("Error loading data from DB:", err);
       } finally {
         setIsLoadingPrograms(false);
       }
     };
 
-    fetchLivePrograms();
+    fetchLiveProgramsAndPlatforms();
   }, [router]);
 
   const program = useMemo(
@@ -142,9 +161,10 @@ export function NewChallengeForm() {
   }
 
   // Platform logic
+  const selectedPlatformData = livePlatforms.find(p => p.name === platform);
   let platformExtras = 0;
-  if (platform !== "TPP Dashboard") {
-    platformExtras = (base ?? 0) * 0.10; // +10% of base fee
+  if (selectedPlatformData && selectedPlatformData.extra_fee_pct > 0) {
+    platformExtras = (base ?? 0) * (selectedPlatformData.extra_fee_pct / 100);
   }
 
   let total = prePlatformTotal ? prePlatformTotal + platformExtras - promoDiscountAmt - freeRetryAdjustment : 0;
@@ -463,32 +483,32 @@ export function NewChallengeForm() {
         {/* Trading Platform */}
         <div>
           <h3 className="font-bold text-[15px] text-[var(--ink-950)] mb-3">Trading Platform</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {[
-              { id: "TPP Dashboard", extra: "Free" },
-              { id: "MetaTrader 5", extra: `+${formatCurrency((base ?? 0) * 0.10)}` },
-              { id: "TradeLocker", extra: `+${formatCurrency((base ?? 0) * 0.10)}` },
-              { id: "MatchTrader", extra: `+${formatCurrency((base ?? 0) * 0.10)}` }
-            ].map(plat => (
-              <button
-                key={plat.id}
-                onClick={() => setPlatform(plat.id)}
-                className={cn(
-                  "flex items-center justify-between py-3 px-4 rounded-xl text-[13px] font-medium border transition-all",
-                  platform === plat.id 
-                    ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)] shadow-sm" 
-                    : "bg-white border-[var(--border)] text-[var(--ink-600)] hover:border-[var(--ink-300)]"
-                )}
-              >
-                <span className="font-bold">{plat.id}</span>
-                {plat.extra && (
-                  <span className={plat.extra === "Free" ? "text-emerald-600 font-bold text-[12px]" : "text-[var(--ink-400)] text-[12px]"}>
-                    {plat.extra}
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
+          {isLoadingPrograms ? (
+            <div className="animate-pulse bg-[var(--paper-2)] h-14 rounded-xl border border-[var(--border)] w-full"></div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {livePlatforms.map(plat => {
+                const extraCost = (base ?? 0) * (plat.extra_fee_pct / 100);
+                return (
+                  <button
+                    key={plat.id}
+                    onClick={() => setPlatform(plat.name)}
+                    className={cn(
+                      "flex items-center justify-between py-3 px-4 rounded-xl text-[13px] font-medium border transition-all",
+                      platform === plat.name 
+                        ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)] shadow-sm" 
+                        : "bg-white border-[var(--border)] text-[var(--ink-600)] hover:border-[var(--ink-300)]"
+                    )}
+                  >
+                    <span className="font-bold">{plat.name}</span>
+                    <span className={extraCost === 0 ? "text-emerald-600 font-bold text-[12px]" : "text-[var(--ink-400)] text-[12px]"}>
+                      {extraCost === 0 ? "Free" : `+${formatCurrency(extraCost)}`}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
 
       </div>
