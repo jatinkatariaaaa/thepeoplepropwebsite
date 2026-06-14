@@ -1,22 +1,35 @@
 "use client";
 
-import { useState } from "react";
-import { ArrowRight, Calculator } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { ArrowRight, Calculator, ChevronDown } from "lucide-react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const ACCOUNT_SIZES = [
-  { value: 5000, label: "5K" },
-  { value: 10000, label: "10K" },
-  { value: 25000, label: "25K" },
-  { value: 50000, label: "50K" },
-  { value: 100000, label: "100K" },
-  { value: 200000, label: "200K" },
+  { value: 5000, label: "5,000" },
+  { value: 10000, label: "10,000" },
+  { value: 25000, label: "25,000" },
+  { value: 50000, label: "50,000" },
+  { value: 100000, label: "100,000" },
+  { value: 200000, label: "200,000" },
 ];
 
 export function ProfitCalculatorV3() {
   const [accountSize, setAccountSize] = useState<number>(100000);
   const [profitRate, setProfitRate] = useState<number>(8); // default 8%
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   // TPP Profit Split is 90%
   const profitSplit = 0.9;
@@ -26,7 +39,7 @@ export function ProfitCalculatorV3() {
     setProfitRate(Number(e.target.value));
   };
 
-  const fillPercentage = ((profitRate - 1) / (20 - 1)) * 100;
+  const fillPercentage = ((profitRate - 1) / (100 - 1)) * 100;
 
   return (
     <section className="px-4 py-10 md:py-16 max-w-6xl mx-auto w-full">
@@ -79,25 +92,51 @@ export function ProfitCalculatorV3() {
                 Calculator
               </span>
 
-              {/* Challenge Selector (Modern Pills) */}
-              <div className="mb-8">
+              {/* Challenge Selector (Custom Dropdown) */}
+              <div className="mb-8" ref={dropdownRef}>
                 <label className="block text-[13px] font-medium text-white/80 mb-3">
                   Account Size
                 </label>
-                <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
-                  {ACCOUNT_SIZES.map((size) => (
-                    <button
-                      key={size.value}
-                      onClick={() => setAccountSize(size.value)}
-                      className={`py-2 px-1 rounded-lg text-[13px] font-semibold transition-all ${
-                        accountSize === size.value
-                          ? "bg-[#cbfb45] text-[#0c0c0c] shadow-[0_0_15px_rgba(203,251,69,0.2)]"
-                          : "bg-white/[0.03] text-white/60 hover:bg-white/[0.08] hover:text-white border border-white/[0.05]"
-                      }`}
-                    >
-                      ${size.label}
-                    </button>
-                  ))}
+                <div className="relative">
+                  <button
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    className="w-full flex items-center justify-between bg-white/[0.03] border border-white/[0.08] hover:border-white/[0.15] rounded-xl px-5 py-4 text-[24px] font-bold text-white transition-all focus:outline-none"
+                  >
+                    <span>${accountSize.toLocaleString("en-US")}</span>
+                    <ChevronDown className={`w-5 h-5 text-white/40 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
+                  </button>
+
+                  <AnimatePresence>
+                    {isDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute top-full left-0 w-full mt-2 bg-[#121212] border border-white/[0.08] rounded-xl overflow-hidden shadow-2xl z-50"
+                      >
+                        {ACCOUNT_SIZES.map((size) => (
+                          <button
+                            key={size.value}
+                            onClick={() => {
+                              setAccountSize(size.value);
+                              setIsDropdownOpen(false);
+                            }}
+                            className={`w-full text-left px-5 py-3 text-[18px] font-semibold transition-colors flex items-center justify-between ${
+                              accountSize === size.value
+                                ? "bg-[#cbfb45]/10 text-[#cbfb45]"
+                                : "text-white/70 hover:bg-white/[0.05] hover:text-white"
+                            }`}
+                          >
+                            ${size.label}
+                            {accountSize === size.value && (
+                              <div className="w-1.5 h-1.5 rounded-full bg-[#cbfb45]" />
+                            )}
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
 
@@ -121,7 +160,7 @@ export function ProfitCalculatorV3() {
                   <input
                     type="range"
                     min={1}
-                    max={20}
+                    max={100}
                     step={1}
                     value={profitRate}
                     onChange={handleSliderChange}
@@ -135,7 +174,7 @@ export function ProfitCalculatorV3() {
                 </div>
                 <div className="flex justify-between mt-2 text-[11px] font-medium text-white/30">
                   <span>1%</span>
-                  <span>20%</span>
+                  <span>100%</span>
                 </div>
               </div>
 
