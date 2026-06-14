@@ -40,6 +40,7 @@ const columns: {
     links: [
       { label: "Terms", href: "/terms" },
       { label: "Privacy", href: "/privacy" },
+      { label: "Cookie policy", href: "/cookie" },
       { label: "Risk disclosure", href: "/risk-disclosure" },
       { label: "AML policy", href: "/aml-policy" },
     ],
