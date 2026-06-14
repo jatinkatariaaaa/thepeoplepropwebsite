@@ -23,15 +23,13 @@ export function V3Header() {
       <header className="fixed left-0 top-0 z-50 h-20 w-full px-[5px] lg:h-[7.5rem] lg:px-[10px]">
         <div className="relative z-20 flex h-full w-full items-center px-[10px] lg:px-[25px]">
           {/* Logo */}
-          <Link
-            href="/"
-            className="relative z-30 flex items-center transition-opacity hover:opacity-80"
-          >
+          <Link href="/" className="flex items-center gap-2 group outline-none">
             <img
-              src="/images/logo-v2.png"
+              src="/images/logo.webp"
               alt="TPP Logo"
-              className="h-6 w-auto object-contain md:h-8"
+              className="h-10 w-auto object-contain md:h-12 rounded-lg transition-transform duration-300 group-hover:scale-105"
             />
+            <span className="font-bold text-[16px] text-white tracking-[0.02em]">The People Prop</span>
           </Link>
 
           {/* Desktop Nav */}

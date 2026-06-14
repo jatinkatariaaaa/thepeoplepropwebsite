@@ -26,10 +26,12 @@ export function Navbar() {
     <header className="fixed left-0 right-0 top-0 z-50 flex justify-center h-20 w-full px-[5px] lg:h-20 lg:px-[10px] pointer-events-none">
       <div className="relative w-full h-full pointer-events-auto">
         <div className="relative z-20 flex h-full w-full items-center justify-between px-[15px] lg:px-[30px]">
-          {/* Logo */}
-          <Link href="/" className="relative z-30 flex items-center transition-opacity hover:opacity-80">
-            <img src="/images/logo-v2.png" alt="TPP Logo" className="h-6 w-auto object-contain md:h-8" />
-          </Link>
+          <div className="flex shrink-0 items-center gap-2">
+            <Link href="/" className="flex items-center gap-2">
+              <img src="/images/logo.webp" alt="TPP Logo" className="h-10 w-auto object-contain md:h-12 rounded-lg" />
+              <span className="font-bold text-[16px] text-white tracking-[0.02em]">The People Prop</span>
+            </Link>
+          </div>
 
           {/* Desktop Nav */}
           <nav className="absolute left-1/2 top-1/2 z-30 hidden -translate-x-1/2 -translate-y-1/2 items-center rounded-full border border-white/10 bg-white/[0.03] p-1.5 shadow-2xl md:backdrop-blur-md lg:flex">
