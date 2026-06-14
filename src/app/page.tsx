@@ -859,11 +859,11 @@ export default function HomePage() {
       <section className="w-full pb-16 lg:pb-24">
         <div className="w-full px-5 lg:px-10">
           
-          <div className="flex flex-col gap-16 text-center md:flex-row md:text-left">
+          <div className="flex flex-col gap-12 text-center md:flex-row md:flex-wrap md:text-left xl:flex-nowrap xl:gap-16">
             {dbStats.map((s, i) => (
-              <Reveal key={s.label || s.key_name} delay={i * 0.1} className={cn("flex-1", s.mt)}>
-                <div className="flex flex-col items-center gap-2 md:items-start lg:gap-4">
-                  <div className="text-6xl font-medium leading-none tracking-tight text-[#0c0c0c] lg:text-[8rem]">
+              <Reveal key={s.label || s.key_name} delay={i * 0.1} className={cn("flex-1 min-w-[200px]", s.mt)}>
+                <div className="flex flex-col items-center gap-2 md:items-start lg:gap-3">
+                  <div className="text-5xl font-medium leading-tight tracking-tight text-[#0c0c0c] sm:text-6xl lg:text-7xl xl:text-[5.5rem]">
                     {s.value}
                   </div>
                   <span className="text-base font-medium text-[#6c6a68] lg:text-lg">{s.label}</span>
