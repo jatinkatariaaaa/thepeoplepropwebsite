@@ -2,17 +2,22 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+
+  if (pathname === "/referral") {
+    return null;
+  }
 
   const links = [
     { name: "Home", path: "/" },
     { name: "Challenges", path: "/challenges" },
     { name: "Rules", path: "/rules" },
-    { name: "Referrals", path: "/referral" },
     { name: "Heatmap", path: "/heatmap" },
     { name: "Contact", path: "/contact" },
   ];
