@@ -22,14 +22,14 @@ export function Logo({
       <img
         src="/images/logo.webp"
         alt="The People Prop Logo"
-        width={28}
-        height={28}
+        width={40}
+        height={40}
         className="shrink-0 rounded-lg object-contain"
       />
       {showWord && (
         <span
           className={cn(
-            "font-medium text-[14px] tracking-[0.02em]",
+            "font-bold text-[16px] tracking-[0.02em]",
             invert ? "text-white" : "text-[var(--ink-950)]",
           )}
         >
