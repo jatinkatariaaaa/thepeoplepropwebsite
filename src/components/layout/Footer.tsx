@@ -20,28 +20,28 @@ const columns: {
   {
     title: "Company",
     links: [
-      { label: "About TPP", href: "/contact" },
-      { label: "Careers", href: "/contact" },
-      { label: "Press", href: "/contact" },
+      { label: "About TPP", href: "/about" },
+      { label: "Careers", href: "/careers" },
+      { label: "Press", href: "/press" },
       { label: "Affiliate", href: "/referral" },
     ],
   },
   {
     title: "Resources",
     links: [
-      { label: "Help center", href: "/contact" },
+      { label: "Help center", href: "/help" },
       { label: "Trading hours", href: "/rules" },
-      { label: "Status", href: "/contact" },
+      { label: "Status", href: "/status" },
       { label: "Contact", href: "/contact" },
     ],
   },
   {
     title: "Legal",
     links: [
-      { label: "Terms", href: "/contact" },
-      { label: "Privacy", href: "/contact" },
-      { label: "Risk disclosure", href: "/contact" },
-      { label: "AML policy", href: "/contact" },
+      { label: "Terms", href: "/terms" },
+      { label: "Privacy", href: "/privacy" },
+      { label: "Risk disclosure", href: "/risk-disclosure" },
+      { label: "AML policy", href: "/aml-policy" },
     ],
   },
 ];
