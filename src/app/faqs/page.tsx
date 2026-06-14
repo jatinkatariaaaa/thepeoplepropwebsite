@@ -2,15 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import {
-  PageLayout,
-  PageHero,
-  PageSection,
-  Reveal,
-  GsapWords,
-  Magnetic,
-  FaqRow,
-} from "@/components/layout";
+import { PageLayout, PageHero, PageSection } from "@/components/layout";
+import { Reveal, GsapWords, Magnetic, FaqRow } from "@/components/ui/Animations";
 import { faq } from "@/data/faq";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
 

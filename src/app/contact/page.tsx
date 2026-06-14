@@ -3,15 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import {
-  PageLayout,
-  PageHero,
-  PageSection,
-  Reveal,
-  GsapWords,
-  Magnetic,
-  EASE,
-} from "@/components/layout";
+import { PageLayout, PageHero, PageSection } from "@/components/layout";
+import { Reveal, GsapWords, Magnetic, EASE } from "@/components/ui/Animations";
 import {
   Mail,
   Send,

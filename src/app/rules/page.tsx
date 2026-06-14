@@ -1,14 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import {
-  PageLayout,
-  PageHero,
-  PageSection,
-  Reveal,
-  GsapWords,
-  Magnetic,
-} from "@/components/layout";
+import { PageLayout, PageHero, PageSection } from "@/components/layout";
+import { Reveal, GsapWords, Magnetic } from "@/components/ui/Animations";
 import { RuleCard } from "@/components/rules/RuleCard";
 import { RulesFAQ } from "@/components/rules/RulesFAQ";
 import { rules } from "@/data/rules";

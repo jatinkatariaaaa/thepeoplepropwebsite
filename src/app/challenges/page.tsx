@@ -2,16 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import {
-  PageLayout,
-  PageHero,
-  PageSection,
-  Reveal,
-  GsapWords,
-  Magnetic,
-  FaqRow,
-  LIME,
-} from "@/components/layout";
+import { PageLayout, PageHero, PageSection } from "@/components/layout";
+import { Reveal, GsapWords, Magnetic, FaqRow, LIME } from "@/components/ui/Animations";
 import { ChallengeCalculator } from "@/components/landing/ChallengeCalculator";
 import { faq } from "@/data/faq";
 import { ALL_SIZES, formatSize, programs } from "@/data/programs";

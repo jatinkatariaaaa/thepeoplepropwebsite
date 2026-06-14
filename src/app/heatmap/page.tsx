@@ -1,13 +1,7 @@
 "use client";
 
-import {
-  PageLayout,
-  PageHero,
-  PageSection,
-  Reveal,
-  GsapWords,
-  LIME,
-} from "@/components/layout";
+import { PageLayout, PageHero, PageSection } from "@/components/layout";
+import { Reveal, GsapWords, LIME } from "@/components/ui/Animations";
 import ForexHeatmapWidget from "@/components/tradingview/ForexHeatmapWidget";
 import { Globe, Zap, BarChart3 } from "lucide-react";
 

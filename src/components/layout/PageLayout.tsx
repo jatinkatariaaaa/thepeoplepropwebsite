@@ -2,7 +2,7 @@
 
 import { type ReactNode } from "react";
 import { Navbar } from "./Navbar";
-import { V3Footer } from "./V3Footer";
+import { Footer } from "./Footer";
 import { CustomCursor } from "@/components/ui/Animations";
 
 export function PageLayout({ children }: { children: ReactNode }) {
@@ -14,7 +14,7 @@ export function PageLayout({ children }: { children: ReactNode }) {
       <CustomCursor />
       <Navbar />
       {children}
-      <V3Footer />
+      <Footer />
     </div>
   );
 }
