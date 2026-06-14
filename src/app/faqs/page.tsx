@@ -1,14 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { PageLayout, PageHero, PageSection } from "@/components/layout";
 import { Reveal, GsapWords, Magnetic, FaqRow } from "@/components/ui/Animations";
-import { faq } from "@/data/faq";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
+import { createBrowserClient } from "@supabase/ssr";
 
 export default function FaqsPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [dbFaqs, setDbFaqs] = useState<any[]>([]);
+
+  useEffect(() => {
+    const supabase = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+    supabase.from("tpp_faqs").select("*").eq("is_active", true).order("sort_order")
+      .then(({data}) => {
+        if (data) {
+          setDbFaqs(data.map(f => ({ ...f, q: f.question, a: f.answer })));
+        }
+      });
+  }, []);
 
   return (
     <PageLayout>
@@ -57,7 +71,7 @@ export default function FaqsPage() {
           {/* Right: accordion */}
           <Reveal delay={0.1}>
             <div className="flex flex-col gap-3">
-              {faq.map((item, i) => (
+              {dbFaqs.map((item, i) => (
                 <FaqRow
                   key={item.q}
                   item={item}

@@ -32,6 +32,8 @@ const navItems = [
   { icon: CreditCard, label: "Purchases", href: "/admin/purchases" },
   { icon: Network, label: "Affiliates", href: "/admin/affiliates" },
   { icon: DollarSign, label: "Payouts", href: "/admin/payouts" },
+  { icon: LayoutDashboard, label: "FAQs", href: "/admin/faqs" },
+  { icon: Target, label: "Stats", href: "/admin/stats" },
 ];
 
 export function AdminSidebar() {
