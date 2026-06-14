@@ -14,6 +14,7 @@ import {
   useTransform,
   useSpring,
   useMotionValue,
+  useMotionTemplate,
 } from "framer-motion";
 import Link from "next/link";
 import gsap from "gsap";
@@ -591,6 +592,12 @@ export default function V3Page() {
 
   const skipHeroAnim = reduced || isMobile;
 
+  /* Spotlight X-Ray Mouse Tracking */
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const smoothMouseX = useSpring(mouseX, { stiffness: 50, damping: 20 });
+  const smoothMouseY = useSpring(mouseY, { stiffness: 50, damping: 20 });
+
   /* Hero parallax */
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress: heroProgress } = useScroll({
@@ -636,8 +643,24 @@ export default function V3Page() {
       <section ref={heroRef} className="min-h-[100svh] lg:h-dvh px-[5px] py-[5px]">
         <motion.div
           style={{ scale: skipHeroAnim ? 1 : heroScale }}
-          className="relative flex h-full flex-col items-center justify-center overflow-hidden rounded-xl bg-black px-6 py-20 lg:rounded-2xl lg:px-10"
+          onPointerMove={(e) => {
+            if (reduced || isMobile || !heroRef.current) return;
+            const { left, top } = heroRef.current.getBoundingClientRect();
+            mouseX.set(e.clientX - left);
+            mouseY.set(e.clientY - top);
+          }}
+          className="relative flex h-full flex-col items-center justify-center overflow-hidden rounded-xl bg-[#0a0a0a] px-6 py-20 lg:rounded-2xl lg:px-10"
         >
+          {/* Middle Layer: X-Ray Reveal Image */}
+          {!skipHeroAnim && (
+            <motion.div
+              className="absolute inset-0 z-0 bg-[url('/images/hero-bg.webp')] bg-cover bg-center bg-no-repeat opacity-80 pointer-events-none"
+              style={{
+                maskImage: useMotionTemplate`radial-gradient(450px circle at ${smoothMouseX}px ${smoothMouseY}px, black 0%, transparent 100%)`,
+                WebkitMaskImage: useMotionTemplate`radial-gradient(450px circle at ${smoothMouseX}px ${smoothMouseY}px, black 0%, transparent 100%)`,
+              }}
+            />
+          )}
           {/* Ambient parallax orbs - hidden on mobile to fix GPU lag */}
           <Floating className="pointer-events-none absolute left-[8%] top-[16%] hidden h-[46vw] w-[46vw] rounded-full bg-[#cbfb45]/[0.07] blur-[120px] md:block" amplitude={24} duration={9} />
           <Floating className="pointer-events-none absolute bottom-[-12%] right-[8%] hidden h-[36vw] w-[36vw] rounded-full bg-[#cbfb45]/[0.09] blur-[100px] md:block" amplitude={30} duration={11} delay={1} />
