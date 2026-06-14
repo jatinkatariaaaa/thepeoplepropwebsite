@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { createBrowserClient } from "@supabase/ssr";
 import { Button } from "@/components/ui/Button";
-import { Plus, Edit2, X } from "lucide-react";
+import { Plus, Edit2, X, Trash2 } from "lucide-react";
 
 export default function ChallengesAdminPage() {
   const [programs, setPrograms] = useState<any[]>([]);
