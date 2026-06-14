@@ -22,6 +22,7 @@ export default function ChallengesAdminPage() {
     is_active: true
   });
   const [formFees, setFormFees] = useState<{account_size: number, fee: number}[]>([]);
+  const [selectedFeeIndex, setSelectedFeeIndex] = useState<number | null>(null);
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -51,6 +52,7 @@ export default function ChallengesAdminPage() {
       key: "", label: "", short_label: "", profit_target: "", max_drawdown: "", daily_drawdown: "", profit_split: 80, is_active: true
     });
     setFormFees([]);
+    setSelectedFeeIndex(null);
     setIsModalOpen(true);
   }
 
@@ -66,12 +68,12 @@ export default function ChallengesAdminPage() {
       profit_split: prog.profit_split || 80,
       is_active: prog.is_active
     });
-    setFormFees(
-      (prog.tpp_program_fees || []).map((f: any) => ({
-        account_size: f.account_size,
-        fee: f.fee
-      }))
-    );
+    const fees = (prog.tpp_program_fees || []).map((f: any) => ({
+      account_size: f.account_size,
+      fee: f.fee
+    }));
+    setFormFees(fees);
+    setSelectedFeeIndex(fees.length > 0 ? 0 : null);
     setIsModalOpen(true);
   }
 
@@ -163,38 +165,65 @@ export default function ChallengesAdminPage() {
 
               {/* FEES EDITOR */}
               <div className="mt-6 border-t pt-4">
-                <div className="flex justify-between items-center mb-2">
+                <div className="flex justify-between items-center mb-4">
                   <h3 className="text-sm font-bold">Account Sizes & Fees</h3>
-                  <button type="button" onClick={() => setFormFees([...formFees, { account_size: 10000, fee: 99 }])} className="text-xs flex items-center gap-1 text-blue-600 hover:text-blue-800 font-semibold">
+                  <button type="button" onClick={() => {
+                    const newFees = [...formFees, { account_size: 10000, fee: 99 }];
+                    setFormFees(newFees);
+                    setSelectedFeeIndex(newFees.length - 1);
+                  }} className="text-xs flex items-center gap-1 text-blue-600 hover:text-blue-800 font-semibold">
                     <Plus className="w-3 h-3" /> Add Size
                   </button>
                 </div>
-                <div className="space-y-2 max-h-40 overflow-y-auto">
-                  {formFees.map((f, i) => (
-                    <div key={i} className="flex gap-2 items-center">
-                      <div className="flex-1">
-                        <label className="block text-[10px] text-gray-500 mb-0.5">Size ($)</label>
-                        <input type="number" required value={f.account_size} onChange={e => {
-                          const newFees = [...formFees];
-                          newFees[i].account_size = Number(e.target.value);
-                          setFormFees(newFees);
-                        }} className="w-full border rounded p-1 text-sm" />
-                      </div>
-                      <div className="flex-1">
-                        <label className="block text-[10px] text-gray-500 mb-0.5">Fee ($)</label>
-                        <input type="number" required value={f.fee} onChange={e => {
-                          const newFees = [...formFees];
-                          newFees[i].fee = Number(e.target.value);
-                          setFormFees(newFees);
-                        }} className="w-full border rounded p-1 text-sm" />
-                      </div>
-                      <button type="button" onClick={() => setFormFees(formFees.filter((_, idx) => idx !== i))} className="mt-4 p-1.5 text-red-500 hover:bg-red-50 rounded">
-                        <X className="w-4 h-4" />
-                      </button>
+                
+                {formFees.length > 0 ? (
+                  <div className="space-y-4 bg-gray-50 p-4 rounded-lg border">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-600 mb-1">Select Account Size to Edit</label>
+                      <select 
+                        value={selectedFeeIndex ?? ""}
+                        onChange={(e) => setSelectedFeeIndex(Number(e.target.value))}
+                        className="w-full border rounded-lg p-2 text-sm bg-white"
+                      >
+                        {formFees.map((f, i) => (
+                          <option key={i} value={i}>
+                            ${f.account_size.toLocaleString()} Account
+                          </option>
+                        ))}
+                      </select>
                     </div>
-                  ))}
-                  {formFees.length === 0 && <p className="text-xs text-gray-400 italic">No account sizes added.</p>}
-                </div>
+
+                    {selectedFeeIndex !== null && formFees[selectedFeeIndex] && (
+                      <div className="flex gap-4 items-end pt-2 border-t border-gray-200">
+                        <div className="flex-1">
+                          <label className="block text-[10px] font-semibold text-gray-500 mb-0.5">Size ($)</label>
+                          <input type="number" required value={formFees[selectedFeeIndex].account_size} onChange={e => {
+                            const newFees = [...formFees];
+                            newFees[selectedFeeIndex].account_size = Number(e.target.value);
+                            setFormFees(newFees);
+                          }} className="w-full border rounded-lg p-2 text-sm" />
+                        </div>
+                        <div className="flex-1">
+                          <label className="block text-[10px] font-semibold text-gray-500 mb-0.5">Fee ($)</label>
+                          <input type="number" required value={formFees[selectedFeeIndex].fee} onChange={e => {
+                            const newFees = [...formFees];
+                            newFees[selectedFeeIndex].fee = Number(e.target.value);
+                            setFormFees(newFees);
+                          }} className="w-full border rounded-lg p-2 text-sm" />
+                        </div>
+                        <button type="button" onClick={() => {
+                          const newFees = formFees.filter((_, idx) => idx !== selectedFeeIndex);
+                          setFormFees(newFees);
+                          setSelectedFeeIndex(newFees.length > 0 ? 0 : null);
+                        }} className="mb-0.5 p-2 text-red-500 hover:bg-red-50 rounded-lg">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-xs text-gray-400 italic">No account sizes added.</p>
+                )}
               </div>
 
               <div className="pt-4 flex justify-end gap-2 border-t mt-4">
