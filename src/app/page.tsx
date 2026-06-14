@@ -652,15 +652,13 @@ export default function V3Page() {
           className="relative flex h-full flex-col items-center justify-center overflow-hidden rounded-xl bg-[#0a0a0a] px-6 py-20 lg:rounded-2xl lg:px-10"
         >
           {/* Middle Layer: X-Ray Reveal Image */}
-          {!skipHeroAnim && (
-            <motion.div
-              className="absolute inset-0 z-0 bg-[url('/images/hero-bg.webp')] bg-cover bg-center bg-no-repeat opacity-80 pointer-events-none"
-              style={{
-                maskImage: useMotionTemplate`radial-gradient(450px circle at ${smoothMouseX}px ${smoothMouseY}px, black 0%, transparent 100%)`,
-                WebkitMaskImage: useMotionTemplate`radial-gradient(450px circle at ${smoothMouseX}px ${smoothMouseY}px, black 0%, transparent 100%)`,
-              }}
-            />
-          )}
+          <motion.div
+            className="hidden md:block absolute inset-0 z-0 bg-[url('/images/hero-bg.webp')] bg-cover bg-center bg-no-repeat opacity-80 pointer-events-none"
+            style={{
+              maskImage: useMotionTemplate`radial-gradient(450px circle at ${smoothMouseX}px ${smoothMouseY}px, black 0%, transparent 100%)`,
+              WebkitMaskImage: useMotionTemplate`radial-gradient(450px circle at ${smoothMouseX}px ${smoothMouseY}px, black 0%, transparent 100%)`,
+            }}
+          />
           {/* Ambient parallax orbs - hidden on mobile to fix GPU lag */}
           <Floating className="pointer-events-none absolute left-[8%] top-[16%] hidden h-[46vw] w-[46vw] rounded-full bg-[#cbfb45]/[0.07] blur-[120px] md:block" amplitude={24} duration={9} />
           <Floating className="pointer-events-none absolute bottom-[-12%] right-[8%] hidden h-[36vw] w-[36vw] rounded-full bg-[#cbfb45]/[0.09] blur-[100px] md:block" amplitude={30} duration={11} delay={1} />
