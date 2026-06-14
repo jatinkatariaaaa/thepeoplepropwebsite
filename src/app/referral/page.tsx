@@ -139,7 +139,7 @@ export default function ReferralPage() {
     <div className="flex min-h-screen bg-[var(--paper)]">
       <DashboardSidebar active={tab} onChange={setTab} profile={profile} />
 
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 min-w-0 lg:ml-60">
         <MobileTopBar active={tab} onChange={setTab} />
 
         <div className="px-5 md:px-8 py-8 md:py-10 max-w-[1400px] mx-auto">

@@ -41,7 +41,7 @@ export function DashboardSidebar({
   };
 
   return (
-    <aside className="hidden lg:flex flex-col w-60 shrink-0 border-r border-[var(--border)] bg-white sticky top-0 h-screen">
+    <aside className="hidden lg:flex flex-col w-60 shrink-0 border-r border-[var(--border)] bg-white fixed left-0 top-0 h-screen z-40">
       <div className="px-6 h-[72px] flex items-center justify-between border-b border-[var(--border)]">
         <Logo />
       </div>
