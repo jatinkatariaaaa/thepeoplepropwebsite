@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 import { X, Menu } from "lucide-react";
 import { Magnetic } from "@/components/ui/Animations";
 
@@ -17,10 +17,35 @@ const NAV_LINKS = [
 
 export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const previous = scrollY.getPrevious() ?? 0;
+    // Don't hide if menu is open or we are at the very top
+    if (menuOpen || latest <= 50) {
+      setHidden(false);
+      return;
+    }
+    // Hide when scrolling down, show when scrolling up
+    if (latest > previous) {
+      setHidden(true);
+    } else {
+      setHidden(false);
+    }
+  });
 
   return (
     <>
-      <header className="fixed left-0 top-0 z-50 h-20 w-full px-[5px] lg:h-20 lg:px-[10px]">
+      <motion.header
+        variants={{
+          visible: { y: 0 },
+          hidden: { y: "-100%" },
+        }}
+        animate={hidden ? "hidden" : "visible"}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        className="fixed left-0 top-0 z-50 h-20 w-full px-[5px] lg:h-20 lg:px-[10px]"
+      >
         <div className="relative z-20 flex h-full w-full items-center px-[10px] lg:px-[25px]">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group outline-none">
@@ -74,7 +99,7 @@ export function Navbar() {
 
         {/* Header background */}
         <div className="absolute inset-[5px] z-10 rounded-xl bg-black/90 md:backdrop-blur-sm lg:rounded-2xl" />
-      </header>
+      </motion.header>
 
       {/* Mobile menu overlay */}
       <AnimatePresence>
