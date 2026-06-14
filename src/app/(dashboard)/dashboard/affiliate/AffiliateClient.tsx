@@ -43,10 +43,10 @@ export function AffiliateClient() {
   };
 
   const stats = [
-    { label: "Total Earnings", value: `$${Number(affiliateData?.total_earnings || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`, icon: DollarSign, color: "text-emerald-600", bg: "bg-emerald-50" },
-    { label: "Pending Payout", value: `$${Number(affiliateData?.pending_payout || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`, icon: WalletCards, color: "text-amber-600", bg: "bg-amber-50" },
-    { label: "Total Referrals", value: affiliateData?.total_referrals || "0", icon: Users, color: "text-blue-600", bg: "bg-blue-50" },
-    { label: "Link Clicks", value: affiliateData?.link_clicks || "0", icon: LinkIcon, color: "text-purple-600", bg: "bg-purple-50" },
+    { label: "Total Earnings", value: loading ? "-" : `$${Number(affiliateData?.total_earnings || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`, icon: DollarSign, color: "text-emerald-600", bg: "bg-emerald-50" },
+    { label: "Pending Payout", value: loading ? "-" : `$${Number(affiliateData?.pending_payout || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`, icon: WalletCards, color: "text-amber-600", bg: "bg-amber-50" },
+    { label: "Total Referrals", value: loading ? "-" : (affiliateData?.total_referrals || "0"), icon: Users, color: "text-blue-600", bg: "bg-blue-50" },
+    { label: "Link Clicks", value: loading ? "-" : (affiliateData?.link_clicks || "0"), icon: LinkIcon, color: "text-purple-600", bg: "bg-purple-50" },
   ];
 
   return (

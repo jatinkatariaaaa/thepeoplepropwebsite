@@ -1,42 +1,50 @@
 import { Trophy, CalendarDays, Coins, Crown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { supabaseAdmin } from "@/lib/supabase";
 
-const highlights = [
-  {
-    title: "Highest Total Payout",
-    value: "$142,500.00",
-    trader: "Alex M.",
-    country: "🇺🇸",
-    icon: Trophy,
-    gradient: "from-[var(--accent-700)] to-[var(--ink-950)]"
-  },
-  {
-    title: "Longest Funded Duration",
-    value: "412 days",
-    trader: "Sofia R.",
-    country: "🇪🇸",
-    icon: CalendarDays,
-    gradient: "from-[var(--accent-700)] to-[var(--ink-950)]"
-  },
-  {
-    title: "Highest Single Profit",
-    value: "$31,240.00",
-    trader: "Arjun K.",
-    country: "🇮🇳",
-    icon: Coins,
-    gradient: "from-[var(--accent-700)] to-[var(--ink-950)]"
-  },
-  {
-    title: "Most Payouts Received",
-    value: "15",
-    trader: "James T.",
-    country: "🇬🇧",
-    icon: Crown,
-    gradient: "from-[var(--accent-700)] to-[var(--ink-950)]"
-  }
-];
+export async function LeaderboardHighlights() {
+  const { data: traders } = await supabaseAdmin
+    .from("leaderboard")
+    .select("*")
+    .order("profit", { ascending: false })
+    .limit(4);
 
-export function LeaderboardHighlights() {
+  // Map our top 4 database traders to the highlight metric cards for demo purposes
+  const highlights = [
+    {
+      title: "Highest Total Payout",
+      value: traders && traders[0] ? `$${Number(traders[0].profit).toLocaleString(undefined, {minimumFractionDigits: 2})}` : "-",
+      trader: traders && traders[0] ? traders[0].trader : "-",
+      country: traders && traders[0] ? traders[0].country : "-",
+      icon: Trophy,
+      gradient: "from-[var(--accent-700)] to-[var(--ink-950)]"
+    },
+    {
+      title: "Longest Funded Duration",
+      value: traders && traders[1] ? traders[1].duration : "-",
+      trader: traders && traders[1] ? traders[1].trader : "-",
+      country: traders && traders[1] ? traders[1].country : "-",
+      icon: CalendarDays,
+      gradient: "from-[var(--accent-700)] to-[var(--ink-950)]"
+    },
+    {
+      title: "Highest Single Profit",
+      value: traders && traders[2] ? `$${Number(traders[2].avg_win).toLocaleString(undefined, {minimumFractionDigits: 2})}` : "-",
+      trader: traders && traders[2] ? traders[2].trader : "-",
+      country: traders && traders[2] ? traders[2].country : "-",
+      icon: Coins,
+      gradient: "from-[var(--accent-700)] to-[var(--ink-950)]"
+    },
+    {
+      title: "Most Payouts Received",
+      value: traders && traders[3] ? `${traders[3].trades} Trades` : "-",
+      trader: traders && traders[3] ? traders[3].trader : "-",
+      country: traders && traders[3] ? traders[3].country : "-",
+      icon: Crown,
+      gradient: "from-[var(--accent-700)] to-[var(--ink-950)]"
+    }
+  ];
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">
       {highlights.map((item, idx) => {
