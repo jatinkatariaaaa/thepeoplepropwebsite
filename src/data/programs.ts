@@ -186,7 +186,7 @@ export const programs: Program[] = [
     consistencyRule: "30%",
     highlights: [
       "$5 upfront broker fee",
-      "Funded fee only after Phase 2 pass",
+      "Pay remaining fee within 48 hours of passing Phase 2",
       "72-hour reset window if breached",
     ],
     fees: {

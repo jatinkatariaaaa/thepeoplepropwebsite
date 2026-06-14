@@ -88,7 +88,12 @@ export function V2ChallengeCalculator() {
   const total = prePlatformTotal != null ? prePlatformTotal + platformExtras : null;
 
   // Compute final price locally based on discount
-  const finalPrice = total != null ? total * (1 - appliedDiscount) : null;
+  const postPassFee = total != null ? total * (1 - appliedDiscount) : null;
+  let finalPrice = postPassFee;
+  
+  if (programKey === "access") {
+    finalPrice = 5;
+  }
 
   const handleCryptoPayment = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -730,25 +735,29 @@ export function V2ChallengeCalculator() {
                     </p>
                     <AnimatePresence mode="popLayout">
                       <motion.div
-                        key={`${program.key}-${effectiveSize}-${selectedAddOns.join(",")}`}
-                        initial={{ opacity: 0, y: 6 }}
+                        key={finalPrice}
+                        initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -6 }}
-                        transition={{ duration: 0.2 }}
-                        className="font-medium text-[26px] md:text-[28px] tabular-nums leading-none tracking-tight text-white flex flex-col items-end"
+                        className="flex flex-col items-end"
                       >
-                        {appliedDiscount > 0 && total != null && (
+                        {appliedDiscount > 0 && total != null && programKey !== "access" && (
                           <span className="text-[15px] font-medium text-white/30 line-through leading-none mb-0.5">
                             ${total.toLocaleString("en-US")}
                           </span>
                         )}
-                        <span className={cn(appliedDiscount > 0 ? "text-[#bcff2e]" : "text-white")}>
-                          {finalPrice != null ? `$${finalPrice.toLocaleString("en-US")}` : "—"}
+                        <span className={cn(appliedDiscount > 0 && programKey !== "access" ? "text-[#bcff2e]" : "text-white")}>
+                          {programKey === "access" ? "$5" : (finalPrice != null ? `$${finalPrice.toLocaleString("en-US")}` : "—")}
                         </span>
                       </motion.div>
                     </AnimatePresence>
                   </div>
                 </div>
+
+                {programKey === "access" && postPassFee != null && (
+                  <p className="text-[12.5px] text-[#bcff2e]/90 text-center mb-4 mt-2 px-2 font-medium">
+                    * Remaining ${postPassFee.toLocaleString("en-US")} due within 48h of passing.
+                  </p>
+                )}
 
                 <Button
                   onClick={() => router.push('/dashboard/new-challenge')}
@@ -800,7 +809,7 @@ export function V2ChallengeCalculator() {
 
             {/* Price */}
             <div className="text-center mt-2 mb-6">
-              {appliedDiscount > 0 && total != null && (
+              {appliedDiscount > 0 && total != null && programKey !== "access" && (
                 <p className="text-[20px] font-medium text-white/30 line-through leading-none mb-1.5">
                   ${total.toLocaleString("en-US")}
                 </p>
@@ -811,6 +820,11 @@ export function V2ChallengeCalculator() {
               <p className="text-[14px] text-white/50 mt-3 font-medium">
                 for {formatSizeLong(effectiveSize)} Account
               </p>
+              {programKey === "access" && postPassFee != null && (
+                <p className="text-[13px] text-[#bcff2e]/90 mt-2 font-medium">
+                  * Remaining ${postPassFee.toLocaleString("en-US")} due within 48h of passing.
+                </p>
+              )}
               {selectedAddOns.length > 0 && (
                 <p className="text-[12.5px] text-white/40 mt-3 font-medium">
                   Add-ons: <span className="text-white/80">{selectedAddOns.map(k => addOns.find(a => a.key === k)?.label).join(", ")}</span>
