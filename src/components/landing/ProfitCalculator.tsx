@@ -1,186 +1,201 @@
 "use client";
 
-import { useState } from "react";
-import { Calculator, Lock, CheckCircle2 } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { useState, useRef, useEffect } from "react";
+import { ArrowRight, Calculator, ChevronDown } from "lucide-react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 
 const ACCOUNT_SIZES = [
-  5000,
-  10000,
-  25000,
-  50000,
-  100000,
-  200000,
+  { value: 5000, label: "5,000" },
+  { value: 10000, label: "10,000" },
+  { value: 25000, label: "25,000" },
+  { value: 50000, label: "50,000" },
+  { value: 100000, label: "100,000" },
+  { value: 200000, label: "200,000" },
 ];
 
 export function ProfitCalculator() {
-  const [accountSize, setAccountSize] = useState<number>(200000);
-  const [profitRate, setProfitRate] = useState<number>(8);
+  const [accountSize, setAccountSize] = useState<number>(100000);
+  const [profitRate, setProfitRate] = useState<number>(8); // default 8%
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Up to 100% profit split
-  const profitSplitPercentage = 1.00;
-  const calculatedProfit = Math.round(accountSize * (profitRate / 100) * profitSplitPercentage);
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // TPP Profit Split is 90%
+  const profitSplit = 0.9;
+  const estimatedProfit = accountSize * (profitRate / 100) * profitSplit;
+
+  const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setProfitRate(Number(e.target.value));
+  };
+
+  const fillPercentage = ((profitRate - 1) / (100 - 1)) * 100;
 
   return (
-    <section className="relative py-24 md:py-32 overflow-hidden">
-      {/* Background Decor */}
-      <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/3 w-[800px] h-[800px] bg-[var(--accent)] opacity-[0.02] rounded-full blur-[100px] pointer-events-none" />
-
-      <div className="mx-auto max-w-7xl px-5 md:px-8 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-8 items-center">
-          
-          {/* Left Side: Headlines */}
-          <div className="flex flex-col relative lg:self-start lg:pt-10">
-            <div className="inline-flex items-center gap-2 mb-6 self-start rounded-md bg-slate-100 px-3 py-1.5 border border-slate-200">
-              <Calculator className="w-4 h-4 text-[var(--ink-600)]" />
-              <span className="text-[11px] font-bold tracking-widest text-[var(--ink-700)] uppercase">
-                Calculate Your Profits
-              </span>
-            </div>
-            
-            <div className="relative">
-              {/* Background Blue Glow & Grain Effect */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-[40%] -translate-y-1/2 w-[160%] h-[200%] -z-10 pointer-events-none select-none">
-                <div 
-                  className="absolute inset-0 blur-[40px] md:blur-[60px]"
-                  style={{ background: "radial-gradient(ellipse at center, rgba(37, 99, 235, 0.25) 0%, transparent 65%)" }}
-                />
-                <div 
-                  className="absolute inset-0 mix-blend-overlay opacity-[0.15]"
-                  style={{ 
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-                    WebkitMaskImage: "radial-gradient(ellipse at center, black 0%, transparent 65%)",
-                    maskImage: "radial-gradient(ellipse at center, black 0%, transparent 65%)"
-                  }}
-                />
-              </div>
-
-              <h2 className="relative text-[48px] sm:text-[64px] lg:text-[72px] font-bold leading-[0.95] tracking-tight text-[var(--ink-950)] mb-8">
-                How much<br />
-                can you<br />
-                <span className="word-serif text-[var(--accent)]">make?</span>
-              </h2>
-            </div>
-
-
+    <section className="px-4 py-10 md:py-16 max-w-6xl mx-auto w-full">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        {/* Left Side: Copy & CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="flex flex-col items-start"
+        >
+          <div className="inline-flex items-center gap-2 mb-4 rounded-full bg-[#0c0c0c]/5 px-3 py-1.5 border border-[#0c0c0c]/10">
+            <Calculator className="w-4 h-4 text-[#0c0c0c]" />
+            <span className="text-[11px] font-bold tracking-[0.1em] text-[#0c0c0c] uppercase">
+              Payout Estimator
+            </span>
           </div>
 
-          {/* Right Side: Calculator Card */}
-          <div className="flex justify-center lg:justify-end w-full">
-            <div className="w-full max-w-lg glass-strong rounded-[32px] p-8 sm:p-10 relative overflow-hidden lift">
-              {/* Internal subtle glow */}
-              <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--accent)] opacity-[0.03] rounded-full blur-[50px] pointer-events-none" />
+          <h2 className="text-[32px] md:text-[48px] font-bold leading-[1.05] tracking-[-0.03em] text-[#0c0c0c] mb-4">
+            Calculate your<br />
+            potential <span className="text-[#0c0c0c]/50">payouts</span>
+          </h2>
+          <p className="text-[15px] md:text-[17px] leading-relaxed text-[#0c0c0c]/70 mb-6 max-w-sm">
+            Trade with our capital and keep up to 90% of the profits. See exactly how much you could take home.
+          </p>
+          <Link
+            href="/challenges"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#cbfb45] text-[#0c0c0c] font-semibold text-[14px] hover:bg-[#b5e03b] transition-all group shadow-[0_0_20px_rgba(203,251,69,0.3)] hover:shadow-[0_0_30px_rgba(203,251,69,0.5)]"
+          >
+            Start Trading Now
+            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+          </Link>
+        </motion.div>
 
-              <div className="flex items-center gap-2 mb-8">
-                <Lock className="w-4 h-4 text-[var(--ink-950)]" strokeWidth={2.5} />
-                <span className="text-[13px] font-bold text-[var(--ink-950)]">
-                  Reward Guaranteed
-                </span>
-              </div>
+        {/* Right Side: Calculator Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          className="w-full"
+        >
+          <div className="w-full bg-[#0c0c0c] rounded-[1.5rem] p-6 md:p-8 relative overflow-hidden shadow-2xl border border-white/[0.08]">
+            {/* Subtle Top Glow */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-24 bg-[#cbfb45] opacity-[0.05] blur-[40px] pointer-events-none" />
 
-              {/* Account Size Select */}
-              <div className="mb-8">
-                <label className="block text-[13px] font-medium text-[var(--ink-500)] mb-2">
+            <div className="flex flex-col relative z-10">
+              <span className="text-[10px] font-bold tracking-[0.1em] text-white/40 uppercase mb-6">
+                Calculator
+              </span>
+
+              {/* Challenge Selector (Custom Dropdown) */}
+              <div className="mb-8" ref={dropdownRef}>
+                <label className="block text-[13px] font-medium text-white/80 mb-3">
                   Account Size
                 </label>
                 <div className="relative">
-                  <select 
-                    className="w-full appearance-none bg-white border border-[var(--border)] rounded-2xl px-5 py-4 text-[18px] font-semibold text-[var(--ink-950)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] transition-all shadow-sm"
-                    value={accountSize}
-                    onChange={(e) => setAccountSize(Number(e.target.value))}
+                  <button
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    className="w-full flex items-center justify-between bg-white/[0.03] border border-white/[0.08] hover:border-white/[0.15] rounded-xl px-5 py-4 text-[24px] font-bold text-white transition-all focus:outline-none"
                   >
-                    {ACCOUNT_SIZES.map(size => (
-                      <option key={size} value={size}>
-                        $ {size.toLocaleString()}
-                      </option>
-                    ))}
-                  </select>
-                  {/* Custom Arrow */}
-                  <div className="absolute inset-y-0 right-5 flex items-center pointer-events-none">
-                    <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M1 1.5L6 6.5L11 1.5" stroke="#0F172A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </div>
+                    <span>${accountSize.toLocaleString("en-US")}</span>
+                    <ChevronDown className={`w-5 h-5 text-white/40 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
+                  </button>
+
+                  <AnimatePresence>
+                    {isDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute top-full left-0 w-full mt-2 bg-[#121212] border border-white/[0.08] rounded-xl overflow-hidden shadow-2xl z-50"
+                      >
+                        {ACCOUNT_SIZES.map((size) => (
+                          <button
+                            key={size.value}
+                            onClick={() => {
+                              setAccountSize(size.value);
+                              setIsDropdownOpen(false);
+                            }}
+                            className={`w-full text-left px-5 py-3 text-[18px] font-semibold transition-colors flex items-center justify-between ${
+                              accountSize === size.value
+                                ? "bg-[#cbfb45]/10 text-[#cbfb45]"
+                                : "text-white/70 hover:bg-white/[0.05] hover:text-white"
+                            }`}
+                          >
+                            ${size.label}
+                            {accountSize === size.value && (
+                              <div className="w-1.5 h-1.5 rounded-full bg-[#cbfb45]" />
+                            )}
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
 
-              {/* Profit Rate Slider */}
-              <div className="mb-10">
-                <label className="block text-[13px] font-medium text-[var(--ink-500)] mb-3">
-                  Profit Rate
-                </label>
-                <div className="relative pt-2">
+              {/* Monthly Percentage Slider */}
+              <div className="mb-8">
+                <div className="flex justify-between items-end mb-3">
+                  <label className="block text-[13px] font-medium text-white/80">
+                    Your monthly profit
+                  </label>
+                  <span className="text-[20px] font-bold text-[#cbfb45]">
+                    {profitRate}%
+                  </span>
+                </div>
+
+                {/* Custom Range Slider */}
+                <div className="relative w-full h-1.5 bg-white/10 rounded-full mt-1">
+                  <div
+                    className="absolute top-0 left-0 h-full bg-[#cbfb45] rounded-full pointer-events-none"
+                    style={{ width: `${fillPercentage}%` }}
+                  />
                   <input
                     type="range"
-                    min="1"
-                    max="100"
-                    step="1"
+                    min={1}
+                    max={100}
+                    step={1}
                     value={profitRate}
-                    onChange={(e) => setProfitRate(Number(e.target.value))}
-                    className="w-full h-2 bg-slate-200 rounded-full appearance-none cursor-pointer"
-                    style={{
-                      background: `linear-gradient(to right, var(--ink-950) ${(profitRate - 1) / 99 * 100}%, #E2E8F0 ${(profitRate - 1) / 99 * 100}%)`
-                    }}
+                    onChange={handleSliderChange}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
                   />
-                  {/* Custom Thumb is handled via global css usually, but we rely on tailwind defaults or simple styling here */}
-                  <style jsx>{`
-                    input[type=range]::-webkit-slider-thumb {
-                      appearance: none;
-                      width: 24px;
-                      height: 24px;
-                      border-radius: 50%;
-                      background: var(--ink-950);
-                      cursor: pointer;
-                      box-shadow: 0 0 0 4px #FAFAFA;
-                    }
-                    input[type=range]::-moz-range-thumb {
-                      width: 24px;
-                      height: 24px;
-                      border-radius: 50%;
-                      background: var(--ink-950);
-                      cursor: pointer;
-                      border: none;
-                      box-shadow: 0 0 0 4px #FAFAFA;
-                    }
-                  `}</style>
+                  {/* Custom Thumb */}
+                  <div
+                    className="absolute top-1/2 -translate-y-1/2 w-5 h-5 bg-[#cbfb45] rounded-full shadow-[0_0_15px_rgba(203,251,69,0.5)] pointer-events-none z-10 transition-transform flex items-center justify-center border-[3px] border-[#0c0c0c]"
+                    style={{ left: `calc(${fillPercentage}% - 10px)` }}
+                  />
                 </div>
-                <div className="mt-3 text-[18px] font-semibold text-[var(--ink-950)]">
-                  {profitRate}%
+                <div className="flex justify-between mt-2 text-[11px] font-medium text-white/30">
+                  <span>1%</span>
+                  <span>100%</span>
                 </div>
               </div>
 
-              {/* Result Display */}
-              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-[48px] sm:text-[56px] font-bold text-[var(--ink-950)] leading-none tracking-tight">
-                    ${calculatedProfit.toLocaleString()}
-                  </span>
-                  <span className="text-[14px] font-medium text-[var(--ink-500)]">
-                    / Month
-                  </span>
-                </div>
-                
-                {/* 100% Split Badge */}
-                <div className="chip chip-success px-3 py-1.5 shadow-sm">
-                  <CheckCircle2 className="w-3.5 h-3.5" strokeWidth={3} />
-                  <span className="font-bold">
-                    Up to 100% Split
-                  </span>
+              {/* Estimate Result */}
+              <div className="mb-4 pt-6 border-t border-white/[0.08]">
+                <label className="block text-[13px] font-medium text-white/80 mb-1">
+                  Your estimated payout (90% split)
+                </label>
+                <div className="text-[36px] md:text-[48px] font-bold text-white tracking-tight">
+                  ${estimatedProfit.toLocaleString("en-US")}
                 </div>
               </div>
 
-              {/* Start Earning CTA */}
-              <Button href="/challenges" variant="primary" size="lg" className="w-full shadow-md rounded-xl h-[56px] text-[16px] font-semibold">
-                Start Earning
-              </Button>
-              
-              <p className="text-center text-[12px] text-[var(--ink-500)] font-medium mt-4">
-                You&apos;re not liable for any losses.
+              {/* Footer Note */}
+              <p className="text-[11px] text-white/30 leading-relaxed flex items-start gap-1.5">
+                <span className="text-[#cbfb45] mt-0.5">*</span>
+                Based on a 90% profit split.
               </p>
             </div>
           </div>
-
-        </div>
+        </motion.div>
       </div>
     </section>
   );

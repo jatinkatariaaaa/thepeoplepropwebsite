@@ -4,14 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
-  V3Layout,
-  V3PageHero,
-  V3Section,
+  PageLayout,
+  PageHero,
+  PageSection,
   Reveal,
   GsapWords,
   Magnetic,
   EASE,
-} from "@/components/v3";
+} from "@/components/layout";
 import {
   Mail,
   Send,
@@ -88,8 +88,8 @@ export default function ContactPage() {
   ];
 
   return (
-    <V3Layout>
-      <V3PageHero
+    <PageLayout>
+      <PageHero
         eyebrow="Contact"
         title="Talk to a real TPP trader"
         titleHighlight={["real", "trader"]}
@@ -101,7 +101,7 @@ export default function ContactPage() {
       />
 
       {/* ═══ Contact Methods — cream ═══ */}
-      <V3Section variant="cream">
+      <PageSection variant="cream">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-10 lg:grid-cols-[1fr_1.4fr] lg:gap-16">
             {/* Left: info cards */}
@@ -313,7 +313,7 @@ export default function ContactPage() {
             </Reveal>
           </div>
         </div>
-      </V3Section>
-    </V3Layout>
+      </PageSection>
+    </PageLayout>
   );
 }

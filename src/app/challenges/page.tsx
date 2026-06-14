@@ -3,16 +3,16 @@
 import { useState } from "react";
 import Link from "next/link";
 import {
-  V3Layout,
-  V3PageHero,
-  V3Section,
+  PageLayout,
+  PageHero,
+  PageSection,
   Reveal,
   GsapWords,
   Magnetic,
   FaqRow,
   LIME,
-} from "@/components/v3";
-import { V2ChallengeCalculator } from "@/components/landing/V2ChallengeCalculator";
+} from "@/components/layout";
+import { ChallengeCalculator } from "@/components/landing/ChallengeCalculator";
 import { faq } from "@/data/faq";
 import { ALL_SIZES, formatSize, programs } from "@/data/programs";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
@@ -25,8 +25,8 @@ export default function ChallengesPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   return (
-    <V3Layout>
-      <V3PageHero
+    <PageLayout>
+      <PageHero
         eyebrow="Funded Accounts"
         title="Five paths to a funded account"
         titleHighlight={["funded"]}
@@ -38,10 +38,10 @@ export default function ChallengesPage() {
       />
 
       {/* Calculator — already has V3 styling */}
-      <V2ChallengeCalculator />
+      <ChallengeCalculator />
 
       {/* ═══ Fee Matrix — dark section ═══ */}
-      <V3Section variant="dark">
+      <PageSection variant="dark">
         <Reveal>
           <div className="mb-12 text-center">
             <div className="mb-4 text-sm font-medium uppercase tracking-[0.3em] text-[#cbfb45]">
@@ -133,10 +133,10 @@ export default function ChallengesPage() {
             </div>
           </div>
         </Reveal>
-      </V3Section>
+      </PageSection>
 
       {/* ═══ FAQ — dark section ═══ */}
-      <V3Section variant="dark">
+      <PageSection variant="dark">
         <div className="mx-auto grid max-w-5xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
           <Reveal>
             <div className="lg:sticky lg:top-32">
@@ -177,10 +177,10 @@ export default function ChallengesPage() {
             </div>
           </Reveal>
         </div>
-      </V3Section>
+      </PageSection>
 
       {/* ═══ Final CTA ═══ */}
-      <V3Section variant="cream">
+      <PageSection variant="cream">
         <Reveal>
           <div className="mx-auto max-w-2xl text-center">
             <GsapWords
@@ -216,7 +216,7 @@ export default function ChallengesPage() {
             </div>
           </div>
         </Reveal>
-      </V3Section>
-    </V3Layout>
+      </PageSection>
+    </PageLayout>
   );
 }

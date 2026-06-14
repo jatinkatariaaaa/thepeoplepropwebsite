@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import {
-  V3Layout,
-  V3PageHero,
-  V3Section,
+  PageLayout,
+  PageHero,
+  PageSection,
   Reveal,
   GsapWords,
   Magnetic,
-} from "@/components/v3";
+} from "@/components/layout";
 import { RuleCard } from "@/components/rules/RuleCard";
 import { RulesFAQ } from "@/components/rules/RulesFAQ";
 import { rules } from "@/data/rules";
@@ -16,8 +16,8 @@ import { ArrowRight, ArrowUpRight } from "lucide-react";
 
 export default function RulesPage() {
   return (
-    <V3Layout>
-      <V3PageHero
+    <PageLayout>
+      <PageHero
         eyebrow="The Rulebook"
         title="Fair rules set in stone"
         titleHighlight={["rules", "stone"]}
@@ -29,7 +29,7 @@ export default function RulesPage() {
       />
 
       {/* ═══ Rule Cards ═══ */}
-      <V3Section variant="cream">
+      <PageSection variant="cream">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
             {/* Left: quick reference */}
@@ -69,10 +69,10 @@ export default function RulesPage() {
             </Reveal>
           </div>
         </div>
-      </V3Section>
+      </PageSection>
 
       {/* ═══ CTA — lime section ═══ */}
-      <V3Section variant="lime">
+      <PageSection variant="lime">
         <Reveal>
           <div className="mx-auto max-w-2xl text-center">
             <GsapWords
@@ -110,7 +110,7 @@ export default function RulesPage() {
             </div>
           </div>
         </Reveal>
-      </V3Section>
-    </V3Layout>
+      </PageSection>
+    </PageLayout>
   );
 }

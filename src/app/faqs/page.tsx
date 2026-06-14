@@ -3,14 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import {
-  V3Layout,
-  V3PageHero,
-  V3Section,
+  PageLayout,
+  PageHero,
+  PageSection,
   Reveal,
   GsapWords,
   Magnetic,
   FaqRow,
-} from "@/components/v3";
+} from "@/components/layout";
 import { faq } from "@/data/faq";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
 
@@ -18,8 +18,8 @@ export default function FaqsPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <V3Layout>
-      <V3PageHero
+    <PageLayout>
+      <PageHero
         eyebrow="FAQ"
         title="Frequently asked questions"
         titleHighlight={["questions"]}
@@ -31,7 +31,7 @@ export default function FaqsPage() {
       />
 
       {/* ═══ FAQ Accordion — dark section ═══ */}
-      <V3Section variant="dark">
+      <PageSection variant="dark">
         <div className="mx-auto grid max-w-5xl gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
           {/* Left sticky heading */}
           <Reveal>
@@ -75,10 +75,10 @@ export default function FaqsPage() {
             </div>
           </Reveal>
         </div>
-      </V3Section>
+      </PageSection>
 
       {/* ═══ CTA — lime section ═══ */}
-      <V3Section variant="lime">
+      <PageSection variant="lime">
         <Reveal>
           <div className="mx-auto max-w-2xl text-center">
             <GsapWords
@@ -116,7 +116,7 @@ export default function FaqsPage() {
             </div>
           </div>
         </Reveal>
-      </V3Section>
-    </V3Layout>
+      </PageSection>
+    </PageLayout>
   );
 }

@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 type Variant = "dark" | "lime" | "cream";
 
-export function V3Section({
+export function PageSection({
   children,
   variant = "cream",
   className,

@@ -315,11 +315,11 @@ export function CustomCursor() {
 
     window.addEventListener("pointermove", move, { passive: true });
     window.addEventListener("pointerout", leave);
-    document.documentElement.classList.add("v3-has-cursor");
+    document.documentElement.classList.add("custom-cursor");
     return () => {
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerout", leave);
-      document.documentElement.classList.remove("v3-has-cursor");
+      document.documentElement.classList.remove("custom-cursor");
     };
   }, [reduced, dotX, dotY]);
 
@@ -327,7 +327,7 @@ export function CustomCursor() {
 
   return (
     <>
-      <style>{`.v3-has-cursor, .v3-has-cursor * { cursor: none !important; }`}</style>
+      <style>{`.custom-cursor, .custom-cursor * { cursor: none !important; }`}</style>
       <motion.div
         aria-hidden
         className="pointer-events-none fixed left-0 top-0 z-[9999] rounded-full border border-[#cbfb45] mix-blend-difference"

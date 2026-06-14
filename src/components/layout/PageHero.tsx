@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
-import { GsapWords, Floating, EASE, LIME } from "./V3Animations";
+import { GsapWords, Floating, EASE, LIME } from "@/components/ui/Animations";
 
-export function V3PageHero({
+export function PageHero({
   eyebrow,
   title,
   titleHighlight = [],

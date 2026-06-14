@@ -1,13 +1,13 @@
 "use client";
 
 import {
-  V3Layout,
-  V3PageHero,
-  V3Section,
+  PageLayout,
+  PageHero,
+  PageSection,
   Reveal,
   GsapWords,
   LIME,
-} from "@/components/v3";
+} from "@/components/layout";
 import ForexHeatmapWidget from "@/components/tradingview/ForexHeatmapWidget";
 import { Globe, Zap, BarChart3 } from "lucide-react";
 
@@ -34,9 +34,9 @@ const features = [
 
 export default function HeatmapPage() {
   return (
-    <V3Layout>
+    <PageLayout>
       {/* ── Hero ── */}
-      <V3PageHero
+      <PageHero
         eyebrow="Market Overview"
         title="Forex Heatmap"
         titleHighlight={["Heatmap"]}
@@ -48,7 +48,7 @@ export default function HeatmapPage() {
       />
 
       {/* ── Dark section — Heatmap Widget ── */}
-      <V3Section variant="dark">
+      <PageSection variant="dark">
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <Reveal>
             <div className="rounded-2xl overflow-hidden border border-white/[0.06] bg-[#1A2326]">
@@ -58,10 +58,10 @@ export default function HeatmapPage() {
             </div>
           </Reveal>
         </div>
-      </V3Section>
+      </PageSection>
 
       {/* ── Cream section — Feature cards ── */}
-      <V3Section variant="cream">
+      <PageSection variant="cream">
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <Reveal>
             <div className="mb-12 text-center">
@@ -101,7 +101,7 @@ export default function HeatmapPage() {
             ))}
           </div>
         </div>
-      </V3Section>
-    </V3Layout>
+      </PageSection>
+    </PageLayout>
   );
 }

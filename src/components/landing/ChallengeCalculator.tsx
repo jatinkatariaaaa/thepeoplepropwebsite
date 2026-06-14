@@ -4,6 +4,7 @@ import { useMemo, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { createBrowserClient } from "@supabase/ssr";
 import {
   ArrowUpRight,
   Check,
@@ -29,6 +30,7 @@ import {
   type AddOnKey,
   type PlatformKey,
   type ProgramKey,
+  type Program,
 } from "@/data/programs";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import { cn } from "@/lib/utils";
@@ -57,13 +59,83 @@ export function ChallengeCalculator() {
   const [promoCode, setPromoCode] = useState("");
   const [appliedDiscount, setAppliedDiscount] = useState(0);
   const [mounted, setMounted] = useState(false);
+  const [livePrograms, setLivePrograms] = useState<Program[]>(programs);
+  const [isLoadingPrograms, setIsLoadingPrograms] = useState(true);
+
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 
   useEffect(() => {
     setMounted(true);
-  }, []);  const program = useMemo(
-    () => programs.find((p) => p.key === programKey) ?? programs[0],
-    [programKey],
+    fetchLivePrograms();
+  }, []);
+
+  async function fetchLivePrograms() {
+    try {
+      const { data, error } = await supabase
+        .from("tpp_programs")
+        .select("*, tpp_program_fees(*)")
+        .eq("is_active", true)
+        .order("created_at", { ascending: true });
+
+      if (error) throw error;
+      
+      if (data && data.length > 0) {
+        // Map DB rows to the Program interface
+        const mappedPrograms: Program[] = data.map((d: any) => {
+          const feesMap: any = {};
+          if (d.tpp_program_fees) {
+            d.tpp_program_fees.forEach((f: any) => {
+              feesMap[f.account_size] = Number(f.fee);
+            });
+          }
+          return {
+            key: d.key,
+            label: d.label,
+            shortLabel: d.short_label,
+            tagline: d.tagline,
+            badge: d.badge,
+            phases: d.phases,
+            profitSplit: d.profit_split,
+            profitSplitMax: d.profit_split_max,
+            payoutCycle: d.payout_cycle,
+            profitTarget: d.profit_target,
+            dailyDrawdown: d.daily_drawdown,
+            maxDrawdown: d.max_drawdown,
+            minTradingDays: d.min_trading_days,
+            consistencyRule: d.consistency_rule,
+            highlights: d.highlights || [],
+            fees: feesMap
+          };
+        });
+        setLivePrograms(mappedPrograms);
+        
+        // If the current programKey doesn't exist in live data, reset it to the first available
+        if (!mappedPrograms.find(p => p.key === programKey)) {
+          setProgramKey(mappedPrograms[0].key as ProgramKey);
+        }
+      }
+    } catch (err) {
+      console.error("Error loading programs from DB:", err);
+    } finally {
+      setIsLoadingPrograms(false);
+    }
+  }
+
+  const program = useMemo(
+    () => livePrograms.find((p) => p.key === programKey) ?? livePrograms[0],
+    [livePrograms, programKey],
   );
+
+  const liveSizes = useMemo(() => {
+    const sizes = new Set<number>();
+    livePrograms.forEach(p => {
+      Object.keys(p.fees || {}).forEach(k => sizes.add(Number(k)));
+    });
+    return Array.from(sizes).sort((a, b) => a - b) as AccountSize[];
+  }, [livePrograms]);
 
   // If the active size isn't offered by the new program, fall back to its largest available size.
   const effectiveSize = useMemo<AccountSize>(() => {
@@ -88,7 +160,12 @@ export function ChallengeCalculator() {
   const total = prePlatformTotal != null ? prePlatformTotal + platformExtras : null;
 
   // Compute final price locally based on discount
-  const finalPrice = total != null ? total * (1 - appliedDiscount) : null;
+  const postPassFee = total != null ? total * (1 - appliedDiscount) : null;
+  let finalPrice = postPassFee;
+  
+  if (programKey === "access") {
+    finalPrice = 5;
+  }
 
   const handleCryptoPayment = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -235,31 +312,24 @@ export function ChallengeCalculator() {
   );
 
   return (
-    <section id="calculator" className="relative py-12 md:py-32 overflow-hidden">
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-grid bg-grid-fade opacity-40 pointer-events-none"
-      />
-      {/* Floating color orbs */}
-      <div aria-hidden className="orb orb-blue animate-float-slow" style={{ width: 360, height: 360, top: 100, left: -120, opacity: 0.22 }} />
-      <div aria-hidden className="orb orb-violet animate-float-slower" style={{ width: 320, height: 320, bottom: 80, right: -100, opacity: 0.20 }} />
-      <div aria-hidden className="orb orb-amber animate-drift" style={{ width: 200, height: 200, top: 40, right: 30 + "%", opacity: 0.20 }} />
-      <div className="relative mx-auto max-w-7xl px-5 md:px-8">
-        <SectionHeading
-          eyebrow="Build Your Challenge"
-          title={
-            <>
-              Choose your{" "}
-              <span className="word-serif">trading</span> account.
-            </>
-          }
-          description="Pick a program, account size, and platform. Specs and pricing update live as you customise."
-          className="mb-10 md:mb-14"
-        />
+    <section id="calculator" className="w-full pb-16 lg:pb-24">
+      <div className="w-full px-0">
+        <div className="px-[5px] py-[5px]">
+          <div className="relative rounded-2xl bg-[#0c0c0c] border border-white/[0.05] py-16 xl:py-24 px-[15px] lg:px-[35px] overflow-hidden">
+            <div className="relative mx-auto max-w-7xl">
+              <div className="text-center mb-10 md:mb-16">
+                <div className="text-sm font-medium text-white/50 uppercase tracking-widest mb-4">Build Your Challenge</div>
+                <h2 className="tracking-tight text-white font-medium mb-4" style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}>
+                  Choose your trading account.
+                </h2>
+                <p className="text-white/50 text-base md:text-lg max-w-[600px] mx-auto">
+                  Pick a program, account size, and platform. Specs and pricing update live as you customise.
+                </p>
+              </div>
 
         {/* Program type pills (Atlas-style hero bar) - Desktop */}
-        <div className="hidden md:flex mx-auto mb-5 w-full max-w-3xl flex-wrap items-center justify-center gap-2 rounded-full border border-[var(--border)] bg-white p-1.5 shadow-[0_2px_0_rgba(11,15,26,0.02)]">
-          {programs.map((p) => {
+        <div className="hidden md:flex mx-auto mb-5 w-full max-w-3xl flex-wrap items-center justify-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.02] p-1.5 backdrop-blur-md">
+          {livePrograms.map((p) => {
             const active = p.key === program.key;
             return (
               <button
@@ -270,8 +340,8 @@ export function ChallengeCalculator() {
                 className={cn(
                   "relative inline-flex items-center gap-2 rounded-full px-4 md:px-5 py-2 text-[13px] md:text-[13.5px] font-medium transition-colors",
                   active
-                    ? "bg-[var(--accent)] text-white"
-                    : "text-[var(--ink-600)] hover:text-[var(--ink-950)]",
+                    ? "bg-[#bcff2e] text-[#0c0c0c] shadow-[0_0_20px_rgba(188,255,46,0.2)]"
+                    : "text-white/60 hover:text-white hover:bg-white/[0.05]",
                 )}
               >
                 {p.shortLabel}
@@ -293,8 +363,8 @@ export function ChallengeCalculator() {
         </div>
 
         {/* Program type segmented control - Mobile */}
-        <div className="md:hidden mx-auto mb-5 flex w-full max-w-full bg-[var(--paper-2)] p-1 rounded-full items-center shadow-inner border border-black/[0.04]">
-          {programs.map((p) => {
+        <div className="md:hidden mx-auto mb-5 flex w-full max-w-full bg-[#111] p-1 rounded-full items-center border border-white/[0.08]">
+          {livePrograms.map((p) => {
             const active = p.key === program.key;
             return (
               <button
@@ -305,8 +375,8 @@ export function ChallengeCalculator() {
                 className={cn(
                   "relative inline-flex items-center justify-center whitespace-nowrap rounded-full px-2 py-2.5 transition-all flex-1",
                   active
-                    ? "bg-white text-[var(--ink-950)] shadow-[0_2px_8px_-2px_rgba(11,15,26,0.08)]"
-                    : "text-[var(--ink-500)] hover:text-[var(--ink-950)]",
+                    ? "bg-[#bcff2e] text-[#0c0c0c]"
+                    : "text-white/50 hover:text-white",
                 )}
               >
                 <span className="text-[11px] sm:text-[12px] font-semibold tracking-tight">{p.shortLabel}</span>
@@ -316,7 +386,7 @@ export function ChallengeCalculator() {
         </div>
 
         {/* Promo strip (dark, cobalt accent) */}
-        <div className="mx-auto mb-10 flex w-full max-w-3xl items-center justify-center gap-3 rounded-full bg-[var(--ink-950)] px-5 py-3 text-[12.5px] text-white/85">
+        <div className="mx-auto mb-10 flex w-full max-w-3xl items-center justify-center gap-3 rounded-full bg-white/[0.05] border border-white/[0.08] px-5 py-3 text-[12.5px] text-white/85">
           <span className="hidden sm:inline-flex items-center gap-1.5 text-[10.5px] uppercase tracking-[0.18em] text-white/55">
             <Tag className="w-3 h-3" strokeWidth={2.5} />
             Exclusive Offer
@@ -349,8 +419,8 @@ export function ChallengeCalculator() {
         {/* Main grid */}
         <div className="grid grid-cols-1 lg:grid-cols-[180px_1fr_minmax(0,420px)] gap-5 lg:gap-6 items-start">
           {/* ── Platform column ── */}
-          <div className="glass-strong rounded-2xl p-5 lift">
-            <ColumnHeading>Choose a platform</ColumnHeading>
+          <div className="bg-[#111] border border-white/[0.05] rounded-[2rem] p-5">
+            <h3 className="text-white font-medium mb-4 text-[15px]">Choose a platform</h3>
             {/* Desktop Platform List */}
             <div className="hidden md:block space-y-2">
               {platforms.map((p) => {
@@ -364,19 +434,19 @@ export function ChallengeCalculator() {
                     onClick={() => !disabled && setPlatformKey(p.key)}
                     aria-pressed={active}
                     className={cn(
-                      "relative w-full rounded-full sm:rounded-xl border px-3.5 py-3 text-left transition-all lift",
+                      "relative w-full rounded-full border px-3.5 py-3 text-left transition-all",
                       disabled && "opacity-55 cursor-not-allowed",
                       active && !disabled
-                        ? "border-[var(--accent)] bg-[var(--accent)] text-white"
-                        : "border-[var(--border)] bg-white hover:border-[var(--ink-950)]",
+                        ? "border-[#bcff2e] bg-[#bcff2e] text-[#0c0c0c]"
+                        : "border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.04]",
                     )}
                   >
                     <span
                       className={cn(
                         "block text-[13px] font-medium",
                         active && !disabled
-                          ? "text-white"
-                          : "text-[var(--ink-950)]",
+                          ? "text-[#0c0c0c]"
+                          : "text-white",
                       )}
                     >
                       {p.label}
@@ -385,15 +455,15 @@ export function ChallengeCalculator() {
                       className={cn(
                         "block text-[11px] mt-0.5",
                         active && !disabled
-                          ? "text-white/55"
-                          : "text-[var(--ink-500)]",
+                          ? "text-[#0c0c0c]/70"
+                          : "text-white/50",
                       )}
                     >
                       {p.sub}
                     </span>
                     {disabled && (
                       <Lock
-                        className="absolute top-3 right-3 w-3.5 h-3.5 text-[var(--ink-400)]"
+                        className="absolute top-3 right-3 w-3.5 h-3.5 text-white/30"
                         strokeWidth={2.2}
                       />
                     )}
@@ -403,7 +473,7 @@ export function ChallengeCalculator() {
             </div>
 
             {/* Mobile Platform Segmented Control */}
-            <div className="md:hidden flex w-full max-w-full bg-[var(--paper-2)] p-1 rounded-full items-center shadow-inner border border-black/[0.04]">
+            <div className="md:hidden flex w-full max-w-full bg-[#111] p-1 rounded-full items-center border border-white/[0.05]">
               {platforms.map((p) => {
                 const active = p.key === platformKey;
                 const disabled = p.status === "soon";
@@ -418,8 +488,8 @@ export function ChallengeCalculator() {
                       "relative inline-flex flex-col items-center justify-center whitespace-nowrap rounded-full px-1 py-2 transition-all flex-1",
                       disabled && "opacity-55 cursor-not-allowed",
                       active && !disabled
-                        ? "bg-white text-[var(--ink-950)] shadow-[0_2px_8px_-2px_rgba(11,15,26,0.08)]"
-                        : "text-[var(--ink-500)] hover:text-[var(--ink-950)]",
+                        ? "bg-[#bcff2e] text-[#0c0c0c]"
+                        : "text-white/50 hover:text-white",
                     )}
                   >
                     <span className="block font-semibold text-[10.5px] sm:text-[11.5px] tracking-tight">
@@ -427,7 +497,7 @@ export function ChallengeCalculator() {
                     </span>
                     {disabled && (
                       <Lock
-                        className="absolute top-1.5 right-2 w-2.5 h-2.5 text-[var(--ink-400)]"
+                        className="absolute top-1.5 right-2 w-2.5 h-2.5 text-white/30"
                         strokeWidth={2}
                       />
                     )}
@@ -438,12 +508,12 @@ export function ChallengeCalculator() {
           </div>
 
           {/* ── Size column ── */}
-          <div className="glass-strong rounded-2xl p-5 lift">
-            <ColumnHeading>Choose account size</ColumnHeading>
+          <div className="bg-[#111] border border-white/[0.05] rounded-[2rem] p-5">
+            <h3 className="text-white font-medium mb-4 text-[15px]">Choose account size</h3>
             
             {/* Desktop Size Grid */}
             <div className="hidden md:grid grid-cols-3 lg:grid-cols-3 gap-2">
-              {ALL_SIZES.map((s) => {
+              {liveSizes.map((s) => {
                 const offered = program.fees[s] != null;
                 const active = s === effectiveSize && offered;
                 return (
@@ -454,11 +524,11 @@ export function ChallengeCalculator() {
                     disabled={!offered}
                     aria-pressed={active}
                     className={cn(
-                      "relative rounded-xl border px-3 py-3.5 text-center transition-all duration-200 lift",
+                      "relative rounded-full border px-3 py-3.5 text-center transition-all duration-200",
                       !offered && "opacity-35 cursor-not-allowed",
                       active
-                        ? "border-[var(--accent)] bg-[var(--accent-50)] text-[var(--ink-950)] shadow-[0_8px_22px_-14px_rgba(37,99,235,0.45)]"
-                        : "border-[var(--border)] bg-white text-[var(--ink-950)] hover:border-[var(--ink-950)]",
+                        ? "border-[#bcff2e] bg-[#bcff2e] text-[#0c0c0c] shadow-[0_0_20px_rgba(188,255,46,0.2)]"
+                        : "border-white/[0.05] bg-white/[0.02] text-white hover:bg-white/[0.04]",
                     )}
                   >
                     <span className="block font-medium text-[15px] md:text-[17px] tabular-nums tracking-tight">
@@ -469,15 +539,15 @@ export function ChallengeCalculator() {
                         className={cn(
                           "block text-[10.5px] mt-0.5 tabular-nums",
                           active
-                            ? "text-[var(--accent-700)] font-medium"
-                            : "text-[var(--ink-500)]",
+                            ? "text-[#0c0c0c] font-medium"
+                            : "text-white/50",
                         )}
                       >
                         from ${program.fees[s]}
                       </span>
                     )}
                     {!offered && (
-                      <span className="block text-[10.5px] mt-0.5 text-[var(--ink-400)]">
+                      <span className="block text-[10.5px] mt-0.5 text-white/30">
                         n/a
                       </span>
                     )}
@@ -487,8 +557,8 @@ export function ChallengeCalculator() {
             </div>
 
             {/* Mobile Size Segmented Control */}
-            <div className="md:hidden flex w-full max-w-full bg-[var(--paper-2)] p-1 rounded-full items-center shadow-inner border border-black/[0.04]">
-              {ALL_SIZES.map((s) => {
+            <div className="md:hidden flex w-full max-w-full bg-[#111] p-1 rounded-full items-center border border-white/[0.05]">
+              {liveSizes.map((s) => {
                 const offered = program.fees[s] != null;
                 const active = s === effectiveSize && offered;
                 return (
@@ -502,8 +572,8 @@ export function ChallengeCalculator() {
                       "relative flex flex-col items-center justify-center whitespace-nowrap rounded-full px-0.5 py-2.5 transition-all flex-1",
                       !offered && "opacity-35 cursor-not-allowed hidden",
                       active
-                        ? "bg-white text-[var(--ink-950)] shadow-[0_2px_8px_-2px_rgba(11,15,26,0.08)]"
-                        : "text-[var(--ink-600)] hover:text-[var(--ink-950)]",
+                        ? "bg-[#bcff2e] text-[#0c0c0c]"
+                        : "text-white/50 hover:text-white",
                     )}
                   >
                     <span className="block font-semibold text-[10.5px] sm:text-[11.5px] tabular-nums tracking-tighter">
@@ -516,7 +586,7 @@ export function ChallengeCalculator() {
 
             {/* Add-ons */}
             <div className="mt-6">
-              <ColumnHeading>Optional add-ons</ColumnHeading>
+              <h3 className="text-white font-medium mb-4 text-[15px]">Optional add-ons</h3>
               <div className="grid grid-cols-2 gap-2">
                 {applicableAddOns.map((a) => {
                   const active = selectedAddOns.includes(a.key);
@@ -527,19 +597,19 @@ export function ChallengeCalculator() {
                       onClick={() => toggleAddOn(a.key)}
                       aria-pressed={active}
                       className={cn(
-                        "group relative rounded-[28px] sm:rounded-xl border p-3 sm:p-3 text-left transition-all lift flex flex-col sm:block justify-between min-h-[85px] sm:min-h-0",
+                        "group relative rounded-3xl border p-3 sm:py-3 sm:px-4 text-left transition-all flex flex-col sm:block justify-between min-h-[85px] sm:min-h-0",
                         active
-                          ? "border-[var(--ink-950)] bg-[var(--ink-950)] text-white"
-                          : "border-[var(--border)] bg-white hover:border-[var(--ink-950)]",
+                          ? "border-[#bcff2e]/30 bg-white/[0.04] text-white"
+                          : "border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.04]",
                       )}
                     >
                       {/* Desktop layout wrapper & Mobile top row */}
-                      <div className="flex items-start sm:items-start justify-between w-full sm:w-auto gap-3">
+                      <div className="flex items-center sm:items-center justify-between w-full sm:w-auto gap-3">
                         {/* Mobile percentage (hidden on desktop) */}
                         <span
                           className={cn(
-                            "sm:hidden text-[11px] font-bold tabular-nums mt-0.5",
-                            active ? "text-[var(--accent-400)]" : "text-[var(--accent-700)]",
+                            "sm:hidden text-[11px] font-bold tabular-nums mt-0",
+                            active ? "text-[#bcff2e]" : "text-white/70",
                           )}
                         >
                           {a.feePct === 0 ? "Free" : `+${a.feePct}%`}
@@ -550,37 +620,27 @@ export function ChallengeCalculator() {
                           <p
                             className={cn(
                               "text-[13px] font-medium leading-tight",
-                              active ? "text-white" : "text-[var(--ink-950)]",
+                              active ? "text-white" : "text-white/60",
                             )}
                           >
                             {a.label}
-                          </p>
-                          <p
-                            className={cn(
-                              "text-[11.5px] mt-1 leading-snug",
-                              active
-                                ? "text-white/60"
-                                : "text-[var(--ink-500)]",
-                            )}
-                          >
-                            {a.description}
                           </p>
                         </div>
 
                         {/* Checkbox (shared) */}
                         <span
                           className={cn(
-                            "shrink-0 grid place-items-center w-5 h-5 rounded-md border transition-colors",
+                            "shrink-0 grid place-items-center w-5 h-5 rounded-[6px] border transition-colors",
                             active
-                              ? "bg-[var(--accent)] border-[var(--accent)] text-white"
-                              : "border-[var(--border-strong)] bg-white",
+                              ? "bg-[#bcff2e] border-[#bcff2e] text-[#0c0c0c]"
+                              : "border-white/[0.1] bg-transparent",
                           )}
                         >
                           {active ? (
-                            <Check className="w-3 h-3" strokeWidth={3} />
+                            <Check className="w-3.5 h-3.5" strokeWidth={3} />
                           ) : (
                             <Plus
-                              className="w-3 h-3 text-[var(--ink-500)]"
+                              className="w-3.5 h-3.5 text-white/40 group-hover:text-white/60"
                               strokeWidth={2.5}
                             />
                           )}
@@ -592,7 +652,7 @@ export function ChallengeCalculator() {
                         <p
                           className={cn(
                             "text-[12px] font-medium leading-tight pr-2",
-                            active ? "text-white" : "text-[var(--ink-950)]",
+                            active ? "text-white" : "text-white/60",
                           )}
                         >
                           {a.label}
@@ -602,8 +662,8 @@ export function ChallengeCalculator() {
                       {/* Desktop percentage (absolute top-right, hidden on mobile) */}
                       <span
                         className={cn(
-                          "hidden sm:block absolute top-3 right-9 text-[10.5px] font-medium tabular-nums",
-                          active ? "text-[var(--accent-400)]" : "text-[var(--accent-700)]",
+                          "hidden sm:block absolute top-3.5 right-11 text-[10.5px] font-medium tabular-nums",
+                          active ? "text-[#bcff2e]" : "text-white/40",
                         )}
                       >
                         {a.feePct === 0 ? "Free" : `+${a.feePct}%`}
@@ -617,28 +677,39 @@ export function ChallengeCalculator() {
             {/* Promo / Coupon Code Section */}
             <div className="mt-8">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[11px] font-bold text-[var(--ink-600)] tracking-widest uppercase">Promo Code</span>
-                <span className="text-[10px] bg-[var(--accent-50)] text-[var(--accent-700)] px-2 py-0.5 rounded-full uppercase tracking-wider">Optional</span>
+                <span className="text-[11px] font-bold text-white/40 tracking-widest uppercase">Promo Code</span>
+                <span className="text-[10px] bg-white/[0.05] text-white/60 px-2 py-0.5 rounded-full uppercase tracking-wider">Optional</span>
               </div>
-              <div className="flex gap-2">
+              <div className="relative flex gap-2">
                 <input
                   type="text"
                   value={promoCode}
                   onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-                  className="w-full rounded-[16px] border border-[var(--border)] px-4 py-3.5 text-[15px] outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-all bg-white text-[var(--ink-950)] font-mono uppercase placeholder:normal-case shadow-sm"
+                  className="w-full rounded-[16px] border border-white/[0.08] px-4 py-3.5 text-[15px] outline-none focus:border-[#bcff2e] focus:ring-1 focus:ring-[#bcff2e] transition-all bg-white/[0.02] text-white font-mono uppercase placeholder:normal-case placeholder:text-white/20 shadow-sm"
                   placeholder="Enter code here..."
                 />
                 <Button
                   type="button"
-                  onClick={() => {
-                    if (promoCode === "FIRSTTPP") {
-                      setAppliedDiscount(0.5);
-                    } else {
+                  onClick={async () => {
+                    if (!promoCode) {
                       setAppliedDiscount(0);
-                      alert("Invalid promo code.");
+                      return;
+                    }
+                    const { data, error } = await supabase
+                      .from("tpp_coupons")
+                      .select("discount_pct, is_active")
+                      .eq("code", promoCode)
+                      .single();
+                    
+                    if (error || !data || !data.is_active) {
+                      setAppliedDiscount(0);
+                      alert("Invalid or expired coupon code");
+                    } else {
+                      setAppliedDiscount(data.discount_pct / 100);
+                      alert(`Promo applied: ${data.discount_pct}% OFF!`);
                     }
                   }}
-                  className="shrink-0 rounded-[16px] px-6 bg-[var(--ink-950)] text-white hover:bg-[var(--ink-800)] font-medium"
+                  className="shrink-0 rounded-[16px] px-6 bg-white/[0.08] text-white hover:bg-white/[0.12] border border-white/[0.05] font-medium"
                 >
                   Apply
                 </Button>
@@ -654,25 +725,25 @@ export function ChallengeCalculator() {
 
           {/* ── Live spec card (Desktop) ── */}
           <div className="hidden lg:block lg:sticky lg:top-24">
-            <div className="glass-strong rounded-2xl overflow-hidden lift relative">
+            <div className="bg-[#111] border border-white/[0.05] rounded-[2rem] overflow-hidden relative shadow-2xl shadow-black/50">
               {/* Heading inside card */}
-              <div className="relative px-5 md:px-6 pt-5 md:pt-6 pb-4 border-b border-[var(--border)] bg-white/30">
+              <div className="relative px-5 md:px-6 pt-5 md:pt-6 pb-4 border-b border-white/[0.05] bg-white/[0.02]">
                 <div className="flex items-center justify-between gap-3 mb-3">
-                  <span className="chip chip-accent">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] pulse-dot" />
+                  <span className="inline-flex items-center gap-1.5 px-2 py-1 text-[11px] font-medium rounded-full bg-[#bcff2e]/10 text-[#bcff2e]">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#bcff2e] animate-pulse" />
                     Live configuration
                   </span>
-                  <span className="text-[11px] tracking-eyebrow text-[var(--ink-400)]">
+                  <span className="text-[11px] tracking-widest uppercase font-semibold text-white/40">
                     {program.shortLabel}
                   </span>
                 </div>
-                <p className="text-[12.5px] text-[var(--ink-500)]">
+                <p className="text-[12.5px] text-white/50">
                   {program.tagline}
                 </p>
               </div>
 
               {/* Dotted-leader spec rows */}
-              <ul className="px-5 md:px-6 py-4 divide-y divide-[var(--border)]">
+              <ul className="px-5 md:px-6 py-4 divide-y divide-white/[0.05]">
                 {specs.map((row) => {
                   const Icon = row.icon;
                   return (
@@ -680,14 +751,14 @@ export function ChallengeCalculator() {
                       key={row.label}
                       className="flex items-baseline gap-2 py-2.5"
                     >
-                      <span className="text-[13px] text-[var(--ink-600)] shrink-0">
+                      <span className="text-[13px] text-white/60 shrink-0">
                         {row.label}
                       </span>
                       <span
-                        className="flex-1 h-px translate-y-[6px] opacity-90"
+                        className="flex-1 h-px translate-y-[6px] opacity-30"
                         style={{
                           backgroundImage:
-                            "radial-gradient(circle, rgba(11,15,26,0.22) 1px, transparent 1.2px)",
+                            "radial-gradient(circle, rgba(255,255,255,0.4) 1px, transparent 1.2px)",
                           backgroundSize: "6px 1px",
                           backgroundRepeat: "repeat-x",
                         }}
@@ -703,16 +774,16 @@ export function ChallengeCalculator() {
                           className={cn(
                             "inline-flex items-center gap-1.5 text-[13.5px] tabular-nums shrink-0 font-medium",
                             row.strong
-                              ? "text-[var(--ink-950)] text-[15px]"
+                              ? "text-white text-[15px]"
                               : row.accent
-                                ? "text-[var(--accent-700)]"
-                                : "text-[var(--ink-950)]",
+                                ? "text-[#bcff2e]"
+                                : "text-white",
                           )}
                         >
                           {row.value}
                           {Icon && (
                             <Icon
-                              className="w-3.5 h-3.5 text-[var(--accent-700)]"
+                              className="w-3.5 h-3.5 text-white/80"
                               strokeWidth={2.4}
                             />
                           )}
@@ -724,13 +795,13 @@ export function ChallengeCalculator() {
               </ul>
 
               {/* Price row */}
-              <div className="relative px-5 md:px-6 py-4 border-t border-[var(--border)] bg-white/30">
+              <div className="relative px-5 md:px-6 py-4 border-t border-white/[0.08] bg-white/[0.02]">
                 <div className="flex items-end justify-between gap-3 mb-3">
                   <div>
-                    <p className="text-[10.5px] uppercase tracking-[0.2em] text-[var(--ink-500)] mb-0.5">
+                    <p className="text-[10.5px] uppercase tracking-[0.2em] text-white/40 mb-0.5">
                       Average payout
                     </p>
-                    <p className="text-[14px] font-medium text-[var(--ink-950)] tabular-nums">
+                    <p className="text-[14px] font-medium text-white tabular-nums">
                       $
                       {Math.round(
                         ((profitTargetUsd ?? effectiveSize * 0.05) *
@@ -742,43 +813,40 @@ export function ChallengeCalculator() {
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-[10.5px] uppercase tracking-[0.2em] text-[var(--ink-500)] mb-0.5">
+                    <p className="text-[10.5px] uppercase tracking-[0.2em] text-white/40 mb-0.5">
                       One-time fee
                     </p>
                     <AnimatePresence mode="popLayout">
                       <motion.div
-                        key={`${program.key}-${effectiveSize}-${selectedAddOns.join(",")}`}
-                        initial={{ opacity: 0, y: 6 }}
+                        key={finalPrice}
+                        initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -6 }}
-                        transition={{ duration: 0.2 }}
-                        className="font-medium text-[26px] md:text-[28px] tabular-nums leading-none tracking-tight text-[var(--ink-950)] flex flex-col items-end"
+                        className="flex flex-col items-end"
                       >
-                        {appliedDiscount > 0 && total != null && (
-                          <span className="text-[15px] font-medium text-[var(--ink-400)] line-through leading-none mb-0.5">
+                        {appliedDiscount > 0 && total != null && programKey !== "access" && (
+                          <span className="text-[15px] font-medium text-white/30 line-through leading-none mb-0.5">
                             ${total.toLocaleString("en-US")}
                           </span>
                         )}
-                        <span>{finalPrice != null ? `$${finalPrice.toLocaleString("en-US")}` : "—"}</span>
+                        <span className={cn(appliedDiscount > 0 && programKey !== "access" ? "text-[#bcff2e]" : "text-white")}>
+                          {programKey === "access" ? "$5" : (finalPrice != null ? `$${finalPrice.toLocaleString("en-US")}` : "—")}
+                        </span>
                       </motion.div>
                     </AnimatePresence>
-                    {base != null && total != null && total !== base && (
-                      <p className="mt-1 text-[11px] text-[var(--ink-500)] tabular-nums">
-                        base ${base} + add-ons $
-                        {addOnFees
-                          .reduce((s, a) => s + a.amount, 0)
-                          .toLocaleString("en-US")}
-                      </p>
-                    )}
                   </div>
                 </div>
+
+                {programKey === "access" && postPassFee != null && (
+                  <p className="text-[12.5px] text-[#bcff2e]/90 text-center mb-4 mt-2 px-2 font-medium">
+                    * Remaining ${postPassFee.toLocaleString("en-US")} due within 48h of passing.
+                  </p>
+                )}
 
                 <Button
                   onClick={() => router.push('/dashboard/new-challenge')}
                   disabled={total == null}
-                  variant="primary"
                   size="lg"
-                  className="w-full flex items-center justify-center gap-2"
+                  className="w-full flex items-center justify-center gap-2 rounded-full bg-[var(--ink-950)] hover:bg-[#bcff2e] text-white hover:text-[var(--ink-950)] transition-colors border border-[var(--ink-950)]"
                 >
                   Get Funded
                 </Button>
@@ -789,7 +857,7 @@ export function ChallengeCalculator() {
                     (p) => (
                       <span
                         key={p}
-                        className="text-[10.5px] uppercase tracking-[0.15em] text-[var(--ink-500)]"
+                        className="text-[10px] uppercase tracking-widest text-white/40"
                       >
                         {p}
                       </span>
@@ -800,11 +868,11 @@ export function ChallengeCalculator() {
             </div>
 
             {/* Highlights below card */}
-            <ul className="mt-4 grid grid-cols-1 gap-1.5 text-[12.5px] text-[var(--ink-600)]">
+            <ul className="mt-4 grid grid-cols-1 gap-1.5 text-[12.5px] text-white/50">
               {program.highlights.map((h) => (
                 <li key={h} className="flex items-center gap-2">
                   <Check
-                    className="w-3.5 h-3.5 text-[var(--accent-700)]"
+                    className="w-3.5 h-3.5 text-[#bcff2e]"
                     strokeWidth={2.5}
                   />
                   {h}
@@ -814,30 +882,35 @@ export function ChallengeCalculator() {
           </div>
 
           {/* ── Mobile Live spec card ── */}
-          <div className="lg:hidden mt-2 bg-white rounded-[24px] border border-[var(--border)] p-5 relative shadow-[0_4px_24px_rgba(11,15,26,0.04)]">
+          <div className="lg:hidden mt-4 bg-[#111] rounded-[24px] border border-white/[0.05] p-5 relative shadow-2xl">
             {/* Top Badge */}
             <div className="mb-4">
-              <span className="inline-flex items-center rounded-full bg-[#415C9C] px-3.5 py-1 text-[10px] font-bold tracking-widest text-white uppercase">
-                Most Popular
+              <span className="inline-flex items-center rounded-full bg-[#bcff2e]/10 px-3.5 py-1 text-[10px] font-bold tracking-widest text-[#bcff2e] uppercase">
+                Live config
               </span>
             </div>
 
             {/* Price */}
             <div className="text-center mt-2 mb-6">
-              {appliedDiscount > 0 && total != null && (
-                <p className="text-[20px] font-medium text-[#94A3B8] line-through leading-none mb-1.5">
+              {appliedDiscount > 0 && total != null && programKey !== "access" && (
+                <p className="text-[20px] font-medium text-white/30 line-through leading-none mb-1.5">
                   ${total.toLocaleString("en-US")}
                 </p>
               )}
-              <h3 className="text-[52px] font-display font-bold text-[#0F172A] tracking-tight leading-none">
+              <h3 className="text-[52px] font-display font-bold text-white tracking-tight leading-none">
                 {finalPrice != null ? `$${finalPrice.toLocaleString("en-US")}` : "—"}
               </h3>
-              <p className="text-[14px] text-[#64748B] mt-3 font-medium">
+              <p className="text-[14px] text-white/50 mt-3 font-medium">
                 for {formatSizeLong(effectiveSize)} Account
               </p>
+              {programKey === "access" && postPassFee != null && (
+                <p className="text-[13px] text-[#bcff2e]/90 mt-2 font-medium">
+                  * Remaining ${postPassFee.toLocaleString("en-US")} due within 48h of passing.
+                </p>
+              )}
               {selectedAddOns.length > 0 && (
-                <p className="text-[12.5px] text-[#475569] mt-3 font-medium">
-                  Add-on available: <span className="text-[#0F172A]">{selectedAddOns.map(k => addOns.find(a => a.key === k)?.label).join(", ")}</span>
+                <p className="text-[12.5px] text-white/40 mt-3 font-medium">
+                  Add-ons: <span className="text-white/80">{selectedAddOns.map(k => addOns.find(a => a.key === k)?.label).join(", ")}</span>
                 </p>
               )}
             </div>
@@ -846,18 +919,18 @@ export function ChallengeCalculator() {
             <Button
               onClick={() => router.push('/dashboard/new-challenge')}
               disabled={total == null}
-              className="w-full bg-[#0B1E4A] hover:bg-[#061230] text-white rounded-[18px] h-[54px] text-[15px] font-semibold mb-6 shadow-md"
+              className="w-full bg-[#bcff2e] hover:bg-[#a5e622] text-[#0c0c0c] rounded-full h-[54px] text-[15px] font-semibold mb-6 shadow-[0_0_20px_rgba(188,255,46,0.15)] transition-colors"
             >
               Get Funded
             </Button>
 
             {/* Specs Grey Box */}
-            <div className="bg-[#F8FAFC] rounded-[20px] p-5 space-y-4">
+            <div className="bg-white/[0.02] border border-white/[0.05] rounded-[20px] p-5 space-y-4">
               {specs.map((row) => {
                 const Icon = row.icon;
                 return (
                   <div key={row.label} className="flex items-center justify-between">
-                    <span className="text-[13.5px] text-[#334155] font-semibold flex items-center gap-1.5">
+                    <span className="text-[13.5px] text-white/60 font-semibold flex items-center gap-1.5">
                       {row.label}
                     </span>
                     <AnimatePresence mode="popLayout">
@@ -865,10 +938,10 @@ export function ChallengeCalculator() {
                         key={`${row.label}-${program.key}-${effectiveSize}-${selectedAddOns.length}`}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="text-[14px] tabular-nums font-bold text-[#0F172A] text-right"
+                        className="text-[14px] tabular-nums font-bold text-[#bcff2e] text-right"
                       >
                         {row.value}
-                        {Icon && <Icon className="inline-block ml-1 w-3.5 h-3.5 text-[#0F172A]" strokeWidth={3} />}
+                        {Icon && <Icon className="inline-block ml-1 w-3.5 h-3.5 text-white/60" strokeWidth={3} />}
                       </motion.span>
                     </AnimatePresence>
                   </div>
@@ -888,23 +961,23 @@ export function ChallengeCalculator() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                className="absolute inset-0 bg-black/80 backdrop-blur-sm"
                 onClick={() => setShowCheckoutModal(false)}
               />
               <motion.div
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                className="relative w-full max-w-md overflow-hidden rounded-[24px] bg-white shadow-2xl"
+                className="relative w-full max-w-md overflow-hidden rounded-[24px] bg-[#111] border border-white/[0.08] shadow-2xl"
               >
-              <div className="flex items-center justify-between border-b border-[var(--border)] px-6 py-4">
+              <div className="flex items-center justify-between border-b border-white/[0.08] px-6 py-4 bg-white/[0.02]">
                 <div>
-                  <h3 className="text-lg font-bold text-[var(--ink-950)]">Checkout Details</h3>
-                  <p className="text-[13px] text-[var(--ink-500)]">Please fill in your details to proceed to payment.</p>
+                  <h3 className="text-lg font-bold text-white">Checkout Details</h3>
+                  <p className="text-[13px] text-white/50">Please fill in your details to proceed to payment.</p>
                 </div>
                 <button
                   onClick={() => setShowCheckoutModal(false)}
-                  className="rounded-full p-2 text-[var(--ink-500)] hover:bg-[var(--paper-2)] hover:text-[var(--ink-950)] transition-colors"
+                  className="rounded-full p-2 text-white/50 hover:bg-white/[0.05] hover:text-white transition-colors"
                 >
                   <X className="h-5 w-5" />
                 </button>
@@ -912,66 +985,62 @@ export function ChallengeCalculator() {
 
               <form onSubmit={handleCryptoPayment} className="p-6 space-y-4 text-left">
                 <div className="space-y-1.5">
-                  <label className="text-[13px] font-medium text-[var(--ink-950)]">Full Name</label>
+                  <label className="text-[13px] font-medium text-white/80">Full Name</label>
                   <input
                     required
                     type="text"
                     value={checkoutForm.fullName}
-                    onChange={(e) => setCheckoutForm({ ...checkoutForm, fullName: e.target.value })}
-                    className="w-full rounded-xl border border-[var(--border)] px-4 py-2.5 text-[14px] outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-all bg-white text-black"
+                    onChange={(e) => setCheckoutForm({...checkoutForm, fullName: e.target.value})}
+                    className="w-full rounded-[14px] border border-white/[0.08] px-4 py-3 text-[14px] outline-none focus:border-[#bcff2e] transition-all bg-white/[0.02] text-white placeholder:text-white/20"
                     placeholder="John Doe"
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-[13px] font-medium text-[var(--ink-950)]">Email Address</label>
+                  <label className="text-[13px] font-medium text-white/80">Email Address</label>
                   <input
                     required
                     type="email"
                     value={checkoutForm.email}
-                    onChange={(e) => setCheckoutForm({ ...checkoutForm, email: e.target.value })}
-                    className="w-full rounded-xl border border-[var(--border)] px-4 py-2.5 text-[14px] outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-all bg-white text-black"
+                    onChange={(e) => setCheckoutForm({...checkoutForm, email: e.target.value})}
+                    className="w-full rounded-[14px] border border-white/[0.08] px-4 py-3 text-[14px] outline-none focus:border-[#bcff2e] transition-all bg-white/[0.02] text-white placeholder:text-white/20"
                     placeholder="john@example.com"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
-                    <label className="text-[13px] font-medium text-[var(--ink-950)]">Country</label>
-                    <input
-                      required
-                      type="text"
-                      value={checkoutForm.country}
-                      onChange={(e) => setCheckoutForm({ ...checkoutForm, country: e.target.value })}
-                      className="w-full rounded-xl border border-[var(--border)] px-4 py-2.5 text-[14px] outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-all bg-white text-black"
-                      placeholder="United States"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="text-[13px] font-medium text-[var(--ink-950)]">Address</label>
-                    <input
-                      required
-                      type="text"
-                      value={checkoutForm.address}
-                      onChange={(e) => setCheckoutForm({ ...checkoutForm, address: e.target.value })}
-                      className="w-full rounded-xl border border-[var(--border)] px-4 py-2.5 text-[14px] outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-all bg-white text-black"
-                      placeholder="123 Trading St"
-                    />
-                  </div>
+                <div className="space-y-1.5">
+                  <label className="text-[13px] font-medium text-white/80">Country</label>
+                  <input
+                    required
+                    type="text"
+                    value={checkoutForm.country}
+                    onChange={(e) => setCheckoutForm({...checkoutForm, country: e.target.value})}
+                    className="w-full rounded-[14px] border border-white/[0.08] px-4 py-3 text-[14px] outline-none focus:border-[#bcff2e] transition-all bg-white/[0.02] text-white placeholder:text-white/20"
+                    placeholder="United States"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[13px] font-medium text-white/80">Billing Address</label>
+                  <input
+                    required
+                    type="text"
+                    value={checkoutForm.address}
+                    onChange={(e) => setCheckoutForm({...checkoutForm, address: e.target.value})}
+                    className="w-full rounded-[14px] border border-white/[0.08] px-4 py-3 text-[14px] outline-none focus:border-[#bcff2e] transition-all bg-white/[0.02] text-white placeholder:text-white/20"
+                    placeholder="123 Trading Ave, NY"
+                  />
                 </div>
 
-                <div className="pt-4 border-t border-[var(--border)] mt-2">
-                  <div className="flex justify-between items-center mb-4 px-1">
-                    <span className="text-[14px] font-medium text-[var(--ink-600)]">Total to Pay</span>
-                    <span className="text-[20px] font-bold text-[var(--ink-950)]">
-                      ${finalPrice?.toLocaleString("en-US")}
-                    </span>
+                <div className="pt-4 border-t border-white/[0.08]">
+                  <div className="flex justify-between items-center mb-4">
+                    <span className="text-[14px] font-medium text-white/80">Total Payment</span>
+                    <span className="text-[20px] font-bold text-[#bcff2e]">${finalPrice?.toLocaleString("en-US")}</span>
                   </div>
-                  <Button
+                  <button
                     type="submit"
                     disabled={isProcessingPayment}
-                    className="w-full bg-[var(--accent)] hover:bg-[var(--accent-700)] text-white rounded-xl h-[48px] text-[15px] font-semibold shadow-md flex items-center justify-center gap-2"
+                    className="w-full flex items-center justify-center gap-2 rounded-full bg-[#bcff2e] text-[#0c0c0c] hover:bg-[#a5e622] disabled:opacity-50 disabled:cursor-not-allowed h-[50px] font-semibold transition-colors shadow-[0_0_20px_rgba(188,255,46,0.15)]"
                   >
-                    {isProcessingPayment ? "Connecting to NOWPayments..." : `Pay $${finalPrice?.toLocaleString("en-US")} via Crypto`}
-                  </Button>
+                    {isProcessingPayment ? "Processing..." : "Pay with Crypto"}
+                  </button>
                 </div>
               </form>
             </motion.div>
@@ -980,6 +1049,9 @@ export function ChallengeCalculator() {
       </AnimatePresence>,
       document.body
       )}
+          </div>
+        </div>
+      </div>
     </section>
   );
 }

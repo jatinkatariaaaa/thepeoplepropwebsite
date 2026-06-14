@@ -45,8 +45,8 @@ import {
 import { FeaturedIn } from "@/components/landing/FeaturedIn";
 import { cn } from "@/lib/utils";
 import { faq } from "@/data/faq";
-import { V2ChallengeCalculator } from "@/components/landing/V2ChallengeCalculator";
-import { ProfitCalculatorV3 } from "@/components/landing/ProfitCalculatorV3";
+import { ChallengeCalculator } from "@/components/landing/ChallengeCalculator";
+import { ProfitCalculator } from "@/components/landing/ProfitCalculator";
 
 /* ═══════════════════════════════════════════════════════════════
    V3 Landing Page — "Ultra-Premium" evolution of V2
@@ -373,11 +373,11 @@ function CustomCursor() {
 
     window.addEventListener("pointermove", move, { passive: true });
     window.addEventListener("pointerout", leave);
-    document.documentElement.classList.add("v3-has-cursor");
+    document.documentElement.classList.add("custom-cursor");
     return () => {
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerout", leave);
-      document.documentElement.classList.remove("v3-has-cursor");
+      document.documentElement.classList.remove("custom-cursor");
     };
   }, [reduced, dotX, dotY]);
 
@@ -385,7 +385,7 @@ function CustomCursor() {
 
   return (
     <>
-      <style>{`.v3-has-cursor, .v3-has-cursor * { cursor: none !important; }`}</style>
+      <style>{`.custom-cursor, .custom-cursor * { cursor: none !important; }`}</style>
       <motion.div
         aria-hidden
         className="pointer-events-none fixed left-0 top-0 z-[9999] rounded-full border border-[#cbfb45] mix-blend-difference"
@@ -579,7 +579,7 @@ function PinnedSteps() {
 
 /* ═══════════════════════════════════════ MAIN PAGE ═══════════════════════════════════════ */
 
-export default function V3Page() {
+export default function HomePage() {
   const reduced = useReducedMotion();
   const [isMobile, setIsMobile] = useState(false);
 
@@ -632,7 +632,7 @@ export default function V3Page() {
 
   return (
     <div
-      className="v3-page min-h-screen bg-[#f1eade] text-[#0c0c0c] antialiased"
+      className="page-wrapper min-h-screen bg-[#f1eade] text-[#0c0c0c] antialiased"
       style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
     >
       <CustomCursor />
@@ -852,7 +852,7 @@ export default function V3Page() {
       </section>
 
       {/* ═══════════════ SECTION 4 — CALCULATOR ═══════════════ */}
-      <V2ChallengeCalculator />
+      <ChallengeCalculator />
 
       {/* ═══════════════ SECTION 5 — WHY TPP (feature rail) ═══════════════ */}
       <section className="w-full pb-16 lg:pb-24">
@@ -1131,7 +1131,7 @@ export default function V3Page() {
         </div>
       </section>
 
-      <ProfitCalculatorV3 />
+      <ProfitCalculator />
 
       {/* ═══════════════ SECTION 8 — TESTIMONIALS (MARQUEE) ═══════════════ */}
       <section className="w-full pb-16 pt-8 lg:pb-24">
