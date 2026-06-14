@@ -23,7 +23,7 @@ const upcomingCompetitions = [
     participants: 342,
     startsIn: "Starts in 18 Days",
     status: "Upcoming",
-    image: "bg-gradient-to-br from-blue-500 to-indigo-700",
+    image: "bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a]",
   },
   {
     id: "COMP-24-08",

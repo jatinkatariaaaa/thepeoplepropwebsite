@@ -124,36 +124,37 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2 bg-[var(--paper)]">
-      {/* Left brand panel — editorial light */}
-      <aside className="relative hidden lg:flex flex-col justify-between p-12 overflow-hidden border-r border-[var(--border)] bg-gradient-to-br from-white via-[var(--paper)] to-[var(--accent-50)]">
+      {/* Left brand panel — dark, signature lime */}
+      <aside className="relative hidden lg:flex flex-col justify-between p-12 overflow-hidden bg-[#0a0a0a] text-white">
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-grid bg-grid-fade opacity-50 pointer-events-none"
+          className="absolute inset-0 pointer-events-none opacity-[0.07]"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
+            backgroundSize: "44px 44px",
+          }}
         />
         <div
           aria-hidden="true"
-          className="absolute -top-40 -left-20 w-[700px] h-[700px] rounded-full bg-[rgba(14,124,92,0.08)] blur-3xl pointer-events-none"
-        />
-        <div
-          aria-hidden="true"
-          className="absolute -bottom-40 -right-20 w-[600px] h-[600px] rounded-full bg-[rgba(216,242,107,0.18)] blur-3xl pointer-events-none"
+          className="absolute -bottom-48 -left-24 w-[700px] h-[700px] rounded-full bg-[rgba(203,251,69,0.16)] blur-3xl pointer-events-none"
         />
 
         <div className="relative z-10">
-          <Logo />
+          <Logo invert />
         </div>
 
         <div className="relative z-10 max-w-md">
-          <div className="inline-flex items-center gap-2 chip chip-accent mb-5">
-            <span className="pulse-dot pulse-emerald" />
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-3 py-1.5 text-xs font-medium text-white/80 mb-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--lime)]" />
             Welcome to TPP
           </div>
-          <h1 className="font-display text-4xl xl:text-5xl text-[var(--ink-950)] leading-[1.05] tracking-tight mb-6">
+          <h1 className="font-display text-4xl xl:text-5xl leading-[1.04] tracking-[-0.03em] mb-6">
             Trade our capital.
             <br />
-            Keep the <span className="word-serif">profits</span>.
+            Keep the <span className="text-[var(--lime)]">profits</span>.
           </h1>
-          <p className="text-[var(--ink-600)] leading-relaxed mb-10 text-[15px]">
+          <p className="text-white/55 leading-relaxed mb-10 text-[15px]">
             Join 28,000+ funded traders worldwide. Bi-weekly payouts, up to 90%
             split, and the fairest rules in the industry.
           </p>
@@ -167,18 +168,18 @@ export default function LoginPage() {
             ].map((s) => (
               <div
                 key={s.l}
-                className="surface-card rounded-xl p-4"
+                className="rounded-xl border border-white/10 bg-white/[0.03] p-4"
               >
-                <div className="font-display text-xl text-[var(--ink-950)] tabular-nums">
+                <div className="font-display text-xl text-white tabular-nums">
                   {s.v}
                 </div>
-                <div className="text-xs text-[var(--ink-500)] mt-1">{s.l}</div>
+                <div className="text-xs text-white/45 mt-1">{s.l}</div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="relative z-10 text-xs text-[var(--ink-500)]">
+        <div className="relative z-10 text-xs text-white/40">
           &copy; {new Date().getFullYear()} The People Prop &mdash; Guaranteed free evaluation Prizes on 1 August 2026
         </div>
       </aside>

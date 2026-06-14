@@ -12,7 +12,7 @@ function StatusBadge({ status }: { status: string }) {
     case "passed":
       return <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-semibold bg-green-100 text-green-700"><Trophy className="w-3.5 h-3.5" /> Passed</span>;
     case "funded":
-      return <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-semibold bg-blue-100 text-blue-700"><ShieldCheck className="w-3.5 h-3.5" /> Funded</span>;
+      return <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-semibold bg-[var(--ink-950)] text-[var(--lime)]"><ShieldCheck className="w-3.5 h-3.5" /> Funded</span>;
     default:
       return <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-semibold bg-gray-100 text-gray-700"><Activity className="w-3.5 h-3.5" /> Active</span>;
   }
