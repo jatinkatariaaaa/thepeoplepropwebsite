@@ -20,7 +20,7 @@ export function Navbar() {
 
   return (
     <>
-      <header className="fixed left-0 top-0 z-50 h-20 w-full px-[5px] lg:h-[7.5rem] lg:px-[10px]">
+      <header className="fixed left-0 top-0 z-50 h-20 w-full px-[5px] lg:h-20 lg:px-[10px]">
         <div className="relative z-20 flex h-full w-full items-center px-[10px] lg:px-[25px]">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group outline-none">
@@ -53,7 +53,7 @@ export function Navbar() {
                 className="group inline-flex h-8 items-center gap-2 rounded-full border border-white/40 pl-1 pr-3 text-[15px] text-white transition-all duration-300 hover:rounded-lg hover:border-[#cbfb45]"
               >
                 <span className="h-6 w-6 shrink-0 rounded-full bg-[#cbfb45] transition-all duration-300 group-hover:rounded-sm" />
-                Let&apos;s trade
+                Dashboard
               </Link>
             </Magnetic>
 
@@ -109,7 +109,7 @@ export function Navbar() {
                 onClick={() => setMenuOpen(false)}
                 className="mt-4 inline-flex h-12 w-full items-center justify-center rounded-full bg-[#cbfb45] text-[15px] font-semibold text-[#0c0c0c] transition-all hover:rounded-xl"
               >
-                Start trading
+                Dashboard
               </Link>
             </motion.nav>
           </motion.div>
