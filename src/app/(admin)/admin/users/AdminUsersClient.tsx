@@ -60,7 +60,7 @@ export function AdminUsersClient({ initialUsers }: { initialUsers: any[] }) {
                 <td className="px-6 py-4 font-medium text-[var(--ink-950)]">{user.email}</td>
                 <td className="px-6 py-4 text-[var(--ink-600)]">{user.display_name || "-"}</td>
                 <td className="px-6 py-4">
-                  <span className={\`inline-flex items-center px-2 py-1 rounded-md text-xs font-semibold \${user.is_admin ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-700'}\`}>
+                  <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-semibold ${user.is_admin ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-700'}`}>
                     {user.is_admin ? "Admin" : "User"}
                   </span>
                 </td>
@@ -68,11 +68,11 @@ export function AdminUsersClient({ initialUsers }: { initialUsers: any[] }) {
                   {new Date(user.created_at).toLocaleDateString()}
                 </td>
                 <td className="px-6 py-4">
-                  <span className={\`inline-flex items-center px-2 py-1 rounded-md text-xs font-semibold \${
+                  <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-semibold ${
                     user.kyc_status === 'verified' ? 'bg-green-100 text-green-700' :
                     user.kyc_status === 'rejected' ? 'bg-red-100 text-red-700' :
                     'bg-yellow-100 text-yellow-700'
-                  }\`}>
+                  }`}>
                     {(user.kyc_status || 'pending').toUpperCase()}
                   </span>
                 </td>

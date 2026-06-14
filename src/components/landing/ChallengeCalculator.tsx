@@ -29,6 +29,7 @@ import {
   type AccountSize,
   type AddOnKey,
   type PlatformKey,
+  type Platform,
   type ProgramKey,
   type Program,
 } from "@/data/programs";
