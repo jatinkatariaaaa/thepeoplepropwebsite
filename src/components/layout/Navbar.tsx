@@ -10,7 +10,7 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
-  if (pathname === "/referral") {
+  if (pathname === "/referral" || pathname.startsWith("/admin")) {
     return null;
   }
 
