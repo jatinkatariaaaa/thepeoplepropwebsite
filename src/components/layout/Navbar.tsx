@@ -45,7 +45,7 @@ export function Navbar() {
             className="group hidden sm:inline-flex h-8 items-center gap-2 rounded-full border border-white/40 pl-1 pr-3 text-[15px] text-white transition-all duration-300 hover:rounded-lg hover:border-[#cbfb45]"
           >
             <span className="h-6 w-6 shrink-0 rounded-full bg-[#cbfb45] transition-all duration-300 group-hover:rounded-sm" />
-            Let&apos;s trade
+            Dashboard
           </Link>
           
           <button
@@ -87,7 +87,7 @@ export function Navbar() {
                   className="group inline-flex h-12 w-full justify-center items-center gap-2 rounded-full border border-white/40 pl-1 pr-3 text-[15px] text-white transition-all duration-300 hover:border-[#cbfb45] hover:text-[#cbfb45]"
                 >
                   <span className="h-8 w-8 shrink-0 rounded-full bg-[#cbfb45] transition-all duration-300 group-hover:rounded-sm" />
-                  Let&apos;s trade
+                  Dashboard
                 </Link>
               </div>
             </nav>
