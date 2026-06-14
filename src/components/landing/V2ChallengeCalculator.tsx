@@ -4,6 +4,7 @@ import { useMemo, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { createBrowserClient } from "@supabase/ssr";
 import {
   ArrowUpRight,
   Check,
@@ -57,13 +58,83 @@ export function V2ChallengeCalculator() {
   const [promoCode, setPromoCode] = useState("");
   const [appliedDiscount, setAppliedDiscount] = useState(0);
   const [mounted, setMounted] = useState(false);
+  const [livePrograms, setLivePrograms] = useState<Program[]>(programs);
+  const [isLoadingPrograms, setIsLoadingPrograms] = useState(true);
+
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 
   useEffect(() => {
     setMounted(true);
-  }, []);  const program = useMemo(
-    () => programs.find((p) => p.key === programKey) ?? programs[0],
-    [programKey],
+    fetchLivePrograms();
+  }, []);
+
+  async function fetchLivePrograms() {
+    try {
+      const { data, error } = await supabase
+        .from("tpp_programs")
+        .select("*, tpp_program_fees(*)")
+        .eq("is_active", true)
+        .order("created_at", { ascending: true });
+
+      if (error) throw error;
+      
+      if (data && data.length > 0) {
+        // Map DB rows to the Program interface
+        const mappedPrograms: Program[] = data.map((d: any) => {
+          const feesMap: any = {};
+          if (d.tpp_program_fees) {
+            d.tpp_program_fees.forEach((f: any) => {
+              feesMap[f.account_size] = Number(f.fee);
+            });
+          }
+          return {
+            key: d.key,
+            label: d.label,
+            shortLabel: d.short_label,
+            tagline: d.tagline,
+            badge: d.badge,
+            phases: d.phases,
+            profitSplit: d.profit_split,
+            profitSplitMax: d.profit_split_max,
+            payoutCycle: d.payout_cycle,
+            profitTarget: d.profit_target,
+            dailyDrawdown: d.daily_drawdown,
+            maxDrawdown: d.max_drawdown,
+            minTradingDays: d.min_trading_days,
+            consistencyRule: d.consistency_rule,
+            highlights: d.highlights || [],
+            fees: feesMap
+          };
+        });
+        setLivePrograms(mappedPrograms);
+        
+        // If the current programKey doesn't exist in live data, reset it to the first available
+        if (!mappedPrograms.find(p => p.key === programKey)) {
+          setProgramKey(mappedPrograms[0].key as ProgramKey);
+        }
+      }
+    } catch (err) {
+      console.error("Error loading programs from DB:", err);
+    } finally {
+      setIsLoadingPrograms(false);
+    }
+  }
+
+  const program = useMemo(
+    () => livePrograms.find((p) => p.key === programKey) ?? livePrograms[0],
+    [livePrograms, programKey],
   );
+
+  const liveSizes = useMemo(() => {
+    const sizes = new Set<number>();
+    livePrograms.forEach(p => {
+      Object.keys(p.fees || {}).forEach(k => sizes.add(Number(k)));
+    });
+    return Array.from(sizes).sort((a, b) => a - b) as AccountSize[];
+  }, [livePrograms]);
 
   // If the active size isn't offered by the new program, fall back to its largest available size.
   const effectiveSize = useMemo<AccountSize>(() => {
@@ -257,7 +328,7 @@ export function V2ChallengeCalculator() {
 
         {/* Program type pills (Atlas-style hero bar) - Desktop */}
         <div className="hidden md:flex mx-auto mb-5 w-full max-w-3xl flex-wrap items-center justify-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.02] p-1.5 backdrop-blur-md">
-          {programs.map((p) => {
+          {livePrograms.map((p) => {
             const active = p.key === program.key;
             return (
               <button
@@ -292,7 +363,7 @@ export function V2ChallengeCalculator() {
 
         {/* Program type segmented control - Mobile */}
         <div className="md:hidden mx-auto mb-5 flex w-full max-w-full bg-[#111] p-1 rounded-full items-center border border-white/[0.08]">
-          {programs.map((p) => {
+          {livePrograms.map((p) => {
             const active = p.key === program.key;
             return (
               <button
@@ -441,7 +512,7 @@ export function V2ChallengeCalculator() {
             
             {/* Desktop Size Grid */}
             <div className="hidden md:grid grid-cols-3 lg:grid-cols-3 gap-2">
-              {ALL_SIZES.map((s) => {
+              {liveSizes.map((s) => {
                 const offered = program.fees[s] != null;
                 const active = s === effectiveSize && offered;
                 return (
@@ -486,7 +557,7 @@ export function V2ChallengeCalculator() {
 
             {/* Mobile Size Segmented Control */}
             <div className="md:hidden flex w-full max-w-full bg-[#111] p-1 rounded-full items-center border border-white/[0.05]">
-              {ALL_SIZES.map((s) => {
+              {liveSizes.map((s) => {
                 const offered = program.fees[s] != null;
                 const active = s === effectiveSize && offered;
                 return (
@@ -608,7 +679,7 @@ export function V2ChallengeCalculator() {
                 <span className="text-[11px] font-bold text-white/40 tracking-widest uppercase">Promo Code</span>
                 <span className="text-[10px] bg-white/[0.05] text-white/60 px-2 py-0.5 rounded-full uppercase tracking-wider">Optional</span>
               </div>
-              <div className="flex gap-2">
+              <div className="relative flex gap-2">
                 <input
                   type="text"
                   value={promoCode}
@@ -618,12 +689,23 @@ export function V2ChallengeCalculator() {
                 />
                 <Button
                   type="button"
-                  onClick={() => {
-                    if (promoCode === "FIRSTTPP") {
-                      setAppliedDiscount(0.5);
-                    } else {
+                  onClick={async () => {
+                    if (!promoCode) {
                       setAppliedDiscount(0);
-                      alert("Invalid promo code.");
+                      return;
+                    }
+                    const { data, error } = await supabase
+                      .from("tpp_coupons")
+                      .select("discount_pct, is_active")
+                      .eq("code", promoCode)
+                      .single();
+                    
+                    if (error || !data || !data.is_active) {
+                      setAppliedDiscount(0);
+                      alert("Invalid or expired coupon code");
+                    } else {
+                      setAppliedDiscount(data.discount_pct / 100);
+                      alert(`Promo applied: ${data.discount_pct}% OFF!`);
                     }
                   }}
                   className="shrink-0 rounded-[16px] px-6 bg-white/[0.08] text-white hover:bg-white/[0.12] border border-white/[0.05] font-medium"
