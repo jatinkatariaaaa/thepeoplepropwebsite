@@ -60,6 +60,7 @@ export function ChallengeCalculator() {
   const [appliedDiscount, setAppliedDiscount] = useState(0);
   const [mounted, setMounted] = useState(false);
   const [livePrograms, setLivePrograms] = useState<Program[]>(programs);
+  const [livePlatforms, setLivePlatforms] = useState<Platform[]>(platforms);
   const [isLoadingPrograms, setIsLoadingPrograms] = useState(true);
 
   const supabase = createBrowserClient(
@@ -70,7 +71,34 @@ export function ChallengeCalculator() {
   useEffect(() => {
     setMounted(true);
     fetchLivePrograms();
+    fetchLivePlatforms();
   }, []);
+
+  
+  async function fetchLivePlatforms() {
+    try {
+      const { data, error } = await supabase
+        .from("tpp_platforms")
+        .select("*")
+        .eq("is_active", true)
+        .order("created_at", { ascending: true });
+
+      if (error) throw error;
+      if (data && data.length > 0) {
+        const mappedPlatforms: Platform[] = data.map((d: any) => ({
+          key: d.name.toLowerCase().replace(/[^a-z0-9]/g, '') as PlatformKey,
+          label: d.name,
+          sub: d.extra_fee_pct > 0 ? `+${d.extra_fee_pct}` : "Free",
+          status: "live",
+          extraFeePct: d.extra_fee_pct
+        }));
+        setLivePlatforms(mappedPlatforms);
+        setPlatformKey(mappedPlatforms[0].key);
+      }
+    } catch (err) {
+      console.error("Error fetching platforms:", err);
+    }
+  }
 
   async function fetchLivePrograms() {
     try {
@@ -154,8 +182,9 @@ export function ChallengeCalculator() {
   );
 
   let platformExtras = 0;
-  if (platformKey !== "tppdashboard") {
-    platformExtras = (base ?? 0) * 0.10;
+  const currentPlatform = livePlatforms.find(p => p.key === platformKey);
+  if (currentPlatform && currentPlatform.extraFeePct) {
+    platformExtras = currentPlatform.extraFeePct; // It's absolute USD as per the new DB schema
   }
   const total = prePlatformTotal != null ? prePlatformTotal + platformExtras : null;
 
@@ -423,7 +452,7 @@ export function ChallengeCalculator() {
             <h3 className="text-white font-medium mb-4 text-[15px]">Choose a platform</h3>
             {/* Desktop Platform List */}
             <div className="hidden md:block space-y-2">
-              {platforms.map((p) => {
+              {livePlatforms.map((p) => {
                 const active = p.key === platformKey;
                 const disabled = p.status === "soon";
                 return (
@@ -474,7 +503,7 @@ export function ChallengeCalculator() {
 
             {/* Mobile Platform Segmented Control */}
             <div className="md:hidden flex w-full max-w-full bg-[#111] p-1 rounded-full items-center border border-white/[0.05]">
-              {platforms.map((p) => {
+              {livePlatforms.map((p) => {
                 const active = p.key === platformKey;
                 const disabled = p.status === "soon";
                 return (

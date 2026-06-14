@@ -280,6 +280,7 @@ export interface Platform {
   label: string;
   sub: string;
   status?: "live" | "soon";
+  extraFeePct?: number;
 }
 
 export const platforms: Platform[] = [

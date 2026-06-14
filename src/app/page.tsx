@@ -17,6 +17,7 @@ import {
   useMotionTemplate,
 } from "framer-motion";
 import Link from "next/link";
+import { createBrowserClient } from "@supabase/ssr";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
@@ -580,6 +581,20 @@ function PinnedSteps() {
 /* ═══════════════════════════════════════ MAIN PAGE ═══════════════════════════════════════ */
 
 export default function HomePage() {
+  const [dynamicPlatformsText, setDynamicPlatformsText] = useState("MT5 · DXTrade · TPP Terminal");
+  useEffect(() => {
+    const supabase = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+    supabase.from("tpp_platforms").select("name").eq("is_active", true).order("created_at")
+      .then(({data, error}) => {
+        if (data && data.length > 0) {
+          setDynamicPlatformsText(data.map(p => p.name).join(" · "));
+        }
+      });
+  }, []);
+  
   const reduced = useReducedMotion();
   const [isMobile, setIsMobile] = useState(false);
 
@@ -880,7 +895,7 @@ export default function HomePage() {
                   { stat: "$5", unit: "upfront", title: "Pass First, Pay Later", desc: "Prove your skill first. We only charge after you pass.", icon: BadgeDollarSign, accent: true },
                   { stat: "NFP", unit: "& FOMC", title: "News Trading Allowed", desc: "No restrictions on high-impact events. Trade the volatility.", icon: Newspaper, accent: false },
                   { stat: "24/7", unit: "hold", title: "Weekend & Overnight", desc: "Keep positions through swaps, weekends & holidays.", icon: MoonStar, accent: false },
-                  { stat: "3", unit: "platforms", title: "MT5 · DXTrade · TPP Terminal", desc: "Trade on the platform you trust, plus our own proprietary terminal.", icon: Monitor, accent: false, fullWidth: true },
+                  { stat: "3", unit: "platforms", title: dynamicPlatformsText, desc: "Trade on the platform you trust, plus our own proprietary terminal.", icon: Monitor, accent: false, fullWidth: true },
                 ].map((item, i) => (
                   <Reveal key={item.title} delay={i * 0.06} className={cn("min-w-[80%] snap-center sm:min-w-0", item.fullWidth && "sm:col-span-2")}>
                     <TiltCard intensity={7} glare={!item.accent} className="h-full">
