@@ -92,14 +92,6 @@ export async function POST(req: Request) {
 
     if (referral?.affiliate_id) {
       const commission = purchase.price_amount * 0.10;
-      await supabaseAdmin
-        .from("affiliate_earnings")
-        .insert({
-          affiliate_id: referral.affiliate_id,
-          purchase_id: purchase.id,
-          amount: commission,
-          status: 'pending'
-        });
 
       const { data: affiliateData } = await supabaseAdmin
         .from("affiliates")
