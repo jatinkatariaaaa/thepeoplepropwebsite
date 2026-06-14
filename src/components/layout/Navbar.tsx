@@ -18,8 +18,8 @@ export function Navbar() {
   ];
 
   return (
-    <header className="fixed left-0 right-0 top-0 z-50 flex justify-center h-20 w-full px-[5px] lg:h-[7.5rem] lg:px-[10px] pointer-events-none">
-      <div className="relative w-full max-w-7xl h-full pointer-events-auto">
+    <header className="fixed left-0 right-0 top-0 z-50 flex justify-center h-20 w-full px-[5px] lg:h-20 lg:px-[10px] pointer-events-none">
+      <div className="relative w-full h-full pointer-events-auto">
         <div className="relative z-20 flex h-full w-full items-center justify-between px-[15px] lg:px-[30px]">
           {/* Logo */}
           <Link href="/" className="relative z-30 flex items-center transition-opacity hover:opacity-80">
