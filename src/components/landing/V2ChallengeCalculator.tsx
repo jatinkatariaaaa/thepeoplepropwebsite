@@ -30,6 +30,7 @@ import {
   type AddOnKey,
   type PlatformKey,
   type ProgramKey,
+  type Program,
 } from "@/data/programs";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import { cn } from "@/lib/utils";
