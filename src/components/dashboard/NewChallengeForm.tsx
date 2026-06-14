@@ -46,18 +46,70 @@ export function NewChallengeForm() {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [checkoutMessage, setCheckoutMessage] = useState("");
 
-  // Auth Check
+  const [livePrograms, setLivePrograms] = useState(programs);
+  const [isLoadingPrograms, setIsLoadingPrograms] = useState(true);
+
+  // Auth Check & Fetch Programs
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) {
         router.push("/login?redirect=/dashboard/new-challenge");
       }
     });
+
+    // Fetch live programs
+    const fetchLivePrograms = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("tpp_programs")
+          .select("*, tpp_program_fees(*)")
+          .eq("is_active", true)
+          .order("created_at", { ascending: true });
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          const mappedPrograms = data.map((d: any) => {
+            const feesMap: any = {};
+            if (d.tpp_program_fees) {
+              d.tpp_program_fees.forEach((f: any) => {
+                feesMap[f.account_size] = Number(f.fee);
+              });
+            }
+            return {
+              key: d.key,
+              label: d.label,
+              shortLabel: d.short_label,
+              tagline: d.tagline,
+              badge: d.badge,
+              phases: d.phases,
+              profitSplit: d.profit_split,
+              profitSplitMax: d.profit_split_max,
+              payoutCycle: d.payout_cycle,
+              profitTarget: d.profit_target,
+              dailyDrawdown: d.daily_drawdown,
+              maxDrawdown: d.max_drawdown,
+              minTradingDays: d.min_trading_days,
+              consistencyRule: d.consistency_rule,
+              highlights: d.highlights || [],
+              fees: feesMap
+            };
+          });
+          setLivePrograms(mappedPrograms as any);
+        }
+      } catch (err) {
+        console.error("Error loading programs from DB:", err);
+      } finally {
+        setIsLoadingPrograms(false);
+      }
+    };
+
+    fetchLivePrograms();
   }, [router]);
 
   const program = useMemo(
-    () => programs.find((p) => p.key === programKey) ?? programs[0],
-    [programKey]
+    () => livePrograms.find((p) => p.key === programKey) ?? livePrograms[0],
+    [programKey, livePrograms]
   );
 
   // Fallback size if current program doesn't offer it
@@ -264,10 +316,10 @@ export function NewChallengeForm() {
         <div>
           <h3 className="font-bold text-[15px] text-[var(--ink-950)] mb-3">Challenge Type</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            {programs.map(prog => (
+            {livePrograms.map(prog => (
               <button
                 key={prog.key}
-                onClick={() => setProgramKey(prog.key)}
+                onClick={() => setProgramKey(prog.key as ProgramKey)}
                 className={cn(
                   "py-3 px-2 rounded-xl text-[13px] font-bold border transition-all text-center",
                   programKey === prog.key 
@@ -382,28 +434,30 @@ export function NewChallengeForm() {
 
         {/* Account Size */}
         <div>
-          <h3 className="font-bold text-[15px] text-[var(--ink-950)] mb-3">Account Size</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            {ALL_SIZES.map(s => {
-              const isAvailable = program.fees[s] !== undefined;
-              return (
-                <button
-                  key={s}
-                  disabled={!isAvailable}
-                  onClick={() => setSize(s)}
-                  className={cn(
-                    "py-3 px-2 rounded-xl text-[13px] font-bold border transition-all text-center",
-                    !isAvailable && "opacity-40 cursor-not-allowed bg-[var(--paper-2)]",
-                    isAvailable && effectiveSize === s 
-                      ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)] shadow-sm" 
-                      : isAvailable && "bg-white border-[var(--border)] text-[var(--ink-600)] hover:border-[var(--ink-300)]"
-                  )}
-                >
-                  {formatAccSize(s)}
-                </button>
-              );
-            })}
-          </div>
+          <h3 className="font-bold text-[15px] text-[var(--ink-950)] mb-3 mt-8">Account Size</h3>
+          {isLoadingPrograms ? (
+            <div className="animate-pulse bg-[var(--paper-2)] h-24 rounded-xl border border-[var(--border)] w-full"></div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
+              {Object.keys(program.fees)
+                .map((s) => Number(s) as AccountSize)
+                .sort((a, b) => a - b)
+                .map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => setSize(s)}
+                    className={cn(
+                      "py-4 px-2 rounded-xl text-[15px] font-display font-bold border transition-all text-center",
+                      effectiveSize === s
+                        ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)] shadow-sm" 
+                        : "bg-white border-[var(--border)] text-[var(--ink-600)] hover:border-[var(--ink-300)]"
+                    )}
+                  >
+                    {formatAccSize(s)}
+                  </button>
+                ))}
+            </div>
+          )}
         </div>
 
         {/* Trading Platform */}
