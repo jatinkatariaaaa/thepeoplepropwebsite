@@ -45,6 +45,7 @@ import { FeaturedIn } from "@/components/landing/FeaturedIn";
 import { cn } from "@/lib/utils";
 import { faq } from "@/data/faq";
 import { V2ChallengeCalculator } from "@/components/landing/V2ChallengeCalculator";
+import { ProfitCalculatorV3 } from "@/components/landing/ProfitCalculatorV3";
 
 /* ═══════════════════════════════════════════════════════════════
    V3 Landing Page — "Ultra-Premium" evolution of V2
@@ -1108,6 +1109,8 @@ export default function V3Page() {
           </div>
         </div>
       </section>
+
+      <ProfitCalculatorV3 />
 
       {/* ═══════════════ SECTION 8 — TESTIMONIALS (MARQUEE) ═══════════════ */}
       <section className="w-full pb-16 pt-8 lg:pb-24">
