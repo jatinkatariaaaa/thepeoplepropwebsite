@@ -877,7 +877,7 @@ export default function HomePage() {
                   { stat: "0.0", unit: "pips", title: "Raw Spreads", desc: "Tier-1 liquidity, zero markup. Your edge stays yours.", icon: TrendingUp, accent: false },
                   { stat: "0", unit: "days min", title: "No Time Pressure", desc: "Pass in a day or a year — your pace, your rules.", icon: CalendarOff, accent: false },
                   { stat: "FREE", unit: "retry", title: "Second Chance, On Us", desc: "Missed by a hair? We reset your challenge at zero cost.", icon: RotateCcw, accent: true },
-                  { stat: "$0", unit: "upfront", title: "Pass First, Pay Later", desc: "Prove your skill first. We only charge after you pass.", icon: BadgeDollarSign, accent: true },
+                  { stat: "$5", unit: "upfront", title: "Pass First, Pay Later", desc: "Prove your skill first. We only charge after you pass.", icon: BadgeDollarSign, accent: true },
                   { stat: "NFP", unit: "& FOMC", title: "News Trading Allowed", desc: "No restrictions on high-impact events. Trade the volatility.", icon: Newspaper, accent: false },
                   { stat: "24/7", unit: "hold", title: "Weekend & Overnight", desc: "Keep positions through swaps, weekends & holidays.", icon: MoonStar, accent: false },
                   { stat: "3", unit: "platforms", title: "MT5 · DXTrade · TPP Terminal", desc: "Trade on the platform you trust, plus our own proprietary terminal.", icon: Monitor, accent: false, fullWidth: true },
