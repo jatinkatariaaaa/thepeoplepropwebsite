@@ -13,7 +13,10 @@ import {
   Menu,
   X,
   DollarSign,
-  ArrowUpRight
+  ArrowUpRight,
+  Settings,
+  Ticket,
+  Boxes
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -21,6 +24,9 @@ import { NavbarLogo } from "@/components/ui/resizable-navbar";
 
 const navItems = [
   { icon: LayoutDashboard, label: "Overview", href: "/admin" },
+  { icon: Target, label: "Challenges", href: "/admin/challenges" },
+  { icon: Ticket, label: "Coupons", href: "/admin/coupons" },
+  { icon: Boxes, label: "Platforms", href: "/admin/platforms" },
   { icon: Users, label: "Users", href: "/admin/users" },
   { icon: Target, label: "Accounts", href: "/admin/accounts" },
   { icon: CreditCard, label: "Purchases", href: "/admin/purchases" },
