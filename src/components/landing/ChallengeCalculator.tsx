@@ -87,6 +87,7 @@ export function ChallengeCalculator() {
 
   
   async function fetchLivePlatforms() {
+    if (!supabase) return;
     try {
       const { data, error } = await supabase
         .from("tpp_platforms")
@@ -112,6 +113,7 @@ export function ChallengeCalculator() {
   }
 
   async function fetchLivePrograms() {
+    if (!supabase) return;
     try {
       const { data, error } = await supabase
         .from("tpp_programs")
@@ -731,7 +733,7 @@ export function ChallengeCalculator() {
                 <Button
                   type="button"
                   onClick={async () => {
-                    if (!promoCode) {
+                    if (!promoCode || !supabase) {
                       setAppliedDiscount(0);
                       return;
                     }
