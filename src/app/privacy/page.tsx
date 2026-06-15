@@ -1,4 +1,12 @@
 import { Footer } from "@/components/layout/Footer";
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata = buildMetadata({
+  title: "Privacy Policy",
+  description:
+    "Learn how The People Prop collects, uses, and protects your personal data across our evaluation programs, funded accounts, and website.",
+  path: "/privacy",
+});
 
 export default function PrivacyPage() {
   return (

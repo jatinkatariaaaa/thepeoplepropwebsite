@@ -1,4 +1,12 @@
 import { Footer } from "@/components/layout/Footer";
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata = buildMetadata({
+  title: "Terms of Service",
+  description:
+    "The terms and conditions governing your use of The People Prop evaluation challenges, funded accounts, and services.",
+  path: "/terms",
+});
 
 export default function TermsPage() {
   return (

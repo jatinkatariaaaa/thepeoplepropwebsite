@@ -64,15 +64,25 @@ export function ChallengeCalculator() {
   const [livePlatforms, setLivePlatforms] = useState<Platform[]>(platforms);
   const [isLoadingPrograms, setIsLoadingPrograms] = useState(true);
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
+  // Only create a client when credentials exist. This keeps the page
+  // statically prerenderable (good for SEO) and lets it fall back to the
+  // bundled program/platform data when Supabase is unavailable.
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const supabase =
+    supabaseUrl && supabaseAnonKey
+      ? createBrowserClient(supabaseUrl, supabaseAnonKey)
+      : null;
 
   useEffect(() => {
     setMounted(true);
+    if (!supabase) {
+      setIsLoadingPrograms(false);
+      return;
+    }
     fetchLivePrograms();
     fetchLivePlatforms();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   

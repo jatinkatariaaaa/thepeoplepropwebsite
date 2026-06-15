@@ -1,4 +1,12 @@
 import { Footer } from "@/components/layout/Footer";
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata = buildMetadata({
+  title: "AML Policy",
+  description:
+    "The People Prop Anti-Money Laundering (AML) policy, covering identity verification, payout compliance, and prohibited activities.",
+  path: "/aml-policy",
+});
 
 export default function AMLPolicyPage() {
   return (

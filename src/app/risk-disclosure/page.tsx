@@ -1,4 +1,12 @@
 import { Footer } from "@/components/layout/Footer";
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata = buildMetadata({
+  title: "Risk Disclosure",
+  description:
+    "Read The People Prop risk disclosure. All evaluation and funded accounts are simulated environments. Trading carries a high level of risk — understand it before you start.",
+  path: "/risk-disclosure",
+});
 
 export default function RiskDisclosurePage() {
   return (

@@ -1,4 +1,12 @@
 import { Footer } from "@/components/layout/Footer";
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata = buildMetadata({
+  title: "Cookie Policy",
+  description:
+    "How The People Prop uses cookies and similar technologies to operate, secure, and improve our website and trading platform.",
+  path: "/cookie",
+});
 
 export default function CookiePage() {
   return (
