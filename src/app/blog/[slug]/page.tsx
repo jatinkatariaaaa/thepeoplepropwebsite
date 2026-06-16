@@ -21,7 +21,7 @@ export function generateMetadata({ params }: Props): Metadata {
   }
 
   return {
-    title: \`\${blog.title} | The People Prop\`,
+    title: `${blog.title} | The People Prop`,
     description: blog.metaDescription,
     openGraph: {
       title: blog.title,
@@ -46,7 +46,7 @@ export default function BlogPostPage({ params }: Props) {
   }
 
   // Simple parser to turn ## into headings and text into paragraphs
-  const contentBlocks = blog.content.trim().split("\\n\\n").map(block => block.trim()).filter(Boolean);
+  const contentBlocks = blog.content.trim().split("\n\n").map(block => block.trim()).filter(Boolean);
 
   return (
     <div className="min-h-screen bg-background pt-24 pb-16">
@@ -79,7 +79,7 @@ export default function BlogPostPage({ params }: Props) {
                 );
               }
               // Simple bold parsing for **text**
-              const formattedBlock = block.replace(/\\*\\*(.*?)\\*\\*/g, '<strong class="font-bold text-foreground">$1</strong>');
+              const formattedBlock = block.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-foreground">$1</strong>');
               return (
                 <p 
                   key={idx} 

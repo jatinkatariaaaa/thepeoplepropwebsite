@@ -24,7 +24,7 @@ export default function BlogIndexPage() {
           {blogs.map((blog) => (
             <Link 
               key={blog.slug} 
-              href={\`/blog/\${blog.slug}\`}
+              href={`/blog/${blog.slug}`}
               className="group flex flex-col justify-between rounded-xl border bg-card p-6 shadow-sm transition-all hover:shadow-md hover:border-primary/50"
             >
               <div className="space-y-4">
