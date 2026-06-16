@@ -4,7 +4,7 @@ import Link from "next/link";
 import { blogs } from "@/lib/data/blogs";
 
 interface Props {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export function generateStaticParams() {
@@ -13,8 +13,9 @@ export function generateStaticParams() {
   }));
 }
 
-export function generateMetadata({ params }: Props): Metadata {
-  const blog = blogs.find((b) => b.slug === params.slug);
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const blog = blogs.find((b) => b.slug === slug);
   
   if (!blog) {
     return { title: "Blog Not Found | The People Prop" };
@@ -38,8 +39,9 @@ export function generateMetadata({ params }: Props): Metadata {
   };
 }
 
-export default function BlogPostPage({ params }: Props) {
-  const blog = blogs.find((b) => b.slug === params.slug);
+export default async function BlogPostPage({ params }: Props) {
+  const { slug } = await params;
+  const blog = blogs.find((b) => b.slug === slug);
 
   if (!blog) {
     notFound();
