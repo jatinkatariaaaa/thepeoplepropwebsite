@@ -39,6 +39,10 @@ export const metadata: Metadata = {
     "forex prop firm",
     "TPP",
   ],
+  icons: {
+    icon: "/images/logo.webp",
+    apple: "/images/logo.webp",
+  },
   openGraph: {
     title: "The People Prop — Trade Our Capital. Keep the Profits.",
     description:
