@@ -65,7 +65,7 @@ export const blogs: BlogPost[] = [
         ],
         list: [
           'Profit target: usually 8–10% of the starting balance',
-          'Daily drawdown limit: typically 4–5% of the day's starting equity',
+          "Daily drawdown limit: typically 4–5% of the day's starting equity",
           'Maximum drawdown: usually 8–12% of the highest recorded balance',
           'Minimum trading days: often 3–5 days to prevent lucky one-trade passes',
           'Time limit: ranges from unlimited to 30–60 calendar days depending on the firm',
