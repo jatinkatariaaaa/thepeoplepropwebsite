@@ -23,13 +23,7 @@ function GoogleIcon() {
   );
 }
 
-function AppleIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width={16} height={16} fill="currentColor" aria-hidden="true">
-      <path d="M16.365 1.43c0 1.14-.42 2.21-1.13 3.02-.78.92-2.06 1.62-3.07 1.55-.13-1.1.42-2.27 1.13-3.05.78-.86 2.13-1.5 3.07-1.52zm3.97 16.78c-.69 1.57-1.02 2.27-1.91 3.65-1.24 1.93-3 4.34-5.18 4.36-1.94.02-2.43-1.27-5.07-1.25-2.64.01-3.18 1.27-5.12 1.25-2.18-.02-3.85-2.19-5.09-4.12C-5.55 13.74-1.57 4.95 4.31 4.95c1.62 0 3.16.97 4.21.97 1.04 0 3.17-1.2 5.36-1.03.92.04 3.49.37 5.14 2.78-4.5 2.46-3.79 8.79 1.32 10.54z" transform="translate(2 0)" />
-    </svg>
-  );
-}
+
 
 export default function LoginPage() {
   const router = useRouter();
@@ -425,7 +419,7 @@ export default function LoginPage() {
                 <div className="flex-1 h-px bg-[var(--border)]" />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3">
                 <button 
                   type="button"
                   onClick={async () => {
@@ -448,9 +442,6 @@ export default function LoginPage() {
                   className="h-11 rounded-xl border border-[var(--border)] bg-white hover:bg-[var(--paper)] hover:border-[var(--border-strong)] transition-colors flex items-center justify-center gap-2 text-sm text-[var(--ink-950)] font-medium cursor-pointer disabled:opacity-50"
                 >
                   <GoogleIcon /> Google
-                </button>
-                <button disabled={loading} className="h-11 rounded-xl border border-[var(--border)] bg-white hover:bg-[var(--paper)] hover:border-[var(--border-strong)] transition-colors flex items-center justify-center gap-2 text-sm text-[var(--ink-950)] font-medium cursor-pointer disabled:opacity-50">
-                  <AppleIcon /> Apple
                 </button>
               </div>
 
