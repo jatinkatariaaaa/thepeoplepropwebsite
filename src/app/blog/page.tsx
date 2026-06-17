@@ -30,9 +30,13 @@ export default function BlogPage() {
               <span className="mb-3 inline-block rounded-full bg-[#0c0c0c] px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#cbfb45]">
                 Latest Articles
               </span>
-              <h2 className="mt-4 text-[36px] font-bold tracking-[-0.02em] text-[#0c0c0c] md:text-[44px]">
-                <GsapWords>Stay Ahead of the Market</GsapWords>
-              </h2>
+              <GsapWords
+                as="h2"
+                text="Stay Ahead of the Market"
+                highlight={["Market"]}
+                className="mt-4 font-bold tracking-[-0.02em] text-[#0c0c0c]"
+                style={{ fontSize: "clamp(2rem, 4.5vw, 2.75rem)" }}
+              />
               <p className="mx-auto mt-3 max-w-xl text-[16px] leading-relaxed text-[#6c6a68]">
                 Deep dives, quick tips, and everything in between — curated for
                 serious traders.
@@ -87,9 +91,13 @@ export default function BlogPage() {
       <PageSection variant="lime">
         <div className="mx-auto max-w-3xl text-center">
           <Reveal>
-            <h2 className="text-[36px] font-bold tracking-[-0.02em] text-[#0c0c0c] md:text-[48px]">
-              <GsapWords>Ready to Get Funded?</GsapWords>
-            </h2>
+            <GsapWords
+              as="h2"
+              text="Ready to Get Funded?"
+              highlight={["Funded?"]}
+              className="font-bold tracking-[-0.02em] text-[#0c0c0c]"
+              style={{ fontSize: "clamp(2.2rem, 5vw, 3rem)" }}
+            />
             <p className="mx-auto mt-4 max-w-xl text-[16px] leading-relaxed text-[#0c0c0c]/70">
               Stop reading about it — start living it. Take on a challenge with
               The&nbsp;People&nbsp;Prop and prove your strategy in real conditions.
