@@ -87,9 +87,12 @@ export default function BlogPostContent({ blog }: BlogPostContentProps) {
 
           {/* Title */}
           <Reveal delay={0.15}>
-            <h1 className="mb-6 text-[36px] font-bold leading-[1.1] tracking-[-0.03em] text-[#f1eade] md:text-[52px] lg:text-[60px]">
-              <GsapWords>{blog.title}</GsapWords>
-            </h1>
+            <GsapWords
+              as="h1"
+              text={blog.title}
+              className="mb-6 font-bold leading-[1.1] tracking-[-0.03em] text-[#f1eade]"
+              style={{ fontSize: "clamp(2.2rem, 6vw, 3.75rem)" }}
+            />
           </Reveal>
 
           {/* Excerpt */}
