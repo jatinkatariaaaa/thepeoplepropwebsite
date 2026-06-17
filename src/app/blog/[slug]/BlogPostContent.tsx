@@ -187,9 +187,12 @@ export default function BlogPostContent({ blog }: BlogPostContentProps) {
                 <span className="mb-3 inline-block rounded-full bg-[#0c0c0c] px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#cbfb45]">
                   Keep Reading
                 </span>
-                <h2 className="mt-4 font-sans text-[32px] font-bold tracking-[-0.02em] text-[#0c0c0c] md:text-[40px]">
-                  <GsapWords>Related Articles</GsapWords>
-                </h2>
+                <GsapWords
+                  as="h2"
+                  text="Related Articles"
+                  className="mt-4 font-sans font-bold tracking-[-0.02em] text-[#0c0c0c]"
+                  style={{ fontSize: "clamp(2rem, 4vw, 2.5rem)" }}
+                />
               </div>
             </Reveal>
 
@@ -245,9 +248,12 @@ export default function BlogPostContent({ blog }: BlogPostContentProps) {
       <PageSection variant="lime">
         <div className="mx-auto max-w-3xl text-center">
           <Reveal>
-            <h2 className="font-sans text-[36px] font-bold tracking-[-0.02em] text-[#0c0c0c] md:text-[48px]">
-              <GsapWords>Start Your Challenge Today</GsapWords>
-            </h2>
+            <GsapWords
+              as="h2"
+              text="Start Your Challenge Today"
+              className="font-sans font-bold tracking-[-0.02em] text-[#0c0c0c]"
+              style={{ fontSize: "clamp(2.2rem, 5vw, 3rem)" }}
+            />
             <p className="mx-auto mt-4 max-w-xl text-[16px] leading-relaxed text-[#0c0c0c]/70">
               You&apos;ve got the knowledge — now put it to work. Join
               The&nbsp;People&nbsp;Prop and trade with real capital, real
