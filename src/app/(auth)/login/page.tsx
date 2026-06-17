@@ -426,7 +426,27 @@ export default function LoginPage() {
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <button disabled={loading} className="h-11 rounded-xl border border-[var(--border)] bg-white hover:bg-[var(--paper)] hover:border-[var(--border-strong)] transition-colors flex items-center justify-center gap-2 text-sm text-[var(--ink-950)] font-medium cursor-pointer disabled:opacity-50">
+                <button 
+                  type="button"
+                  onClick={async () => {
+                    setError(null);
+                    setLoading(true);
+                    try {
+                      const { error } = await supabase.auth.signInWithOAuth({
+                        provider: 'google',
+                        options: {
+                          redirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
+                        },
+                      });
+                      if (error) throw error;
+                    } catch (err) {
+                      setError(err instanceof Error ? err.message : "An error occurred with Google Sign-In");
+                      setLoading(false);
+                    }
+                  }}
+                  disabled={loading} 
+                  className="h-11 rounded-xl border border-[var(--border)] bg-white hover:bg-[var(--paper)] hover:border-[var(--border-strong)] transition-colors flex items-center justify-center gap-2 text-sm text-[var(--ink-950)] font-medium cursor-pointer disabled:opacity-50"
+                >
                   <GoogleIcon /> Google
                 </button>
                 <button disabled={loading} className="h-11 rounded-xl border border-[var(--border)] bg-white hover:bg-[var(--paper)] hover:border-[var(--border-strong)] transition-colors flex items-center justify-center gap-2 text-sm text-[var(--ink-950)] font-medium cursor-pointer disabled:opacity-50">
