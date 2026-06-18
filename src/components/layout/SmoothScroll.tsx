@@ -25,16 +25,16 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
       ScrollTrigger.update();
     });
 
-    // Use native requestAnimationFrame for reliable scrolling
-    let rafId: number;
-    function raf(time: number) {
-      lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
-    }
-    rafId = requestAnimationFrame(raf);
+    // Synchronize updates with GSAP's central rendering loop (ticker)
+    const updateTicker = () => {
+      lenis.raf(performance.now());
+    };
+    
+    gsap.ticker.add(updateTicker);
+    gsap.ticker.lagSmoothing(0);
 
     return () => {
-      cancelAnimationFrame(rafId);
+      gsap.ticker.remove(updateTicker);
       lenis.destroy();
     };
   }, []);
