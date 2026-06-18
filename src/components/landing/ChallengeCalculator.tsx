@@ -747,7 +747,7 @@ export function ChallengeCalculator() {
               {appliedDiscount > 0 && (
                 <p className="text-[13px] font-medium text-[#10B981] mt-2.5 flex items-center gap-1.5">
                   <Check className="w-4 h-4" strokeWidth={3} />
-                  50% Discount Applied Successfully!
+                  {appliedDiscount * 100}% Discount Applied Successfully!
                 </p>
               )}
             </div>
