@@ -201,7 +201,7 @@ export function NewChallengeForm() {
     }
 
     const { data, error } = await supabase
-      .from("coupons")
+      .from("tpp_coupons")
       .select("discount_pct, is_active")
       .eq("code", code)
       .single();
