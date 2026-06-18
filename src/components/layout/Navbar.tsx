@@ -10,6 +10,7 @@ const NAV_LINKS = [
   { name: "Home", path: "/" },
   { name: "Challenges", path: "/challenges" },
   { name: "Rules", path: "/rules" },
+  { name: "Contest 🔥", path: "/contest" },
   { name: "Referrals", path: "/referral" },
   { name: "Heatmap", path: "/heatmap" },
   { name: "Contact", path: "/contact" },

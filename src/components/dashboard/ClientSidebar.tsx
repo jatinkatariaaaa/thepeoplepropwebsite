@@ -18,7 +18,8 @@ import {
   CalendarDays,
   Plus,
   Users,
-  DollarSign
+  DollarSign,
+  Gift
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -28,6 +29,7 @@ import { useRouter } from "next/navigation";
 
 const navItems = [
   { icon: Home, label: "Home", href: "/dashboard" },
+  { icon: Gift, label: "Contest 🔥", href: "/dashboard/contest" },
   { icon: History, label: "Transaction History", href: "/dashboard/transactions" },
   { icon: Trophy, label: "Competitions", href: "/dashboard/competitions" },
   { icon: ListOrdered, label: "Leaderboard", href: "/dashboard/leaderboard" },

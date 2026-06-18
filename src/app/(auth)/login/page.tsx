@@ -103,7 +103,28 @@ export default function LoginPage() {
         if (signUpError) throw signUpError;
 
         if (data.session) {
-          router.push("/referral");
+          // Track contest referral if cookie exists
+          const contestMatch = document.cookie.match(/(^| )tpp_contest_ref=([^;]+)/);
+          if (contestMatch && contestMatch[2] && data.session.user) {
+            try {
+              await fetch('/api/contest/track', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  referral_code: contestMatch[2],
+                  user_id: data.session.user.id,
+                  email: data.session.user.email || '',
+                }),
+              });
+              // Clear the cookie
+              document.cookie = 'tpp_contest_ref=; path=/; max-age=0';
+            } catch (e) {
+              console.error('Contest tracking error:', e);
+            }
+          }
+          const urlParams = new URLSearchParams(window.location.search);
+          const redirect = urlParams.get("redirect") || "/dashboard";
+          router.push(redirect);
         } else {
           setSuccess("Registration successful! Please check your email to verify your account.");
         }

@@ -27,8 +27,27 @@ export async function GET(request: Request) {
         },
       }
     );
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    const { error, data } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
+      // Check for contest referral cookie and track it
+      const contestRef = cookieStore.get('tpp_contest_ref')?.value;
+      if (contestRef && data?.session?.user) {
+        try {
+          await fetch(`${origin}/api/contest/track`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              referral_code: contestRef,
+              user_id: data.session.user.id,
+              email: data.session.user.email || '',
+            }),
+          });
+          // Clear the cookie after tracking
+          cookieStore.delete('tpp_contest_ref');
+        } catch (e) {
+          console.error('Contest tracking error:', e);
+        }
+      }
       return NextResponse.redirect(`${origin}${next}`);
     }
   }
