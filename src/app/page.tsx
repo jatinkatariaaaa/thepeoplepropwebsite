@@ -708,7 +708,7 @@ export default function HomePage() {
             }}
           />
 
-          <motion.div style={{ y: skipHeroAnim ? 0 : heroTitleY, opacity: skipHeroAnim ? 1 : heroFade }} className="relative z-10 flex flex-col items-center">
+          <motion.div style={{ opacity: skipHeroAnim ? 1 : heroFade }} className="relative z-10 flex flex-col items-center">
             {/* Trust badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
