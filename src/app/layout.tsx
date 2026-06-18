@@ -60,7 +60,7 @@ export default function RootLayout({
       className={`${inter.variable} ${serif.variable} ${mono.variable} h-full`}
       suppressHydrationWarning
     >
-      <body className="min-h-screen flex flex-col text-ink antialiased">
+      <body className="min-h-full flex flex-col text-ink antialiased">
         <SmoothScroll>
           <ChromeGate>
             <Navbar />
