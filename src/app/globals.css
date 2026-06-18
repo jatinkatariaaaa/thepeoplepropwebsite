@@ -162,6 +162,10 @@ html, body {
   overflow-x: hidden;
 }
 
+html.lenis, html.lenis body {
+  height: auto;
+}
+
 /* ── Selection ── */
 ::selection {
   background: rgba(203, 251, 69, 0.45);

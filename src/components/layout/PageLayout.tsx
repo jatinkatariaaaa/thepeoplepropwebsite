@@ -11,7 +11,6 @@ export function PageLayout({ children }: { children: ReactNode }) {
       className="page-wrapper min-h-screen bg-[#f1eade] text-[#0c0c0c] antialiased"
       style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
     >
-      <CustomCursor />
       <Navbar />
       {children}
       <Footer />
