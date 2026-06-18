@@ -227,6 +227,7 @@ export function Hero() {
     target: sectionRef,
     offset: ["start start", "end start"],
   });
+  const bgScale = useTransform(scrollYProgress, [0, 1], [1, 1.15]);
   const bgOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
 
@@ -236,7 +237,7 @@ export function Hero() {
       <motion.div
         aria-hidden="true"
         className="absolute inset-0 pointer-events-none"
-        style={{ opacity: bgOpacity }}
+        style={{ scale: reduceMotion ? 1 : bgScale, opacity: bgOpacity }}
       >
         <div className="absolute inset-0 bg-[url('/hero-overlay-mobile.webp')] md:bg-[url('/hero-overlay.webp')] bg-cover bg-[center_top_3rem] md:bg-[center_top_10%] bg-no-repeat opacity-100" />
         {/* Soften the top edge so it doesn't clash with the transparent navbar */}
