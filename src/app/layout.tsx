@@ -57,7 +57,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${serif.variable} ${mono.variable} h-full`}
+      className={`${inter.variable} ${serif.variable} ${mono.variable}`}
       suppressHydrationWarning
     >
       <body className="min-h-screen flex flex-col text-ink antialiased">

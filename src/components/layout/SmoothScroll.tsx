@@ -14,6 +14,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
 
     // Initialize Lenis
     const lenis = new Lenis({
+      autoRaf: true,
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // easeOutExpo
       smoothWheel: true,
@@ -25,16 +26,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
       ScrollTrigger.update();
     });
 
-    // Use native requestAnimationFrame for reliable scrolling
-    let rafId: number;
-    function raf(time: number) {
-      lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
-    }
-    rafId = requestAnimationFrame(raf);
-
     return () => {
-      cancelAnimationFrame(rafId);
       lenis.destroy();
     };
   }, []);
