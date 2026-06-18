@@ -32,6 +32,7 @@ export function NewChallengeForm() {
   const [appliedPromo, setAppliedPromo] = useState("");
   const [promoError, setPromoError] = useState("");
   const [isPromoOpen, setIsPromoOpen] = useState(false);
+  const [appliedDiscountPct, setAppliedDiscountPct] = useState(0);
 
   // Personal Info State
   const [personalInfo, setPersonalInfo] = useState({
@@ -148,9 +149,9 @@ export function NewChallengeForm() {
 
   // Promo Logic
   let promoDiscountAmt = 0;
-  const isFirstTpp = appliedPromo.toLowerCase() === "firsttpp";
-  if (isFirstTpp) {
-    promoDiscountAmt = (base ?? 0) * 0.50; // 50% off
+  const isFirstTpp = appliedPromo === "FIRSTTPP";
+  if (appliedDiscountPct > 0) {
+    promoDiscountAmt = (base ?? 0) * (appliedDiscountPct / 100);
   }
 
   // Adjust total for free retry if coupon is applied
@@ -180,17 +181,38 @@ export function NewChallengeForm() {
 
   const finalTotal = total * (1 + (paymentFeePct / 100));
 
-  const handleApplyPromo = () => {
-    if (promoInput.toLowerCase() === "firsttpp") {
-      setAppliedPromo("firsttpp");
-      setPromoError("");
+  const handleApplyPromo = async () => {
+    setPromoError("");
+    const code = promoInput.toUpperCase().trim();
+    if (!code) {
+      setAppliedPromo("");
+      setAppliedDiscountPct(0);
+      return;
+    }
+
+    if (code === "FIRSTTPP") {
+      setAppliedPromo("FIRSTTPP");
+      setAppliedDiscountPct(50);
       setPaymentMethod("Crypto");
       if (!selectedAddOns.includes("free-retry")) {
         setSelectedAddOns(prev => [...prev, "free-retry"]);
       }
-    } else {
-      setPromoError("Invalid promo code");
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from("coupons")
+      .select("discount_pct, is_active")
+      .eq("code", code)
+      .single();
+
+    if (error || !data || !data.is_active) {
+      setPromoError("Invalid or expired promo code");
       setAppliedPromo("");
+      setAppliedDiscountPct(0);
+    } else {
+      setAppliedPromo(code);
+      setAppliedDiscountPct(data.discount_pct);
     }
   };
 
