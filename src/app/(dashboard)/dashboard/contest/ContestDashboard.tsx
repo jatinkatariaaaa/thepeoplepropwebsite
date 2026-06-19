@@ -133,7 +133,7 @@ export function ContestDashboard() {
 
   /* --- derived state --- */
   const count = entry?.referral_count ?? 0;
-  const target = entry?.target ?? 10;
+  const target = 10;
   const remaining = Math.max(0, target - count);
   const pct = Math.min(100, Math.round((count / target) * 100));
   const canClaim = count >= target && !entry?.claimed;

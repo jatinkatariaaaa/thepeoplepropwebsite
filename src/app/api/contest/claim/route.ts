@@ -76,7 +76,7 @@ export async function POST() {
       );
     }
 
-    const requiredTarget = entry.target || 10;
+    const requiredTarget = 10;
 
     if (entry.referral_count < requiredTarget) {
       return NextResponse.json(

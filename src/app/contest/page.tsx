@@ -423,7 +423,7 @@ export default function ContestPage() {
                 <div className="inline-flex items-center gap-2 rounded-full border border-[#cbfb45]/30 bg-[#cbfb45]/10 px-4 py-2">
                   <Users className="h-4 w-4 text-[#0c0c0c]" />
                   <span className="text-[13px] font-semibold text-[#0c0c0c]">
-                    {entry.referral_count} / {entry.target} friends referred
+                    {entry.referral_count} / 10 friends referred
                   </span>
                 </div>
 
@@ -485,7 +485,7 @@ export default function ContestPage() {
                 </div>
 
                 {/* Eligible notice */}
-                {entry.referral_count >= entry.target && !entry.claimed && (
+                {entry.referral_count >= 10 && !entry.claimed && (
                   <Reveal>
                     <div className="mt-4 rounded-2xl border border-[#cbfb45]/30 bg-[#cbfb45]/10 p-5">
                       <div className="flex items-center justify-center gap-2 text-lg font-bold text-[#0c0c0c]">
