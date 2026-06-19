@@ -228,44 +228,7 @@ export function ContestDashboard() {
           </h2>
         </div>
         <div className="p-6">
-          {/* step circles */}
-          <div className="flex items-center justify-start sm:justify-center gap-0 mb-6 overflow-x-auto pb-4 hide-scrollbar">
-            {Array.from({ length: target }).map((_, i) => {
-              const done = i < count;
-              return (
-                <div key={i} className="flex items-center">
-                  {/* circle */}
-                  <div
-                    className={cn(
-                      "w-12 h-12 rounded-full flex items-center justify-center transition-all duration-500 shrink-0",
-                      done
-                        ? "bg-[var(--accent)] shadow-md shadow-[var(--accent)]/25"
-                        : "border-2 border-dashed border-[var(--border)] bg-[var(--paper-2)]"
-                    )}
-                  >
-                    {done ? (
-                      <CheckCircle className="w-6 h-6 text-white" />
-                    ) : (
-                      <span className="text-[14px] font-semibold text-[var(--ink-300)]">
-                        {i + 1}
-                      </span>
-                    )}
-                  </div>
-                  {/* connector line */}
-                  {i < target - 1 && (
-                    <div
-                      className={cn(
-                        "w-10 sm:w-16 h-0.5 transition-all duration-500",
-                        i < count - 1
-                          ? "bg-[var(--accent)]"
-                          : "bg-[var(--border)]"
-                      )}
-                    />
-                  )}
-                </div>
-              );
-            })}
-          </div>
+          {/* step circles removed */}
 
           {/* label */}
           <p className="text-center text-[14px] font-medium text-[var(--ink-600)] mb-4">
