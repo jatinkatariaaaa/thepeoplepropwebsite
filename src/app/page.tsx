@@ -878,6 +878,22 @@ export default function HomePage() {
       {/* ═══════════════ SECTION 4 — CALCULATOR ═══════════════ */}
       <ChallengeCalculator />
 
+      {/* ═══════════════ TPP PHONE MOCKUP ═══════════════ */}
+      <section className="relative w-full -mb-1" style={{ background: '#f1eade' }}>
+        {/* Top gradient fade into creme */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-32" style={{ background: 'linear-gradient(to bottom, #f1eade, transparent)' }} />
+        {/* Left gradient fade */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 sm:w-40" style={{ background: 'linear-gradient(to right, #f1eade, transparent)' }} />
+        {/* Right gradient fade */}
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 sm:w-40" style={{ background: 'linear-gradient(to left, #f1eade, transparent)' }} />
+        <img
+          src="/traders-community.webp"
+          alt="TPP Trading App - Payout Dashboard"
+          className="relative mx-auto block w-full max-w-5xl object-cover"
+          loading="lazy"
+        />
+      </section>
+
       {/* ═══════════════ SECTION 5 — WHY TPP (feature rail) ═══════════════ */}
       <section className="w-full pb-16 lg:pb-24">
         <div className="px-[5px] py-[5px]">
