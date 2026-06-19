@@ -881,11 +881,11 @@ export default function HomePage() {
       {/* ═══════════════ TPP PHONE MOCKUP ═══════════════ */}
       <section className="relative w-full -mb-1" style={{ background: '#f1eade' }}>
         {/* Top gradient fade into creme - subtle */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-16" style={{ background: 'linear-gradient(to bottom, #f1eade, transparent)' }} />
-        {/* Left gradient fade - strong */}
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-[15%] sm:w-[20%] lg:w-[25%]" style={{ background: 'linear-gradient(to right, #f1eade 20%, transparent)' }} />
-        {/* Right gradient fade - strong */}
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-[15%] sm:w-[20%] lg:w-[25%]" style={{ background: 'linear-gradient(to left, #f1eade 20%, transparent)' }} />
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-20" style={{ background: 'linear-gradient(to bottom, #f1eade, transparent)' }} />
+        {/* Left gradient fade - strong and wide */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-[30%] sm:w-[32%] lg:w-[35%]" style={{ background: 'linear-gradient(to right, #f1eade 30%, rgba(241,234,222,0.6) 60%, transparent)' }} />
+        {/* Right gradient fade - strong and wide */}
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-[30%] sm:w-[32%] lg:w-[35%]" style={{ background: 'linear-gradient(to left, #f1eade 30%, rgba(241,234,222,0.6) 60%, transparent)' }} />
         <img
           src="/traders-community.webp"
           alt="TPP Trading App - Payout Dashboard"
