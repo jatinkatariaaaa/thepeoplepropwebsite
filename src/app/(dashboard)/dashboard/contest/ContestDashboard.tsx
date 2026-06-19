@@ -229,7 +229,7 @@ export function ContestDashboard() {
         </div>
         <div className="p-6">
           {/* step circles */}
-          <div className="flex items-center justify-center gap-0 mb-6">
+          <div className="flex items-center justify-start sm:justify-center gap-0 mb-6 overflow-x-auto pb-4 hide-scrollbar">
             {Array.from({ length: target }).map((_, i) => {
               const done = i < count;
               return (
