@@ -133,7 +133,7 @@ export function ContestDashboard() {
 
   /* --- derived state --- */
   const count = entry?.referral_count ?? 0;
-  const target = entry?.target ?? 5;
+  const target = entry?.target ?? 10;
   const remaining = Math.max(0, target - count);
   const pct = Math.min(100, Math.round((count / target) * 100));
   const canClaim = count >= target && !entry?.claimed;
@@ -216,7 +216,7 @@ export function ContestDashboard() {
           </h1>
         </div>
         <p className="text-[14px] text-[var(--ink-500)]">
-          Invite 5 friends and claim your free 10K account
+          Invite 10 friends and claim your free 10K account
         </p>
       </div>
 

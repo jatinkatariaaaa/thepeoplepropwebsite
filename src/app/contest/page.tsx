@@ -64,7 +64,7 @@ const steps = [
   },
   {
     icon: Share2,
-    title: "Share With 5 Friends",
+    title: "Share With 10 Friends",
     description:
       "Send your link via WhatsApp, Telegram, Twitter, or any channel. When your friends sign up using your link, they count toward your total.",
   },
@@ -72,7 +72,7 @@ const steps = [
     icon: Gift,
     title: "Claim Your Free Account",
     description:
-      "Once 5 friends have signed up, you'll unlock a FREE 10K 3-Step Evaluation account. No payment needed — ever.",
+      "Once 10 friends have signed up, you'll unlock a FREE 10K 3-Step Evaluation account. No payment needed — ever.",
   },
 ];
 
@@ -163,9 +163,9 @@ export default function ContestPage() {
       {/* ═══ Hero ═══ */}
       <PageHero
         eyebrow="Limited Time Contest"
-        title="Invite 5 Friends. Get Funded for Free."
-        titleHighlight={["5 Friends", "Free"]}
-        description="Share your unique referral link with 5 friends. When they all sign up, you'll receive a FREE 10K 3-Step evaluation account — absolutely no cost."
+        title="Invite 10 Friends. Get Funded for Free."
+        titleHighlight={["10 Friends", "Free"]}
+        description="Share your unique referral link with 10 friends. When they all sign up, you'll receive a FREE 10K 3-Step evaluation account — absolutely no cost."
         breadcrumb={[
           { label: "Home", href: "/" },
           { label: "Contest", href: "/contest" },
@@ -260,7 +260,7 @@ export default function ContestPage() {
                 style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}
               />
               <p className="mx-auto mt-4 max-w-lg text-[15px] leading-relaxed text-white/50">
-                Refer 5 friends and unlock instant access to a real evaluation
+                Refer 10 friends and unlock instant access to a real evaluation
                 account — on us.
               </p>
             </div>

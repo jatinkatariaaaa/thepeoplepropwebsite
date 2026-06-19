@@ -104,7 +104,7 @@ export async function POST() {
         user_id: user.id,
         referral_code: referralCode,
         referral_count: 0,
-        target: 5,
+        target: 10,
         claimed: false,
       })
       .select("id, referral_code, referral_count, target, claimed")

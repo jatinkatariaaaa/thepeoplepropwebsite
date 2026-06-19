@@ -37,6 +37,22 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ tracked: false, reason: "self_referral" });
     }
 
+    // IP Protection
+    const ipAddress = request.headers.get("x-forwarded-for")?.split(",")[0].trim() || request.headers.get("x-real-ip") || "unknown";
+    
+    if (ipAddress !== "unknown" && ipAddress !== "127.0.0.1" && ipAddress !== "::1") {
+      const { data: existingIp } = await supabaseAdmin
+        .from("contest_referrals")
+        .select("id")
+        .eq("contest_entry_id", entry.id)
+        .eq("ip_address", ipAddress)
+        .maybeSingle();
+
+      if (existingIp) {
+        return NextResponse.json({ tracked: false, reason: "duplicate_ip" });
+      }
+    }
+
     // Check for duplicate referral
     const { data: existingReferral, error: dupError } = await supabaseAdmin
       .from("contest_referrals")
@@ -64,6 +80,7 @@ export async function POST(request: NextRequest) {
         contest_entry_id: entry.id,
         referred_user_id: user_id,
         referred_email: email,
+        ip_address: ipAddress !== "unknown" ? ipAddress : null,
         signed_up_at: new Date().toISOString(),
       });
 
