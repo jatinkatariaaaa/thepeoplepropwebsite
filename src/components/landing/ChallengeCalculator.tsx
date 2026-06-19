@@ -4,7 +4,7 @@ import { useMemo, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { createBrowserClient } from "@supabase/ssr";
+import { supabase } from "@/lib/supabase";
 import {
   ArrowUpRight,
   Check,
@@ -64,10 +64,7 @@ export function ChallengeCalculator() {
   const [livePlatforms, setLivePlatforms] = useState<Platform[]>(platforms);
   const [isLoadingPrograms, setIsLoadingPrograms] = useState(true);
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
+  // using imported supabase from lib
 
   useEffect(() => {
     setMounted(true);
