@@ -844,6 +844,8 @@ export default function HomePage() {
               </div>
             </div>
 
+            {/* Right card hidden - image will be added later */}
+            {/*
             <Reveal delay={0.2} className="hidden items-end md:col-span-3 md:flex lg:col-span-2">
               <Floating amplitude={12} duration={8} delay={0.5} className="-translate-y-full w-full">
                 <div className="aspect-[9/10] w-full overflow-hidden rounded-2xl bg-[#e5ddd0] lg:rounded-3xl">
@@ -851,6 +853,7 @@ export default function HomePage() {
                 </div>
               </Floating>
             </Reveal>
+            */}
           </div>
         </div>
       </section>
