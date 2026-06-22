@@ -58,6 +58,23 @@ export async function deleteTradingAccount(id: string) {
 }
 
 // ---------------------------------------------------------------------------
+// Dropdown reads (platforms + customers)
+// ---------------------------------------------------------------------------
+export async function fetchTradingPlatforms() {
+  const res = await fetch("/api/admin/trading/platforms", { cache: "no-store" });
+  return handle<{ platforms: any[] }>(res);
+}
+
+export async function fetchCustomers(search = "") {
+  const params = new URLSearchParams({ limit: "20", role: "user" });
+  if (search) params.set("search", search);
+  const res = await fetch(`/api/admin/users?${params.toString()}`, {
+    cache: "no-store",
+  });
+  return handle<{ users: any[] }>(res);
+}
+
+// ---------------------------------------------------------------------------
 // Rule templates
 // ---------------------------------------------------------------------------
 export async function fetchTradingRules() {
