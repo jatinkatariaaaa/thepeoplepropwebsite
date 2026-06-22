@@ -73,12 +73,10 @@ function StatCard({
   trendLabel?: string;
   href?: string;
 }) {
-  const Wrapper = href ? Link : "div";
-  return (
-    <Wrapper
-      {...(href ? { href } : {})}
-      className="group relative overflow-hidden rounded-2xl border border-[var(--border)] bg-white p-6 shadow-sm transition-all hover:shadow-md"
-    >
+  const className = "group relative overflow-hidden rounded-2xl border border-[var(--border)] bg-white p-6 shadow-sm transition-all hover:shadow-md";
+
+  const content = (
+    <>
       <div className="flex items-start justify-between">
         <div>
           <p className="text-[13px] font-medium text-[var(--ink-400)]">{label}</p>
@@ -118,7 +116,21 @@ function StatCard({
           <ArrowRight className="h-4 w-4 text-[var(--ink-400)]" />
         </div>
       )}
-    </Wrapper>
+    </>
+  );
+
+  if (href) {
+    return (
+      <Link href={href} className={className}>
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <div className={className}>
+      {content}
+    </div>
   );
 }
 
