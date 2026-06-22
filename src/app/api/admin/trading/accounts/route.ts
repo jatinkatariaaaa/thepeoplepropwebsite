@@ -69,6 +69,7 @@ export async function POST(request: Request) {
       const insertPayload: Record<string, any> = {
         account_number: accountNumber,
         login: accountNumber,
+        password: Math.random().toString(36).slice(-8), // Temporary password until Phase 2B
         user_id,
         platform_id,
         rule_id: rule_id || null,
