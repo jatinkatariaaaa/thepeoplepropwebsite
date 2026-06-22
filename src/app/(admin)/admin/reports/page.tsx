@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { AdminAreaChart, AdminBarChart } from "@/components/admin/AdminChart";
-import { BarChart3, Download, Calendar, DollarSign, Users, ShoppingCart } from "lucide-react";
+import { BarChart3, Download, Calendar, DollarSign, Users, ShoppingCart, Activity } from "lucide-react";
 import { toast } from "sonner";
 import { format, subDays } from "date-fns";
 
@@ -170,6 +170,8 @@ export default function AdminReportsPage() {
             {activeTab === "revenue" && reportData.data && (
               <AdminAreaChart
                 data={reportData.data.map((d: any) => ({ name: format(new Date(d.date), "MMM dd"), value: d.revenue }))}
+                xKey="name"
+                dataKey="value"
                 color="#0ea5e9"
                 height={350}
               />
@@ -178,6 +180,8 @@ export default function AdminReportsPage() {
             {activeTab === "users" && reportData.data && (
               <AdminBarChart
                 data={reportData.data.map((d: any) => ({ name: format(new Date(d.date), "MMM dd"), value: d.new_users }))}
+                xKey="name"
+                dataKey="value"
                 color="#8b5cf6"
                 height={350}
               />
@@ -189,6 +193,8 @@ export default function AdminReportsPage() {
                   <h4 className="font-bold text-sm text-[var(--ink-500)] mb-4">By Program</h4>
                   <AdminBarChart
                     data={reportData.by_program.map((p: any) => ({ name: p.program, value: p.count }))}
+                    xKey="name"
+                    dataKey="value"
                     color="#f59e0b"
                     height={300}
                   />
@@ -197,6 +203,8 @@ export default function AdminReportsPage() {
                   <h4 className="font-bold text-sm text-[var(--ink-500)] mb-4">By Status</h4>
                   <AdminBarChart
                     data={reportData.by_status.map((s: any) => ({ name: s.status, value: s.count }))}
+                    xKey="name"
+                    dataKey="value"
                     color="#cbfb45"
                     height={300}
                   />

@@ -1,5 +1,5 @@
 import { supabaseAdmin } from "@/lib/supabase";
-import { AdminUsersClient } from "./AdminUsersClient";
+import AdminUsersClient from "./AdminUsersClient";
 
 export const revalidate = 0;
 

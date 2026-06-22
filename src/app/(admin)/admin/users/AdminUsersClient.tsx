@@ -8,8 +8,8 @@ import { format } from "date-fns";
 import { ShieldAlert, ShieldCheck, MoreVertical, Edit, Ban, PlayCircle, Shield } from "lucide-react";
 import { toast } from "sonner";
 
-export default function AdminUsersClient() {
-  const [users, setUsers] = useState<any[]>([]);
+export default function AdminUsersClient({ initialUsers }: { initialUsers: any[] }) {
+  const [users, setUsers] = useState<any[]>(initialUsers || []);
   const [loading, setLoading] = useState(true);
   
   // Modal states

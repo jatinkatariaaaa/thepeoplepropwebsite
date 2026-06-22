@@ -25,8 +25,8 @@ export async function GET(request: Request) {
       user_id: ar.user_id,
       role: ar.role,
       created_at: ar.created_at,
-      email: ar.profiles?.email,
-      display_name: ar.profiles?.display_name,
+      email: (ar.profiles as any)?.email,
+      display_name: (ar.profiles as any)?.display_name,
     })) || [];
     
     // Also find legacy admins (profiles.is_admin = true but not in admin_roles)
