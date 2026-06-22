@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createBrowserClient } from "@supabase/ssr";
-import { Plus, Search, Filter, Wallet, MoreHorizontal } from "lucide-react";
+import { Plus, Search, Filter, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { AdminTable } from "@/components/admin/AdminTable";
 import { ColumnDef } from "@tanstack/react-table";
@@ -10,6 +9,21 @@ import { format } from "date-fns";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
+import { CreateAccountModal } from "@/components/admin/trading/CreateAccountModal";
+import { LeverageModal } from "@/components/admin/trading/LeverageModal";
+import { AssignChallengeModal } from "@/components/admin/trading/AssignChallengeModal";
+import {
+  AccountActionsMenu,
+} from "@/components/admin/trading/AccountActionsMenu";
+import {
+  fetchTradingAccounts,
+  createTradingAccount,
+  accountAction,
+  deleteTradingAccount,
+} from "@/lib/trading-client";
+
+type DialogKind = "reset" | "disable" | "enable" | "delete" | null;
 
 export default function TradingAccountsPage() {
   const [accounts, setAccounts] = useState<any[]>([]);
@@ -17,43 +31,177 @@ export default function TradingAccountsPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
+  // Modal / dialog state
+  const [createOpen, setCreateOpen] = useState(false);
+  const [leverageTarget, setLeverageTarget] = useState<any>(null);
+  const [assignTarget, setAssignTarget] = useState<any>(null);
+  const [confirmKind, setConfirmKind] = useState<DialogKind>(null);
+  const [confirmTarget, setConfirmTarget] = useState<any>(null);
+  const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
-    fetchAccounts();
+    loadAccounts();
   }, []);
 
-  async function fetchAccounts() {
+  async function loadAccounts() {
     setLoading(true);
-    // Joining with profiles and platforms
-    const { data, error } = await supabase
-      .from("trading_accounts")
-      .select(`
-        *,
-        profiles (email, display_name),
-        tpp_platforms (name)
-      `)
-      .order("created_at", { ascending: false });
-    
-    if (!error && data) {
-      setAccounts(data);
-    } else if (error) {
-      toast.error("Failed to load accounts. Ensure migrations are applied.");
+    try {
+      const { accounts } = await fetchTradingAccounts();
+      setAccounts(accounts);
+    } catch (e: any) {
+      toast.error(e.message || "Failed to load accounts");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
-  const filteredAccounts = accounts.filter(acc => {
-    const matchesSearch = 
-      acc.account_number.toLowerCase().includes(search.toLowerCase()) || 
+  // Replace a single account row in local state (instant update, no refresh).
+  function upsertAccount(updated: any) {
+    setAccounts((prev) =>
+      prev.some((a) => a.id === updated.id)
+        ? prev.map((a) => (a.id === updated.id ? updated : a))
+        : [updated, ...prev]
+    );
+  }
+
+  function removeAccount(id: string) {
+    setAccounts((prev) => prev.filter((a) => a.id !== id));
+  }
+
+  // ---- Action handlers -----------------------------------------------------
+  async function handleCreate(payload: any) {
+    setActionLoading(true);
+    try {
+      const { account } = await createTradingAccount(payload);
+      // Re-fetch to hydrate joined fields (profiles / platform / rule names).
+      await loadAccounts();
+      toast.success(`Account ${account.account_number} issued`);
+      setCreateOpen(false);
+    } catch (e: any) {
+      toast.error(e.message || "Failed to create account");
+    } finally {
+      setActionLoading(false);
+    }
+  }
+
+  async function handleLeverage(leverage: number) {
+    if (!leverageTarget) return;
+    setActionLoading(true);
+    try {
+      const { account } = await accountAction(leverageTarget.id, {
+        action: "change_leverage",
+        leverage,
+      });
+      upsertAccount(account);
+      toast.success(`Leverage updated to 1:${leverage}`);
+      setLeverageTarget(null);
+    } catch (e: any) {
+      toast.error(e.message || "Failed to update leverage");
+    } finally {
+      setActionLoading(false);
+    }
+  }
+
+  async function handleAssign(ruleId: string, phase: string) {
+    if (!assignTarget) return;
+    setActionLoading(true);
+    try {
+      const { account } = await accountAction(assignTarget.id, {
+        action: "assign_challenge",
+        rule_id: ruleId,
+        phase,
+      });
+      upsertAccount(account);
+      toast.success("Challenge assigned");
+      setAssignTarget(null);
+    } catch (e: any) {
+      toast.error(e.message || "Failed to assign challenge");
+    } finally {
+      setActionLoading(false);
+    }
+  }
+
+  async function handleConfirm() {
+    if (!confirmKind || !confirmTarget) return;
+    setActionLoading(true);
+    try {
+      if (confirmKind === "delete") {
+        await deleteTradingAccount(confirmTarget.id);
+        removeAccount(confirmTarget.id);
+        toast.success("Account deleted");
+      } else {
+        const actionMap: Record<string, string> = {
+          reset: "reset_challenge",
+          disable: "disable",
+          enable: "enable",
+        };
+        const { account } = await accountAction(confirmTarget.id, {
+          action: actionMap[confirmKind],
+        });
+        upsertAccount(account);
+        const msg: Record<string, string> = {
+          reset: "Challenge reset",
+          disable: "Account disabled",
+          enable: "Account enabled",
+        };
+        toast.success(msg[confirmKind]);
+      }
+      setConfirmKind(null);
+      setConfirmTarget(null);
+    } catch (e: any) {
+      toast.error(e.message || "Action failed");
+    } finally {
+      setActionLoading(false);
+    }
+  }
+
+  function openConfirm(kind: DialogKind, account: any) {
+    setConfirmTarget(account);
+    setConfirmKind(kind);
+  }
+
+  // ---- Filtering -----------------------------------------------------------
+  const filteredAccounts = accounts.filter((acc) => {
+    const matchesSearch =
+      acc.account_number?.toLowerCase().includes(search.toLowerCase()) ||
       acc.profiles?.email?.toLowerCase().includes(search.toLowerCase()) ||
       acc.profiles?.display_name?.toLowerCase().includes(search.toLowerCase());
     const matchesStatus = statusFilter === "all" || acc.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
+
+  const confirmConfig: Record<
+    Exclude<DialogKind, null>,
+    { title: string; message: string; confirmLabel: string; destructive: boolean }
+  > = {
+    reset: {
+      title: "Reset Challenge",
+      message:
+        "This resets balance, equity and drawdown counters back to the starting balance and sets the account to active / phase 1. Continue?",
+      confirmLabel: "Reset Challenge",
+      destructive: false,
+    },
+    disable: {
+      title: "Disable Account",
+      message:
+        "The customer will no longer be able to trade on this account until it is re-enabled. Continue?",
+      confirmLabel: "Disable Account",
+      destructive: false,
+    },
+    enable: {
+      title: "Enable Account",
+      message: "Re-enable trading on this account?",
+      confirmLabel: "Enable Account",
+      destructive: false,
+    },
+    delete: {
+      title: "Delete Account",
+      message:
+        "This permanently deletes the trading account. This action cannot be undone. Continue?",
+      confirmLabel: "Delete Account",
+      destructive: true,
+    },
+  };
 
   const columns: ColumnDef<any>[] = [
     {
@@ -78,8 +226,8 @@ export default function TradingAccountsPage() {
       header: "Customer",
       cell: ({ row }) => (
         <div>
-          <p className="font-semibold text-[13px] text-[var(--ink-950)]">{row.original.profiles?.display_name || "—"}</p>
-          <p className="text-[11px] text-[var(--ink-500)]">{row.original.profiles?.email || "—"}</p>
+          <p className="font-semibold text-[13px] text-[var(--ink-950)]">{row.original.profiles?.display_name || "\u2014"}</p>
+          <p className="text-[11px] text-[var(--ink-500)]">{row.original.profiles?.email || "\u2014"}</p>
         </div>
       ),
     },
@@ -105,7 +253,7 @@ export default function TradingAccountsPage() {
       header: "Phase",
       cell: ({ row }) => (
         <span className="capitalize text-[13px] font-semibold text-[var(--ink-700)]">
-          {row.original.phase}
+          {String(row.original.phase || "").replace("_", " ")}
         </span>
       ),
     },
@@ -121,6 +269,7 @@ export default function TradingAccountsPage() {
             s === "breached" ? "bg-red-50 text-red-700" :
             s === "passed" ? "bg-blue-50 text-blue-700" :
             s === "suspended" ? "bg-amber-50 text-amber-700" :
+            s === "disabled" ? "bg-gray-200 text-gray-700" :
             "bg-gray-100 text-gray-700"
           )}>
             {s}
@@ -137,11 +286,17 @@ export default function TradingAccountsPage() {
       id: "actions",
       header: "",
       cell: ({ row }) => (
-        <div className="flex justify-end">
-          <Link href={`/admin/trading/accounts/${row.original.id}`} className="p-2 hover:bg-[var(--paper-2)] rounded-lg text-[var(--ink-500)] transition-colors">
-            <MoreHorizontal className="w-5 h-5" />
-          </Link>
-        </div>
+        <AccountActionsMenu
+          account={row.original}
+          handlers={{
+            onResetChallenge: () => openConfirm("reset", row.original),
+            onAssignChallenge: () => setAssignTarget(row.original),
+            onEnable: () => openConfirm("enable", row.original),
+            onDisable: () => openConfirm("disable", row.original),
+            onChangeLeverage: () => setLeverageTarget(row.original),
+            onDelete: () => openConfirm("delete", row.original),
+          }}
+        />
       ),
     },
   ];
@@ -153,7 +308,7 @@ export default function TradingAccountsPage() {
           <h1 className="text-2xl font-display font-bold text-[var(--ink-950)]">Trading Accounts</h1>
           <p className="text-[var(--ink-500)] text-[14px]">View and manage all active challenges and funded accounts.</p>
         </div>
-        <Button className="shrink-0 gap-2">
+        <Button className="shrink-0 gap-2" onClick={() => setCreateOpen(true)}>
           <Plus className="w-4 h-4" /> Issue Account
         </Button>
       </div>
@@ -183,11 +338,50 @@ export default function TradingAccountsPage() {
             <option value="breached">Breached</option>
             <option value="passed">Passed</option>
             <option value="suspended">Suspended</option>
+            <option value="disabled">Disabled</option>
           </select>
         </div>
       </div>
 
-      <AdminTable data={filteredAccounts} columns={columns} loading={loading} />
+      <AdminTable data={filteredAccounts} columns={columns} loading={loading} searchable={false} />
+
+      {/* Modals */}
+      <CreateAccountModal
+        open={createOpen}
+        loading={actionLoading}
+        onCreate={handleCreate}
+        onCancel={() => setCreateOpen(false)}
+      />
+
+      <LeverageModal
+        open={!!leverageTarget}
+        currentLeverage={leverageTarget?.leverage || 100}
+        loading={actionLoading}
+        onSave={handleLeverage}
+        onCancel={() => setLeverageTarget(null)}
+      />
+
+      <AssignChallengeModal
+        open={!!assignTarget}
+        currentRuleId={assignTarget?.rule_id}
+        loading={actionLoading}
+        onSave={handleAssign}
+        onCancel={() => setAssignTarget(null)}
+      />
+
+      <ConfirmDialog
+        open={!!confirmKind}
+        title={confirmKind ? confirmConfig[confirmKind].title : ""}
+        message={confirmKind ? confirmConfig[confirmKind].message : ""}
+        confirmLabel={confirmKind ? confirmConfig[confirmKind].confirmLabel : "Confirm"}
+        destructive={confirmKind ? confirmConfig[confirmKind].destructive : false}
+        loading={actionLoading}
+        onConfirm={handleConfirm}
+        onCancel={() => {
+          setConfirmKind(null);
+          setConfirmTarget(null);
+        }}
+      />
     </div>
   );
 }
