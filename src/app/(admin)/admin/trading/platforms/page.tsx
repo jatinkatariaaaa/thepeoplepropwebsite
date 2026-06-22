@@ -13,10 +13,13 @@ export default function PlatformsAdminPage() {
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingPlatform, setEditingPlatform] = useState<any>(null);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<any>({
     name: "",
     extra_fee_pct: 0,
-    is_active: true
+    is_active: true,
+    api_url: "",
+    api_key: "",
+    server_name: ""
   });
 
   const supabase = createBrowserClient(
@@ -46,8 +49,11 @@ export default function PlatformsAdminPage() {
     setFormData({
       name: "",
       extra_fee_pct: 0,
-      is_active: true
-    });
+      is_active: true,
+      api_url: "",
+      api_key: "",
+      server_name: ""
+    } as any);
     setIsModalOpen(true);
   }
 
@@ -56,8 +62,11 @@ export default function PlatformsAdminPage() {
     setFormData({
       name: platform.name,
       extra_fee_pct: platform.extra_fee_pct,
-      is_active: platform.is_active
-    });
+      is_active: platform.is_active,
+      api_url: platform.api_url || "",
+      api_key: platform.api_key || "",
+      server_name: platform.server_name || ""
+    } as any);
     setIsModalOpen(true);
   }
 
@@ -175,6 +184,40 @@ export default function PlatformsAdminPage() {
                     onChange={e => setFormData({...formData, name: e.target.value})}
                     className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
                     placeholder="e.g. MetaTrader 5"
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">API URL</label>
+                    <input 
+                      type="url" 
+                      value={formData.api_url || ""}
+                      onChange={e => setFormData({...formData, api_url: e.target.value})}
+                      className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+                      placeholder="https://api.broker.com"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Server Name</label>
+                    <input 
+                      type="text" 
+                      value={formData.server_name || ""}
+                      onChange={e => setFormData({...formData, server_name: e.target.value})}
+                      className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+                      placeholder="Broker-Live"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">API Key</label>
+                  <input 
+                    type="password" 
+                    value={formData.api_key || ""}
+                    onChange={e => setFormData({...formData, api_key: e.target.value})}
+                    className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+                    placeholder="Secret Key (hidden after saving)"
                   />
                 </div>
                 

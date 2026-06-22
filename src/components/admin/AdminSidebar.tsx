@@ -25,6 +25,8 @@ import {
   Shield,
   TrendingUp,
   ScrollText,
+  Activity,
+  Scale,
   type LucideIcon,
 } from "lucide-react";
 import { useState, useMemo } from "react";
@@ -57,10 +59,18 @@ const sections: NavSection[] = [
     items: [
       { icon: LayoutDashboard, label: "Overview", href: "/admin" },
       { icon: Users, label: "Users", href: "/admin/users" },
-      { icon: Wallet, label: "Accounts", href: "/admin/accounts" },
       { icon: CreditCard, label: "Purchases", href: "/admin/purchases" },
       { icon: DollarSign, label: "Payouts", href: "/admin/payouts" },
       { icon: Network, label: "Affiliates", href: "/admin/affiliates" },
+    ],
+  },
+  {
+    title: "TRADING OPS",
+    items: [
+      { icon: Activity, label: "Risk Dashboard", href: "/admin/trading/dashboard" },
+      { icon: Wallet, label: "Trading Accounts", href: "/admin/trading/accounts" },
+      { icon: Scale, label: "Rule Engine", href: "/admin/trading/rules" },
+      { icon: Boxes, label: "Platforms & API", href: "/admin/trading/platforms" },
     ],
   },
   {
@@ -68,7 +78,6 @@ const sections: NavSection[] = [
     items: [
       { icon: Target, label: "Challenges", href: "/admin/challenges" },
       { icon: Ticket, label: "Coupons", href: "/admin/coupons" },
-      { icon: Boxes, label: "Platforms", href: "/admin/platforms" },
     ],
   },
   {
@@ -116,11 +125,11 @@ function filterSections(
       break;
 
     case "support":
-      // Users + Support Tickets + Accounts
+      // Users + Support Tickets + Trading Accounts
       allowed.add("/admin");
       allowed.add("/admin/users");
       allowed.add("/admin/tickets");
-      allowed.add("/admin/accounts");
+      allowed.add("/admin/trading/accounts");
       break;
 
     case "marketing":
