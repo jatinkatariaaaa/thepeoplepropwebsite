@@ -71,8 +71,8 @@ export function AdminTable<T>({
         </div>
       )}
 
-      <div className="rounded-2xl border border-[var(--border)] bg-white overflow-hidden shadow-sm">
-        <div className="overflow-x-auto">
+      <div className="rounded-2xl border border-[var(--border)] bg-white overflow-visible shadow-sm">
+        <div className="overflow-visible">
           <table className="w-full text-left text-sm whitespace-nowrap">
             <thead className="bg-[var(--paper-2)] border-b border-[var(--border)] text-[var(--ink-500)] font-semibold">
               {table.getHeaderGroups().map((headerGroup) => (

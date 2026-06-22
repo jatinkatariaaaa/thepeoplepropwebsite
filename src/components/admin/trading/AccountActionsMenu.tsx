@@ -68,7 +68,7 @@ export function AccountActionsMenu({ account, handlers }: AccountActionsMenuProp
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-1 w-52 bg-white border border-[var(--border)] rounded-xl shadow-lg py-1 z-20 overflow-hidden">
+        <div className="absolute right-0 top-full mt-1 w-52 bg-white border border-[var(--border)] rounded-xl shadow-lg py-1 z-[100] overflow-hidden">
           <Link
             href={`/admin/trading/accounts/${account.id}`}
             className={itemClass}
