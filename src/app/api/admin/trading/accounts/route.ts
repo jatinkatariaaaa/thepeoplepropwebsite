@@ -74,7 +74,7 @@ export async function POST(request: Request) {
         platform_id,
         rule_id: rule_id || null,
         leverage: leverage ? Number(leverage) : 100,
-        phase: phase || "phase_1",
+        phase: phase || "challenge",
         status: "active",
         balance: startBal,
         equity: startBal,

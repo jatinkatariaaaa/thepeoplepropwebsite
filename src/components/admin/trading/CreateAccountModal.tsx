@@ -43,7 +43,7 @@ export function CreateAccountModal({
     rule_id: "",
     starting_balance: 10000,
     leverage: 100,
-    phase: "phase_1",
+    phase: "challenge",
   });
 
   // Load platforms + rules when the modal opens.
@@ -55,7 +55,7 @@ export function CreateAccountModal({
       rule_id: "",
       starting_balance: 10000,
       leverage: 100,
-      phase: "phase_1",
+      phase: "challenge",
     });
     setLoadingLists(true);
     Promise.all([fetchTradingPlatforms(), fetchTradingRules()])
@@ -214,8 +214,8 @@ export function CreateAccountModal({
                 onChange={(e) => setForm({ ...form, phase: e.target.value })}
                 className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
               >
-                <option value="phase_1">Phase 1</option>
-                <option value="phase_2">Phase 2</option>
+                <option value="challenge">Phase 1 (Challenge)</option>
+                <option value="verification">Phase 2 (Verification)</option>
                 <option value="funded">Funded</option>
               </select>
             </div>
