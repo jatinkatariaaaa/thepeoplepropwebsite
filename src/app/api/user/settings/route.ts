@@ -3,6 +3,50 @@ import { supabaseAdmin } from "@/lib/supabase";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
+// GET /api/user/settings – return the logged-in user's profile
+export async function GET(request: Request) {
+  try {
+    const authHeader = request.headers.get("Authorization");
+    const token = authHeader?.split(" ")[1];
+
+    if (!token) {
+      return NextResponse.json({ error: "Unauthorized - No token" }, { status: 401 });
+    }
+
+    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
+
+    if (authError || !user) {
+      return NextResponse.json({ error: "Unauthorized - Invalid token" }, { status: 401 });
+    }
+
+    const { data: profile, error } = await supabaseAdmin
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+
+    if (error) throw error;
+
+    return NextResponse.json({
+      profile: {
+        title: profile.title || "",
+        firstName: profile.first_name || "",
+        lastName: profile.last_name || "",
+        dob: profile.dob || "",
+        email: user.email || "",
+        timezone: profile.timezone || "",
+        street: profile.street || "",
+        city: profile.city || "",
+        postalCode: profile.postal_code || "",
+        country: profile.country || "",
+      },
+    });
+  } catch (err: any) {
+    console.error("Settings GET Error:", err);
+    return NextResponse.json({ error: err.message || "Internal Server Error" }, { status: 500 });
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const cookieStore = await cookies();

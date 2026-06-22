@@ -1,26 +1,61 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-
 import { supabase } from "@/lib/supabase";
 
 export default function SettingsPage() {
   const [formData, setFormData] = useState({
-    title: "Mr.",
-    firstName: "Jatin",
-    lastName: "Kataria",
-    dob: "2003-05-21",
-    email: "jatin.220bpharm010@sushantuniversity.edu.in",
+    title: "",
+    firstName: "",
+    lastName: "",
+    dob: "",
+    email: "",
     timezone: "",
-    street: "Sector 12, H. No 8, gali no 2",
-    city: "Gurgaon",
-    postalCode: "122001",
-    country: "India",
+    street: "",
+    city: "",
+    postalCode: "",
+    country: "",
   });
 
+  const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState("");
+
+  // Load the logged-in user's profile on mount
+  useEffect(() => {
+    async function loadProfile() {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.access_token) return;
+
+        const res = await fetch("/api/user/settings", {
+          headers: { Authorization: `Bearer ${session.access_token}` },
+        });
+
+        if (res.ok) {
+          const { profile } = await res.json();
+          setFormData({
+            title: profile.title || "",
+            firstName: profile.firstName || "",
+            lastName: profile.lastName || "",
+            dob: profile.dob || "",
+            email: profile.email || "",
+            timezone: profile.timezone || "",
+            street: profile.street || "",
+            city: profile.city || "",
+            postalCode: profile.postalCode || "",
+            country: profile.country || "",
+          });
+        }
+      } catch (err) {
+        console.error("Failed to load profile", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadProfile();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -52,6 +87,14 @@ export default function SettingsPage() {
     setIsSubmitting(false);
   };
 
+  if (isLoading) {
+    return (
+      <div className="max-w-4xl mx-auto flex items-center justify-center py-24">
+        <div className="w-6 h-6 border-2 border-[var(--ink-200)] border-t-[var(--ink-950)] rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
       <div className="mb-8">
@@ -75,6 +118,7 @@ export default function SettingsPage() {
                 onChange={handleChange}
                 className="w-full bg-white border border-[var(--border)] rounded-xl h-11 px-3 text-[14px] text-[var(--ink-900)] focus:outline-none focus:border-[var(--ink-400)] transition-colors appearance-none"
               >
+                <option value="">Select...</option>
                 <option value="Mr.">Mr.</option>
                 <option value="Ms.">Ms.</option>
                 <option value="Mrs.">Mrs.</option>
@@ -89,6 +133,7 @@ export default function SettingsPage() {
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleChange}
+                placeholder="Enter your first name"
                 className="w-full bg-white border border-[var(--border)] rounded-xl h-11 px-3 text-[14px] text-[var(--ink-900)] focus:outline-none focus:border-[var(--ink-400)] transition-colors"
               />
             </div>
@@ -100,6 +145,7 @@ export default function SettingsPage() {
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleChange}
+                placeholder="Enter your last name"
                 className="w-full bg-white border border-[var(--border)] rounded-xl h-11 px-3 text-[14px] text-[var(--ink-900)] focus:outline-none focus:border-[var(--ink-400)] transition-colors"
               />
             </div>
@@ -138,6 +184,11 @@ export default function SettingsPage() {
                 <option value="Asia/Kolkata">Asia/Kolkata (IST)</option>
                 <option value="Europe/London">Europe/London (GMT)</option>
                 <option value="America/New_York">America/New_York (EST)</option>
+                <option value="America/Chicago">America/Chicago (CST)</option>
+                <option value="America/Los_Angeles">America/Los_Angeles (PST)</option>
+                <option value="Asia/Dubai">Asia/Dubai (GST)</option>
+                <option value="Asia/Singapore">Asia/Singapore (SGT)</option>
+                <option value="Europe/Berlin">Europe/Berlin (CET)</option>
               </select>
             </div>
           </div>
@@ -158,6 +209,7 @@ export default function SettingsPage() {
                 name="street"
                 value={formData.street}
                 onChange={handleChange}
+                placeholder="Enter your street address"
                 className="w-full bg-white border border-[var(--border)] rounded-xl h-11 px-3 text-[14px] text-[var(--ink-900)] focus:outline-none focus:border-[var(--ink-400)] transition-colors"
               />
             </div>
@@ -169,6 +221,7 @@ export default function SettingsPage() {
                 name="city"
                 value={formData.city}
                 onChange={handleChange}
+                placeholder="Enter your city"
                 className="w-full bg-white border border-[var(--border)] rounded-xl h-11 px-3 text-[14px] text-[var(--ink-900)] focus:outline-none focus:border-[var(--ink-400)] transition-colors"
               />
             </div>
@@ -180,6 +233,7 @@ export default function SettingsPage() {
                 name="postalCode"
                 value={formData.postalCode}
                 onChange={handleChange}
+                placeholder="Enter postal code"
                 className="w-full bg-white border border-[var(--border)] rounded-xl h-11 px-3 text-[14px] text-[var(--ink-900)] focus:outline-none focus:border-[var(--ink-400)] transition-colors"
               />
             </div>
@@ -192,18 +246,22 @@ export default function SettingsPage() {
                 onChange={handleChange}
                 className="w-full bg-white border border-[var(--border)] rounded-xl h-11 px-3 text-[14px] text-[var(--ink-900)] focus:outline-none focus:border-[var(--ink-400)] transition-colors appearance-none"
               >
+                <option value="">Select country...</option>
                 <option value="India">India</option>
                 <option value="United States">United States</option>
                 <option value="United Kingdom">United Kingdom</option>
                 <option value="Canada">Canada</option>
                 <option value="Australia">Australia</option>
+                <option value="Germany">Germany</option>
+                <option value="UAE">UAE</option>
+                <option value="Singapore">Singapore</option>
               </select>
             </div>
           </div>
         </div>
 
         <div className="flex items-center justify-end gap-4 pt-4">
-          {message && <span className="text-[13px] font-medium text-emerald-600">{message}</span>}
+          {message && <span className={cn("text-[13px] font-medium", message.includes("success") ? "text-emerald-600" : "text-red-600")}>{message}</span>}
           <button 
             onClick={handleSubmit}
             disabled={isSubmitting}

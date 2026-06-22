@@ -1,20 +1,49 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Bell, Plus } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
+import { supabase } from "@/lib/supabase";
 
 export function DashboardHeader() {
+  const [displayName, setDisplayName] = useState("");
+  const [initials, setInitials] = useState("");
+
+  useEffect(() => {
+    async function loadUser() {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.user) return;
+
+        // Try profile display_name first, then email
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("display_name, first_name, last_name")
+          .eq("id", session.user.id)
+          .single();
+
+        const firstName = profile?.first_name || profile?.display_name?.split(" ")[0] || session.user.email?.split("@")[0] || "Trader";
+        setDisplayName(firstName);
+        setInitials(firstName.charAt(0).toUpperCase());
+      } catch {
+        setDisplayName("Trader");
+        setInitials("T");
+      }
+    }
+    loadUser();
+  }, []);
+
   return (
     <header className="sticky top-0 z-30 flex h-20 w-full items-center justify-between bg-[var(--paper-2)]/80 backdrop-blur-xl px-6 border-b border-[var(--border)] lg:h-24 lg:px-10">
       <div className="flex items-center gap-4">
         {/* The user avatar and greeting */}
         <div className="hidden sm:flex h-12 w-12 items-center justify-center rounded-full bg-[var(--paper)] border border-[var(--border)] shadow-sm font-display font-bold text-[var(--ink-950)] text-lg">
-          J
+          {initials || "?"}
         </div>
         <div>
           <h1 className="text-xl lg:text-2xl font-display font-bold text-[var(--ink-950)] tracking-tight">
-            Hey, Jatin
+            Hey, {displayName || "..."}
           </h1>
           <p className="text-[13px] text-[var(--ink-500)] font-medium">
             Welcome back to your dashboard
