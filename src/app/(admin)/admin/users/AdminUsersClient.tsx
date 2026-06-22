@@ -1,109 +1,198 @@
 "use client";
 
-import { useState } from "react";
-import { createBrowserClient } from "@supabase/ssr";
+import { useState, useEffect } from "react";
+import { AdminTable } from "@/components/admin/AdminTable";
+import { AdminModal } from "@/components/admin/AdminModal";
+import { ColumnDef } from "@tanstack/react-table";
+import { format } from "date-fns";
+import { ShieldAlert, ShieldCheck, MoreVertical, Edit, Ban, PlayCircle, Shield } from "lucide-react";
+import { toast } from "sonner";
 
-export function AdminUsersClient({ initialUsers }: { initialUsers: any[] }) {
-  const [users, setUsers] = useState(initialUsers);
-  const [isUpdating, setIsUpdating] = useState<string | null>(null);
+export default function AdminUsersClient() {
+  const [users, setUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  // Modal states
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isActionModalOpen, setIsActionModalOpen] = useState(false);
+  const [actionType, setActionType] = useState<"suspend" | "ban" | "unsuspend" | "">("");
+  const [actionReason, setActionReason] = useState("");
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
-
-  async function updateKycStatus(userId: string, status: string) {
-    setIsUpdating(userId);
+  const fetchUsers = async () => {
+    setLoading(true);
     try {
-      // In a real app, you would have a secure API route for this,
-      // but if the admin user's JWT has access, this will work.
-      // Alternatively, we can assume RLS policies are permissive for admins.
-      const { error } = await supabase
-        .from("profiles")
-        .update({ kyc_status: status })
-        .eq("id", userId);
-
-      if (error) {
-        console.error("Error updating KYC:", error);
-        alert("Failed to update KYC status");
-      } else {
-        setUsers(users.map(u => u.id === userId ? { ...u, kyc_status: status } : u));
-      }
-    } catch (err) {
-      console.error(err);
+      const res = await fetch("/api/admin/users?limit=100");
+      const data = await res.json();
+      if (data.users) setUsers(data.users);
+    } catch (error) {
+      toast.error("Failed to fetch users");
     } finally {
-      setIsUpdating(null);
+      setLoading(false);
     }
-  }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const handleAction = async () => {
+    try {
+      const res = await fetch("/api/admin/users", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: selectedUser.id,
+          action: actionType,
+          reason: actionReason,
+        }),
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      
+      toast.success(`User successfully ${actionType}ed`);
+      setIsActionModalOpen(false);
+      setActionReason("");
+      fetchUsers();
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
+  const columns: ColumnDef<any>[] = [
+    {
+      accessorKey: "email",
+      header: "User",
+      cell: ({ row }) => (
+        <div>
+          <p className="font-semibold text-[var(--ink-950)]">{row.original.display_name || "—"}</p>
+          <p className="text-xs text-[var(--ink-400)]">{row.original.email}</p>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => {
+        const s = row.original.status || "active";
+        return (
+          <span className={`inline-flex px-2 py-1 rounded-full text-[11px] font-bold uppercase ${
+            s === "active" ? "bg-emerald-50 text-emerald-700" :
+            s === "suspended" ? "bg-amber-50 text-amber-700" :
+            "bg-red-50 text-red-700"
+          }`}>
+            {s}
+          </span>
+        );
+      },
+    },
+    {
+      accessorKey: "is_admin",
+      header: "Role",
+      cell: ({ row }) => (
+        row.original.is_admin ? (
+          <span className="inline-flex items-center gap-1 bg-[var(--ink-950)] text-white px-2 py-1 rounded-full text-[11px] font-bold uppercase">
+            <Shield className="w-3 h-3" /> Admin
+          </span>
+        ) : (
+          <span className="text-[12px] text-[var(--ink-400)] font-medium">User</span>
+        )
+      ),
+    },
+    {
+      accessorKey: "created_at",
+      header: "Joined",
+      cell: ({ row }) => <span className="text-[13px]">{format(new Date(row.original.created_at), "MMM dd, yyyy")}</span>,
+    },
+    {
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }) => {
+        const user = row.original;
+        return (
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => { setSelectedUser(user); setIsEditModalOpen(true); }}
+              className="p-1.5 text-[var(--ink-400)] hover:text-[var(--ink-950)] hover:bg-[var(--border)] rounded"
+            >
+              <Edit className="w-4 h-4" />
+            </button>
+            {user.status === "active" ? (
+              <button
+                onClick={() => { setSelectedUser(user); setActionType("suspend"); setIsActionModalOpen(true); }}
+                className="p-1.5 text-[var(--ink-400)] hover:text-amber-600 hover:bg-amber-50 rounded"
+              >
+                <ShieldAlert className="w-4 h-4" />
+              </button>
+            ) : (
+              <button
+                onClick={() => { setSelectedUser(user); setActionType("unsuspend"); setIsActionModalOpen(true); }}
+                className="p-1.5 text-[var(--ink-400)] hover:text-emerald-600 hover:bg-emerald-50 rounded"
+              >
+                <PlayCircle className="w-4 h-4" />
+              </button>
+            )}
+            <button
+              onClick={() => { setSelectedUser(user); setActionType("ban"); setIsActionModalOpen(true); }}
+              className="p-1.5 text-[var(--ink-400)] hover:text-red-600 hover:bg-red-50 rounded"
+            >
+              <Ban className="w-4 h-4" />
+            </button>
+          </div>
+        );
+      },
+    },
+  ];
 
   return (
-    <div className="bg-white rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="bg-[var(--paper-2)] border-b border-[var(--border)] text-[13px] uppercase tracking-wider text-[var(--ink-500)]">
-              <th className="px-6 py-4 font-medium">User ID</th>
-              <th className="px-6 py-4 font-medium">Email</th>
-              <th className="px-6 py-4 font-medium">Name</th>
-              <th className="px-6 py-4 font-medium">Role</th>
-              <th className="px-6 py-4 font-medium">Joined Date</th>
-              <th className="px-6 py-4 font-medium">KYC Status</th>
-              <th className="px-6 py-4 font-medium text-right">Action</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-[var(--border)]">
-            {users?.map((user) => (
-              <tr key={user.id} className="hover:bg-[var(--paper-2)] transition-colors">
-                <td className="px-6 py-4">
-                  <span className="font-mono text-xs text-[var(--ink-500)]">{user.id.substring(0, 8)}...</span>
-                </td>
-                <td className="px-6 py-4 font-medium text-[var(--ink-950)]">{user.email}</td>
-                <td className="px-6 py-4 text-[var(--ink-600)]">{user.display_name || "-"}</td>
-                <td className="px-6 py-4">
-                  <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-semibold ${user.is_admin ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-700'}`}>
-                    {user.is_admin ? "Admin" : "User"}
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-[var(--ink-500)] text-sm">
-                  {new Date(user.created_at).toLocaleDateString()}
-                </td>
-                <td className="px-6 py-4">
-                  <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-semibold ${
-                    user.kyc_status === 'verified' ? 'bg-green-100 text-green-700' :
-                    user.kyc_status === 'rejected' ? 'bg-red-100 text-red-700' :
-                    'bg-yellow-100 text-yellow-700'
-                  }`}>
-                    {(user.kyc_status || 'pending').toUpperCase()}
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-right space-x-2">
-                  <button
-                    disabled={isUpdating === user.id || user.kyc_status === 'verified'}
-                    onClick={() => updateKycStatus(user.id, 'verified')}
-                    className="text-xs px-2 py-1 bg-[#cbfb45] text-black font-semibold rounded hover:bg-[#b5e03e] disabled:opacity-50"
-                  >
-                    Verify
-                  </button>
-                  <button
-                    disabled={isUpdating === user.id || user.kyc_status === 'rejected'}
-                    onClick={() => updateKycStatus(user.id, 'rejected')}
-                    className="text-xs px-2 py-1 bg-red-100 text-red-700 font-semibold rounded hover:bg-red-200 disabled:opacity-50"
-                  >
-                    Reject
-                  </button>
-                </td>
-              </tr>
-            ))}
-            {(!users || users.length === 0) && (
-              <tr>
-                <td colSpan={7} className="px-6 py-8 text-center text-[var(--ink-500)]">
-                  No users found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+    <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-[var(--ink-950)]">Users Management</h1>
+        <p className="text-[var(--ink-500)]">Manage all registered users, suspend or ban accounts.</p>
       </div>
+
+      <AdminTable data={users} columns={columns} loading={loading} />
+
+      {/* Action Modal (Suspend/Ban) */}
+      <AdminModal
+        isOpen={isActionModalOpen}
+        onClose={() => setIsActionModalOpen(false)}
+        title={`${actionType === "ban" ? "Ban" : actionType === "suspend" ? "Suspend" : "Unsuspend"} User`}
+        description={selectedUser?.email}
+      >
+        <div className="space-y-4">
+          {actionType !== "unsuspend" && (
+            <div>
+              <label className="block text-sm font-semibold text-[var(--ink-950)] mb-1">Reason (Optional)</label>
+              <textarea
+                value={actionReason}
+                onChange={(e) => setActionReason(e.target.value)}
+                className="w-full border border-[var(--border)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)]"
+                rows={3}
+                placeholder={`Reason for ${actionType}ing this user...`}
+              />
+            </div>
+          )}
+          <div className="flex justify-end gap-3 mt-6">
+            <button
+              onClick={() => setIsActionModalOpen(false)}
+              className="px-4 py-2 font-semibold text-[var(--ink-600)] hover:bg-[var(--border)] rounded-full transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleAction}
+              className={`px-4 py-2 font-bold text-white rounded-full transition-colors ${
+                actionType === "ban" ? "bg-red-600 hover:bg-red-700" :
+                actionType === "suspend" ? "bg-amber-600 hover:bg-amber-700" :
+                "bg-[var(--ink-950)] hover:bg-black"
+              }`}
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      </AdminModal>
     </div>
   );
 }
