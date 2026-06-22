@@ -161,9 +161,9 @@ export default function TemplateEditorPage({ params }: { params: Promise<{ slug:
             <div className="mt-6 pt-4 border-t border-[var(--border)]">
               <p className="text-[12px] font-bold text-[var(--ink-400)] uppercase tracking-wider mb-2">Global Variables</p>
               <div className="space-y-2">
-                <div className="flex justify-between items-center"><code className="text-[11px] bg-gray-100 px-1 rounded">{{user_name}}</code></div>
-                <div className="flex justify-between items-center"><code className="text-[11px] bg-gray-100 px-1 rounded">{{user_email}}</code></div>
-                <div className="flex justify-between items-center"><code className="text-[11px] bg-gray-100 px-1 rounded">{{app_url}}</code></div>
+                <div className="flex justify-between items-center"><code className="text-[11px] bg-gray-100 px-1 rounded">{"{{user_name}}"}</code></div>
+                <div className="flex justify-between items-center"><code className="text-[11px] bg-gray-100 px-1 rounded">{"{{user_email}}"}</code></div>
+                <div className="flex justify-between items-center"><code className="text-[11px] bg-gray-100 px-1 rounded">{"{{app_url}}"}</code></div>
               </div>
             </div>
           </div>
