@@ -9,15 +9,26 @@ export async function GET(request: Request) {
     // Get users from admin_roles
     const { data: adminRoles, error: rolesError } = await supabaseAdmin
       .from("admin_roles")
-      .select(`
-        id,
-        user_id,
-        role,
-        created_at,
-        profiles!admin_roles_user_id_fkey(display_name, email)
-      `);
+      .select("*");
       
     if (rolesError) throw rolesError;
+    
+    // Fetch user details for these roles
+    const roleUserIds = adminRoles?.map(r => r.user_id) || [];
+    let profilesMap: Record<string, any> = {};
+    
+    if (roleUserIds.length > 0) {
+      const { data: roleProfiles } = await supabaseAdmin
+        .from("profiles")
+        .select("id, email, display_name")
+        .in("id", roleUserIds);
+        
+      if (roleProfiles) {
+        roleProfiles.forEach(p => {
+          profilesMap[p.id] = p;
+        });
+      }
+    }
     
     // Formatting the response
     const formattedRoles = adminRoles?.map(ar => ({
@@ -25,13 +36,11 @@ export async function GET(request: Request) {
       user_id: ar.user_id,
       role: ar.role,
       created_at: ar.created_at,
-      email: (ar.profiles as any)?.email,
-      display_name: (ar.profiles as any)?.display_name,
+      email: profilesMap[ar.user_id]?.email,
+      display_name: profilesMap[ar.user_id]?.display_name,
     })) || [];
     
     // Also find legacy admins (profiles.is_admin = true but not in admin_roles)
-    const roleUserIds = adminRoles?.map(r => r.user_id) || [];
-    
     let legacyQuery = supabaseAdmin
       .from("profiles")
       .select("id, email, display_name, created_at")
