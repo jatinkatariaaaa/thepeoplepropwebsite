@@ -27,6 +27,8 @@ import {
   ScrollText,
   Activity,
   Scale,
+  ShieldCheck,
+  Landmark,
   type LucideIcon,
 } from "lucide-react";
 import { useState, useMemo } from "react";
@@ -62,6 +64,13 @@ const sections: NavSection[] = [
       { icon: CreditCard, label: "Purchases", href: "/admin/purchases" },
       { icon: DollarSign, label: "Payouts", href: "/admin/payouts" },
       { icon: Network, label: "Affiliates", href: "/admin/affiliates" },
+    ],
+  },
+  {
+    title: "COMPLIANCE",
+    items: [
+      { icon: ShieldCheck, label: "KYC", href: "/admin/kyc" },
+      { icon: Landmark, label: "Payments", href: "/admin/payments" },
     ],
   },
   {
