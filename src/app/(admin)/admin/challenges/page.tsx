@@ -10,7 +10,7 @@ import { useAdminRole } from "@/lib/admin-context";
 export default function AdminChallengesPage() {
   const [challenges, setChallenges] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const myRole = useAdminRole();
+  const { role: myRole } = useAdminRole();
 
   const fetchChallenges = async () => {
     setLoading(true);

@@ -12,7 +12,7 @@ import { useAdminRole } from "@/lib/admin-context";
 export default function AdminRolesPage() {
   const [admins, setAdmins] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const myRole = useAdminRole();
+  const { role: myRole } = useAdminRole();
   const isSuperAdmin = myRole === "super_admin";
 
   const [isModalOpen, setIsModalOpen] = useState(false);
