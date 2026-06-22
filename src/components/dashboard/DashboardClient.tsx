@@ -15,8 +15,8 @@ export function DashboardClient() {
       
       if (session?.user) {
         const { data } = await supabase
-          .from("accounts")
-          .select("*")
+          .from("trading_accounts")
+          .select("*, tpp_platforms(name), trading_rules(name)")
           .eq("user_id", session.user.id)
           .order("created_at", { ascending: false });
           

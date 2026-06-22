@@ -89,7 +89,7 @@ export function ActiveAccounts({ accounts = [], loading = false }: { accounts?: 
               </div>
               <div className="flex items-center gap-3 self-start sm:self-auto">
                 <span className="px-3 py-1 rounded-full bg-[var(--ink-100)] text-[12px] font-bold text-[var(--ink-700)] uppercase tracking-wider">
-                  TPP Dashboard
+                  {account.tpp_platforms?.name || "TPP"}
                 </span>
                 <span className={cn(
                   "px-3 py-1 rounded-full text-[12px] font-bold uppercase tracking-wider flex items-center gap-1.5",
