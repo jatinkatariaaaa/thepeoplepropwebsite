@@ -33,83 +33,60 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    const { payoutId, status, notes } = await request.json();
+    const { flagId, status, resolution, suspendUser } = await request.json();
 
-    if (!payoutId || !status || !["paid", "rejected"].includes(status)) {
+    if (!flagId || !status || !["resolved", "dismissed", "reviewing"].includes(status)) {
       return NextResponse.json({ error: "Invalid request" }, { status: 400 });
     }
 
-    const { data: payout } = await supabaseAdmin
-      .from("payouts")
+    const { data: flag } = await supabaseAdmin
+      .from("fraud_flags")
       .select("*")
-      .eq("id", payoutId)
+      .eq("id", flagId)
       .single();
 
-    if (!payout || payout.status !== "pending") {
-      return NextResponse.json({ error: "Payout not found or already processed" }, { status: 400 });
+    if (!flag) {
+      return NextResponse.json({ error: "Flag not found" }, { status: 404 });
     }
 
     const updateData: any = {
       status,
-      processed_at: new Date().toISOString(),
-      processed_by: user.id,
+      reviewed_by: user.id,
+      reviewed_at: new Date().toISOString(),
     };
-    if (notes !== undefined) updateData.notes = notes;
-
-    if (status === "rejected") {
-      const { data: account } = await supabaseAdmin
-        .from("accounts")
-        .select("balance, equity")
-        .eq("id", payout.account_id)
-        .single();
-
-      if (account) {
-        await supabaseAdmin
-          .from("accounts")
-          .update({
-            balance: account.balance + payout.amount,
-            equity: account.equity + payout.amount,
-          })
-          .eq("id", payout.account_id);
-      }
-    }
+    if (resolution !== undefined) updateData.resolution = resolution;
 
     const { error: updateError } = await supabaseAdmin
-      .from("payouts")
+      .from("fraud_flags")
       .update(updateData)
-      .eq("id", payoutId);
+      .eq("id", flagId);
 
     if (updateError) throw updateError;
+
+    // Suspend user if requested
+    if (suspendUser) {
+      await supabaseAdmin
+        .from("profiles")
+        .update({ status: "suspended" })
+        .eq("id", flag.user_id);
+    }
 
     // Audit log
     await supabaseAdmin.from("audit_logs").insert({
       admin_id: user.id,
       admin_email: user.email,
-      action: `payout_${status}`,
-      entity_type: "payout",
-      entity_id: payoutId,
-      old_value: { status: payout.status },
+      action: `fraud_${status}`,
+      entity_type: "fraud_flag",
+      entity_id: flagId,
+      old_value: { status: flag.status },
       new_value: updateData,
       ip_address: request.headers.get("x-forwarded-for") || "",
       user_agent: request.headers.get("user-agent") || "",
     });
 
-    // Create admin notification for new paid payout
-    if (status === "paid") {
-      await supabaseAdmin.from("admin_notifications").insert({
-        type: "new_payout",
-        severity: "info",
-        title: "Payout Processed",
-        message: `Payout of $${payout.amount} has been marked as paid`,
-        entity_type: "payout",
-        entity_id: payoutId,
-        user_id: payout.user_id,
-      });
-    }
-
     return NextResponse.json({ success: true });
   } catch (error: any) {
-    console.error("Admin payout update error:", error);
+    console.error("Admin fraud error:", error);
     return NextResponse.json({ error: error.message || "Internal server error" }, { status: 500 });
   }
 }

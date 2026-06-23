@@ -29,6 +29,8 @@ import {
   Scale,
   ShieldCheck,
   Landmark,
+  ShieldAlert,
+  Bell,
   type LucideIcon,
 } from "lucide-react";
 import { useState, useMemo } from "react";
@@ -96,6 +98,13 @@ const sections: NavSection[] = [
       { icon: FileText, label: "CMS", href: "/admin/cms" },
       { icon: HelpCircle, label: "FAQs", href: "/admin/faqs" },
       { icon: BarChart3, label: "Stats", href: "/admin/stats" },
+    ],
+  },
+  {
+    title: "SECURITY",
+    items: [
+      { icon: ShieldAlert, label: "Fraud Detection", href: "/admin/fraud" },
+      { icon: Bell, label: "Notifications", href: "/admin/notifications" },
     ],
   },
   {
