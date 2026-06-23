@@ -1,46 +1,41 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Settings, Globe, Palette, ShieldCheck, Save } from "lucide-react";
+import {
+  Settings, Globe, Palette, ShieldCheck, Save, Server, Mail,
+  Lock, Clock, ToggleLeft, ToggleRight, RefreshCw, Shield,
+  CheckCircle, AlertTriangle, KeyRound, Eye, EyeOff
+} from "lucide-react";
 import { toast } from "sonner";
 
+type SettingsTab = "general" | "branding" | "trading" | "email" | "security";
+
+interface SettingValue {
+  category: string;
+  key: string;
+  value: string;
+}
+
 export default function AdminSettingsPage() {
-  const [activeTab, setActiveTab] = useState<"general" | "branding" | "seo" | "security">("general");
+  const [activeTab, setActiveTab] = useState<SettingsTab>("general");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-
-  // Form states
-  const [formData, setFormData] = useState<Record<string, string>>({
-    // General
-    maintenance_mode: "false",
-    announcement_text: "",
-    // Branding
-    brand_name: "The People Prop",
-    logo_url: "",
-    favicon_url: "",
-    primary_color: "#cbfb45",
-    // SEO
-    default_meta_title: "",
-    default_meta_description: "",
-    // Security
-    max_login_attempts: "5",
-    session_timeout_hours: "24"
-  });
+  const [showSmtpPass, setShowSmtpPass] = useState(false);
+  const [formData, setFormData] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const fetchSettings = async () => {
       try {
         const res = await fetch("/api/admin/settings");
         const data = await res.json();
-        
         if (data.raw && data.raw.length > 0) {
-          const newFormData = { ...formData };
+          const newFormData: Record<string, string> = {};
           data.raw.forEach((s: any) => {
             newFormData[s.key] = s.value;
           });
           setFormData(newFormData);
         }
-      } catch (e) {
+      } catch {
         toast.error("Failed to load settings");
       } finally {
         setLoading(false);
@@ -53,13 +48,17 @@ export default function AdminSettingsPage() {
     setFormData(prev => ({ ...prev, [key]: value }));
   };
 
+  const handleToggle = (key: string) => {
+    setFormData(prev => ({ ...prev, [key]: prev[key] === "true" ? "false" : "true" }));
+  };
+
   const handleSave = async (category: string, keys: string[]) => {
     setSaving(true);
     try {
       const updates = keys.map(key => ({
         category,
         key,
-        value: formData[key]
+        value: formData[key] || ""
       }));
 
       const res = await fetch("/api/admin/settings", {
@@ -67,10 +66,8 @@ export default function AdminSettingsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ updates }),
       });
-      
       const data = await res.json();
       if (data.error) throw new Error(data.error);
-      
       toast.success(`${category.charAt(0).toUpperCase() + category.slice(1)} settings saved`);
     } catch (e: any) {
       toast.error(e.message);
@@ -79,7 +76,19 @@ export default function AdminSettingsPage() {
     }
   };
 
-  if (loading) return <div className="flex justify-center p-12"><div className="w-8 h-8 border-2 border-[var(--ink-200)] border-t-[var(--ink-950)] rounded-full animate-spin"></div></div>;
+  if (loading) return (
+    <div className="flex justify-center p-12">
+      <div className="w-8 h-8 border-2 border-[var(--ink-200)] border-t-[var(--ink-950)] rounded-full animate-spin" />
+    </div>
+  );
+
+  const tabs: { id: SettingsTab; label: string; icon: typeof Settings }[] = [
+    { id: "general", label: "General", icon: Settings },
+    { id: "branding", label: "Branding", icon: Palette },
+    { id: "trading", label: "Trading", icon: Server },
+    { id: "email", label: "Email", icon: Mail },
+    { id: "security", label: "Security", icon: ShieldCheck },
+  ];
 
   return (
     <div className="max-w-6xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out pb-12">
@@ -87,74 +96,97 @@ export default function AdminSettingsPage() {
         <h1 className="text-2xl font-bold text-[var(--ink-950)] flex items-center gap-2">
           <Settings className="w-6 h-6" /> System Settings
         </h1>
-        <p className="text-[var(--ink-500)] mt-1">Configure global preferences, branding, and security policies.</p>
+        <p className="text-[var(--ink-500)] mt-1">Configure global preferences, branding, trading, email, and security policies.</p>
       </div>
 
       <div className="flex flex-col md:flex-row gap-8">
         {/* Sidebar Navigation */}
         <div className="w-full md:w-64 shrink-0 space-y-1">
-          <button
-            onClick={() => setActiveTab("general")}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-colors ${
-              activeTab === "general" ? "bg-[var(--ink-950)] text-white" : "text-[var(--ink-500)] hover:bg-[var(--paper-2)] hover:text-[var(--ink-950)]"
-            }`}
-          >
-            <Settings className="w-5 h-5" /> General
-          </button>
-          <button
-            onClick={() => setActiveTab("branding")}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-colors ${
-              activeTab === "branding" ? "bg-[var(--ink-950)] text-white" : "text-[var(--ink-500)] hover:bg-[var(--paper-2)] hover:text-[var(--ink-950)]"
-            }`}
-          >
-            <Palette className="w-5 h-5" /> Branding
-          </button>
-          <button
-            onClick={() => setActiveTab("seo")}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-colors ${
-              activeTab === "seo" ? "bg-[var(--ink-950)] text-white" : "text-[var(--ink-500)] hover:bg-[var(--paper-2)] hover:text-[var(--ink-950)]"
-            }`}
-          >
-            <Globe className="w-5 h-5" /> SEO
-          </button>
-          <button
-            onClick={() => setActiveTab("security")}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-colors ${
-              activeTab === "security" ? "bg-[var(--ink-950)] text-white" : "text-[var(--ink-500)] hover:bg-[var(--paper-2)] hover:text-[var(--ink-950)]"
-            }`}
-          >
-            <ShieldCheck className="w-5 h-5" /> Security
-          </button>
+          {tabs.map(tab => {
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-colors ${
+                  activeTab === tab.id ? "bg-[var(--ink-950)] text-white" : "text-[var(--ink-500)] hover:bg-[var(--paper-2)] hover:text-[var(--ink-950)]"
+                }`}
+              >
+                <Icon className="w-5 h-5" /> {tab.label}
+              </button>
+            );
+          })}
         </div>
 
         {/* Content Area */}
         <div className="flex-1 bg-white rounded-2xl border border-[var(--border)] p-6 md:p-8 shadow-sm">
-          
+
           {activeTab === "general" && (
             <div className="space-y-6">
               <div>
                 <h2 className="text-xl font-bold text-[var(--ink-950)] mb-4">General Settings</h2>
                 <div className="space-y-5">
-                  <div className="flex items-center justify-between p-4 bg-[var(--paper-2)] rounded-xl border border-[var(--border)]">
+                  <div>
+                    <label className="block text-sm font-semibold mb-1 text-[var(--ink-950)]">Company Name</label>
+                    <input
+                      type="text"
+                      value={formData.company_name || ""}
+                      onChange={(e) => handleChange("company_name", e.target.value)}
+                      className="w-full max-w-md border border-[var(--border)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)]"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-6 max-w-md">
+                    <div>
+                      <label className="block text-sm font-semibold mb-1 text-[var(--ink-950)]">Timezone</label>
+                      <select
+                        value={formData.timezone || "UTC"}
+                        onChange={(e) => handleChange("timezone", e.target.value)}
+                        className="w-full border border-[var(--border)] rounded-xl p-3 outline-none bg-white"
+                      >
+                        <option value="UTC">UTC</option>
+                        <option value="America/New_York">EST (New York)</option>
+                        <option value="America/Chicago">CST (Chicago)</option>
+                        <option value="America/Denver">MST (Denver)</option>
+                        <option value="America/Los_Angeles">PST (Los Angeles)</option>
+                        <option value="Europe/London">GMT (London)</option>
+                        <option value="Europe/Paris">CET (Paris)</option>
+                        <option value="Asia/Dubai">GST (Dubai)</option>
+                        <option value="Asia/Tokyo">JST (Tokyo)</option>
+                        <option value="Australia/Sydney">AEST (Sydney)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold mb-1 text-[var(--ink-950)]">Currency</label>
+                      <select
+                        value={formData.currency || "USD"}
+                        onChange={(e) => handleChange("currency", e.target.value)}
+                        className="w-full border border-[var(--border)] rounded-xl p-3 outline-none bg-white"
+                      >
+                        <option value="USD">USD ($)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="GBP">GBP (£)</option>
+                        <option value="JPY">JPY (¥)</option>
+                        <option value="AUD">AUD (A$)</option>
+                        <option value="CAD">CAD (C$)</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between p-4 bg-[var(--paper-2)] rounded-xl border border-[var(--border)] max-w-md">
                     <div>
                       <h3 className="font-bold text-[var(--ink-950)]">Maintenance Mode</h3>
                       <p className="text-sm text-[var(--ink-500)]">Disable public access to the website temporarily.</p>
                     </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input 
-                        type="checkbox" 
-                        className="sr-only peer" 
-                        checked={formData.maintenance_mode === "true"} 
-                        onChange={(e) => handleChange("maintenance_mode", e.target.checked ? "true" : "false")} 
-                      />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
-                    </label>
+                    <button onClick={() => handleToggle("maintenance_mode")} className="relative inline-flex items-center cursor-pointer">
+                      <div className={`w-11 h-6 rounded-full transition-colors ${formData.maintenance_mode === "true" ? "bg-red-500" : "bg-gray-200"}`}>
+                        <div className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform ${formData.maintenance_mode === "true" ? "translate-x-5" : "translate-x-0.5"} mt-0.5`} />
+                      </div>
+                    </button>
                   </div>
                 </div>
               </div>
               <div className="pt-4 border-t border-[var(--border)] flex justify-end">
-                <button 
-                  onClick={() => handleSave("general", ["maintenance_mode"])} 
+                <button
+                  onClick={() => handleSave("general", ["company_name", "timezone", "currency", "maintenance_mode"])}
                   disabled={saving}
                   className="flex items-center gap-2 px-6 py-2.5 bg-[var(--ink-950)] text-white rounded-xl font-bold hover:bg-black transition-colors disabled:opacity-50"
                 >
@@ -171,45 +203,55 @@ export default function AdminSettingsPage() {
                 <div className="space-y-5">
                   <div>
                     <label className="block text-sm font-semibold mb-1 text-[var(--ink-950)]">Brand Name</label>
-                    <input 
-                      type="text" 
-                      value={formData.brand_name} 
-                      onChange={(e) => handleChange("brand_name", e.target.value)} 
-                      className="w-full max-w-md border border-[var(--border)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)]" 
+                    <input
+                      type="text"
+                      value={formData.brand_name || ""}
+                      onChange={(e) => handleChange("brand_name", e.target.value)}
+                      className="w-full max-w-md border border-[var(--border)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)]"
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-semibold mb-1 text-[var(--ink-950)]">Logo URL (Absolute URL)</label>
-                    <input 
-                      type="url" 
-                      value={formData.logo_url} 
-                      onChange={(e) => handleChange("logo_url", e.target.value)} 
+                    <input
+                      type="url"
+                      value={formData.logo_url || ""}
+                      onChange={(e) => handleChange("logo_url", e.target.value)}
                       placeholder="https://..."
-                      className="w-full max-w-md border border-[var(--border)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)]" 
+                      className="w-full max-w-md border border-[var(--border)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold mb-1 text-[var(--ink-950)]">Favicon URL</label>
+                    <input
+                      type="url"
+                      value={formData.favicon_url || ""}
+                      onChange={(e) => handleChange("favicon_url", e.target.value)}
+                      placeholder="https://..."
+                      className="w-full max-w-md border border-[var(--border)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)]"
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-semibold mb-1 text-[var(--ink-950)]">Primary Color (Hex)</label>
                     <div className="flex items-center gap-3 max-w-md">
-                      <input 
-                        type="color" 
-                        value={formData.primary_color} 
-                        onChange={(e) => handleChange("primary_color", e.target.value)} 
-                        className="w-12 h-12 p-1 rounded-lg border border-[var(--border)] cursor-pointer" 
+                      <input
+                        type="color"
+                        value={formData.primary_color || "#cbfb45"}
+                        onChange={(e) => handleChange("primary_color", e.target.value)}
+                        className="w-12 h-12 p-1 rounded-lg border border-[var(--border)] cursor-pointer"
                       />
-                      <input 
-                        type="text" 
-                        value={formData.primary_color} 
-                        onChange={(e) => handleChange("primary_color", e.target.value)} 
-                        className="flex-1 border border-[var(--border)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)] uppercase font-mono" 
+                      <input
+                        type="text"
+                        value={formData.primary_color || "#cbfb45"}
+                        onChange={(e) => handleChange("primary_color", e.target.value)}
+                        className="flex-1 border border-[var(--border)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)] uppercase font-mono"
                       />
                     </div>
                   </div>
                 </div>
               </div>
               <div className="pt-4 border-t border-[var(--border)] flex justify-end">
-                <button 
-                  onClick={() => handleSave("branding", ["brand_name", "logo_url", "favicon_url", "primary_color"])} 
+                <button
+                  onClick={() => handleSave("branding", ["brand_name", "logo_url", "favicon_url", "primary_color"])}
                   disabled={saving}
                   className="flex items-center gap-2 px-6 py-2.5 bg-[var(--ink-950)] text-white rounded-xl font-bold hover:bg-black transition-colors disabled:opacity-50"
                 >
@@ -219,36 +261,150 @@ export default function AdminSettingsPage() {
             </div>
           )}
 
-          {activeTab === "seo" && (
+          {activeTab === "trading" && (
             <div className="space-y-6">
               <div>
-                <h2 className="text-xl font-bold text-[var(--ink-950)] mb-4">Global SEO</h2>
+                <h2 className="text-xl font-bold text-[var(--ink-950)] mb-4">Trading Configuration</h2>
                 <div className="space-y-5">
                   <div>
-                    <label className="block text-sm font-semibold mb-1 text-[var(--ink-950)]">Default Meta Title</label>
-                    <input 
-                      type="text" 
-                      value={formData.default_meta_title} 
-                      onChange={(e) => handleChange("default_meta_title", e.target.value)} 
-                      className="w-full border border-[var(--border)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)]" 
-                      placeholder="The People Prop - Best Prop Trading Firm"
-                    />
+                    <label className="block text-sm font-semibold mb-1 text-[var(--ink-950)]">Default Leverage</label>
+                    <select
+                      value={formData.default_leverage || "100"}
+                      onChange={(e) => handleChange("default_leverage", e.target.value)}
+                      className="w-full max-w-xs border border-[var(--border)] rounded-xl p-3 outline-none bg-white"
+                    >
+                      <option value="10">1:10</option>
+                      <option value="20">1:20</option>
+                      <option value="50">1:50</option>
+                      <option value="100">1:100</option>
+                      <option value="200">1:200</option>
+                      <option value="500">1:500</option>
+                    </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold mb-1 text-[var(--ink-950)]">Default Meta Description</label>
-                    <textarea 
-                      value={formData.default_meta_description} 
-                      onChange={(e) => handleChange("default_meta_description", e.target.value)} 
-                      className="w-full border border-[var(--border)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)] resize-none" 
+                    <label className="block text-sm font-semibold mb-1 text-[var(--ink-950)]">Trading Servers (JSON Array)</label>
+                    <textarea
+                      value={formData.trading_servers || "[]"}
+                      onChange={(e) => handleChange("trading_servers", e.target.value)}
                       rows={4}
-                      placeholder="Pass our challenge and get funded up to $200k..."
+                      className="w-full max-w-md border border-[var(--border)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)] font-mono text-sm resize-none"
+                      placeholder='[{"name":"Server 1","host":"trade.example.com","port":443}]'
                     />
+                    <p className="text-[11px] text-[var(--ink-400)] mt-1">JSON array of server objects with name, host, and port.</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold mb-1 text-[var(--ink-950)]">Rule Templates (JSON Array)</label>
+                    <textarea
+                      value={formData.rule_templates || "[]"}
+                      onChange={(e) => handleChange("rule_templates", e.target.value)}
+                      rows={4}
+                      className="w-full max-w-md border border-[var(--border)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)] font-mono text-sm resize-none"
+                      placeholder='[{"name":"Standard","max_daily_drawdown":5,"max_overall_drawdown":10}]'
+                    />
+                    <p className="text-[11px] text-[var(--ink-400)] mt-1">JSON array of rule template objects.</p>
                   </div>
                 </div>
               </div>
               <div className="pt-4 border-t border-[var(--border)] flex justify-end">
-                <button 
-                  onClick={() => handleSave("seo", ["default_meta_title", "default_meta_description"])} 
+                <button
+                  onClick={() => handleSave("trading", ["default_leverage", "trading_servers", "rule_templates"])}
+                  disabled={saving}
+                  className="flex items-center gap-2 px-6 py-2.5 bg-[var(--ink-950)] text-white rounded-xl font-bold hover:bg-black transition-colors disabled:opacity-50"
+                >
+                  <Save className="w-4 h-4" /> Save Changes
+                </button>
+              </div>
+            </div>
+          )}
+
+          {activeTab === "email" && (
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-xl font-bold text-[var(--ink-950)] mb-4">Email Configuration</h2>
+                <div className="space-y-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl">
+                    <div>
+                      <label className="block text-sm font-semibold mb-1 text-[var(--ink-950)]">SMTP Host</label>
+                      <input
+                        type="text"
+                        value={formData.smtp_host || ""}
+                        onChange={(e) => handleChange("smtp_host", e.target.value)}
+                        placeholder="smtp.example.com"
+                        className="w-full border border-[var(--border)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold mb-1 text-[var(--ink-950)]">SMTP Port</label>
+                      <input
+                        type="number"
+                        value={formData.smtp_port || "587"}
+                        onChange={(e) => handleChange("smtp_port", e.target.value)}
+                        className="w-full border border-[var(--border)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold mb-1 text-[var(--ink-950)]">SMTP User</label>
+                      <input
+                        type="text"
+                        value={formData.smtp_user || ""}
+                        onChange={(e) => handleChange("smtp_user", e.target.value)}
+                        className="w-full border border-[var(--border)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold mb-1 text-[var(--ink-950)]">SMTP Password</label>
+                      <div className="relative">
+                        <input
+                          type={showSmtpPass ? "text" : "password"}
+                          value={formData.smtp_pass || ""}
+                          onChange={(e) => handleChange("smtp_pass", e.target.value)}
+                          className="w-full border border-[var(--border)] rounded-xl p-3 pr-10 outline-none focus:border-[var(--ink-950)]"
+                        />
+                        <button
+                          onClick={() => setShowSmtpPass(!showSmtpPass)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--ink-400)] hover:text-[var(--ink-950)]"
+                        >
+                          {showSmtpPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between p-4 bg-[var(--paper-2)] rounded-xl border border-[var(--border)] max-w-md">
+                    <div>
+                      <h3 className="font-bold text-[var(--ink-950)]">Secure Connection (TLS/SSL)</h3>
+                      <p className="text-sm text-[var(--ink-500)]">Use encrypted connection for SMTP.</p>
+                    </div>
+                    <button onClick={() => handleToggle("smtp_secure")} className="relative inline-flex items-center cursor-pointer">
+                      <div className={`w-11 h-6 rounded-full transition-colors ${formData.smtp_secure === "true" ? "bg-emerald-500" : "bg-gray-200"}`}>
+                        <div className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform ${formData.smtp_secure === "true" ? "translate-x-5" : "translate-x-0.5"} mt-0.5`} />
+                      </div>
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl">
+                    <div>
+                      <label className="block text-sm font-semibold mb-1 text-[var(--ink-950)]">Sender Name</label>
+                      <input
+                        type="text"
+                        value={formData.sender_name || ""}
+                        onChange={(e) => handleChange("sender_name", e.target.value)}
+                        className="w-full border border-[var(--border)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold mb-1 text-[var(--ink-950)]">Sender Email</label>
+                      <input
+                        type="email"
+                        value={formData.sender_email || ""}
+                        onChange={(e) => handleChange("sender_email", e.target.value)}
+                        className="w-full border border-[var(--border)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)]"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="pt-4 border-t border-[var(--border)] flex justify-end">
+                <button
+                  onClick={() => handleSave("email", ["smtp_host", "smtp_port", "smtp_user", "smtp_pass", "smtp_secure", "sender_name", "sender_email"])}
                   disabled={saving}
                   className="flex items-center gap-2 px-6 py-2.5 bg-[var(--ink-950)] text-white rounded-xl font-bold hover:bg-black transition-colors disabled:opacity-50"
                 >
@@ -263,31 +419,136 @@ export default function AdminSettingsPage() {
               <div>
                 <h2 className="text-xl font-bold text-[var(--ink-950)] mb-4">Security Policies</h2>
                 <div className="space-y-5">
-                  <div className="grid grid-cols-2 gap-6 max-w-lg">
-                    <div>
-                      <label className="block text-sm font-semibold mb-1 text-[var(--ink-950)]">Max Login Attempts</label>
-                      <input 
-                        type="number" 
-                        value={formData.max_login_attempts} 
-                        onChange={(e) => handleChange("max_login_attempts", e.target.value)} 
-                        className="w-full border border-[var(--border)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)]" 
-                      />
+                  <div className="bg-[var(--paper-2)] rounded-xl border border-[var(--border)] p-5">
+                    <div className="flex items-center gap-2 mb-4">
+                      <KeyRound className="w-5 h-5 text-[var(--ink-600)]" />
+                      <h3 className="font-bold text-[var(--ink-950)]">Password Policy</h3>
                     </div>
-                    <div>
-                      <label className="block text-sm font-semibold mb-1 text-[var(--ink-950)]">Session Timeout (Hrs)</label>
-                      <input 
-                        type="number" 
-                        value={formData.session_timeout_hours} 
-                        onChange={(e) => handleChange("session_timeout_hours", e.target.value)} 
-                        className="w-full border border-[var(--border)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)]" 
-                      />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-semibold mb-1 text-[var(--ink-950)]">Minimum Length</label>
+                        <input
+                          type="number"
+                          min={6}
+                          max={32}
+                          value={formData.password_min_length || "8"}
+                          onChange={(e) => handleChange("password_min_length", e.target.value)}
+                          className="w-full border border-[var(--border)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)]"
+                        />
+                      </div>
+                      <div className="flex flex-col justify-end">
+                        <div className="flex items-center justify-between p-3 bg-white rounded-xl border border-[var(--border)]">
+                          <span className="text-sm font-semibold text-[var(--ink-950)]">Require Uppercase</span>
+                          <button onClick={() => handleToggle("password_require_uppercase")} className="relative inline-flex items-center cursor-pointer">
+                            <div className={`w-11 h-6 rounded-full transition-colors ${formData.password_require_uppercase === "true" ? "bg-emerald-500" : "bg-gray-200"}`}>
+                              <div className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform ${formData.password_require_uppercase === "true" ? "translate-x-5" : "translate-x-0.5"} mt-0.5`} />
+                            </div>
+                          </button>
+                        </div>
+                      </div>
+                      <div className="flex flex-col justify-end">
+                        <div className="flex items-center justify-between p-3 bg-white rounded-xl border border-[var(--border)]">
+                          <span className="text-sm font-semibold text-[var(--ink-950)]">Require Number</span>
+                          <button onClick={() => handleToggle("password_require_number")} className="relative inline-flex items-center cursor-pointer">
+                            <div className={`w-11 h-6 rounded-full transition-colors ${formData.password_require_number === "true" ? "bg-emerald-500" : "bg-gray-200"}`}>
+                              <div className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform ${formData.password_require_number === "true" ? "translate-x-5" : "translate-x-0.5"} mt-0.5`} />
+                            </div>
+                          </button>
+                        </div>
+                      </div>
+                      <div className="flex flex-col justify-end">
+                        <div className="flex items-center justify-between p-3 bg-white rounded-xl border border-[var(--border)]">
+                          <span className="text-sm font-semibold text-[var(--ink-950)]">Require Special Character</span>
+                          <button onClick={() => handleToggle("password_require_special")} className="relative inline-flex items-center cursor-pointer">
+                            <div className={`w-11 h-6 rounded-full transition-colors ${formData.password_require_special === "true" ? "bg-emerald-500" : "bg-gray-200"}`}>
+                              <div className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform ${formData.password_require_special === "true" ? "translate-x-5" : "translate-x-0.5"} mt-0.5`} />
+                            </div>
+                          </button>
+                        </div>
+                      </div>
                     </div>
+                  </div>
+
+                  <div className="bg-[var(--paper-2)] rounded-xl border border-[var(--border)] p-5">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Clock className="w-5 h-5 text-[var(--ink-600)]" />
+                      <h3 className="font-bold text-[var(--ink-950)]">Session & Login</h3>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                      <div>
+                        <label className="block text-sm font-semibold mb-1 text-[var(--ink-950)]">Session Timeout (hrs)</label>
+                        <input
+                          type="number"
+                          min={1}
+                          max={168}
+                          value={formData.session_timeout_hours || "24"}
+                          onChange={(e) => handleChange("session_timeout_hours", e.target.value)}
+                          className="w-full border border-[var(--border)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)]"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold mb-1 text-[var(--ink-950)]">Max Login Attempts</label>
+                        <input
+                          type="number"
+                          min={1}
+                          max={20}
+                          value={formData.max_login_attempts || "5"}
+                          onChange={(e) => handleChange("max_login_attempts", e.target.value)}
+                          className="w-full border border-[var(--border)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)]"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold mb-1 text-[var(--ink-950)]">Lockout Duration (min)</label>
+                        <input
+                          type="number"
+                          min={1}
+                          max={1440}
+                          value={formData.lockout_duration_minutes || "30"}
+                          onChange={(e) => handleChange("lockout_duration_minutes", e.target.value)}
+                          className="w-full border border-[var(--border)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)]"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-[var(--paper-2)] rounded-xl border border-[var(--border)] p-5">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Shield className="w-5 h-5 text-[var(--ink-600)]" />
+                      <h3 className="font-bold text-[var(--ink-950)]">Two-Factor Authentication</h3>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-white rounded-xl border border-[var(--border)] max-w-md">
+                      <div>
+                        <span className="text-sm font-semibold text-[var(--ink-950)]">Require 2FA for Admins</span>
+                        <p className="text-xs text-[var(--ink-500)]">Force all admin accounts to use 2FA.</p>
+                      </div>
+                      <button onClick={() => handleToggle("two_factor_auth")} className="relative inline-flex items-center cursor-pointer">
+                        <div className={`w-11 h-6 rounded-full transition-colors ${formData.two_factor_auth === "true" ? "bg-emerald-500" : "bg-gray-200"}`}>
+                          <div className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform ${formData.two_factor_auth === "true" ? "translate-x-5" : "translate-x-0.5"} mt-0.5`} />
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 bg-white rounded-xl border border-[var(--border)] max-w-md">
+                    <div>
+                      <span className="text-sm font-semibold text-[var(--ink-950)]">Require Email Verification</span>
+                      <p className="text-xs text-[var(--ink-500)]">Users must verify email before accessing features.</p>
+                    </div>
+                    <button onClick={() => handleToggle("require_email_verification")} className="relative inline-flex items-center cursor-pointer">
+                      <div className={`w-11 h-6 rounded-full transition-colors ${formData.require_email_verification === "true" ? "bg-emerald-500" : "bg-gray-200"}`}>
+                        <div className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform ${formData.require_email_verification === "true" ? "translate-x-5" : "translate-x-0.5"} mt-0.5`} />
+                      </div>
+                    </button>
                   </div>
                 </div>
               </div>
               <div className="pt-4 border-t border-[var(--border)] flex justify-end">
-                <button 
-                  onClick={() => handleSave("security", ["max_login_attempts", "session_timeout_hours"])} 
+                <button
+                  onClick={() => handleSave("security", [
+                    "password_min_length", "password_require_uppercase", "password_require_number", "password_require_special",
+                    "session_timeout_hours", "max_login_attempts", "lockout_duration_minutes",
+                    "two_factor_auth", "require_email_verification"
+                  ])}
                   disabled={saving}
                   className="flex items-center gap-2 px-6 py-2.5 bg-[var(--ink-950)] text-white rounded-xl font-bold hover:bg-black transition-colors disabled:opacity-50"
                 >

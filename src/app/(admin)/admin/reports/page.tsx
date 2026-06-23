@@ -1,24 +1,49 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { AdminAreaChart, AdminBarChart } from "@/components/admin/AdminChart";
-import { BarChart3, Download, Calendar, DollarSign, Users, ShoppingCart, Activity } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { AdminAreaChart, AdminBarChart, AdminPieChart } from "@/components/admin/AdminChart";
+import { AdminTable } from "@/components/admin/AdminTable";
+import { ColumnDef } from "@tanstack/react-table";
+import { ChartBar as BarChart3, Download, Calendar, DollarSign, Users, ShoppingCart, Activity, TrendingUp, TrendingDown, FileSpreadsheet, FileText, FileDown, ChevronDown, ListFilter as Filter, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
-import { format, subDays } from "date-fns";
+import { format, subDays, startOfWeek, startOfMonth, startOfYear } from "date-fns";
+
+type ReportTab = "revenue" | "users" | "trading";
+type Period = "daily" | "weekly" | "monthly" | "yearly";
+type ExportFormat = "csv" | "excel" | "pdf";
+
+interface ReportData {
+  summary: {
+    total_revenue?: number;
+    total_orders?: number;
+    avg_order_value?: number;
+    total_users?: number;
+    active_users?: number;
+    challenge_purchases?: number;
+    pass_rate?: number;
+    fail_rate?: number;
+    active_accounts?: number;
+  };
+  chart_data: any[];
+  table_data?: any[];
+}
 
 export default function AdminReportsPage() {
-  const [activeTab, setActiveTab] = useState<"revenue" | "orders" | "users">("revenue");
+  const [activeTab, setActiveTab] = useState<ReportTab>("revenue");
+  const [period, setPeriod] = useState<Period>("daily");
   const [loading, setLoading] = useState(false);
-  const [reportData, setReportData] = useState<any>(null);
+  const [reportData, setReportData] = useState<ReportData | null>(null);
+  const [showExportMenu, setShowExportMenu] = useState(false);
 
-  // Date range
   const [fromDate, setFromDate] = useState<string>(format(subDays(new Date(), 30), "yyyy-MM-dd"));
   const [toDate, setToDate] = useState<string>(format(new Date(), "yyyy-MM-dd"));
 
   const fetchReport = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin/reports?type=${activeTab}&from=${fromDate}T00:00:00.000Z&to=${toDate}T23:59:59.999Z`);
+      const res = await fetch(
+        `/api/admin/reports?type=${activeTab}&period=${period}&from=${fromDate}T00:00:00.000Z&to=${toDate}T23:59:59.999Z`
+      );
       const data = await res.json();
       if (data.error) throw new Error(data.error);
       setReportData(data);
@@ -31,11 +56,72 @@ export default function AdminReportsPage() {
 
   useEffect(() => {
     fetchReport();
-  }, [activeTab]);
+  }, [activeTab, period]);
 
-  const handleExport = () => {
-    window.open(`/api/admin/reports?type=${activeTab}&from=${fromDate}T00:00:00.000Z&to=${toDate}T23:59:59.999Z&format=csv`, '_blank');
+  const handleExport = (format: ExportFormat) => {
+    window.open(
+      `/api/admin/reports?type=${activeTab}&period=${period}&from=${fromDate}T00:00:00.000Z&to=${toDate}T23:59:59.999Z&format=${format}`,
+      "_blank"
+    );
+    setShowExportMenu(false);
+    toast.success(`Exporting ${format.toUpperCase()}...`);
   };
+
+  const periodOptions: { value: Period; label: string }[] = [
+    { value: "daily", label: "Daily" },
+    { value: "weekly", label: "Weekly" },
+    { value: "monthly", label: "Monthly" },
+    { value: "yearly", label: "Yearly" },
+  ];
+
+  const summaryCards = useMemo(() => {
+    if (!reportData?.summary) return [];
+    const s = reportData.summary;
+
+    if (activeTab === "revenue") {
+      return [
+        { icon: DollarSign, color: "text-emerald-600 bg-emerald-50", label: "Total Revenue", value: `$${(s.total_revenue || 0).toLocaleString()}` },
+        { icon: ShoppingCart, color: "text-blue-600 bg-blue-50", label: "Paid Orders", value: (s.total_orders || 0).toLocaleString() },
+        { icon: Activity, color: "text-amber-600 bg-amber-50", label: "Avg Order Value", value: `$${s.avg_order_value?.toFixed(2) || "0.00"}` },
+      ];
+    }
+    if (activeTab === "users") {
+      return [
+        { icon: Users, color: "text-blue-600 bg-blue-50", label: "Total Signups", value: (s.total_users || 0).toLocaleString() },
+        { icon: Activity, color: "text-emerald-600 bg-emerald-50", label: "Active Users", value: (s.active_users || 0).toLocaleString() },
+        { icon: ShoppingCart, color: "text-amber-600 bg-amber-50", label: "Challenge Purchases", value: (s.challenge_purchases || 0).toLocaleString() },
+      ];
+    }
+    return [
+      { icon: TrendingUp, color: "text-emerald-600 bg-emerald-50", label: "Pass Rate", value: `${(s.pass_rate || 0).toFixed(1)}%` },
+      { icon: TrendingDown, color: "text-red-600 bg-red-50", label: "Fail Rate", value: `${(s.fail_rate || 0).toFixed(1)}%` },
+      { icon: Activity, color: "text-blue-600 bg-blue-50", label: "Active Accounts", value: (s.active_accounts || 0).toLocaleString() },
+    ];
+  }, [reportData, activeTab]);
+
+  const tableColumns: ColumnDef<any>[] = useMemo(() => {
+    if (activeTab === "revenue") {
+      return [
+        { accessorKey: "date", header: "Date", cell: ({ row }) => <span className="text-[13px] font-semibold">{row.original.date}</span> },
+        { accessorKey: "revenue", header: "Revenue", cell: ({ row }) => <span className="text-[13px] font-semibold text-emerald-600">${row.original.revenue?.toLocaleString()}</span> },
+        { accessorKey: "orders", header: "Orders", cell: ({ row }) => <span className="text-[13px]">{row.original.orders}</span> },
+      ];
+    }
+    if (activeTab === "users") {
+      return [
+        { accessorKey: "date", header: "Date", cell: ({ row }) => <span className="text-[13px] font-semibold">{row.original.date}</span> },
+        { accessorKey: "new_users", header: "New Users", cell: ({ row }) => <span className="text-[13px] font-semibold text-blue-600">{row.original.new_users}</span> },
+        { accessorKey: "active_users", header: "Active", cell: ({ row }) => <span className="text-[13px]">{row.original.active_users}</span> },
+        { accessorKey: "purchases", header: "Purchases", cell: ({ row }) => <span className="text-[13px] text-amber-600">{row.original.purchases}</span> },
+      ];
+    }
+    return [
+      { accessorKey: "date", header: "Date", cell: ({ row }) => <span className="text-[13px] font-semibold">{row.original.date}</span> },
+      { accessorKey: "pass_count", header: "Passed", cell: ({ row }) => <span className="text-[13px] font-semibold text-emerald-600">{row.original.pass_count}</span> },
+      { accessorKey: "fail_count", header: "Failed", cell: ({ row }) => <span className="text-[13px] font-semibold text-red-600">{row.original.fail_count}</span> },
+      { accessorKey: "active_count", header: "Active", cell: ({ row }) => <span className="text-[13px] text-blue-600">{row.original.active_count}</span> },
+    ];
+  }, [activeTab]);
 
   return (
     <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out pb-12">
@@ -44,174 +130,149 @@ export default function AdminReportsPage() {
           <h1 className="text-2xl font-bold text-[var(--ink-950)] flex items-center gap-2">
             <BarChart3 className="w-6 h-6" /> Analytics & Reports
           </h1>
-          <p className="text-[var(--ink-500)] mt-1">Generate insights on revenue, orders, and user growth.</p>
+          <p className="text-[var(--ink-500)] mt-1">Generate insights on revenue, users, and trading performance.</p>
         </div>
-        <button
-          onClick={handleExport}
-          className="flex items-center gap-2 px-4 py-2 bg-[var(--paper-2)] border border-[var(--border)] text-[var(--ink-950)] rounded-xl font-bold hover:bg-[var(--border)] transition-colors"
-        >
-          <Download className="w-4 h-4" /> Export CSV
-        </button>
+        <div className="relative">
+          <button
+            onClick={() => setShowExportMenu(!showExportMenu)}
+            className="flex items-center gap-2 px-4 py-2.5 bg-[var(--paper-2)] border border-[var(--border)] text-[var(--ink-950)] rounded-xl font-bold hover:bg-[var(--border)] transition-colors"
+          >
+            <Download className="w-4 h-4" /> Export <ChevronDown className="w-3 h-3" />
+          </button>
+          {showExportMenu && (
+            <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-[var(--border)] rounded-xl shadow-lg z-50 overflow-hidden">
+              <button onClick={() => handleExport("csv")} className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold hover:bg-[var(--paper-2)] transition-colors">
+                <FileText className="w-4 h-4" /> CSV
+              </button>
+              <button onClick={() => handleExport("excel")} className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold hover:bg-[var(--paper-2)] transition-colors">
+                <FileSpreadsheet className="w-4 h-4" /> Excel
+              </button>
+              <button onClick={() => handleExport("pdf")} className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold hover:bg-[var(--paper-2)] transition-colors">
+                <FileDown className="w-4 h-4" /> PDF
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="bg-white rounded-2xl border border-[var(--border)] p-6 shadow-sm mb-8 flex flex-col sm:flex-row gap-4 justify-between items-center">
+      <div className="bg-white rounded-2xl border border-[var(--border)] p-6 shadow-sm mb-8 flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center">
         <div className="flex bg-[var(--paper-2)] p-1 rounded-xl">
-          <button
-            onClick={() => setActiveTab("revenue")}
-            className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-colors ${activeTab === "revenue" ? "bg-white text-[var(--ink-950)] shadow-sm" : "text-[var(--ink-500)] hover:text-[var(--ink-950)]"}`}
-          >
-            Revenue
-          </button>
-          <button
-            onClick={() => setActiveTab("orders")}
-            className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-colors ${activeTab === "orders" ? "bg-white text-[var(--ink-950)] shadow-sm" : "text-[var(--ink-500)] hover:text-[var(--ink-950)]"}`}
-          >
-            Orders
-          </button>
-          <button
-            onClick={() => setActiveTab("users")}
-            className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-colors ${activeTab === "users" ? "bg-white text-[var(--ink-950)] shadow-sm" : "text-[var(--ink-500)] hover:text-[var(--ink-950)]"}`}
-          >
-            Users
-          </button>
+          {(["revenue", "users", "trading"] as ReportTab[]).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-colors ${activeTab === tab ? "bg-white text-[var(--ink-950)] shadow-sm" : "text-[var(--ink-500)] hover:text-[var(--ink-950)]"}`}
+            >
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </button>
+          ))}
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-2 bg-[var(--paper-2)] p-1 rounded-xl">
+            {periodOptions.map((p) => (
+              <button
+                key={p.value}
+                onClick={() => setPeriod(p.value)}
+                className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors ${period === p.value ? "bg-white text-[var(--ink-950)] shadow-sm" : "text-[var(--ink-500)] hover:text-[var(--ink-950)]"}`}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
           <div className="flex items-center gap-2">
             <Calendar className="w-4 h-4 text-[var(--ink-400)]" />
-            <input 
-              type="date" 
+            <input
+              type="date"
               value={fromDate}
-              onChange={e => setFromDate(e.target.value)}
-              className="border border-[var(--border)] rounded-lg px-2 py-1 text-sm outline-none bg-white" 
+              onChange={(e) => setFromDate(e.target.value)}
+              className="border border-[var(--border)] rounded-lg px-2 py-1.5 text-sm outline-none bg-white"
             />
             <span className="text-[var(--ink-400)] text-sm">to</span>
-            <input 
-              type="date" 
+            <input
+              type="date"
               value={toDate}
-              onChange={e => setToDate(e.target.value)}
-              className="border border-[var(--border)] rounded-lg px-2 py-1 text-sm outline-none bg-white" 
+              onChange={(e) => setToDate(e.target.value)}
+              className="border border-[var(--border)] rounded-lg px-2 py-1.5 text-sm outline-none bg-white"
             />
           </div>
-          <button 
+          <button
             onClick={fetchReport}
             disabled={loading}
-            className="px-4 py-1.5 bg-[var(--ink-950)] text-white rounded-lg text-sm font-bold hover:bg-black disabled:opacity-50"
+            className="px-4 py-1.5 bg-[var(--ink-950)] text-white rounded-lg text-sm font-bold hover:bg-black disabled:opacity-50 flex items-center gap-2"
           >
-            Generate
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} /> Generate
           </button>
         </div>
       </div>
 
       {loading ? (
-        <div className="flex justify-center p-24"><div className="w-8 h-8 border-2 border-[var(--ink-200)] border-t-[var(--ink-950)] rounded-full animate-spin"></div></div>
+        <div className="flex justify-center p-24">
+          <div className="w-8 h-8 border-2 border-[var(--ink-200)] border-t-[var(--ink-950)] rounded-full animate-spin" />
+        </div>
       ) : reportData ? (
         <div className="space-y-6">
-          
           {/* Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {activeTab === "revenue" && (
-              <>
-                <div className="bg-white rounded-2xl border border-[var(--border)] p-6 shadow-sm">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-emerald-50 rounded-lg"><DollarSign className="w-5 h-5 text-emerald-600" /></div>
-                    <h3 className="font-bold text-[var(--ink-600)]">Total Revenue</h3>
+            {summaryCards.map((card, i) => (
+              <div key={i} className="bg-white rounded-2xl border border-[var(--border)] p-6 shadow-sm">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className={`p-2 rounded-lg ${card.color}`}>
+                    <card.icon className={`w-5 h-5 ${card.color.split(" ")[0]}`} />
                   </div>
-                  <p className="text-3xl font-bold text-[var(--ink-950)]">${reportData.total_revenue?.toLocaleString() || 0}</p>
+                  <h3 className="font-bold text-[var(--ink-600)]">{card.label}</h3>
                 </div>
-                <div className="bg-white rounded-2xl border border-[var(--border)] p-6 shadow-sm">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-blue-50 rounded-lg"><ShoppingCart className="w-5 h-5 text-blue-600" /></div>
-                    <h3 className="font-bold text-[var(--ink-600)]">Paid Orders</h3>
-                  </div>
-                  <p className="text-3xl font-bold text-[var(--ink-950)]">{reportData.total_orders?.toLocaleString() || 0}</p>
-                </div>
-                <div className="bg-white rounded-2xl border border-[var(--border)] p-6 shadow-sm">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-amber-50 rounded-lg"><Activity className="w-5 h-5 text-amber-600" /></div>
-                    <h3 className="font-bold text-[var(--ink-600)]">Avg Order Value</h3>
-                  </div>
-                  <p className="text-3xl font-bold text-[var(--ink-950)]">${reportData.total_orders ? (reportData.total_revenue / reportData.total_orders).toFixed(2) : 0}</p>
-                </div>
-              </>
-            )}
-
-            {activeTab === "users" && (
-              <>
-                <div className="bg-white rounded-2xl border border-[var(--border)] p-6 shadow-sm">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-blue-50 rounded-lg"><Users className="w-5 h-5 text-blue-600" /></div>
-                    <h3 className="font-bold text-[var(--ink-600)]">Total Signups</h3>
-                  </div>
-                  <p className="text-3xl font-bold text-[var(--ink-950)]">{reportData.total_users?.toLocaleString() || 0}</p>
-                </div>
-                <div className="bg-white rounded-2xl border border-[var(--border)] p-6 shadow-sm">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-emerald-50 rounded-lg"><Activity className="w-5 h-5 text-emerald-600" /></div>
-                    <h3 className="font-bold text-[var(--ink-600)]">KYC Verified</h3>
-                  </div>
-                  <p className="text-3xl font-bold text-[var(--ink-950)]">{reportData.kyc_stats?.verified || 0}</p>
-                </div>
-                <div className="bg-white rounded-2xl border border-[var(--border)] p-6 shadow-sm">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-amber-50 rounded-lg"><Activity className="w-5 h-5 text-amber-600" /></div>
-                    <h3 className="font-bold text-[var(--ink-600)]">KYC Pending/None</h3>
-                  </div>
-                  <p className="text-3xl font-bold text-[var(--ink-950)]">{(reportData.kyc_stats?.pending || 0) + (reportData.kyc_stats?.none || 0)}</p>
-                </div>
-              </>
-            )}
+                <p className="text-3xl font-bold text-[var(--ink-950)]">{card.value}</p>
+              </div>
+            ))}
           </div>
 
           {/* Chart */}
           <div className="bg-white rounded-2xl border border-[var(--border)] p-6 shadow-sm">
             <h3 className="font-bold text-lg text-[var(--ink-950)] mb-6 capitalize">{activeTab} Trend</h3>
-            
-            {activeTab === "revenue" && reportData.data && (
-              <AdminAreaChart
-                data={reportData.data.map((d: any) => ({ name: format(new Date(d.date), "MMM dd"), value: d.revenue }))}
-                xKey="name"
-                dataKey="value"
-                color="#0ea5e9"
-                height={350}
-              />
-            )}
-            
-            {activeTab === "users" && reportData.data && (
-              <AdminBarChart
-                data={reportData.data.map((d: any) => ({ name: format(new Date(d.date), "MMM dd"), value: d.new_users }))}
-                xKey="name"
-                dataKey="value"
-                color="#8b5cf6"
-                height={350}
-              />
-            )}
-
-            {activeTab === "orders" && reportData.by_program && (
+            {activeTab === "trading" && reportData.chart_data ? (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div>
-                  <h4 className="font-bold text-sm text-[var(--ink-500)] mb-4">By Program</h4>
-                  <AdminBarChart
-                    data={reportData.by_program.map((p: any) => ({ name: p.program, value: p.count }))}
-                    xKey="name"
-                    dataKey="value"
-                    color="#f59e0b"
-                    height={300}
-                  />
-                </div>
-                <div>
-                  <h4 className="font-bold text-sm text-[var(--ink-500)] mb-4">By Status</h4>
-                  <AdminBarChart
-                    data={reportData.by_status.map((s: any) => ({ name: s.status, value: s.count }))}
-                    xKey="name"
-                    dataKey="value"
-                    color="#cbfb45"
-                    height={300}
-                  />
-                </div>
+                <AdminBarChart
+                  data={reportData.chart_data.map((d: any) => ({ name: d.date, value: d.pass_count + d.fail_count }))}
+                  xKey="name"
+                  dataKey="value"
+                  color="#059669"
+                  height={350}
+                />
+                <AdminPieChart
+                  data={[
+                    { name: "Passed", value: reportData.summary.pass_rate || 0 },
+                    { name: "Failed", value: reportData.summary.fail_rate || 0 },
+                  ]}
+                  dataKey="value"
+                  nameKey="name"
+                  height={350}
+                />
               </div>
+            ) : (
+              <AdminAreaChart
+                data={reportData.chart_data?.map((d: any) => ({
+                  name: d.date,
+                  value: activeTab === "revenue" ? d.revenue : d.new_users,
+                })) || []}
+                xKey="name"
+                dataKey="value"
+                color={activeTab === "revenue" ? "#0ea5e9" : "#8b5cf6"}
+                height={350}
+              />
             )}
           </div>
+
+          {/* Data Table */}
+          {reportData.table_data && reportData.table_data.length > 0 && (
+            <div className="bg-white rounded-2xl border border-[var(--border)] p-6 shadow-sm">
+              <div className="flex items-center gap-2 mb-4">
+                <Filter className="w-4 h-4 text-[var(--ink-400)]" />
+                <h3 className="font-bold text-[var(--ink-950)]">Detailed Data</h3>
+              </div>
+              <AdminTable data={reportData.table_data} columns={tableColumns} pageSize={10} />
+            </div>
+          )}
         </div>
       ) : null}
     </div>

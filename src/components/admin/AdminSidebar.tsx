@@ -113,6 +113,7 @@ const sections: NavSection[] = [
       { icon: Mail, label: "Email", href: "/admin/email" },
       { icon: Shield, label: "Roles & Permissions", href: "/admin/roles" },
       { icon: TrendingUp, label: "Reports", href: "/admin/reports" },
+      { icon: Activity, label: "API Logs", href: "/admin/api-logs" },
       { icon: Settings, label: "Settings", href: "/admin/settings" },
       { icon: ScrollText, label: "Audit Logs", href: "/admin/audit" },
     ],
