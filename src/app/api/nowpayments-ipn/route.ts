@@ -82,6 +82,7 @@ export async function POST(req: Request) {
           apiUrl: platform.api_url,
           apiKey: platform.api_key,
           userEmail: purchase.email || "user@example.com",
+          userId: purchase.user_id,
           accountSize: purchase.account_size,
           rules: rules
         });

@@ -94,6 +94,7 @@ export interface TerminalAccountParams {
   apiUrl: string;
   apiKey: string;
   userEmail: string;
+  userId: string;
   accountSize: number;
   rules: any;
 }
@@ -129,9 +130,9 @@ export async function createTradingAccount(params: TerminalAccountParams): Promi
         'x-api-key': apiKey
       },
       body: JSON.stringify({
-        email: userEmail,
-        balance: accountSize,
-        rules: rules // e.g., max_daily_drawdown_pct, profit_target_pct
+        userId: params.userId,
+        accountSize: accountSize,
+        rules: rules
       }),
       signal: controller.signal
     });
@@ -140,11 +141,13 @@ export async function createTradingAccount(params: TerminalAccountParams): Promi
     
     if (response.ok) {
       const data = await response.json();
+      // If the terminal successfully created an account, use its ID as the login
+      const accountId = data.account?.id || `TPP-${Math.floor(Math.random() * 1000000)}`;
       return {
         success: true,
-        login: data.login || `TPP-${Math.floor(Math.random() * 1000000)}`,
-        password: data.password || generateRandomPassword(),
-        server: data.server || "TPP-Live"
+        login: accountId,
+        password: generateRandomPassword(), // Assume dummy password for now since TPP is auto-login based
+        server: "TPP-Live"
       };
     } else {
       // API returned an error, fallback to generating mock credentials for now
