@@ -7,6 +7,7 @@ import { Plus, Edit2, X, Trash2 } from "lucide-react";
 
 export default function ChallengesAdminPage() {
   const [programs, setPrograms] = useState<any[]>([]);
+  const [rules, setRules] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,7 +20,10 @@ export default function ChallengesAdminPage() {
     max_drawdown: "",
     daily_drawdown: "",
     profit_split: 80,
-    is_active: true
+    is_active: true,
+    phase_1_rule_id: "",
+    phase_2_rule_id: "",
+    funded_rule_id: ""
   });
   const [formFees, setFormFees] = useState<{account_size: number, fee: number}[]>([]);
   const [selectedFeeIndex, setSelectedFeeIndex] = useState<number | null>(null);
@@ -31,7 +35,13 @@ export default function ChallengesAdminPage() {
 
   useEffect(() => {
     fetchPrograms();
+    fetchRules();
   }, []);
+
+  async function fetchRules() {
+    const { data } = await supabase.from("trading_rules").select("*").order("created_at", { ascending: true });
+    if (data) setRules(data);
+  }
 
   async function fetchPrograms() {
     setLoading(true);
@@ -49,7 +59,7 @@ export default function ChallengesAdminPage() {
   function openNewModal() {
     setEditingProgram(null);
     setFormData({
-      key: "", label: "", short_label: "", profit_target: "", max_drawdown: "", daily_drawdown: "", profit_split: 80, is_active: true
+      key: "", label: "", short_label: "", profit_target: "", max_drawdown: "", daily_drawdown: "", profit_split: 80, is_active: true, phase_1_rule_id: "", phase_2_rule_id: "", funded_rule_id: ""
     });
     setFormFees([]);
     setSelectedFeeIndex(null);
@@ -66,7 +76,10 @@ export default function ChallengesAdminPage() {
       max_drawdown: prog.max_drawdown || "",
       daily_drawdown: prog.daily_drawdown || "",
       profit_split: prog.profit_split || 80,
-      is_active: prog.is_active
+      is_active: prog.is_active,
+      phase_1_rule_id: prog.phase_1_rule_id || "",
+      phase_2_rule_id: prog.phase_2_rule_id || "",
+      funded_rule_id: prog.funded_rule_id || ""
     });
     const fees = (prog.tpp_program_fees || []).map((f: any) => ({
       account_size: f.account_size,
@@ -83,9 +96,16 @@ export default function ChallengesAdminPage() {
 
     // Save Program
     const progKey = formData.key;
+    const payload = {
+      ...formData,
+      phase_1_rule_id: formData.phase_1_rule_id || null,
+      phase_2_rule_id: formData.phase_2_rule_id || null,
+      funded_rule_id: formData.funded_rule_id || null,
+    };
+    
     const { error } = isEditing 
-      ? await supabase.from("tpp_programs").update(formData).eq("id", editingProgram.id)
-      : await supabase.from("tpp_programs").insert([formData]);
+      ? await supabase.from("tpp_programs").update(payload).eq("id", editingProgram.id)
+      : await supabase.from("tpp_programs").insert([payload]);
 
     if (error) {
       alert("Error saving program: " + error.message);
@@ -160,6 +180,32 @@ export default function ChallengesAdminPage() {
                 <div className="flex items-center gap-2 mt-6">
                   <input type="checkbox" checked={formData.is_active} onChange={e => setFormData({...formData, is_active: e.target.checked})} id="prog_active" />
                   <label htmlFor="prog_active" className="text-sm font-semibold text-green-700">Program is Active</label>
+                </div>
+              </div>
+
+              {/* RULES EDITOR */}
+              <div className="grid grid-cols-1 gap-4 pt-4 border-t">
+                <h3 className="text-sm font-bold">Trading Rule Engines</h3>
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-600 mb-1">Phase 1 Rules</label>
+                  <select value={formData.phase_1_rule_id} onChange={e => setFormData({...formData, phase_1_rule_id: e.target.value})} className="w-full border rounded-lg p-2 bg-white text-sm">
+                    <option value="">No Rules Selected</option>
+                    {rules.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-600 mb-1">Phase 2 Rules</label>
+                  <select value={formData.phase_2_rule_id} onChange={e => setFormData({...formData, phase_2_rule_id: e.target.value})} className="w-full border rounded-lg p-2 bg-white text-sm">
+                    <option value="">No Rules Selected</option>
+                    {rules.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-600 mb-1">Funded Rules</label>
+                  <select value={formData.funded_rule_id} onChange={e => setFormData({...formData, funded_rule_id: e.target.value})} className="w-full border rounded-lg p-2 bg-white text-sm">
+                    <option value="">No Rules Selected</option>
+                    {rules.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
+                  </select>
                 </div>
               </div>
 
