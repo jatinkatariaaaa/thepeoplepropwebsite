@@ -23,6 +23,12 @@ export default function SettingsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState("");
 
+  const [kycForm, setKycForm] = useState({
+    documentType: "national_id",
+    documentNumber: "",
+    country: "",
+  });
+
   // Load the logged-in user's profile on mount
   useEffect(() => {
     async function loadProfile() {
@@ -269,57 +275,108 @@ export default function SettingsPage() {
             <p className="text-[13px] text-[var(--ink-500)] mt-1">Verify your identity to unlock payouts and funded accounts.</p>
           </div>
 
-          <div className="flex flex-col md:flex-row items-center justify-between p-4 bg-[var(--paper)] rounded-xl border border-[var(--border)] gap-4">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-[14px] font-bold text-[var(--ink-950)]">Current Status:</span>
-                <span className={cn(
-                  "px-2.5 py-0.5 rounded-full text-[12px] font-bold uppercase tracking-wider",
-                  formData.kycStatus === 'verified' ? "bg-emerald-50 text-emerald-600" :
-                  formData.kycStatus === 'pending' ? "bg-amber-50 text-amber-600" :
-                  formData.kycStatus === 'rejected' ? "bg-red-50 text-red-600" :
-                  "bg-[var(--ink-100)] text-[var(--ink-600)]"
-                )}>
-                  {formData.kycStatus || 'unverified'}
-                </span>
+          <div className="flex flex-col p-4 bg-[var(--paper)] rounded-xl border border-[var(--border)] gap-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-[14px] font-bold text-[var(--ink-950)]">Current Status:</span>
+                  <span className={cn(
+                    "px-2.5 py-0.5 rounded-full text-[12px] font-bold uppercase tracking-wider",
+                    formData.kycStatus === 'verified' ? "bg-emerald-50 text-emerald-600" :
+                    formData.kycStatus === 'pending' ? "bg-amber-50 text-amber-600" :
+                    formData.kycStatus === 'rejected' ? "bg-red-50 text-red-600" :
+                    "bg-[var(--ink-100)] text-[var(--ink-600)]"
+                  )}>
+                    {formData.kycStatus || 'unverified'}
+                  </span>
+                </div>
+                <p className="text-[13px] text-[var(--ink-500)]">
+                  {formData.kycStatus === 'verified' && "Your identity has been successfully verified."}
+                  {formData.kycStatus === 'pending' && "Your verification request is currently under review by our team."}
+                  {formData.kycStatus === 'rejected' && "Your previous verification request was rejected. Please try again."}
+                  {(!formData.kycStatus || formData.kycStatus === 'none') && "Please submit your KYC details to get verified."}
+                </p>
               </div>
-              <p className="text-[13px] text-[var(--ink-500)]">
-                {formData.kycStatus === 'verified' && "Your identity has been successfully verified."}
-                {formData.kycStatus === 'pending' && "Your verification request is currently under review by our team."}
-                {formData.kycStatus === 'rejected' && "Your previous verification request was rejected. Please try again."}
-                {(!formData.kycStatus || formData.kycStatus === 'none') && "Please submit your KYC details to get verified."}
-              </p>
             </div>
 
             {(!formData.kycStatus || formData.kycStatus === 'none' || formData.kycStatus === 'rejected') && (
-              <button 
-                onClick={async () => {
-                  if(confirm("Are you sure you want to submit your KYC request? Make sure your profile details match your ID.")){
-                    try {
-                      const { data: { session } } = await supabase.auth.getSession();
-                      const res = await fetch("/api/user/settings", {
-                        method: "POST",
-                        headers: { 
-                          "Content-Type": "application/json",
-                          ...(session?.access_token && { "Authorization": `Bearer ${session.access_token}` })
-                        },
-                        body: JSON.stringify({ action: "submit_kyc" }),
-                      });
-                      if(res.ok){
-                        setFormData({...formData, kycStatus: 'pending'});
-                        alert("KYC Request Submitted Successfully!");
-                      } else {
-                        alert("Failed to submit KYC");
+              <div className="mt-4 space-y-4 pt-4 border-t border-[var(--border)]">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-[13px] font-bold text-[var(--ink-950)] mb-1">Document Type *</label>
+                    <select
+                      value={kycForm.documentType}
+                      onChange={(e) => setKycForm({ ...kycForm, documentType: e.target.value })}
+                      className="w-full h-11 px-4 bg-white border border-[var(--border)] rounded-xl text-[14px] focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10"
+                    >
+                      <option value="national_id">National ID</option>
+                      <option value="passport">Passport</option>
+                      <option value="driving_license">Driving License</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[13px] font-bold text-[var(--ink-950)] mb-1">Document Number *</label>
+                    <input
+                      type="text"
+                      placeholder="Enter ID Number"
+                      value={kycForm.documentNumber}
+                      onChange={(e) => setKycForm({ ...kycForm, documentNumber: e.target.value })}
+                      className="w-full h-11 px-4 bg-white border border-[var(--border)] rounded-xl text-[14px] focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[13px] font-bold text-[var(--ink-950)] mb-1">Issuing Country *</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. United States"
+                      value={kycForm.country}
+                      onChange={(e) => setKycForm({ ...kycForm, country: e.target.value })}
+                      className="w-full h-11 px-4 bg-white border border-[var(--border)] rounded-xl text-[14px] focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-end">
+                  <button 
+                    onClick={async () => {
+                      if (!kycForm.documentNumber || !kycForm.country) {
+                        alert("Please fill in all KYC fields.");
+                        return;
                       }
-                    } catch(e) {
-                      alert("Error submitting KYC");
-                    }
-                  }
-                }}
-                className="h-10 px-5 bg-[var(--accent)] hover:bg-[var(--accent-700)] text-white text-[13px] font-bold rounded-xl transition-all shadow-sm active:scale-[0.98] whitespace-nowrap"
-              >
-                Submit KYC
-              </button>
+                      if(confirm("Are you sure you want to submit your KYC request? Make sure your profile details match your ID.")){
+                        try {
+                          const { data: { session } } = await supabase.auth.getSession();
+                          const res = await fetch("/api/user/settings", {
+                            method: "POST",
+                            headers: { 
+                              "Content-Type": "application/json",
+                              ...(session?.access_token && { "Authorization": `Bearer ${session.access_token}` })
+                            },
+                            body: JSON.stringify({ 
+                              action: "submit_kyc",
+                              documentType: kycForm.documentType,
+                              documentNumber: kycForm.documentNumber,
+                              country: kycForm.country
+                            }),
+                          });
+                          if(res.ok){
+                            setFormData({...formData, kycStatus: 'pending'});
+                            alert("KYC Request Submitted Successfully!");
+                          } else {
+                            const data = await res.json();
+                            alert("Failed to submit KYC: " + data.error);
+                          }
+                        } catch(e) {
+                          alert("Error submitting KYC");
+                        }
+                      }
+                    }}
+                    className="h-10 px-6 bg-[var(--accent)] hover:bg-[var(--accent-700)] text-white text-[13px] font-bold rounded-xl transition-all shadow-sm active:scale-[0.98] whitespace-nowrap"
+                  >
+                    Submit KYC
+                  </button>
+                </div>
+              </div>
             )}
           </div>
         </div>

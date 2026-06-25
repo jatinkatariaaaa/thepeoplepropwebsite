@@ -80,6 +80,26 @@ export async function POST(request: Request) {
 
     // Check if the user wants to submit KYC
     if (body.action === 'submit_kyc') {
+      const { documentType, documentNumber, country } = body;
+      
+      if (!documentType || !documentNumber || !country) {
+        return NextResponse.json({ error: "Missing required KYC fields" }, { status: 400 });
+      }
+
+      // Insert into kyc_documents table
+      const { error: insertError } = await supabaseAdmin
+        .from("kyc_documents")
+        .insert({
+          user_id: user.id,
+          document_type: documentType,
+          document_number: documentNumber,
+          country: country,
+          status: "pending"
+        });
+        
+      if (insertError) throw insertError;
+
+      // Update profiles
       const { error } = await supabaseAdmin
         .from("profiles")
         .update({ kyc_status: "pending" })

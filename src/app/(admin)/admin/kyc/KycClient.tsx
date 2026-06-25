@@ -371,33 +371,7 @@ export function KycClient({ initialDocuments, statusCounts }: KycClientProps) {
               </div>
             </div>
 
-            {/* Images */}
-            <div className="space-y-3">
-              {selectedDoc.front_image_url && (
-                <div>
-                  <p className="text-xs text-[var(--ink-400)] uppercase tracking-wider font-medium mb-2">Front Side</p>
-                  <div className="relative rounded-xl overflow-hidden border border-[var(--border)] bg-[var(--paper-2)]">
-                    <img src={selectedDoc.front_image_url} alt="Front" className="w-full max-h-64 object-contain" />
-                  </div>
-                </div>
-              )}
-              {selectedDoc.back_image_url && (
-                <div>
-                  <p className="text-xs text-[var(--ink-400)] uppercase tracking-wider font-medium mb-2">Back Side</p>
-                  <div className="relative rounded-xl overflow-hidden border border-[var(--border)] bg-[var(--paper-2)]">
-                    <img src={selectedDoc.back_image_url} alt="Back" className="w-full max-h-64 object-contain" />
-                  </div>
-                </div>
-              )}
-              {selectedDoc.selfie_image_url && (
-                <div>
-                  <p className="text-xs text-[var(--ink-400)] uppercase tracking-wider font-medium mb-2">Selfie</p>
-                  <div className="relative rounded-xl overflow-hidden border border-[var(--border)] bg-[var(--paper-2)]">
-                    <img src={selectedDoc.selfie_image_url} alt="Selfie" className="w-full max-h-64 object-contain" />
-                  </div>
-                </div>
-              )}
-            </div>
+            {/* No Images Required */}
 
             {/* Admin Notes */}
             {selectedDoc.admin_notes && (
