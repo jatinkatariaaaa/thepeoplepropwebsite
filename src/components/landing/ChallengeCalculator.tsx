@@ -34,6 +34,7 @@ import {
   type Program,
 } from "@/data/programs";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
+import { useHydratedPrograms } from "@/hooks/useHydratedPrograms";
 import { cn } from "@/lib/utils";
 
 /* ─────────────────────────────────────────────────────────────
@@ -60,15 +61,13 @@ export function ChallengeCalculator() {
   const [promoCode, setPromoCode] = useState("");
   const [appliedDiscount, setAppliedDiscount] = useState(0);
   const [mounted, setMounted] = useState(false);
-  const [livePrograms, setLivePrograms] = useState<Program[]>(programs);
+  const { programs: livePrograms, isLoading: isLoadingPrograms } = useHydratedPrograms();
   const [livePlatforms, setLivePlatforms] = useState<Platform[]>(platforms);
-  const [isLoadingPrograms, setIsLoadingPrograms] = useState(true);
 
   // using imported supabase from lib
 
   useEffect(() => {
     setMounted(true);
-    fetchLivePrograms();
     fetchLivePlatforms();
   }, []);
 
@@ -98,57 +97,7 @@ export function ChallengeCalculator() {
     }
   }
 
-  async function fetchLivePrograms() {
-    try {
-      const { data, error } = await supabase
-        .from("tpp_programs")
-        .select("*, tpp_program_fees(*)")
-        .eq("is_active", true)
-        .order("created_at", { ascending: true });
 
-      if (error) throw error;
-      
-      if (data && data.length > 0) {
-        // Map DB rows to the Program interface
-        const mappedPrograms: Program[] = data.map((d: any) => {
-          const feesMap: any = {};
-          if (d.tpp_program_fees) {
-            d.tpp_program_fees.forEach((f: any) => {
-              feesMap[f.account_size] = Number(f.fee);
-            });
-          }
-          return {
-            key: d.key,
-            label: d.label,
-            shortLabel: d.short_label,
-            tagline: d.tagline,
-            badge: d.badge,
-            phases: d.phases,
-            profitSplit: d.profit_split,
-            profitSplitMax: d.profit_split_max,
-            payoutCycle: d.payout_cycle,
-            profitTarget: d.profit_target,
-            dailyDrawdown: d.daily_drawdown,
-            maxDrawdown: d.max_drawdown,
-            minTradingDays: d.min_trading_days,
-            consistencyRule: d.consistency_rule,
-            highlights: d.highlights || [],
-            fees: feesMap
-          };
-        });
-        setLivePrograms(mappedPrograms);
-        
-        // If the current programKey doesn't exist in live data, reset it to the first available
-        if (!mappedPrograms.find(p => p.key === programKey)) {
-          setProgramKey(mappedPrograms[0].key as ProgramKey);
-        }
-      }
-    } catch (err) {
-      console.error("Error loading programs from DB:", err);
-    } finally {
-      setIsLoadingPrograms(false);
-    }
-  }
 
   const program = useMemo(
     () => livePrograms.find((p) => p.key === programKey) ?? livePrograms[0],

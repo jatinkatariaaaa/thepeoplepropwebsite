@@ -6,7 +6,8 @@ import { PageLayout, PageHero, PageSection } from "@/components/layout";
 import { Reveal, GsapWords, Magnetic, FaqRow, LIME } from "@/components/ui/Animations";
 import { ChallengeCalculator } from "@/components/landing/ChallengeCalculator";
 import { faq } from "@/data/faq";
-import { ALL_SIZES, formatSize, programs } from "@/data/programs";
+import { ALL_SIZES, formatSize } from "@/data/programs";
+import { useHydratedPrograms } from "@/hooks/useHydratedPrograms";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
 
 export default function ChallengesPage() {
@@ -15,6 +16,7 @@ export default function ChallengesPage() {
     .slice(0, 6);
 
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const { programs } = useHydratedPrograms();
 
   return (
     <PageLayout>

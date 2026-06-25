@@ -16,6 +16,7 @@ import {
   type AddOnKey,
   type ProgramKey,
 } from "@/data/programs";
+import { useHydratedPrograms } from "@/hooks/useHydratedPrograms";
 
 export function NewChallengeForm() {
   const router = useRouter();
@@ -47,11 +48,10 @@ export function NewChallengeForm() {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [checkoutMessage, setCheckoutMessage] = useState("");
 
-  const [livePrograms, setLivePrograms] = useState(programs);
+  const { programs: livePrograms, isLoading: isLoadingPrograms } = useHydratedPrograms();
   const [livePlatforms, setLivePlatforms] = useState<any[]>([]);
-  const [isLoadingPrograms, setIsLoadingPrograms] = useState(true);
 
-  // Auth Check & Fetch Programs
+  // Auth Check & Fetch Platforms
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) {
@@ -59,23 +59,15 @@ export function NewChallengeForm() {
       }
     });
 
-    // Fetch live programs and platforms
-    const fetchLiveProgramsAndPlatforms = async () => {
+    // Fetch platforms
+    const fetchPlatforms = async () => {
       try {
-        const [programsRes, platformsRes] = await Promise.all([
-          supabase
-            .from("tpp_programs")
-            .select("*, tpp_program_fees(*)")
-            .eq("is_active", true)
-            .order("created_at", { ascending: true }),
-          supabase
+        const platformsRes = await supabase
             .from("tpp_platforms")
             .select("*")
             .eq("is_active", true)
-            .order("created_at", { ascending: true })
-        ]);
+            .order("created_at", { ascending: true });
 
-        if (programsRes.error) throw programsRes.error;
         if (platformsRes.error) throw platformsRes.error;
 
         if (platformsRes.data && platformsRes.data.length > 0) {
@@ -85,47 +77,12 @@ export function NewChallengeForm() {
             setPlatform(platformsRes.data[0].name);
           }
         }
-
-        const data = programsRes.data;
-
-        if (data && data.length > 0) {
-          const mappedPrograms = data.map((d: any) => {
-            const feesMap: any = {};
-            if (d.tpp_program_fees) {
-              d.tpp_program_fees.forEach((f: any) => {
-                feesMap[f.account_size] = Number(f.fee);
-              });
-            }
-            return {
-              key: d.key,
-              label: d.label,
-              shortLabel: d.short_label,
-              tagline: d.tagline,
-              badge: d.badge,
-              phases: d.phases,
-              profitSplit: d.profit_split,
-              profitSplitMax: d.profit_split_max,
-              payoutCycle: d.payout_cycle,
-              profitTarget: d.profit_target,
-              dailyDrawdown: d.daily_drawdown,
-              maxDrawdown: d.max_drawdown,
-              minTradingDays: d.min_trading_days,
-              consistencyRule: d.consistency_rule,
-              highlights: d.highlights || [],
-              fees: feesMap
-            };
-          });
-          setLivePrograms(mappedPrograms as any);
-        }
       } catch (err) {
-        console.error("Error loading data from DB:", err);
-      } finally {
-        setIsLoadingPrograms(false);
+        console.error("Error fetching platforms:", err);
       }
     };
-
-    fetchLiveProgramsAndPlatforms();
-  }, [router]);
+    fetchPlatforms();
+  }, [platform, router]);
 
   const program = useMemo(
     () => livePrograms.find((p) => p.key === programKey) ?? livePrograms[0],
