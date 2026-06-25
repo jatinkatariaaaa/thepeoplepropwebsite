@@ -19,10 +19,12 @@ export async function GET(request: Request) {
             return cookieStore.get(name)?.value;
           },
           set(name: string, value: string, options: CookieOptions) {
-            cookieStore.set({ name, value, ...options });
+            const cookieDomain = process.env.NEXT_PUBLIC_COOKIE_DOMAIN;
+            cookieStore.set({ name, value, ...options, ...(cookieDomain && { domain: cookieDomain }) });
           },
           remove(name: string, options: CookieOptions) {
-            cookieStore.delete({ name, ...options });
+            const cookieDomain = process.env.NEXT_PUBLIC_COOKIE_DOMAIN;
+            cookieStore.delete({ name, ...options, ...(cookieDomain && { domain: cookieDomain }) });
           },
         },
       }

@@ -16,7 +16,7 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: any[]
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isActionModalOpen, setIsActionModalOpen] = useState(false);
-  const [actionType, setActionType] = useState<"suspend" | "ban" | "unsuspend" | "">("");
+  const [actionType, setActionType] = useState<"suspend" | "ban" | "unsuspend" | "verify_kyc" | "reject_kyc" | "">("");
   const [actionReason, setActionReason] = useState("");
 
   const fetchUsers = async () => {
@@ -100,6 +100,23 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: any[]
       ),
     },
     {
+      accessorKey: "kyc_status",
+      header: "KYC",
+      cell: ({ row }) => {
+        const kyc = row.original.kyc_status || "none";
+        return (
+          <span className={`inline-flex px-2 py-1 rounded-full text-[11px] font-bold uppercase ${
+            kyc === "verified" ? "bg-emerald-50 text-emerald-700" :
+            kyc === "pending" ? "bg-amber-50 text-amber-700" :
+            kyc === "rejected" ? "bg-red-50 text-red-700" :
+            "bg-[var(--ink-100)] text-[var(--ink-600)]"
+          }`}>
+            {kyc}
+          </span>
+        );
+      },
+    },
+    {
       accessorKey: "created_at",
       header: "Joined",
       cell: ({ row }) => <span className="text-[13px]">{format(new Date(row.original.created_at), "MMM dd, yyyy")}</span>,
@@ -111,6 +128,24 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: any[]
         const user = row.original;
         return (
           <div className="flex items-center gap-2">
+            {user.kyc_status === "pending" && (
+              <>
+                <button
+                  title="Verify KYC"
+                  onClick={() => { setSelectedUser(user); setActionType("verify_kyc" as any); setIsActionModalOpen(true); }}
+                  className="p-1.5 text-[var(--ink-400)] hover:text-emerald-600 hover:bg-emerald-50 rounded"
+                >
+                  <ShieldCheck className="w-4 h-4" />
+                </button>
+                <button
+                  title="Reject KYC"
+                  onClick={() => { setSelectedUser(user); setActionType("reject_kyc" as any); setIsActionModalOpen(true); }}
+                  className="p-1.5 text-[var(--ink-400)] hover:text-red-600 hover:bg-red-50 rounded"
+                >
+                  <ShieldAlert className="w-4 h-4 text-red-500" />
+                </button>
+              </>
+            )}
             <button
               onClick={() => { setSelectedUser(user); setIsEditModalOpen(true); }}
               className="p-1.5 text-[var(--ink-400)] hover:text-[var(--ink-950)] hover:bg-[var(--border)] rounded"
@@ -153,15 +188,21 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: any[]
 
       <AdminTable data={users} columns={columns} loading={loading} />
 
-      {/* Action Modal (Suspend/Ban) */}
+      {/* Action Modal (Suspend/Ban/KYC) */}
       <AdminModal
         isOpen={isActionModalOpen}
         onClose={() => setIsActionModalOpen(false)}
-        title={`${actionType === "ban" ? "Ban" : actionType === "suspend" ? "Suspend" : "Unsuspend"} User`}
+        title={`${
+          actionType === "ban" ? "Ban" : 
+          actionType === "suspend" ? "Suspend" : 
+          actionType === "unsuspend" ? "Unsuspend" : 
+          actionType === "verify_kyc" ? "Verify KYC for" :
+          actionType === "reject_kyc" ? "Reject KYC for" : ""
+        } User`}
         description={selectedUser?.email}
       >
         <div className="space-y-4">
-          {actionType !== "unsuspend" && (
+          {actionType !== "unsuspend" && actionType !== "verify_kyc" && (
             <div>
               <label className="block text-sm font-semibold text-[var(--ink-950)] mb-1">Reason (Optional)</label>
               <textarea
@@ -169,7 +210,7 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: any[]
                 onChange={(e) => setActionReason(e.target.value)}
                 className="w-full border border-[var(--border)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)]"
                 rows={3}
-                placeholder={`Reason for ${actionType}ing this user...`}
+                placeholder={`Reason for this action...`}
               />
             </div>
           )}
@@ -183,8 +224,9 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: any[]
             <button
               onClick={handleAction}
               className={`px-4 py-2 font-bold text-white rounded-full transition-colors ${
-                actionType === "ban" ? "bg-red-600 hover:bg-red-700" :
+                actionType === "ban" || actionType === "reject_kyc" ? "bg-red-600 hover:bg-red-700" :
                 actionType === "suspend" ? "bg-amber-600 hover:bg-amber-700" :
+                actionType === "verify_kyc" ? "bg-emerald-600 hover:bg-emerald-700" :
                 "bg-[var(--ink-950)] hover:bg-black"
               }`}
             >

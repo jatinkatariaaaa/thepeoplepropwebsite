@@ -172,51 +172,15 @@ export default function AdminDashboardClient() {
 
     async function fetchDashboard() {
       try {
-        const today = startOfDay(new Date()).toISOString();
+        const response = await fetch("/api/admin/dashboard");
+        if (!response.ok) {
+          throw new Error("Failed to fetch dashboard data");
+        }
+        const data = await response.json();
 
-        // Parallel fetches
-        const [
-          { count: totalUsers },
-          { count: activeChallenges },
-          { data: allPurchases },
-          { count: pendingPayouts },
-          { count: openTickets },
-          { count: activeCoupons },
-          { count: newUsersToday },
-          { data: todayPurchases },
-          { data: recentOrdersData },
-          { data: recentUsersData },
-          { data: last30DaysPurchases },
-        ] = await Promise.all([
-          supabase.from("profiles").select("*", { count: "exact", head: true }),
-          supabase.from("accounts").select("*", { count: "exact", head: true }).in("status", ["active", "passed"]),
-          supabase.from("purchases").select("price_amount").eq("payment_status", "paid"),
-          supabase.from("payouts").select("*", { count: "exact", head: true }).eq("status", "pending"),
-          supabase.from("support_tickets").select("*", { count: "exact", head: true }).eq("status", "open").then(r => r.error ? { count: 0 } : r),
-          supabase.from("tpp_coupons").select("*", { count: "exact", head: true }).eq("is_active", true),
-          supabase.from("profiles").select("*", { count: "exact", head: true }).gte("created_at", today),
-          supabase.from("purchases").select("price_amount").eq("payment_status", "paid").gte("created_at", today),
-          supabase.from("purchases").select("id, email, program_key, account_size, price_amount, payment_status, created_at").order("created_at", { ascending: false }).limit(8),
-          supabase.from("profiles").select("id, email, display_name, created_at").order("created_at", { ascending: false }).limit(8),
-          supabase.from("purchases").select("price_amount, created_at").eq("payment_status", "paid").gte("created_at", subDays(new Date(), 30).toISOString()),
-        ]);
-
-        const totalRevenue = allPurchases?.reduce((s, p) => s + Number(p.price_amount), 0) || 0;
-        const revenueToday = todayPurchases?.reduce((s, p) => s + Number(p.price_amount), 0) || 0;
-
-        setStats({
-          totalUsers: totalUsers || 0,
-          activeChallenges: activeChallenges || 0,
-          totalRevenue,
-          pendingPayouts: pendingPayouts || 0,
-          openTickets: (openTickets as number) || 0,
-          activeCoupons: activeCoupons || 0,
-          newUsersToday: newUsersToday || 0,
-          revenueToday,
-        });
-
-        setRecentOrders(recentOrdersData || []);
-        setRecentUsers(recentUsersData || []);
+        setStats(data.stats);
+        setRecentOrders(data.recentOrders);
+        setRecentUsers(data.recentUsers);
 
         // Build 30-day chart data
         const days: ChartPoint[] = [];
@@ -224,12 +188,12 @@ export default function AdminDashboardClient() {
           const day = subDays(new Date(), i);
           const dayStr = format(day, "yyyy-MM-dd");
           const dayLabel = format(day, "MMM dd");
-          const dayOrders = last30DaysPurchases?.filter(
-            (p) => format(new Date(p.created_at), "yyyy-MM-dd") === dayStr
+          const dayOrders = data.last30DaysPurchases?.filter(
+            (p: any) => format(new Date(p.created_at), "yyyy-MM-dd") === dayStr
           );
           days.push({
             date: dayLabel,
-            revenue: dayOrders?.reduce((s, p) => s + Number(p.price_amount), 0) || 0,
+            revenue: dayOrders?.reduce((s: number, p: any) => s + Number(p.price_amount), 0) || 0,
             orders: dayOrders?.length || 0,
           });
         }

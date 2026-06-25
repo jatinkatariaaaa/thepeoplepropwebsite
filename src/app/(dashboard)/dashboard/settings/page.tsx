@@ -16,6 +16,7 @@ export default function SettingsPage() {
     city: "",
     postalCode: "",
     country: "",
+    kycStatus: "",
   });
 
   const [isLoading, setIsLoading] = useState(true);
@@ -46,6 +47,7 @@ export default function SettingsPage() {
             city: profile.city || "",
             postalCode: profile.postalCode || "",
             country: profile.country || "",
+            kycStatus: profile.kycStatus || "",
           });
         }
       } catch (err) {
@@ -257,6 +259,68 @@ export default function SettingsPage() {
                 <option value="Singapore">Singapore</option>
               </select>
             </div>
+          </div>
+        </div>
+
+        {/* Identity Verification (KYC) */}
+        <div className="bg-white rounded-2xl p-6 lg:p-8 border border-[var(--border)] shadow-sm">
+          <div className="mb-6">
+            <h2 className="text-[16px] font-bold text-[var(--ink-950)]">Identity Verification (KYC)</h2>
+            <p className="text-[13px] text-[var(--ink-500)] mt-1">Verify your identity to unlock payouts and funded accounts.</p>
+          </div>
+
+          <div className="flex flex-col md:flex-row items-center justify-between p-4 bg-[var(--paper)] rounded-xl border border-[var(--border)] gap-4">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-[14px] font-bold text-[var(--ink-950)]">Current Status:</span>
+                <span className={cn(
+                  "px-2.5 py-0.5 rounded-full text-[12px] font-bold uppercase tracking-wider",
+                  formData.kycStatus === 'verified' ? "bg-emerald-50 text-emerald-600" :
+                  formData.kycStatus === 'pending' ? "bg-amber-50 text-amber-600" :
+                  formData.kycStatus === 'rejected' ? "bg-red-50 text-red-600" :
+                  "bg-[var(--ink-100)] text-[var(--ink-600)]"
+                )}>
+                  {formData.kycStatus || 'unverified'}
+                </span>
+              </div>
+              <p className="text-[13px] text-[var(--ink-500)]">
+                {formData.kycStatus === 'verified' && "Your identity has been successfully verified."}
+                {formData.kycStatus === 'pending' && "Your verification request is currently under review by our team."}
+                {formData.kycStatus === 'rejected' && "Your previous verification request was rejected. Please try again."}
+                {(!formData.kycStatus || formData.kycStatus === 'none') && "Please submit your KYC details to get verified."}
+              </p>
+            </div>
+
+            {(!formData.kycStatus || formData.kycStatus === 'none' || formData.kycStatus === 'rejected') && (
+              <button 
+                onClick={async () => {
+                  if(confirm("Are you sure you want to submit your KYC request? Make sure your profile details match your ID.")){
+                    try {
+                      const { data: { session } } = await supabase.auth.getSession();
+                      const res = await fetch("/api/user/settings", {
+                        method: "POST",
+                        headers: { 
+                          "Content-Type": "application/json",
+                          ...(session?.access_token && { "Authorization": `Bearer ${session.access_token}` })
+                        },
+                        body: JSON.stringify({ action: "submit_kyc" }),
+                      });
+                      if(res.ok){
+                        setFormData({...formData, kycStatus: 'pending'});
+                        alert("KYC Request Submitted Successfully!");
+                      } else {
+                        alert("Failed to submit KYC");
+                      }
+                    } catch(e) {
+                      alert("Error submitting KYC");
+                    }
+                  }
+                }}
+                className="h-10 px-5 bg-[var(--accent)] hover:bg-[var(--accent-700)] text-white text-[13px] font-bold rounded-xl transition-all shadow-sm active:scale-[0.98] whitespace-nowrap"
+              >
+                Submit KYC
+              </button>
+            )}
           </div>
         </div>
 

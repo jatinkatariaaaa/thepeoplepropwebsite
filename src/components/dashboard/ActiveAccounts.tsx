@@ -122,7 +122,7 @@ export function ActiveAccounts({ accounts = [], loading = false }: { accounts?: 
 
             {/* Actions */}
             <div className="px-6 pb-6 flex items-center justify-end gap-3">
-              <Link href={`https://trade.thepeopleprop.live/login`} target="_blank">
+              <Link href={`https://trade.thepeopleprop.live/?accountId=${account.terminal_account_id || account.id}`} target="_blank">
                 <button className="px-5 py-2.5 rounded-xl font-medium text-[14px] text-[var(--ink-700)] bg-[var(--paper-2)] border border-[var(--border)] hover:bg-[var(--border)] transition-colors">
                   Open Terminal
                 </button>

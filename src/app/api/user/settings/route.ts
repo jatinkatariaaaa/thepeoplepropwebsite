@@ -39,6 +39,7 @@ export async function GET(request: Request) {
         city: profile.city || "",
         postalCode: profile.postal_code || "",
         country: profile.country || "",
+        kycStatus: profile.kyc_status || "none",
       },
     });
   } catch (err: any) {
@@ -75,6 +76,17 @@ export async function POST(request: Request) {
         
       if (error) throw error;
       return NextResponse.json({ success: true, affiliateCode });
+    }
+
+    // Check if the user wants to submit KYC
+    if (body.action === 'submit_kyc') {
+      const { error } = await supabaseAdmin
+        .from("profiles")
+        .update({ kyc_status: "pending" })
+        .eq("id", user.id);
+        
+      if (error) throw error;
+      return NextResponse.json({ success: true, message: "KYC submitted successfully" });
     }
 
     // Standard profile update

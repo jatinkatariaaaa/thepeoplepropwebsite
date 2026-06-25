@@ -32,18 +32,18 @@ const stats = [
   },
 ];
 
-export function StatCards({ accounts = [] }: { accounts?: any[] }) {
+export function StatCards({ accounts = [], totalPayouts = 0 }: { accounts?: any[], totalPayouts?: number }) {
   const activeCount = accounts.length;
   const passedCount = accounts.filter(a => a.status === 'passed').length;
   const fundedCount = accounts.filter(a => a.status === 'funded').length;
   
-  // Calculate total payouts if available, else 0
-  const totalPayouts = "$0.00"; // Can be dynamic later
+  // Format payouts
+  const formattedPayouts = `$${totalPayouts.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
   const dynamicStats = [
     {
       label: "Total Payouts",
-      value: totalPayouts,
+      value: formattedPayouts,
       icon: DollarSign,
       color: "text-emerald-600",
       bgColor: "bg-emerald-50",

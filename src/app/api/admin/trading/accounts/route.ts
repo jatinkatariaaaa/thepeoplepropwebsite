@@ -31,7 +31,7 @@ export async function GET(request: Request) {
 }
 
 // POST /api/admin/trading/accounts
-// Create / issue a new trading account.
+// Create / issue a new trading account and its terminal shadow account.
 export async function POST(request: Request) {
   try {
     const admin = await getAdminUser(request);
@@ -61,15 +61,34 @@ export async function POST(request: Request) {
       );
     }
 
-    // Retry a few times in case of an account_number collision.
-    let created: any = null;
+    // 1. Fetch trading rules to populate terminal account risk limits
+    let maxDailyDrawdownPct = 0.05;
+    let maxOverallDrawdownPct = 0.10;
+    let profitTargetPct = 0.08;
+    
+    if (rule_id) {
+      const { data: ruleData } = await supabaseAdmin
+        .from("trading_rules")
+        .select("max_daily_drawdown_pct, max_overall_drawdown_pct, profit_target_pct")
+        .eq("id", rule_id)
+        .single();
+        
+      if (ruleData) {
+        maxDailyDrawdownPct = (ruleData.max_daily_drawdown_pct || 5) / 100;
+        maxOverallDrawdownPct = (ruleData.max_overall_drawdown_pct || 10) / 100;
+        profitTargetPct = (ruleData.profit_target_pct || 8) / 100;
+      }
+    }
+
+    // 2. Retry a few times in case of an account_number collision.
+    let createdTradingAccount: any = null;
     let lastError: any = null;
     for (let attempt = 0; attempt < 5; attempt++) {
       const accountNumber = generateAccountNumber();
       const insertPayload: Record<string, any> = {
         account_number: accountNumber,
         login: accountNumber,
-        password: Math.random().toString(36).slice(-8), // Temporary password until Phase 2B
+        password: Math.random().toString(36).slice(-8), // Temporary password
         user_id,
         platform_id,
         rule_id: rule_id || null,
@@ -91,7 +110,7 @@ export async function POST(request: Request) {
         .single();
 
       if (!error) {
-        created = data;
+        createdTradingAccount = data;
         break;
       }
       // 23505 = unique violation -> retry with a new number.
@@ -102,8 +121,44 @@ export async function POST(request: Request) {
       lastError = error;
     }
 
-    if (!created) {
-      throw lastError || new Error("Failed to create account");
+    if (!createdTradingAccount) {
+      throw lastError || new Error("Failed to create trading account");
+    }
+
+    // 3. Create the Terminal Shadow Account (accounts table)
+    const { data: terminalAccount, error: terminalError } = await supabaseAdmin
+      .from("accounts")
+      .insert({
+        user_id: user_id,
+        label: `TPP ${createdTradingAccount.account_number}`,
+        phase: phase || "challenge",
+        status: "active",
+        starting_balance: startBal,
+        balance: startBal,
+        equity: startBal,
+        daily_start_balance: startBal,
+        highest_equity: startBal,
+        max_daily_drawdown: maxDailyDrawdownPct,
+        max_overall_drawdown: maxOverallDrawdownPct,
+        profit_target: profitTargetPct,
+        business_account_id: createdTradingAccount.id
+      })
+      .select()
+      .single();
+
+    if (terminalError) {
+      console.error("Terminal account creation failed:", terminalError);
+      // Even if this fails, we created the CRM account. We should ideally use a transaction,
+      // but Supabase JS doesn't have local transactions. The trigger/sync might fail, but
+      // the CRM account exists.
+    } else if (terminalAccount) {
+      // 4. Update the trading_accounts row with the terminal_account_id
+      await supabaseAdmin
+        .from("trading_accounts")
+        .update({ terminal_account_id: terminalAccount.id })
+        .eq("id", createdTradingAccount.id);
+        
+      createdTradingAccount.terminal_account_id = terminalAccount.id;
     }
 
     await logAudit({
@@ -111,12 +166,12 @@ export async function POST(request: Request) {
       adminEmail: admin.email,
       action: "create_trading_account",
       entityType: "trading_accounts",
-      entityId: created.id,
-      newValue: created,
+      entityId: createdTradingAccount.id,
+      newValue: createdTradingAccount,
       request,
     });
 
-    return NextResponse.json({ success: true, account: created });
+    return NextResponse.json({ success: true, account: createdTradingAccount });
   } catch (error: any) {
     if (error.message === "Unauthorized" || error.message === "Forbidden") {
       return NextResponse.json(
