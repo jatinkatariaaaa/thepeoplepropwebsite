@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { createSupabaseServiceClient } from "@/lib/supabase/service";
+import { supabaseAdmin } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const supabase = createSupabaseServiceClient();
+    const supabase = supabaseAdmin;
     
     // Fetch active programs and their fees
     const { data: programs, error } = await supabase
