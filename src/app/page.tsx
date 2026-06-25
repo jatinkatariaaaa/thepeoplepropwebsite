@@ -1364,7 +1364,7 @@ export default function HomePage() {
                 <h4 className="mb-2 text-[14px] font-bold uppercase tracking-widest opacity-50">Resources</h4>
                 <Link href="/rules" className="text-[15px] font-medium transition-opacity hover:opacity-60">Trading Rules</Link>
                 <Link href="/faq" className="text-[15px] font-medium transition-opacity hover:opacity-60">FAQ</Link>
-                <Link href="/referral" className="text-[15px] font-medium transition-opacity hover:opacity-60">Affiliate</Link>
+
                 <Link href="/blog" className="text-[15px] font-medium transition-opacity hover:opacity-60">Blog</Link>
               </div>
               <div className="flex flex-col gap-4">

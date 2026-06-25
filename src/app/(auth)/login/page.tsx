@@ -97,7 +97,7 @@ export default function LoginPage() {
           password: pw,
           options: {
             data: affiliateId ? { affiliate_id: affiliateId } : undefined,
-            emailRedirectTo: `${window.location.origin}/referral`,
+            emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
           },
         });
         if (signUpError) throw signUpError;
