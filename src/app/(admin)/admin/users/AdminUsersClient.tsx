@@ -128,24 +128,6 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: any[]
         const user = row.original;
         return (
           <div className="flex items-center gap-2">
-            {user.kyc_status === "pending" && (
-              <>
-                <button
-                  title="Verify KYC"
-                  onClick={() => { setSelectedUser(user); setActionType("verify_kyc" as any); setIsActionModalOpen(true); }}
-                  className="p-1.5 text-[var(--ink-400)] hover:text-emerald-600 hover:bg-emerald-50 rounded"
-                >
-                  <ShieldCheck className="w-4 h-4" />
-                </button>
-                <button
-                  title="Reject KYC"
-                  onClick={() => { setSelectedUser(user); setActionType("reject_kyc" as any); setIsActionModalOpen(true); }}
-                  className="p-1.5 text-[var(--ink-400)] hover:text-red-600 hover:bg-red-50 rounded"
-                >
-                  <ShieldAlert className="w-4 h-4 text-red-500" />
-                </button>
-              </>
-            )}
             <button
               onClick={() => { setSelectedUser(user); setIsEditModalOpen(true); }}
               className="p-1.5 text-[var(--ink-400)] hover:text-[var(--ink-950)] hover:bg-[var(--border)] rounded"
