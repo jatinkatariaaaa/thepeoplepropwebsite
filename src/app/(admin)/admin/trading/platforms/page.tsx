@@ -3,12 +3,14 @@
 import { useEffect, useState } from "react";
 import { createBrowserClient } from "@supabase/ssr";
 import { Button } from "@/components/ui/Button";
-import { Plus, Edit2, Boxes, X } from "lucide-react";
+import { Plus, Edit2, Boxes, X, Wifi } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 export default function PlatformsAdminPage() {
   const [platforms, setPlatforms] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [testingId, setTestingId] = useState<string | null>(null);
   
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -42,6 +44,28 @@ export default function PlatformsAdminPage() {
       setPlatforms(data);
     }
     setLoading(false);
+  }
+
+  async function handleTestConnection(platformId: string) {
+    setTestingId(platformId);
+    try {
+      const res = await fetch("/api/admin/trading/platforms/test", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ platformId })
+      });
+      const data = await res.json();
+      
+      if (res.ok && data.success) {
+        toast.success(`Connection OK! (${data.latencyMs}ms)`, { description: data.message });
+      } else {
+        toast.error("Connection Failed", { description: data.message || data.error });
+      }
+    } catch (e: any) {
+      toast.error("Error", { description: e.message });
+    } finally {
+      setTestingId(null);
+    }
   }
 
   function openNewModal() {
@@ -81,7 +105,7 @@ export default function PlatformsAdminPage() {
         setIsModalOpen(false);
         fetchPlatforms();
       } else {
-        alert("Error updating platform: " + error.message);
+        toast.error("Error updating platform: " + error.message);
       }
     } else {
       const { error } = await supabase
@@ -91,7 +115,7 @@ export default function PlatformsAdminPage() {
         setIsModalOpen(false);
         fetchPlatforms();
       } else {
-        alert("Error creating platform: " + error.message);
+        toast.error("Error creating platform: " + error.message);
       }
     }
   }
@@ -131,12 +155,26 @@ export default function PlatformsAdminPage() {
                   </span>
                 </div>
               </div>
-              <button 
-                onClick={() => openEditModal(plat)}
-                className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[var(--paper-2)] text-[var(--ink-400)] hover:text-[var(--ink-950)] transition-colors"
-              >
-                <Edit2 className="w-4 h-4" />
-              </button>
+              <div className="flex gap-1">
+                <button 
+                  onClick={() => handleTestConnection(plat.id)}
+                  disabled={testingId === plat.id}
+                  title="Test Connection"
+                  className={cn(
+                    "w-8 h-8 flex items-center justify-center rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors",
+                    testingId === plat.id ? "text-blue-500 animate-pulse" : "text-[var(--ink-400)]"
+                  )}
+                >
+                  <Wifi className="w-4 h-4" />
+                </button>
+                <button 
+                  onClick={() => openEditModal(plat)}
+                  title="Edit Platform"
+                  className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[var(--paper-2)] text-[var(--ink-400)] hover:text-[var(--ink-950)] transition-colors"
+                >
+                  <Edit2 className="w-4 h-4" />
+                </button>
+              </div>
             </div>
 
             <div className="pt-4 border-t border-[var(--border)]">
