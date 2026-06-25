@@ -168,5 +168,46 @@ function generateRandomPassword() {
   return Math.random().toString(36).slice(-8) + Math.floor(Math.random() * 10) + "!";
 }
 
-// export async function disableTradingAccount(...) { ... }
+/**
+ * Disables a trading account on the terminal (e.g., when a breach is detected).
+ * This sets the account to read-only or suspends it completely.
+ */
+export async function disableTradingAccount(apiUrl: string, apiKey: string, login: string, reason: string): Promise<boolean> {
+  try {
+    const baseUrl = apiUrl.endsWith('/') ? apiUrl.slice(0, -1) : apiUrl;
+    const disableEndpoint = `${baseUrl}/api/admin/disable-account`;
+    
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
+    
+    const response = await fetch(disableEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+        'x-api-key': apiKey
+      },
+      body: JSON.stringify({
+        login: login,
+        reason: reason
+      }),
+      signal: controller.signal
+    });
+    
+    clearTimeout(timeoutId);
+    
+    if (response.ok) {
+      console.log(`[Terminal API] Successfully disabled account ${login}. Reason: ${reason}`);
+      return true;
+    } else {
+      console.warn(`[Terminal API] Failed to disable account ${login}. Terminal returned ${response.status}`);
+      return false;
+    }
+  } catch (error: any) {
+    console.error(`[Terminal API] Error disabling account ${login}:`, error.message);
+    // If the API call fails, we still return false. The webhook can then decide to retry later or just log it.
+    return false;
+  }
+}
+
 // export async function getLiveMetrics(...) { ... }
