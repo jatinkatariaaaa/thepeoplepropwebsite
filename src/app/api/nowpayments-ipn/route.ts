@@ -52,34 +52,65 @@ export async function POST(req: Request) {
       .eq("id", purchase.id);
 
     // 3. Create Terminal Account
-    const program = programs.find((p: any) => p.key === purchase.program_key);
-    if (program) {
-      const maxDailyDrawdown = parseFloat(program.dailyDrawdown.replace("%", "")) / 100;
-      const maxOverallDrawdown = parseFloat(program.maxDrawdown.replace("%", "")) / 100;
-      const firstTargetStr = program.profitTarget.split("+")[0].replace("%", "").trim();
-      const profitTarget = parseFloat(firstTargetStr) / 100;
-      const accountSize = purchase.account_size;
+    const { data: program } = await supabaseAdmin
+      .from("tpp_programs")
+      .select("*")
+      .eq("key", purchase.program_key)
+      .single();
 
-      const { error: accountError } = await supabaseAdmin
-        .from("accounts")
-        .insert({
-          user_id: purchase.user_id,
-          label: `${program.shortLabel} $${accountSize.toLocaleString()}`,
-          phase: program.phases === 0 ? 'funded' : 'challenge',
-          program_key: purchase.program_key,
-          status: 'active',
-          starting_balance: accountSize,
-          balance: accountSize,
-          equity: accountSize,
-          daily_start_balance: accountSize,
-          highest_equity: accountSize,
-          max_daily_drawdown: maxDailyDrawdown || 0.05,
-          max_overall_drawdown: maxOverallDrawdown || 0.10,
-          profit_target: profitTarget || 0.08
+    if (program && program.phase_1_rule_id) {
+      // Fetch Rules
+      const { data: rules } = await supabaseAdmin
+        .from("trading_rules")
+        .select("*")
+        .eq("id", program.phase_1_rule_id)
+        .single();
+
+      // Fetch Active Platform
+      const { data: platform } = await supabaseAdmin
+        .from("tpp_platforms")
+        .select("*")
+        .eq("is_active", true)
+        .limit(1)
+        .single();
+
+      if (rules && platform) {
+        // Call the Terminal API Bridge
+        const { createTradingAccount } = await import('@/lib/terminal-api');
+        
+        const terminalResult = await createTradingAccount({
+          apiUrl: platform.api_url,
+          apiKey: platform.api_key,
+          userEmail: purchase.email || "user@example.com",
+          accountSize: purchase.account_size,
+          rules: rules
         });
 
-      if (accountError) {
-        console.error("Account creation failed:", accountError);
+        if (terminalResult.success) {
+          const { error: accountError } = await supabaseAdmin
+            .from("trading_accounts")
+            .insert({
+              user_id: purchase.user_id,
+              platform_id: platform.id,
+              rule_id: rules.id,
+              login: terminalResult.login,
+              password: terminalResult.password,
+              balance: purchase.account_size,
+              starting_balance: purchase.account_size,
+              equity: purchase.account_size,
+              highest_equity: purchase.account_size,
+              current_daily_drawdown: 0,
+              current_max_drawdown: 0,
+              status: "active",
+              phase: "Phase 1"
+            });
+
+          if (accountError) {
+            console.error("Account creation failed:", accountError);
+          }
+        } else {
+           console.error("Terminal API refused account creation:", terminalResult.error);
+        }
       }
     }
 
