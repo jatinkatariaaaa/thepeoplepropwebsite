@@ -97,6 +97,7 @@ export interface TerminalAccountParams {
   userId: string;
   accountSize: number;
   rules: any;
+  programKey?: string;
 }
 
 export interface TerminalAccountResult {
@@ -104,15 +105,16 @@ export interface TerminalAccountResult {
   login: string;
   password?: string;
   server?: string;
+  terminalAccountId?: string;
   error?: string;
 }
 
 /**
  * Creates a trading account on the terminal using the provided rules.
- * Implements a Smart Fallback if the terminal API is not available or fails.
+ * No fallback — if the Terminal API fails, the error is returned clearly.
  */
 export async function createTradingAccount(params: TerminalAccountParams): Promise<TerminalAccountResult> {
-  const { apiUrl, apiKey, userEmail, accountSize, rules } = params;
+  const { apiUrl, apiKey, userEmail, userId, accountSize, rules, programKey } = params;
   
   try {
     const baseUrl = apiUrl.endsWith('/') ? apiUrl.slice(0, -1) : apiUrl;
@@ -120,7 +122,7 @@ export async function createTradingAccount(params: TerminalAccountParams): Promi
     
     // Abort if taking too long
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000);
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
     
     const response = await fetch(createEndpoint, {
       method: 'POST',
@@ -130,9 +132,10 @@ export async function createTradingAccount(params: TerminalAccountParams): Promi
         'x-api-key': apiKey
       },
       body: JSON.stringify({
-        userId: params.userId,
+        userId: userId,
         accountSize: accountSize,
-        rules: rules
+        rules: rules,
+        programKey: programKey
       }),
       signal: controller.signal
     });
@@ -141,28 +144,29 @@ export async function createTradingAccount(params: TerminalAccountParams): Promi
     
     if (response.ok) {
       const data = await response.json();
-      // If the terminal successfully created an account, use its ID as the login
-      const accountId = data.account?.id || `TPP-${Math.floor(Math.random() * 1000000)}`;
+      const terminalAccount = data.account;
       return {
         success: true,
-        login: accountId,
-        password: generateRandomPassword(), // Assume dummy password for now since TPP is auto-login based
-        server: "TPP-Live"
+        login: terminalAccount?.id || `TPP-${Math.floor(Math.random() * 1000000)}`,
+        password: generateRandomPassword(),
+        server: "TPP-Live",
+        terminalAccountId: terminalAccount?.id
       };
     } else {
-      // API returned an error, fallback to generating mock credentials for now
-      throw new Error(`Terminal returned ${response.status}`);
+      const errData = await response.json().catch(() => ({ error: "Unknown error" }));
+      console.error(`Terminal API Error: ${response.status}`, errData);
+      return {
+        success: false,
+        login: "",
+        error: `Terminal returned ${response.status}: ${errData.error || "Unknown error"}`
+      };
     }
   } catch (error: any) {
-    console.error("Terminal API Error (using fallback):", error.message);
-    
-    // SMART FALLBACK: If terminal is unreachable or doesn't have the endpoint yet, 
-    // generate mock credentials so the user flow is not interrupted.
+    console.error("Terminal API Connection Error:", error.message);
     return {
-      success: true,
-      login: `TPP-${Math.floor(100000 + Math.random() * 900000)}`,
-      password: generateRandomPassword(),
-      server: "TPP-Terminal"
+      success: false,
+      login: "",
+      error: `Failed to connect to terminal: ${error.message}`
     };
   }
 }

@@ -66,12 +66,12 @@ export async function POST(req: Request) {
         .eq("id", program.phase_1_rule_id)
         .single();
 
-      // Fetch Active Platform
+      // Fetch TPP Terminal Platform
       const { data: platform } = await supabaseAdmin
         .from("tpp_platforms")
         .select("*")
+        .eq("name", "TPP TERMINAL")
         .eq("is_active", true)
-        .limit(1)
         .single();
 
       if (rules && platform) {
@@ -84,7 +84,8 @@ export async function POST(req: Request) {
           userEmail: purchase.email || "user@example.com",
           userId: purchase.user_id,
           accountSize: purchase.account_size,
-          rules: rules
+          rules: rules,
+          programKey: purchase.program_key
         });
 
         if (terminalResult.success) {
@@ -97,6 +98,7 @@ export async function POST(req: Request) {
               account_number: terminalResult.login,
               login: terminalResult.login,
               password: terminalResult.password,
+              terminal_account_id: terminalResult.terminalAccountId || null,
               balance: purchase.account_size,
               starting_balance: purchase.account_size,
               equity: purchase.account_size,

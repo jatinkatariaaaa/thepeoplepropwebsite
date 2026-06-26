@@ -77,7 +77,7 @@ export async function POST(request: Request) {
       const { data: dbProgram } = await supabaseAdmin.from("tpp_programs").select("*").eq("key", programKey).single();
       if (dbProgram && dbProgram.phase_1_rule_id) {
         const { data: rules } = await supabaseAdmin.from("trading_rules").select("*").eq("id", dbProgram.phase_1_rule_id).single();
-        const { data: platformData } = await supabaseAdmin.from("tpp_platforms").select("*").eq("is_active", true).limit(1).single();
+        const { data: platformData } = await supabaseAdmin.from("tpp_platforms").select("*").eq("name", "TPP TERMINAL").eq("is_active", true).single();
         
         if (rules && platformData) {
           const { createTradingAccount } = await import('@/lib/terminal-api');
@@ -87,11 +87,12 @@ export async function POST(request: Request) {
             userEmail: user.email || "user@example.com",
             userId: user.id,
             accountSize: accountSize,
-            rules: rules
+            rules: rules,
+            programKey: programKey
           });
           
           if (terminalResult.success) {
-            const accountLogin = terminalResult.login || `TPP-${Math.floor(100000 + Math.random() * 900000)}`;
+            const accountLogin = terminalResult.login;
             const { error: accountError } = await supabaseAdmin.from("trading_accounts").insert({
               user_id: user.id,
               platform_id: platformData.id,
@@ -99,6 +100,7 @@ export async function POST(request: Request) {
               account_number: accountLogin,
               login: accountLogin,
               password: terminalResult.password || "auto-generated",
+              terminal_account_id: terminalResult.terminalAccountId || null,
               balance: accountSize,
               starting_balance: accountSize,
               equity: accountSize,
@@ -112,6 +114,9 @@ export async function POST(request: Request) {
             if (accountError) {
               console.error("Free checkout - trading_accounts insert error:", accountError);
             }
+          } else {
+            console.error("Free checkout - Terminal API failed:", terminalResult.error);
+            // Still return success to user but log the error
           }
         }
       }
