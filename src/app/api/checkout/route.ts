@@ -100,9 +100,11 @@ export async function POST(request: Request) {
               balance: accountSize,
               starting_balance: accountSize,
               equity: accountSize,
-              phase: "Phase 1",
+              highest_equity: accountSize,
+              current_daily_drawdown: 0,
+              current_max_drawdown: 0,
               status: "active",
-              label: `${program.shortLabel} $${accountSize.toLocaleString()}`
+              phase: "Phase 1"
             });
           }
         }
