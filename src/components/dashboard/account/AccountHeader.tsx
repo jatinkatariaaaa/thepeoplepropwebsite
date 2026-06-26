@@ -64,7 +64,7 @@ export function AccountHeader({ account }: Props) {
               {account.phase || 'Phase 1'}
             </span>
             <span className="px-3 py-1 rounded-full bg-[var(--paper-2)] border border-[var(--border)] text-[12px] font-bold text-[var(--ink-600)]">
-              TPP Dashboard
+              {account.tpp_platforms?.name || 'TPP Dashboard'}
             </span>
           </div>
         </div>

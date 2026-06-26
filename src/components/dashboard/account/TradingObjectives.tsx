@@ -5,7 +5,9 @@ export function TradingObjectives({ account }: { account: any }) {
   const currentEquity = Number(account?.equity || 0);
   
   // Calculate Daily Loss limit
-  const maxDailyLossPercent = Number(account?.max_daily_drawdown || 0.05);
+  const maxDailyLossPercent = account?.trading_rules?.max_daily_drawdown_pct 
+    ? Number(account.trading_rules.max_daily_drawdown_pct) / 100 
+    : 0.05;
   const maxAllowedDailyLoss = startingBalance * maxDailyLossPercent;
   // Simplified daily loss remaining (assuming equity hasn't dropped below start)
   const currentDailyLoss = startingBalance - currentEquity > 0 ? startingBalance - currentEquity : 0;
@@ -14,7 +16,9 @@ export function TradingObjectives({ account }: { account: any }) {
   const dailyBalanceThreshold = startingBalance - maxAllowedDailyLoss;
 
   // Calculate Overall Loss limit
-  const maxOverallLossPercent = Number(account?.max_overall_drawdown || 0.10);
+  const maxOverallLossPercent = account?.trading_rules?.max_overall_drawdown_pct
+    ? Number(account.trading_rules.max_overall_drawdown_pct) / 100
+    : 0.10;
   const maxAllowedOverallLoss = startingBalance * maxOverallLossPercent;
   const currentOverallLoss = startingBalance - currentEquity > 0 ? startingBalance - currentEquity : 0;
   const remainingOverallLoss = Math.max(0, maxAllowedOverallLoss - currentOverallLoss);
@@ -22,7 +26,9 @@ export function TradingObjectives({ account }: { account: any }) {
   const overallBalanceThreshold = startingBalance - maxAllowedOverallLoss;
 
   // Calculate Profit Target
-  const profitTargetPercent = Number(account?.profit_target || 0.10);
+  const profitTargetPercent = account?.trading_rules?.profit_target_pct
+    ? Number(account.trading_rules.profit_target_pct) / 100
+    : 0.10;
   const profitTargetAmount = startingBalance * profitTargetPercent;
   const currentProfit = currentEquity - startingBalance > 0 ? currentEquity - startingBalance : 0;
   const profitTargetProgress = Math.min(100, (currentProfit / profitTargetAmount) * 100) || 0;

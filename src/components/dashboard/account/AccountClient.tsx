@@ -25,8 +25,8 @@ export function AccountClient({ accountId }: { accountId: string }) {
       }
 
       const { data } = await supabase
-        .from("accounts")
-        .select("*")
+        .from("trading_accounts")
+        .select("*, trading_rules(*), tpp_platforms(*)")
         .eq("id", accountId)
         .eq("user_id", session.user.id)
         .single();
