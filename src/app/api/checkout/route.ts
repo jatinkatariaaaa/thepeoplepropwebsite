@@ -69,7 +69,54 @@ export async function POST(request: Request) {
 
     if (purchaseError) throw purchaseError;
 
-    // 3. Create NOWPayments Invoice
+    // 3. Bypass NOWPayments if amount is 0 (Free checkout)
+    if (priceAmount <= 0) {
+      // Mark as paid
+      await supabaseAdmin.from("purchases").update({ payment_status: "paid" }).eq("id", purchase.id);
+      
+      const { data: dbProgram } = await supabaseAdmin.from("tpp_programs").select("*").eq("key", programKey).single();
+      if (dbProgram && dbProgram.phase_1_rule_id) {
+        const { data: rules } = await supabaseAdmin.from("trading_rules").select("*").eq("id", dbProgram.phase_1_rule_id).single();
+        const { data: platformData } = await supabaseAdmin.from("tpp_platforms").select("*").eq("is_active", true).limit(1).single();
+        
+        if (rules && platformData) {
+          const { createTradingAccount } = await import('@/lib/terminal-api');
+          const terminalResult = await createTradingAccount({
+            apiUrl: platformData.api_url,
+            apiKey: platformData.api_key,
+            userEmail: user.email || "user@example.com",
+            userId: user.id,
+            accountSize: accountSize,
+            rules: rules
+          });
+          
+          if (terminalResult.success) {
+            await supabaseAdmin.from("trading_accounts").insert({
+              user_id: user.id,
+              platform_id: platformData.id,
+              rule_id: rules.id,
+              login: terminalResult.login,
+              password: terminalResult.password,
+              balance: accountSize,
+              starting_balance: accountSize,
+              equity: accountSize,
+              phase: "Phase 1",
+              status: "active",
+              label: `${program.shortLabel} $${accountSize.toLocaleString()}`
+            });
+          }
+        }
+      }
+      
+      return NextResponse.json({ 
+        success: true, 
+        orderId,
+        invoice_url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://thepeopleprop.live"}/dashboard?success=true`,
+        message: "Free challenge provisioned successfully."
+      });
+    }
+
+    // 4. Create NOWPayments Invoice
     const apiKey = process.env.NOWPAYMENTS_API_KEY || process.env.NOWPAYMENTS_KEY;
     if (!apiKey) {
       throw new Error("NOWPAYMENTS_API_KEY is missing from environment variables.");
