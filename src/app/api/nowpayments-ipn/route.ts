@@ -94,6 +94,7 @@ export async function POST(req: Request) {
               user_id: purchase.user_id,
               platform_id: platform.id,
               rule_id: rules.id,
+              account_number: terminalResult.login,
               login: terminalResult.login,
               password: terminalResult.password,
               balance: purchase.account_size,
@@ -103,7 +104,7 @@ export async function POST(req: Request) {
               current_daily_drawdown: 0,
               current_max_drawdown: 0,
               status: "active",
-              phase: "Phase 1"
+              phase: "challenge"
             });
 
           if (accountError) {

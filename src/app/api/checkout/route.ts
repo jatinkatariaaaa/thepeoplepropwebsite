@@ -91,12 +91,14 @@ export async function POST(request: Request) {
           });
           
           if (terminalResult.success) {
-            await supabaseAdmin.from("trading_accounts").insert({
+            const accountLogin = terminalResult.login || `TPP-${Math.floor(100000 + Math.random() * 900000)}`;
+            const { error: accountError } = await supabaseAdmin.from("trading_accounts").insert({
               user_id: user.id,
               platform_id: platformData.id,
               rule_id: rules.id,
-              login: terminalResult.login,
-              password: terminalResult.password,
+              account_number: accountLogin,
+              login: accountLogin,
+              password: terminalResult.password || "auto-generated",
               balance: accountSize,
               starting_balance: accountSize,
               equity: accountSize,
@@ -104,8 +106,12 @@ export async function POST(request: Request) {
               current_daily_drawdown: 0,
               current_max_drawdown: 0,
               status: "active",
-              phase: "Phase 1"
+              phase: "challenge"
             });
+            
+            if (accountError) {
+              console.error("Free checkout - trading_accounts insert error:", accountError);
+            }
           }
         }
       }
