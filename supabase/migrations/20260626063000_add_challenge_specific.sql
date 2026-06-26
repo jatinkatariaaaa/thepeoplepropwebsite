@@ -1,0 +1,1 @@
+ALTER TABLE public.tpp_coupons ADD COLUMN IF NOT EXISTS challenge_specific TEXT DEFAULT NULL;
