@@ -32,6 +32,25 @@ export function AccountClient({ accountId }: { accountId: string }) {
         .single();
         
       if (data) {
+        // Fetch live metrics directly from the Terminal's accounts table
+        if (data.terminal_account_id) {
+          const { data: terminalData } = await supabase
+            .from("accounts")
+            .select("balance, equity, highest_equity, status")
+            .eq("id", data.terminal_account_id)
+            .single();
+            
+          if (terminalData) {
+            // Merge the live terminal data into the CRM account object
+            data.balance = terminalData.balance;
+            data.equity = terminalData.equity;
+            data.highest_equity = terminalData.highest_equity;
+            // Also sync status if the webhook hasn't processed it yet
+            if (terminalData.status !== "active") {
+               data.status = terminalData.status;
+            }
+          }
+        }
         setAccount(data);
       }
       setLoading(false);
