@@ -19,10 +19,12 @@ export default function ChallengesAdminPage() {
     profit_target: "",
     max_drawdown: "",
     daily_drawdown: "",
+    phases: 1,
     profit_split: 80,
     is_active: true,
     phase_1_rule_id: "",
     phase_2_rule_id: "",
+    phase_3_rule_id: "",
     funded_rule_id: ""
   });
   const [formFees, setFormFees] = useState<{account_size: number, fee: number}[]>([]);
@@ -59,7 +61,7 @@ export default function ChallengesAdminPage() {
   function openNewModal() {
     setEditingProgram(null);
     setFormData({
-      key: "", label: "", short_label: "", profit_target: "", max_drawdown: "", daily_drawdown: "", profit_split: 80, is_active: true, phase_1_rule_id: "", phase_2_rule_id: "", funded_rule_id: ""
+      key: "", label: "", short_label: "", profit_target: "", max_drawdown: "", daily_drawdown: "", phases: 1, profit_split: 80, is_active: true, phase_1_rule_id: "", phase_2_rule_id: "", phase_3_rule_id: "", funded_rule_id: ""
     });
     setFormFees([]);
     setSelectedFeeIndex(null);
@@ -75,10 +77,12 @@ export default function ChallengesAdminPage() {
       profit_target: prog.profit_target || "",
       max_drawdown: prog.max_drawdown || "",
       daily_drawdown: prog.daily_drawdown || "",
+      phases: Number(prog.phases) || 1,
       profit_split: prog.profit_split || 80,
       is_active: prog.is_active,
       phase_1_rule_id: prog.phase_1_rule_id || "",
       phase_2_rule_id: prog.phase_2_rule_id || "",
+      phase_3_rule_id: prog.phase_3_rule_id || "",
       funded_rule_id: prog.funded_rule_id || ""
     });
     const fees = (prog.tpp_program_fees || []).map((f: any) => ({
@@ -100,6 +104,7 @@ export default function ChallengesAdminPage() {
       ...formData,
       phase_1_rule_id: formData.phase_1_rule_id || null,
       phase_2_rule_id: formData.phase_2_rule_id || null,
+      phase_3_rule_id: formData.phase_3_rule_id || null,
       funded_rule_id: formData.funded_rule_id || null,
     };
     
@@ -177,6 +182,16 @@ export default function ChallengesAdminPage() {
                   <label className="block text-xs font-semibold mb-1">Profit Split %</label>
                   <input type="number" value={formData.profit_split} onChange={e => setFormData({...formData, profit_split: Number(e.target.value)})} className="w-full border rounded-lg p-2" />
                 </div>
+                <div>
+                  <label className="block text-xs font-semibold mb-1">Evaluation Phases</label>
+                  <select value={formData.phases} onChange={e => setFormData({...formData, phases: Number(e.target.value)})} className="w-full border rounded-lg p-2 bg-white">
+                    <option value={1}>1 Step</option>
+                    <option value={2}>2 Step</option>
+                    <option value={3}>3 Step</option>
+                  </select>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
                 <div className="flex items-center gap-2 mt-6">
                   <input type="checkbox" checked={formData.is_active} onChange={e => setFormData({...formData, is_active: e.target.checked})} id="prog_active" />
                   <label htmlFor="prog_active" className="text-sm font-semibold text-green-700">Program is Active</label>
@@ -196,6 +211,13 @@ export default function ChallengesAdminPage() {
                 <div>
                   <label className="block text-[11px] font-semibold text-gray-600 mb-1">Phase 2 Rules</label>
                   <select value={formData.phase_2_rule_id} onChange={e => setFormData({...formData, phase_2_rule_id: e.target.value})} className="w-full border rounded-lg p-2 bg-white text-sm">
+                    <option value="">No Rules Selected</option>
+                    {rules.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-600 mb-1">Phase 3 Rules</label>
+                  <select value={formData.phase_3_rule_id} onChange={e => setFormData({...formData, phase_3_rule_id: e.target.value})} className="w-full border rounded-lg p-2 bg-white text-sm">
                     <option value="">No Rules Selected</option>
                     {rules.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
                   </select>

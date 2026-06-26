@@ -216,6 +216,7 @@ export function CreateAccountModal({
               >
                 <option value="challenge">Phase 1 (Challenge)</option>
                 <option value="verification">Phase 2 (Verification)</option>
+                <option value="phase_3">Phase 3</option>
                 <option value="funded">Funded</option>
               </select>
             </div>

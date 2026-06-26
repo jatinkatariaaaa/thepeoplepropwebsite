@@ -23,7 +23,7 @@ export function AssignChallengeModal({
 }: AssignChallengeModalProps) {
   const [rules, setRules] = useState<any[]>([]);
   const [ruleId, setRuleId] = useState<string>(currentRuleId || "");
-  const [phase, setPhase] = useState<string>("phase_1");
+  const [phase, setPhase] = useState<string>("challenge");
   const [loadingRules, setLoadingRules] = useState(false);
 
   useEffect(() => {
@@ -83,8 +83,9 @@ export function AssignChallengeModal({
               onChange={(e) => setPhase(e.target.value)}
               className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
             >
-              <option value="phase_1">Phase 1</option>
-              <option value="phase_2">Phase 2</option>
+              <option value="challenge">Phase 1</option>
+              <option value="verification">Phase 2</option>
+              <option value="phase_3">Phase 3</option>
               <option value="funded">Funded</option>
             </select>
           </div>

@@ -1,9 +1,25 @@
 import { NavbarLogo } from "@/components/ui/resizable-navbar";
+import type { AccountMetrics } from "@/lib/account-metrics";
 
-export function PerformanceCharts({ account, metrics }: { account?: any, metrics?: any }) {
+type AccountSummary = {
+  balance?: number | string | null;
+  equity?: number | string | null;
+  starting_balance?: number | string | null;
+};
+
+export function PerformanceCharts({ account, metrics }: { account?: AccountSummary | null, metrics?: AccountMetrics | null }) {
   const currentBalance = Number(account?.balance || 0);
   const currentEquity = Number(account?.equity || 0);
   const startingBalance = Number(account?.starting_balance || 0);
+  const profitFactorLabel = metrics?.profitFactor == null
+    ? metrics?.grossProfit ? "No loss" : "0.00"
+    : metrics.profitFactor.toFixed(2);
+  const winRate = metrics?.winRate ?? 0;
+  const rrScore = metrics?.averageLoss ? Math.min(90, (metrics.averageWin / metrics.averageLoss) * 30) : 35;
+  const consistencyScore = metrics?.dailyPnL?.length
+    ? Math.min(85, 35 + metrics.dailyPnL.filter((day) => day.pnl >= 0).length * 8)
+    : 25;
+  const polygonPoints = `50,${Math.max(18, 80 - consistencyScore * 0.7)} ${Math.min(85, 35 + winRate * 0.5)},50 50,${Math.min(82, 35 + rrScore * 0.45)} ${Math.max(15, 65 - (metrics?.profitFactor ?? 0) * 10)},50`;
   
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
@@ -28,8 +44,7 @@ export function PerformanceCharts({ account, metrics }: { account?: any, metrics
             <line x1="50" y1="10" x2="50" y2="90" stroke="currentColor" strokeWidth="0.5" className="text-white/20" />
             <line x1="10" y1="50" x2="90" y2="50" stroke="currentColor" strokeWidth="0.5" className="text-white/20" />
             
-            {/* Data Polygon */}
-            <polygon points="50,30 80,50 50,65 30,50" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="1.5" className="text-[var(--accent-400)]" />
+            <polygon points={polygonPoints} fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="1.5" className="text-[var(--accent-400)]" />
             
             {/* Center dot */}
             <circle cx="50" cy="50" r="2" fill="currentColor" className="text-white" />
@@ -43,7 +58,8 @@ export function PerformanceCharts({ account, metrics }: { account?: any, metrics
         </div>
 
         <div className="absolute bottom-6 left-6">
-          <div className="text-[40px] font-display font-bold leading-none">{metrics?.profitFactor ? metrics.profitFactor.toFixed(2) : "0.00"}</div>
+          <div className="text-[11px] font-bold uppercase tracking-wider text-white/60 mb-1">Profit factor</div>
+          <div className="text-[40px] font-display font-bold leading-none">{profitFactorLabel}</div>
         </div>
       </div>
 

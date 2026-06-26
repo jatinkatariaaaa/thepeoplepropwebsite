@@ -1,7 +1,15 @@
 import { NextResponse } from "next/server";
+import { randomUUID } from "crypto";
 import { supabaseAdmin } from "@/lib/supabase";
 import { getAdminUser, logAudit } from "@/lib/admin-auth";
 import { generateAccountNumber } from "@/lib/trading";
+
+const PHASE_INDEX: Record<string, number> = {
+  challenge: 1,
+  verification: 2,
+  phase_3: 3,
+  funded: 99,
+};
 
 // GET /api/admin/trading/accounts
 // Returns all trading accounts (joined) for the admin list.
@@ -18,7 +26,36 @@ export async function GET(request: Request) {
 
     if (error) throw error;
 
-    return NextResponse.json({ accounts: data || [] });
+    const terminalIds = (data || [])
+      .map((account: any) => account.terminal_account_id)
+      .filter(Boolean);
+
+    let terminalById = new Map<string, any>();
+    if (terminalIds.length > 0) {
+      const { data: terminalAccounts, error: terminalError } = await supabaseAdmin
+        .from("accounts")
+        .select("id, balance, equity, highest_equity, status, phase, updated_at")
+        .in("id", terminalIds);
+
+      if (terminalError) throw terminalError;
+      terminalById = new Map((terminalAccounts || []).map((terminal: any) => [terminal.id, terminal]));
+    }
+
+    const accounts = (data || []).map((account: any) => {
+      const terminal = account.terminal_account_id ? terminalById.get(account.terminal_account_id) : null;
+      if (!terminal) return account;
+
+      return {
+        ...account,
+        balance: terminal.balance ?? account.balance,
+        equity: terminal.equity ?? account.equity,
+        highest_equity: terminal.highest_equity ?? account.highest_equity,
+        terminal_status: terminal.status,
+        terminal_updated_at: terminal.updated_at,
+      };
+    });
+
+    return NextResponse.json({ accounts });
   } catch (error: any) {
     if (error.message === "Unauthorized" || error.message === "Forbidden") {
       return NextResponse.json(
@@ -61,10 +98,14 @@ export async function POST(request: Request) {
       );
     }
 
+    const crmPhase = ["challenge", "verification", "phase_3", "funded"].includes(phase) ? phase : "challenge";
+    const terminalPhase = crmPhase === "funded" ? "funded" : "challenge";
+    const terminalStatus = crmPhase === "funded" ? "funded" : "active";
+
     // 1. Fetch trading rules to populate terminal account risk limits
     let maxDailyDrawdownPct = 0.05;
     let maxOverallDrawdownPct = 0.10;
-    let profitTargetPct = 0.08;
+    let profitTargetPct = terminalPhase === "funded" ? 0 : 0.08;
     
     if (rule_id) {
       const { data: ruleData } = await supabaseAdmin
@@ -76,7 +117,7 @@ export async function POST(request: Request) {
       if (ruleData) {
         maxDailyDrawdownPct = (ruleData.max_daily_drawdown_pct || 5) / 100;
         maxOverallDrawdownPct = (ruleData.max_overall_drawdown_pct || 10) / 100;
-        profitTargetPct = (ruleData.profit_target_pct || 8) / 100;
+        profitTargetPct = terminalPhase === "funded" ? 0 : (ruleData.profit_target_pct || 8) / 100;
       }
     }
 
@@ -84,8 +125,10 @@ export async function POST(request: Request) {
     let createdTradingAccount: any = null;
     let lastError: any = null;
     for (let attempt = 0; attempt < 5; attempt++) {
+      const crmAccountId = randomUUID();
       const accountNumber = generateAccountNumber();
       const insertPayload: Record<string, any> = {
+        id: crmAccountId,
         account_number: accountNumber,
         login: accountNumber,
         password: Math.random().toString(36).slice(-8), // Temporary password
@@ -93,7 +136,9 @@ export async function POST(request: Request) {
         platform_id,
         rule_id: rule_id || null,
         leverage: leverage ? Number(leverage) : 100,
-        phase: phase || "challenge",
+        phase: crmPhase,
+        phase_group_id: crmAccountId,
+        phase_index: PHASE_INDEX[crmPhase],
         status: "active",
         balance: startBal,
         equity: startBal,
@@ -131,8 +176,8 @@ export async function POST(request: Request) {
       .insert({
         user_id: user_id,
         label: `TPP ${createdTradingAccount.account_number}`,
-        phase: phase || "challenge",
-        status: "active",
+        phase: terminalPhase,
+        status: terminalStatus,
         starting_balance: startBal,
         balance: startBal,
         equity: startBal,

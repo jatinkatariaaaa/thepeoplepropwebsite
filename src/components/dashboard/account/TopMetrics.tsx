@@ -1,17 +1,19 @@
-import { Wallet, TrendingUp, Calendar, CalendarClock } from "lucide-react";
+import { Wallet, TrendingUp, CalendarClock } from "lucide-react";
 
-export function TopMetrics({ account }: { account: any }) {
-  const startDate = account?.created_at 
-    ? new Date(account.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-    : 'Unknown';
+type AccountSummary = {
+  equity?: number | string | null;
+  starting_balance?: number | string | null;
+  phase?: string | null;
+};
 
-  const currentBalance = Number(account?.balance || 0);
+export function TopMetrics({ account }: { account: AccountSummary }) {
+  const currentEquity = Number(account?.equity || 0);
   const startingBalance = Number(account?.starting_balance || 0);
-  const totalProfit = currentBalance - startingBalance;
+  const totalProfit = currentEquity - startingBalance;
   
   const metrics = [
     { label: "Account Size", value: `$${startingBalance.toLocaleString(undefined, {minimumFractionDigits: 2})}`, icon: Wallet },
-    { label: "Current Equity", value: `$${Number(account.equity || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`, icon: TrendingUp },
+    { label: "Current Equity", value: `$${currentEquity.toLocaleString(undefined, {minimumFractionDigits: 2})}`, icon: TrendingUp },
     { label: "Total Profit", value: `${totalProfit >= 0 ? '+' : ''}$${totalProfit.toLocaleString(undefined, {minimumFractionDigits: 2})}`, icon: TrendingUp },
     { label: "Phase", value: account.phase === 'challenge' ? 'Phase 1' : account.phase === 'verification' ? 'Phase 2' : account.phase === 'phase_3' ? 'Phase 3' : account.phase === 'funded' ? 'Funded' : (account.phase || 'Phase 1').toUpperCase(), icon: CalendarClock },
   ];

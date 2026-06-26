@@ -1,12 +1,10 @@
 import { NextResponse } from "next/server";
+import { randomUUID } from "crypto";
 import { supabaseAdmin } from "@/lib/supabase";
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
-import { programs, ProgramKey, AccountSize } from "@/data/programs";
+import { programs } from "@/data/programs";
 
 export async function POST(request: Request) {
   try {
-    const cookieStore = await cookies();
     const authHeader = request.headers.get("Authorization");
     const token = authHeader?.split(" ")[1];
     
@@ -81,6 +79,7 @@ export async function POST(request: Request) {
         
         if (rules && platformData) {
           const { createTradingAccount } = await import('@/lib/terminal-api');
+          const crmAccountId = randomUUID();
           const terminalResult = await createTradingAccount({
             apiUrl: platformData.api_url,
             apiKey: platformData.api_key,
@@ -88,12 +87,14 @@ export async function POST(request: Request) {
             userId: user.id,
             accountSize: accountSize,
             rules: rules,
-            programKey: programKey
+            programKey: programKey,
+            businessAccountId: crmAccountId
           });
           
           if (terminalResult.success) {
             const accountLogin = terminalResult.login;
             const { error: accountError } = await supabaseAdmin.from("trading_accounts").insert({
+              id: crmAccountId,
               user_id: user.id,
               platform_id: platformData.id,
               rule_id: rules.id,
@@ -102,6 +103,8 @@ export async function POST(request: Request) {
               password: terminalResult.password || "auto-generated",
               terminal_account_id: terminalResult.terminalAccountId || null,
               program_key: programKey,
+              phase_group_id: crmAccountId,
+              phase_index: 1,
               balance: accountSize,
               starting_balance: accountSize,
               equity: accountSize,
@@ -114,6 +117,11 @@ export async function POST(request: Request) {
             
             if (accountError) {
               console.error("Free checkout - trading_accounts insert error:", accountError);
+            } else if (terminalResult.terminalAccountId) {
+              await supabaseAdmin
+                .from("accounts")
+                .update({ business_account_id: crmAccountId })
+                .eq("id", terminalResult.terminalAccountId);
             }
           } else {
             console.error("Free checkout - Terminal API failed:", terminalResult.error);

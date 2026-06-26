@@ -1,159 +1,310 @@
+import { randomUUID } from "crypto";
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
-import { disableTradingAccount } from "@/lib/terminal-api";
+import { createTradingAccount, disableTradingAccount } from "@/lib/terminal-api";
+
+type CrmPhase = "challenge" | "verification" | "phase_3" | "funded";
+type WebhookStatus = "active" | "passed" | "breached";
+
+const PHASE_INDEX: Record<CrmPhase, number> = {
+  challenge: 1,
+  verification: 2,
+  phase_3: 3,
+  funded: 99,
+};
+
+const PHASE_LABEL: Record<CrmPhase, string> = {
+  challenge: "Phase 1",
+  verification: "Phase 2",
+  phase_3: "Phase 3",
+  funded: "Funded",
+};
+
+function isUuid(value: string) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+}
+
+function normalizePhase(value: unknown): CrmPhase {
+  return value === "verification" || value === "phase_3" || value === "funded" ? value : "challenge";
+}
+
+function nextPhaseFor(currentPhase: CrmPhase, phaseCount: number): CrmPhase | null {
+  const totalPhases = Math.max(1, Number(phaseCount) || 1);
+
+  if (currentPhase === "challenge") {
+    return totalPhases <= 1 ? "funded" : "verification";
+  }
+
+  if (currentPhase === "verification") {
+    return totalPhases <= 2 ? "funded" : "phase_3";
+  }
+
+  if (currentPhase === "phase_3") {
+    return "funded";
+  }
+
+  return null;
+}
+
+function ruleIdForPhase(nextPhase: CrmPhase, program: any, fallbackRuleId: string | null) {
+  if (nextPhase === "verification") return program.phase_2_rule_id || fallbackRuleId;
+  if (nextPhase === "phase_3") return program.phase_3_rule_id || program.funded_rule_id || fallbackRuleId;
+  if (nextPhase === "funded") return program.funded_rule_id || fallbackRuleId;
+  return fallbackRuleId;
+}
+
+function bearerToken(req: Request) {
+  const header = req.headers.get("authorization");
+  return header?.replace(/^Bearer\s+/i, "").trim() || "";
+}
+
+async function findAccount(login: string) {
+  const select = "*, trading_rules(*), tpp_platforms(*)";
+
+  if (isUuid(login)) {
+    const byTerminalId = await supabaseAdmin
+      .from("trading_accounts")
+      .select(select)
+      .eq("terminal_account_id", login)
+      .maybeSingle();
+
+    if (byTerminalId.error) throw byTerminalId.error;
+    if (byTerminalId.data) return byTerminalId.data;
+  }
+
+  const byLogin = await supabaseAdmin
+    .from("trading_accounts")
+    .select(select)
+    .eq("login", login)
+    .maybeSingle();
+
+  if (byLogin.error) throw byLogin.error;
+  return byLogin.data;
+}
+
+async function promoteIfNeeded(account: any, startingBalance: number) {
+  if (!account.program_key) {
+    return { created: false, reason: "missing_program_key" };
+  }
+
+  const currentPhase = normalizePhase(account.phase);
+  const { data: program, error: programError } = await supabaseAdmin
+    .from("tpp_programs")
+    .select("*")
+    .eq("key", account.program_key)
+    .single();
+
+  if (programError || !program) {
+    return { created: false, reason: "program_not_found" };
+  }
+
+  const nextPhase = nextPhaseFor(currentPhase, Number(program.phases));
+  if (!nextPhase) {
+    return { created: false, reason: "no_next_phase" };
+  }
+
+  const { data: existingNext, error: existingError } = await supabaseAdmin
+    .from("trading_accounts")
+    .select("id, login, terminal_account_id, phase, status")
+    .eq("previous_account_id", account.id)
+    .eq("phase", nextPhase)
+    .maybeSingle();
+
+  if (existingError) throw existingError;
+  if (existingNext) {
+    return { created: false, existing: existingNext };
+  }
+
+  const nextRuleId = ruleIdForPhase(nextPhase, program, account.rule_id || null);
+  if (!nextRuleId) {
+    return { created: false, reason: `missing_rule_for_${nextPhase}` };
+  }
+
+  const { data: nextRules, error: rulesError } = await supabaseAdmin
+    .from("trading_rules")
+    .select("*")
+    .eq("id", nextRuleId)
+    .single();
+
+  if (rulesError || !nextRules) {
+    return { created: false, reason: "rules_not_found" };
+  }
+
+  const platform = account.tpp_platforms;
+  if (!platform?.api_url || !platform?.api_key) {
+    return { created: false, reason: "platform_api_missing" };
+  }
+
+  if (!account.user_id) {
+    return { created: false, reason: "missing_user_id" };
+  }
+
+  const { data: userResult } = await supabaseAdmin.auth.admin.getUserById(account.user_id);
+  const crmAccountId = randomUUID();
+  const terminalPhase = nextPhase === "funded" ? "funded" : "challenge";
+  const terminalStatus = nextPhase === "funded" ? "funded" : "active";
+  const label = `TPP $${Number(startingBalance).toLocaleString()} ${PHASE_LABEL[nextPhase]}`;
+
+  const terminalResult = await createTradingAccount({
+    apiUrl: platform.api_url,
+    apiKey: platform.api_key,
+    userEmail: userResult?.user?.email || "user@example.com",
+    userId: account.user_id,
+    accountSize: startingBalance,
+    rules: nextRules,
+    programKey: account.program_key,
+    phase: terminalPhase,
+    status: terminalStatus,
+    label,
+    businessAccountId: crmAccountId,
+  });
+
+  if (!terminalResult.success) {
+    return { created: false, reason: terminalResult.error || "terminal_create_failed" };
+  }
+
+  const { error: insertError } = await supabaseAdmin.from("trading_accounts").insert({
+    id: crmAccountId,
+    user_id: account.user_id,
+    platform_id: platform.id,
+    rule_id: nextRules.id,
+    account_number: terminalResult.login,
+    login: terminalResult.login,
+    password: terminalResult.password || "auto-generated",
+    terminal_account_id: terminalResult.terminalAccountId || null,
+    program_key: account.program_key,
+    previous_account_id: account.id,
+    phase_group_id: account.phase_group_id || account.id,
+    phase_index: PHASE_INDEX[nextPhase],
+    balance: startingBalance,
+    starting_balance: startingBalance,
+    equity: startingBalance,
+    highest_equity: startingBalance,
+    current_daily_drawdown: 0,
+    current_max_drawdown: 0,
+    status: "active",
+    phase: nextPhase,
+  });
+
+  if (insertError) {
+    if (insertError.code === "23505") {
+      const { data: retryExisting } = await supabaseAdmin
+        .from("trading_accounts")
+        .select("id, login, terminal_account_id, phase, status")
+        .eq("previous_account_id", account.id)
+        .eq("phase", nextPhase)
+        .maybeSingle();
+
+      if (retryExisting) return { created: false, existing: retryExisting };
+    }
+
+    throw insertError;
+  }
+
+  if (terminalResult.terminalAccountId) {
+    await supabaseAdmin
+      .from("accounts")
+      .update({ business_account_id: crmAccountId })
+      .eq("id", terminalResult.terminalAccountId);
+  }
+
+  return {
+    created: true,
+    account: {
+      id: crmAccountId,
+      login: terminalResult.login,
+      terminal_account_id: terminalResult.terminalAccountId || null,
+      phase: nextPhase,
+      status: "active",
+    },
+  };
+}
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const { login, current_balance, current_equity, status: webhookStatus } = body;
+    const webhookSecret = process.env.TERMINAL_WEBHOOK_SECRET || process.env.CRM_WEBHOOK_SECRET;
+    if (webhookSecret && bearerToken(req) !== webhookSecret) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
-    if (!login || current_balance === undefined || current_equity === undefined) {
+    const body = await req.json();
+    const login = String(body.login || body.terminal_account_id || "");
+    const balance = Number(body.current_balance);
+    const equity = Number(body.current_equity);
+    const webhookStatus = body.status as WebhookStatus | undefined;
+
+    if (!login || !Number.isFinite(balance) || !Number.isFinite(equity)) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    // 1. Fetch Account and Rules
-    // The Terminal sends its own UUID as 'login', which maps to terminal_account_id in CRM
-    const { data: account, error: accError } = await supabaseAdmin
-      .from("trading_accounts")
-      .select("*, trading_rules(*), tpp_platforms(*)")
-      .or(`login.eq.${login},terminal_account_id.eq.${login}`)
-      .single();
-
-    if (accError || !account) {
+    const account = await findAccount(login);
+    if (!account) {
       console.error("Webhook account not found for:", login);
       return NextResponse.json({ error: "Account not found" }, { status: 404 });
     }
 
-    if (account.status !== "active") {
-      return NextResponse.json({ message: "Account is not active, ignoring update" });
+    const isPassedRetry = webhookStatus === "passed" && account.status === "passed";
+    if (account.status !== "active" && !isPassedRetry) {
+      return NextResponse.json({ message: "Account is not active, ignoring update", status: account.status });
     }
 
     const rules = account.trading_rules;
-    if (!rules) {
-      return NextResponse.json({ error: "Rules not found for account" }, { status: 500 });
-    }
-
-    // 2. Calculate Limits
     const startingBalance = Number(account.starting_balance);
-    const equity = Number(current_equity);
-    const balance = Number(current_balance);
-    
-    // Calculate breach levels
-    const dailyDrawdownPct = Number(rules.max_daily_drawdown_pct) || 0;
-    const overallDrawdownPct = Number(rules.max_overall_drawdown_pct) || 0;
-    const profitTargetPct = Number(rules.profit_target_pct) || 0;
-
-    // TODO: In a production system, daily breach level should use the highest equity of the day or midnight balance.
-    // For this MVP, we will use the starting balance to calculate the strict daily limits.
-    const dailyBreachLevel = startingBalance - (startingBalance * (dailyDrawdownPct / 100));
-    const overallBreachLevel = startingBalance - (startingBalance * (overallDrawdownPct / 100));
-    
-    // Profit target level
-    let profitTargetLevel = Infinity;
-    if (profitTargetPct > 0) {
-      profitTargetLevel = startingBalance + (startingBalance * (profitTargetPct / 100));
-    }
-
-    // Update highest equity tracking
+    const dailyDrawdownPct = Number(rules?.max_daily_drawdown_pct) || 0;
+    const overallDrawdownPct = Number(rules?.max_overall_drawdown_pct) || 0;
+    const profitTargetPct = Number(rules?.profit_target_pct) || 0;
+    const dailyBreachLevel = dailyDrawdownPct > 0 ? startingBalance - startingBalance * (dailyDrawdownPct / 100) : -Infinity;
+    const overallBreachLevel =
+      overallDrawdownPct > 0 ? startingBalance - startingBalance * (overallDrawdownPct / 100) : -Infinity;
+    const profitTargetLevel = profitTargetPct > 0 ? startingBalance + startingBalance * (profitTargetPct / 100) : Infinity;
     const newHighestEquity = Math.max(Number(account.highest_equity || startingBalance), equity);
 
-    // 3. Rule Enforcement Logic
-    let newStatus = "active";
+    let newStatus: WebhookStatus = account.status === "passed" ? "passed" : "active";
     let breachReason = "";
 
-    if (webhookStatus === 'passed') {
-      newStatus = 'passed';
-    } else {
-      if (equity <= dailyBreachLevel) {
-        newStatus = "breached";
-        breachReason = `Daily Drawdown Limit Reached. Equity dropped below $${dailyBreachLevel}`;
-      } else if (equity <= overallBreachLevel) {
-        newStatus = "breached";
-        breachReason = `Overall Drawdown Limit Reached. Equity dropped below $${overallBreachLevel}`;
-      } else if (equity >= profitTargetLevel) {
-        newStatus = "passed";
-      }
+    if (webhookStatus === "passed") {
+      newStatus = "passed";
+    } else if (webhookStatus === "breached") {
+      newStatus = "breached";
+      breachReason = body.reason || "Terminal risk worker reported breach";
+    } else if (equity <= dailyBreachLevel) {
+      newStatus = "breached";
+      breachReason = `Daily Drawdown Limit Reached. Equity dropped below $${dailyBreachLevel}`;
+    } else if (equity <= overallBreachLevel) {
+      newStatus = "breached";
+      breachReason = `Overall Drawdown Limit Reached. Equity dropped below $${overallBreachLevel}`;
+    } else if (equity >= profitTargetLevel) {
+      newStatus = "passed";
     }
 
-    // 4. Update Database
-    await supabaseAdmin
+    const updatePayload: Record<string, unknown> = {
+      balance,
+      equity,
+      highest_equity: newHighestEquity,
+      status: newStatus,
+      updated_at: new Date().toISOString(),
+    };
+
+    if (newStatus === "passed" && !account.passed_at) {
+      updatePayload.passed_at = new Date().toISOString();
+    }
+
+    const { error: updateError } = await supabaseAdmin
       .from("trading_accounts")
-      .update({
-        balance: balance,
-        equity: equity,
-        highest_equity: newHighestEquity,
-        status: newStatus
-      })
+      .update(updatePayload)
       .eq("id", account.id);
 
-    // 5. Trigger Terminal Disablement if Breached
+    if (updateError) throw updateError;
+
     if (newStatus === "breached") {
       const platform = account.tpp_platforms;
-      if (platform && platform.api_url && platform.api_key) {
-        // Run asynchronously so we don't block the webhook response
+      if (platform?.api_url && platform?.api_key) {
         disableTradingAccount(platform.api_url, platform.api_key, login, breachReason)
-          .catch(err => console.error("Failed to disable account via webhook:", err));
+          .catch((err) => console.error("Failed to disable account via webhook:", err));
       }
     }
 
-    // 6. Handle Phase Progression if Passed
-    if (newStatus === "passed" && account.program_key) {
-      const { data: program } = await supabaseAdmin.from("tpp_programs").select("*").eq("key", account.program_key).single();
-      if (program) {
-        let nextPhase = null;
-        let nextRuleId = null;
-
-        if (account.phase === 'challenge') {
-           if (program.phases === 1) nextPhase = 'funded', nextRuleId = program.funded_rule_id;
-           else if (program.phases >= 2) nextPhase = 'verification', nextRuleId = program.phase_2_rule_id;
-        } else if (account.phase === 'verification') {
-           if (program.phases === 2) nextPhase = 'funded', nextRuleId = program.funded_rule_id;
-           else if (program.phases === 3) nextPhase = 'phase_3', nextRuleId = program.funded_rule_id; // Using funded rule for phase 3 temporarily if missing
-        } else if (account.phase === 'phase_3') {
-           nextPhase = 'funded', nextRuleId = program.funded_rule_id;
-        }
-
-        if (nextPhase && nextRuleId) {
-          const { data: nextRules } = await supabaseAdmin.from("trading_rules").select("*").eq("id", nextRuleId).single();
-          const platform = account.tpp_platforms;
-          const { data: user } = await supabaseAdmin.auth.admin.getUserById(account.user_id);
-          
-          if (nextRules && platform && user?.user) {
-             const { createTradingAccount } = await import('@/lib/terminal-api');
-             const terminalResult = await createTradingAccount({
-                apiUrl: platform.api_url,
-                apiKey: platform.api_key,
-                userEmail: user.user.email || "user@example.com",
-                userId: account.user_id,
-                accountSize: startingBalance,
-                rules: nextRules,
-                programKey: account.program_key
-             });
-
-             if (terminalResult.success) {
-               await supabaseAdmin.from("trading_accounts").insert({
-                 user_id: account.user_id,
-                 platform_id: platform.id,
-                 rule_id: nextRules.id,
-                 account_number: terminalResult.login,
-                 login: terminalResult.login,
-                 password: terminalResult.password || "auto-generated",
-                 terminal_account_id: terminalResult.terminalAccountId || null,
-                 program_key: account.program_key,
-                 balance: startingBalance,
-                 starting_balance: startingBalance,
-                 equity: startingBalance,
-                 highest_equity: startingBalance,
-                 current_daily_drawdown: 0,
-                 current_max_drawdown: 0,
-                 status: "active",
-                 phase: nextPhase
-               });
-             }
-          }
-        }
-      }
-    }
+    const promotion = newStatus === "passed" ? await promoteIfNeeded(account, startingBalance) : null;
 
     return NextResponse.json({
       success: true,
@@ -161,11 +312,11 @@ export async function POST(req: Request) {
       reason: breachReason,
       current_equity: equity,
       daily_breach_level: dailyBreachLevel,
-      overall_breach_level: overallBreachLevel
+      overall_breach_level: overallBreachLevel,
+      promotion,
     });
-
   } catch (error: any) {
     console.error("Webhook processing error:", error.message);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Internal server error", details: error.message }, { status: 500 });
   }
 }

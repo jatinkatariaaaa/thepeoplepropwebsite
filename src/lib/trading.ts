@@ -11,7 +11,7 @@ export const ACCOUNT_STATUSES = [
 
 export type AccountStatus = (typeof ACCOUNT_STATUSES)[number];
 
-export const ACCOUNT_PHASES = ["phase_1", "phase_2", "funded"] as const;
+export const ACCOUNT_PHASES = ["challenge", "verification", "phase_3", "funded"] as const;
 export type AccountPhase = (typeof ACCOUNT_PHASES)[number];
 
 // Account management actions the admin API understands.

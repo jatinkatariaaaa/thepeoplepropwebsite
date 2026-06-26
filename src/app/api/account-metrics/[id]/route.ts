@@ -1,105 +1,124 @@
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { calculateAccountMetrics, type MetricsTradeRow } from "@/lib/account-metrics";
 import { supabaseAdmin } from "@/lib/supabase";
 
-export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
+export const dynamic = "force-dynamic";
+
+type RouteContext = { params: Promise<{ id: string }> };
+
+function jsonNoStore(body: unknown, init: ResponseInit = {}) {
+  const headers = new Headers(init.headers);
+  headers.set("Cache-Control", "no-store, max-age=0");
+  return NextResponse.json(body, { ...init, headers });
+}
+
+async function getAuthenticatedUser() {
+  const cookieStore = await cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            cookieStore.set(name, value, { ...options });
+          });
+        },
+      },
+    }
+  );
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  return user;
+}
+
+export async function GET(_request: Request, { params }: RouteContext) {
   try {
+    const user = await getAuthenticatedUser();
+    if (!user) {
+      return jsonNoStore({ error: "Authentication required" }, { status: 401 });
+    }
+
     const { id: accountId } = await params;
+    if (!accountId) {
+      return jsonNoStore({ error: "Account id is required" }, { status: 400 });
+    }
 
-    // Fetch the terminal_account_id from CRM db
-    const { data: crmAccount, error: accError } = await supabaseAdmin
+    const { data: crmAccount, error: accountError } = await supabaseAdmin
       .from("trading_accounts")
-      .select("terminal_account_id, starting_balance")
+      .select(
+        "id, user_id, terminal_account_id, starting_balance, balance, equity, status, highest_equity"
+      )
       .eq("id", accountId)
-      .single();
+      .maybeSingle();
 
-    if (accError || !crmAccount || !crmAccount.terminal_account_id) {
-      return NextResponse.json({ error: "Account not found or not linked to terminal" }, { status: 404 });
+    if (accountError) {
+      console.error("Account metrics CRM lookup failed:", accountError);
+      return jsonNoStore({ error: "Failed to fetch account" }, { status: 500 });
     }
 
-    // Fetch trades from the Terminal DB (which shares the same Supabase project)
-    const { data: trades, error: tradesError } = await supabaseAdmin
-      .from("trades")
-      .select("*")
-      .eq("account_id", crmAccount.terminal_account_id)
-      .order("close_time", { ascending: true });
-
-    if (tradesError) {
-      return NextResponse.json({ error: "Failed to fetch trades" }, { status: 500 });
+    if (!crmAccount) {
+      return jsonNoStore({ error: "Account not found" }, { status: 404 });
     }
 
-    if (!trades || trades.length === 0) {
-      return NextResponse.json({
-        totalTrades: 0,
-        winRate: 0,
-        profitFactor: 0,
-        averageWin: 0,
-        averageLoss: 0,
-        biggestWin: 0,
-        biggestLoss: 0,
-        dailyPnL: [],
-        equityCurve: [{ time: "Start", equity: Number(crmAccount.starting_balance) }]
-      });
+    if (crmAccount.user_id !== user.id) {
+      return jsonNoStore({ error: "Forbidden" }, { status: 403 });
     }
 
-    let grossWins = 0;
-    let grossLosses = 0;
-    let totalWins = 0;
-    let totalLosses = 0;
-    let biggestWin = 0;
-    let biggestLoss = 0;
-    
-    // For equity curve and calendar
-    let currentEquity = Number(crmAccount.starting_balance);
-    const equityCurve = [{ time: "Start", equity: currentEquity }];
-    const pnlByDate: Record<string, number> = {};
+    if (!crmAccount.terminal_account_id) {
+      return jsonNoStore({ error: "Account is not linked to terminal" }, { status: 404 });
+    }
 
-    trades.forEach((trade) => {
-      const net = Number(trade.net_pnl);
-      const dateStr = new Date(trade.close_time).toISOString().split('T')[0];
+    const [terminalResult, tradesResult] = await Promise.all([
+      supabaseAdmin
+        .from("accounts")
+        .select("balance, equity, highest_equity, status")
+        .eq("id", crmAccount.terminal_account_id)
+        .maybeSingle(),
+      supabaseAdmin
+        .from("trades")
+        .select(
+          "id, symbol, direction, volume, open_time, close_time, gross_pnl, commission, swap, net_pnl"
+        )
+        .eq("account_id", crmAccount.terminal_account_id)
+        .order("close_time", { ascending: true }),
+    ]);
 
-      if (!pnlByDate[dateStr]) pnlByDate[dateStr] = 0;
-      pnlByDate[dateStr] += net;
+    if (terminalResult.error) {
+      console.error("Account metrics terminal lookup failed:", terminalResult.error);
+      return jsonNoStore({ error: "Failed to fetch terminal account" }, { status: 500 });
+    }
 
-      currentEquity += net;
-      equityCurve.push({ time: new Date(trade.close_time).toLocaleString(), equity: currentEquity });
+    if (!terminalResult.data) {
+      return jsonNoStore({ error: "Linked terminal account not found" }, { status: 404 });
+    }
 
-      if (net > 0) {
-        grossWins += net;
-        totalWins++;
-        if (net > biggestWin) biggestWin = net;
-      } else if (net < 0) {
-        grossLosses += Math.abs(net);
-        totalLosses++;
-        if (net < biggestLoss) biggestLoss = net;
-      }
+    if (tradesResult.error) {
+      console.error("Account metrics trades lookup failed:", tradesResult.error);
+      return jsonNoStore({ error: "Failed to fetch trades" }, { status: 500 });
+    }
+
+    const metrics = calculateAccountMetrics({
+      trades: (tradesResult.data ?? []) as MetricsTradeRow[],
+      startingBalance: crmAccount.starting_balance,
+      terminal: terminalResult.data,
     });
 
-    const totalTrades = trades.length;
-    const winRate = totalTrades > 0 ? (totalWins / totalTrades) * 100 : 0;
-    const profitFactor = grossLosses > 0 ? (grossWins / grossLosses) : (grossWins > 0 ? grossWins : 0);
-    const averageWin = totalWins > 0 ? grossWins / totalWins : 0;
-    const averageLoss = totalLosses > 0 ? grossLosses / totalLosses : 0;
-
-    // Convert daily PnL map to array
-    const dailyPnL = Object.keys(pnlByDate).map(date => ({
-      date,
-      pnl: pnlByDate[date]
-    })).sort((a, b) => a.date.localeCompare(b.date));
-
-    return NextResponse.json({
-      totalTrades,
-      winRate,
-      profitFactor,
-      averageWin,
-      averageLoss,
-      biggestWin,
-      biggestLoss,
-      dailyPnL,
-      equityCurve
+    return jsonNoStore({
+      accountId: crmAccount.id,
+      terminalAccountId: crmAccount.terminal_account_id,
+      metrics,
     });
-
-  } catch (error: any) {
-    console.error("Account metrics error:", error.message);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  } catch (error: unknown) {
+    console.error("Account metrics error:", error instanceof Error ? error.message : error);
+    return jsonNoStore({ error: "Internal server error" }, { status: 500 });
   }
 }

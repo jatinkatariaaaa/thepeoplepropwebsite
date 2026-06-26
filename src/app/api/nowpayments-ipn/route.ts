@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
-import crypto from "crypto";
-import { programs } from "@/data/programs";
+import crypto, { randomUUID } from "crypto";
 
 export async function POST(req: Request) {
   try {
@@ -77,6 +76,7 @@ export async function POST(req: Request) {
       if (rules && platform) {
         // Call the Terminal API Bridge
         const { createTradingAccount } = await import('@/lib/terminal-api');
+        const crmAccountId = randomUUID();
         
         const terminalResult = await createTradingAccount({
           apiUrl: platform.api_url,
@@ -85,13 +85,15 @@ export async function POST(req: Request) {
           userId: purchase.user_id,
           accountSize: purchase.account_size,
           rules: rules,
-          programKey: purchase.program_key
+          programKey: purchase.program_key,
+          businessAccountId: crmAccountId
         });
 
         if (terminalResult.success) {
           const { error: accountError } = await supabaseAdmin
             .from("trading_accounts")
             .insert({
+              id: crmAccountId,
               user_id: purchase.user_id,
               platform_id: platform.id,
               rule_id: rules.id,
@@ -100,6 +102,8 @@ export async function POST(req: Request) {
               password: terminalResult.password,
               terminal_account_id: terminalResult.terminalAccountId || null,
               program_key: purchase.program_key,
+              phase_group_id: crmAccountId,
+              phase_index: 1,
               balance: purchase.account_size,
               starting_balance: purchase.account_size,
               equity: purchase.account_size,
@@ -112,6 +116,11 @@ export async function POST(req: Request) {
 
           if (accountError) {
             console.error("Account creation failed:", accountError);
+          } else if (terminalResult.terminalAccountId) {
+            await supabaseAdmin
+              .from("accounts")
+              .update({ business_account_id: crmAccountId })
+              .eq("id", terminalResult.terminalAccountId);
           }
         } else {
            console.error("Terminal API refused account creation:", terminalResult.error);
