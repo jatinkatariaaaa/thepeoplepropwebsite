@@ -61,7 +61,7 @@ export function AccountHeader({ account }: Props) {
               {account.label || 'Trading Account'}
             </span>
             <span className="px-3 py-1 rounded-full bg-[var(--paper-2)] border border-[var(--border)] text-[12px] font-bold text-[var(--ink-600)] capitalize">
-              {account.phase === 'challenge' ? 'Phase 1' : account.phase === 'verification' ? 'Phase 2' : account.phase || 'Phase 1'}
+              {account.phase === 'challenge' ? 'Phase 1' : account.phase === 'verification' ? 'Phase 2' : account.phase === 'phase_3' ? 'Phase 3' : account.phase === 'funded' ? 'Funded' : account.phase || 'Phase 1'}
             </span>
             <span className="px-3 py-1 rounded-full bg-[var(--paper-2)] border border-[var(--border)] text-[12px] font-bold text-[var(--ink-600)]">
               {account.tpp_platforms?.name || 'TPP Dashboard'}
