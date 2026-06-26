@@ -34,9 +34,9 @@ export async function POST(request: Request) {
 
     const newCoupon = {
       code: code.toUpperCase(),
-      discount_percentage,
+      discount_pct: discount_percentage,
       max_uses: max_uses || null,
-      uses: 0,
+      current_uses: 0,
       is_active: true,
       expires_at: expires_at || null,
       challenge_specific: challenge_specific || null
