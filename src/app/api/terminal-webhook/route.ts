@@ -5,7 +5,7 @@ import { disableTradingAccount } from "@/lib/terminal-api";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { login, current_balance, current_equity } = body;
+    const { login, current_balance, current_equity, status: webhookStatus } = body;
 
     if (!login || current_balance === undefined || current_equity === undefined) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -61,14 +61,18 @@ export async function POST(req: Request) {
     let newStatus = "active";
     let breachReason = "";
 
-    if (equity <= dailyBreachLevel) {
-      newStatus = "breached";
-      breachReason = `Daily Drawdown Limit Reached. Equity dropped below $${dailyBreachLevel}`;
-    } else if (equity <= overallBreachLevel) {
-      newStatus = "breached";
-      breachReason = `Overall Drawdown Limit Reached. Equity dropped below $${overallBreachLevel}`;
-    } else if (equity >= profitTargetLevel) {
-      newStatus = "passed";
+    if (webhookStatus === 'passed') {
+      newStatus = 'passed';
+    } else {
+      if (equity <= dailyBreachLevel) {
+        newStatus = "breached";
+        breachReason = `Daily Drawdown Limit Reached. Equity dropped below $${dailyBreachLevel}`;
+      } else if (equity <= overallBreachLevel) {
+        newStatus = "breached";
+        breachReason = `Overall Drawdown Limit Reached. Equity dropped below $${overallBreachLevel}`;
+      } else if (equity >= profitTargetLevel) {
+        newStatus = "passed";
+      }
     }
 
     // 4. Update Database
@@ -89,6 +93,65 @@ export async function POST(req: Request) {
         // Run asynchronously so we don't block the webhook response
         disableTradingAccount(platform.api_url, platform.api_key, login, breachReason)
           .catch(err => console.error("Failed to disable account via webhook:", err));
+      }
+    }
+
+    // 6. Handle Phase Progression if Passed
+    if (newStatus === "passed" && account.program_key) {
+      const { data: program } = await supabaseAdmin.from("tpp_programs").select("*").eq("key", account.program_key).single();
+      if (program) {
+        let nextPhase = null;
+        let nextRuleId = null;
+
+        if (account.phase === 'challenge') {
+           if (program.phases === 1) nextPhase = 'funded', nextRuleId = program.funded_rule_id;
+           else if (program.phases >= 2) nextPhase = 'verification', nextRuleId = program.phase_2_rule_id;
+        } else if (account.phase === 'verification') {
+           if (program.phases === 2) nextPhase = 'funded', nextRuleId = program.funded_rule_id;
+           else if (program.phases === 3) nextPhase = 'phase_3', nextRuleId = program.funded_rule_id; // Using funded rule for phase 3 temporarily if missing
+        } else if (account.phase === 'phase_3') {
+           nextPhase = 'funded', nextRuleId = program.funded_rule_id;
+        }
+
+        if (nextPhase && nextRuleId) {
+          const { data: nextRules } = await supabaseAdmin.from("trading_rules").select("*").eq("id", nextRuleId).single();
+          const platform = account.tpp_platforms;
+          const { data: user } = await supabaseAdmin.auth.admin.getUserById(account.user_id);
+          
+          if (nextRules && platform && user?.user) {
+             const { createTradingAccount } = await import('@/lib/terminal-api');
+             const terminalResult = await createTradingAccount({
+                apiUrl: platform.api_url,
+                apiKey: platform.api_key,
+                userEmail: user.user.email || "user@example.com",
+                userId: account.user_id,
+                accountSize: startingBalance,
+                rules: nextRules,
+                programKey: account.program_key
+             });
+
+             if (terminalResult.success) {
+               await supabaseAdmin.from("trading_accounts").insert({
+                 user_id: account.user_id,
+                 platform_id: platform.id,
+                 rule_id: nextRules.id,
+                 account_number: terminalResult.login,
+                 login: terminalResult.login,
+                 password: terminalResult.password || "auto-generated",
+                 terminal_account_id: terminalResult.terminalAccountId || null,
+                 program_key: account.program_key,
+                 balance: startingBalance,
+                 starting_balance: startingBalance,
+                 equity: startingBalance,
+                 highest_equity: startingBalance,
+                 current_daily_drawdown: 0,
+                 current_max_drawdown: 0,
+                 status: "active",
+                 phase: nextPhase
+               });
+             }
+          }
+        }
       }
     }
 

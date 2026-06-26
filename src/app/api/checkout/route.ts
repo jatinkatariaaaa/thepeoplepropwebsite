@@ -101,6 +101,7 @@ export async function POST(request: Request) {
               login: accountLogin,
               password: terminalResult.password || "auto-generated",
               terminal_account_id: terminalResult.terminalAccountId || null,
+              program_key: programKey,
               balance: accountSize,
               starting_balance: accountSize,
               equity: accountSize,

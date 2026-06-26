@@ -99,6 +99,7 @@ export async function POST(req: Request) {
               login: terminalResult.login,
               password: terminalResult.password,
               terminal_account_id: terminalResult.terminalAccountId || null,
+              program_key: purchase.program_key,
               balance: purchase.account_size,
               starting_balance: purchase.account_size,
               equity: purchase.account_size,

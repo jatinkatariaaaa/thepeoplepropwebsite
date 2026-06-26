@@ -1,6 +1,6 @@
 import { TrendingUp, CalendarDays } from "lucide-react";
 
-export function AccountBalanceChart() {
+export function AccountBalanceChart({ metrics }: { metrics?: any }) {
   return (
     <div className="mb-6">
       <div className="flex items-center justify-between mb-4">

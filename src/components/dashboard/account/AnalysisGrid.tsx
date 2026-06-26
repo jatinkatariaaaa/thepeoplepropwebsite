@@ -1,16 +1,20 @@
 import { TrendingUp, Target, TrendingDown, BarChart3, PieChart, Activity } from "lucide-react";
 
-export function AnalysisGrid() {
+export function AnalysisGrid({ metrics }: { metrics?: any }) {
+  // Format helpers
+  const formatMoney = (val: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val || 0);
+  const formatPct = (val: number) => (val || 0).toFixed(2) + '%';
+  const formatNum = (val: number) => (val || 0).toFixed(2);
   return (
     <div className="space-y-6 mb-8">
       
       {/* 4 Mini Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { l: "Average Win", v: "$0.00", icon: TrendingUp },
-          { l: "Win Ratio", v: "—", icon: Target },
-          { l: "Average Loss", v: "$0.00", icon: TrendingDown },
-          { l: "Profit Factor", v: "—", icon: BarChart3 }
+          { l: "Average Win", v: formatMoney(metrics?.averageWin), icon: TrendingUp },
+          { l: "Win Ratio", v: formatPct(metrics?.winRate), icon: Target },
+          { l: "Average Loss", v: formatMoney(-Math.abs(metrics?.averageLoss || 0)), icon: TrendingDown },
+          { l: "Profit Factor", v: formatNum(metrics?.profitFactor), icon: BarChart3 }
         ].map((s, i) => {
           const Icon = s.icon;
           return (
@@ -27,11 +31,11 @@ export function AnalysisGrid() {
       {/* Extra stats */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         {[
-          { l: "Number of days", v: "0", icon: CalendarDays },
-          { l: "Total Trades Taken", v: "0", icon: Hash },
-          { l: "Total Lots Used", v: "0.00", icon: BarChart3 },
-          { l: "Biggest Win", v: "$0.00", icon: TrendingUp },
-          { l: "Biggest Loss", v: "$0.00", icon: TrendingDown }
+          { l: "Number of days", v: metrics?.dailyPnL?.length || "0", icon: CalendarDays },
+          { l: "Total Trades Taken", v: metrics?.totalTrades?.toString() || "0", icon: Hash },
+          { l: "Total Lots Used", v: "N/A", icon: BarChart3 },
+          { l: "Biggest Win", v: formatMoney(metrics?.biggestWin), icon: TrendingUp },
+          { l: "Biggest Loss", v: formatMoney(metrics?.biggestLoss), icon: TrendingDown }
         ].map((s, i) => {
           const Icon = s.icon;
           return (

@@ -1,7 +1,8 @@
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Share2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export function DailySummary() {
+export function DailySummary({ metrics }: { metrics?: any }) {
+  const formatMoney = (val: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val || 0);
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   
   // Generating a simple 35-day grid for placeholder
@@ -39,8 +40,8 @@ export function DailySummary() {
               </button>
             </div>
             <div className="flex items-center gap-4 text-[13px] font-bold">
-              <span className="text-[var(--ink-500)]">PnL: <span className="text-[var(--ink-950)]">$0.00</span></span>
-              <span className="text-[var(--ink-500)]">Days: <span className="text-[var(--ink-950)]">0</span></span>
+              <span className="text-[var(--ink-500)]">Total PnL: <span className="text-[var(--ink-950)]">{formatMoney(metrics?.equityCurve?.[metrics?.equityCurve.length - 1]?.equity - metrics?.equityCurve?.[0]?.equity || 0)}</span></span>
+              <span className="text-[var(--ink-500)]">Active Days: <span className="text-[var(--ink-950)]">{metrics?.dailyPnL?.length || 0}</span></span>
             </div>
           </div>
 

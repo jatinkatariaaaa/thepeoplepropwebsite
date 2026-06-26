@@ -13,6 +13,7 @@ import { redirect } from "next/navigation";
 
 export function AccountClient({ accountId }: { accountId: string }) {
   const [account, setAccount] = useState<any>(null);
+  const [metrics, setMetrics] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -52,6 +53,17 @@ export function AccountClient({ accountId }: { accountId: string }) {
           }
         }
         setAccount(data);
+        
+        // Fetch real metrics
+        try {
+           const res = await fetch(`/api/account-metrics/${accountId}`);
+           if (res.ok) {
+             const metricsData = await res.json();
+             setMetrics(metricsData);
+           }
+        } catch (e) {
+           console.error("Failed to fetch metrics", e);
+        }
       }
       setLoading(false);
     }
@@ -80,11 +92,11 @@ export function AccountClient({ accountId }: { accountId: string }) {
     <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out pb-20">
       <AccountHeader account={account} />
       <TopMetrics account={account} />
-      <PerformanceCharts account={account} />
-      <AccountBalanceChart />
+      <PerformanceCharts account={account} metrics={metrics} />
+      <AccountBalanceChart metrics={metrics} />
       <TradingObjectives account={account} />
-      <DailySummary />
-      <AnalysisGrid />
+      <DailySummary metrics={metrics} />
+      <AnalysisGrid metrics={metrics} />
     </div>
   );
 }

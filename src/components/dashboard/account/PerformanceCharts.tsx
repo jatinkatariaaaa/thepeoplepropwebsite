@@ -1,6 +1,6 @@
 import { NavbarLogo } from "@/components/ui/resizable-navbar";
 
-export function PerformanceCharts({ account }: { account?: any }) {
+export function PerformanceCharts({ account, metrics }: { account?: any, metrics?: any }) {
   const currentBalance = Number(account?.balance || 0);
   const currentEquity = Number(account?.equity || 0);
   const startingBalance = Number(account?.starting_balance || 0);
@@ -43,7 +43,7 @@ export function PerformanceCharts({ account }: { account?: any }) {
         </div>
 
         <div className="absolute bottom-6 left-6">
-          <div className="text-[40px] font-display font-bold leading-none">2.08</div>
+          <div className="text-[40px] font-display font-bold leading-none">{metrics?.profitFactor ? metrics.profitFactor.toFixed(2) : "0.00"}</div>
         </div>
       </div>
 
