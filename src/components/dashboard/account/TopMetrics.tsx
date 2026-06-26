@@ -13,7 +13,7 @@ export function TopMetrics({ account }: { account: any }) {
     { label: "Account Size", value: `$${startingBalance.toLocaleString(undefined, {minimumFractionDigits: 2})}`, icon: Wallet },
     { label: "Current Equity", value: `$${Number(account.equity || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`, icon: TrendingUp },
     { label: "Total Profit", value: `${totalProfit >= 0 ? '+' : ''}$${totalProfit.toLocaleString(undefined, {minimumFractionDigits: 2})}`, icon: TrendingUp },
-    { label: "Phase", value: (account.phase || 'Unknown').toUpperCase(), icon: CalendarClock },
+    { label: "Phase", value: account.phase === 'challenge' ? 'Phase 1' : account.phase === 'verification' ? 'Phase 2' : (account.phase || 'Phase 1').toUpperCase(), icon: CalendarClock },
   ];
 
   return (
