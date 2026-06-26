@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import crypto, { randomUUID } from "crypto";
+import { getInitialAccountLifecycle } from "@/lib/program-lifecycle";
 
 export async function POST(req: Request) {
   try {
@@ -57,13 +58,20 @@ export async function POST(req: Request) {
       .eq("key", purchase.program_key)
       .single();
 
-    if (program && program.phase_1_rule_id) {
+    if (program) {
+      const lifecycle = getInitialAccountLifecycle(program);
+      if (!lifecycle.ruleId) {
+        console.error(`NOWPayments IPN - no initial rule configured for program ${purchase.program_key}`);
+      }
+
       // Fetch Rules
-      const { data: rules } = await supabaseAdmin
-        .from("trading_rules")
-        .select("*")
-        .eq("id", program.phase_1_rule_id)
-        .single();
+      const { data: rules } = lifecycle.ruleId
+        ? await supabaseAdmin
+            .from("trading_rules")
+            .select("*")
+            .eq("id", lifecycle.ruleId)
+            .single()
+        : { data: null };
 
       // Fetch TPP Terminal Platform
       const { data: platform } = await supabaseAdmin
@@ -77,6 +85,7 @@ export async function POST(req: Request) {
         // Call the Terminal API Bridge
         const { createTradingAccount } = await import('@/lib/terminal-api');
         const crmAccountId = randomUUID();
+        const label = `TPP $${Number(purchase.account_size).toLocaleString()} ${lifecycle.label}`;
         
         const terminalResult = await createTradingAccount({
           apiUrl: platform.api_url,
@@ -86,6 +95,9 @@ export async function POST(req: Request) {
           accountSize: purchase.account_size,
           rules: rules,
           programKey: purchase.program_key,
+          phase: lifecycle.terminalPhase,
+          status: lifecycle.terminalStatus,
+          label,
           businessAccountId: crmAccountId
         });
 
@@ -103,7 +115,7 @@ export async function POST(req: Request) {
               terminal_account_id: terminalResult.terminalAccountId || null,
               program_key: purchase.program_key,
               phase_group_id: crmAccountId,
-              phase_index: 1,
+              phase_index: lifecycle.phaseIndex,
               balance: purchase.account_size,
               starting_balance: purchase.account_size,
               equity: purchase.account_size,
@@ -111,7 +123,7 @@ export async function POST(req: Request) {
               current_daily_drawdown: 0,
               current_max_drawdown: 0,
               status: "active",
-              phase: "challenge"
+              phase: lifecycle.phase
             });
 
           if (accountError) {

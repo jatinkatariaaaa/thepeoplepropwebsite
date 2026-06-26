@@ -5,6 +5,45 @@ import { createBrowserClient } from "@supabase/ssr";
 import { Button } from "@/components/ui/Button";
 import { Plus, Edit2, X, Trash2 } from "lucide-react";
 
+const RISK_ONLY_PROGRAM_KEYS = new Set(["instant", "access"]);
+
+const DEFAULT_RULE_FLAGS = {
+  is_news_trading_allowed: true,
+  is_weekend_holding_allowed: true,
+  is_ea_allowed: true,
+  is_hedging_allowed: true,
+  is_copy_trading_allowed: true,
+  is_martingale_allowed: false,
+  is_grid_trading_allowed: false,
+};
+
+function isRiskOnlyProgramKey(key: string) {
+  return RISK_ONLY_PROGRAM_KEYS.has(key.toLowerCase());
+}
+
+function parsePercent(value: string, fallback = 0) {
+  const match = String(value || "").match(/-?\d+(\.\d+)?/);
+  if (!match) return fallback;
+  const parsed = Number(match[0]);
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+function parseTargets(value: string) {
+  const text = String(value || "");
+  const repeatedTarget = text.match(/(-?\d+(\.\d+)?)\s*%?\s*(?:x|×|\*)\s*(\d+)/i);
+  if (repeatedTarget) {
+    const target = Number(repeatedTarget[1]);
+    const phases = Number(repeatedTarget[3]);
+    if (Number.isFinite(target) && Number.isInteger(phases) && phases > 0) {
+      return Array.from({ length: phases }, () => target);
+    }
+  }
+
+  return Array.from(text.matchAll(/-?\d+(\.\d+)?/g))
+    .map((match) => Number(match[0]))
+    .filter(Number.isFinite);
+}
+
 export default function ChallengesAdminPage() {
   const [programs, setPrograms] = useState<any[]>([]);
   const [rules, setRules] = useState<any[]>([]);
@@ -100,12 +139,126 @@ export default function ChallengesAdminPage() {
 
     // Save Program
     const progKey = formData.key;
-    const payload = {
+    const isRiskOnly = isRiskOnlyProgramKey(progKey);
+    const normalizedFormData = {
       ...formData,
-      phase_1_rule_id: formData.phase_1_rule_id || null,
-      phase_2_rule_id: formData.phase_2_rule_id || null,
-      phase_3_rule_id: formData.phase_3_rule_id || null,
-      funded_rule_id: formData.funded_rule_id || null,
+      phases: isRiskOnly ? 0 : Number(formData.phases),
+      profit_target: isRiskOnly ? "None" : formData.profit_target,
+      phase_2_rule_id: isRiskOnly ? "" : formData.phase_2_rule_id,
+      phase_3_rule_id: isRiskOnly ? "" : formData.phase_3_rule_id,
+      funded_rule_id: isRiskOnly
+        ? formData.funded_rule_id || formData.phase_1_rule_id
+        : formData.funded_rule_id,
+    };
+    const targetValues = parseTargets(normalizedFormData.profit_target);
+    const dailyDrawdown = parsePercent(normalizedFormData.daily_drawdown, 5);
+    const overallDrawdown = parsePercent(normalizedFormData.max_drawdown, 10);
+
+    const ensureProgramRule = async (
+      existingRuleId: string,
+      phaseLabel: string,
+      profitTargetPct: number
+    ) => {
+      const selectedRule = rules.find((rule) => rule.id === existingRuleId);
+      const ownedName = `${normalizedFormData.short_label || normalizedFormData.key} ${phaseLabel}`.trim();
+      const source = selectedRule || {};
+      const rulePayload = {
+        ...DEFAULT_RULE_FLAGS,
+        ...source,
+        id: undefined,
+        created_at: undefined,
+        updated_at: undefined,
+        name: ownedName,
+        description: `Auto-synced from ${normalizedFormData.label || normalizedFormData.key} challenge settings.`,
+        profit_target_pct: profitTargetPct,
+        max_daily_drawdown_pct: dailyDrawdown,
+        max_overall_drawdown_pct: overallDrawdown,
+        min_trading_days: Number(source.min_trading_days ?? 0),
+        max_trading_days: Number(source.max_trading_days ?? 0),
+      };
+
+      const { data: existingByName, error: findError } = await supabase
+        .from("trading_rules")
+        .select("id")
+        .eq("name", ownedName)
+        .limit(1)
+        .maybeSingle();
+
+      if (findError) throw findError;
+
+      const targetRuleId = selectedRule?.name === ownedName ? existingRuleId : existingByName?.id;
+      if (targetRuleId) {
+        const { error: updateRuleError } = await supabase
+          .from("trading_rules")
+          .update(rulePayload)
+          .eq("id", targetRuleId);
+        if (updateRuleError) throw updateRuleError;
+        return targetRuleId as string;
+      }
+
+      const { data: insertedRule, error: insertRuleError } = await supabase
+        .from("trading_rules")
+        .insert([rulePayload])
+        .select("id")
+        .single();
+
+      if (insertRuleError) throw insertRuleError;
+      return insertedRule.id as string;
+    };
+
+    try {
+      if (isRiskOnly) {
+        const riskRuleId = await ensureProgramRule(
+          normalizedFormData.funded_rule_id || normalizedFormData.phase_1_rule_id,
+          "Risk Only",
+          0
+        );
+        normalizedFormData.phase_1_rule_id = riskRuleId;
+        normalizedFormData.funded_rule_id = riskRuleId;
+      } else {
+        normalizedFormData.phase_1_rule_id = await ensureProgramRule(
+          normalizedFormData.phase_1_rule_id,
+          "Phase 1",
+          targetValues[0] ?? parsePercent(normalizedFormData.profit_target, 0)
+        );
+
+        if (normalizedFormData.phases >= 2) {
+          normalizedFormData.phase_2_rule_id = await ensureProgramRule(
+            normalizedFormData.phase_2_rule_id || normalizedFormData.phase_1_rule_id,
+            "Phase 2",
+            targetValues[1] ?? targetValues[0] ?? 0
+          );
+        } else {
+          normalizedFormData.phase_2_rule_id = "";
+        }
+
+        if (normalizedFormData.phases >= 3) {
+          normalizedFormData.phase_3_rule_id = await ensureProgramRule(
+            normalizedFormData.phase_3_rule_id || normalizedFormData.phase_2_rule_id,
+            "Phase 3",
+            targetValues[2] ?? targetValues[0] ?? 0
+          );
+        } else {
+          normalizedFormData.phase_3_rule_id = "";
+        }
+
+        normalizedFormData.funded_rule_id = await ensureProgramRule(
+          normalizedFormData.funded_rule_id || normalizedFormData.phase_1_rule_id,
+          "Funded",
+          0
+        );
+      }
+    } catch (ruleError: any) {
+      alert("Rule sync failed: " + ruleError.message);
+      return;
+    }
+
+    const payload = {
+      ...normalizedFormData,
+      phase_1_rule_id: normalizedFormData.phase_1_rule_id || null,
+      phase_2_rule_id: normalizedFormData.phase_2_rule_id || null,
+      phase_3_rule_id: normalizedFormData.phase_3_rule_id || null,
+      funded_rule_id: normalizedFormData.funded_rule_id || null,
     };
     
     const { error } = isEditing 
@@ -133,6 +286,7 @@ export default function ChallengesAdminPage() {
 
     setIsModalOpen(false);
     fetchPrograms();
+    fetchRules();
   }
 
   if (loading && programs.length === 0) return <div className="p-10 animate-pulse bg-[var(--paper)] rounded-xl h-40" />;
@@ -185,6 +339,7 @@ export default function ChallengesAdminPage() {
                 <div>
                   <label className="block text-xs font-semibold mb-1">Evaluation Phases</label>
                   <select value={formData.phases} onChange={e => setFormData({...formData, phases: Number(e.target.value)})} className="w-full border rounded-lg p-2 bg-white">
+                    <option value={0}>Risk Only / Instant</option>
                     <option value={1}>1 Step</option>
                     <option value={2}>2 Step</option>
                     <option value={3}>3 Step</option>

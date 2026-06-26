@@ -11,6 +11,11 @@ const PHASE_INDEX: Record<string, number> = {
   funded: 99,
 };
 
+function pctToDecimal(value: unknown, fallback: number) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed / 100 : fallback;
+}
+
 // GET /api/admin/trading/accounts
 // Returns all trading accounts (joined) for the admin list.
 export async function GET(request: Request) {
@@ -115,9 +120,9 @@ export async function POST(request: Request) {
         .single();
         
       if (ruleData) {
-        maxDailyDrawdownPct = (ruleData.max_daily_drawdown_pct || 5) / 100;
-        maxOverallDrawdownPct = (ruleData.max_overall_drawdown_pct || 10) / 100;
-        profitTargetPct = terminalPhase === "funded" ? 0 : (ruleData.profit_target_pct || 8) / 100;
+        maxDailyDrawdownPct = pctToDecimal(ruleData.max_daily_drawdown_pct, 0.05);
+        maxOverallDrawdownPct = pctToDecimal(ruleData.max_overall_drawdown_pct, 0.10);
+        profitTargetPct = terminalPhase === "funded" ? 0 : pctToDecimal(ruleData.profit_target_pct, 0.08);
       }
     }
 

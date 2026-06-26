@@ -36,6 +36,7 @@ export function useHydratedPrograms() {
             maxDrawdown: dbProg.max_drawdown || staticProg.maxDrawdown,
             dailyDrawdown: dbProg.daily_drawdown || staticProg.dailyDrawdown,
             profitSplit: dbProg.profit_split || staticProg.profitSplit,
+            phases: dbProg.phases ?? staticProg.phases,
             // If DB returned fees for this program, overwrite the static fees
             fees: Object.keys(newFees).length > 0 ? newFees : staticProg.fees,
           } as Program;

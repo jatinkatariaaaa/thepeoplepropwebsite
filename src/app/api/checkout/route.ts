@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import { supabaseAdmin } from "@/lib/supabase";
 import { programs } from "@/data/programs";
+import { getInitialAccountLifecycle } from "@/lib/program-lifecycle";
 
 export async function POST(request: Request) {
   try {
@@ -36,12 +37,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid program" }, { status: 400 });
     }
 
-    // Parse percentages from strings like "10%" or "8% + 5%"
-    const maxDailyDrawdown = parseFloat(program.dailyDrawdown.replace("%", "")) / 100;
-    const maxOverallDrawdown = parseFloat(program.maxDrawdown.replace("%", "")) / 100;
-    const firstTargetStr = program.profitTarget.split("+")[0].replace("%", "").trim();
-    const profitTarget = parseFloat(firstTargetStr) / 100;
-
     // Generate Order ID
     const orderId = `ORD-${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
 
@@ -73,13 +68,21 @@ export async function POST(request: Request) {
       await supabaseAdmin.from("purchases").update({ payment_status: "paid" }).eq("id", purchase.id);
       
       const { data: dbProgram } = await supabaseAdmin.from("tpp_programs").select("*").eq("key", programKey).single();
-      if (dbProgram && dbProgram.phase_1_rule_id) {
-        const { data: rules } = await supabaseAdmin.from("trading_rules").select("*").eq("id", dbProgram.phase_1_rule_id).single();
+      if (dbProgram) {
+        const lifecycle = getInitialAccountLifecycle(dbProgram);
+        if (!lifecycle.ruleId) {
+          console.error(`Free checkout - no initial rule configured for program ${programKey}`);
+        }
+
+        const { data: rules } = lifecycle.ruleId
+          ? await supabaseAdmin.from("trading_rules").select("*").eq("id", lifecycle.ruleId).single()
+          : { data: null };
         const { data: platformData } = await supabaseAdmin.from("tpp_platforms").select("*").eq("name", "TPP TERMINAL").eq("is_active", true).single();
         
         if (rules && platformData) {
           const { createTradingAccount } = await import('@/lib/terminal-api');
           const crmAccountId = randomUUID();
+          const label = `TPP $${Number(accountSize).toLocaleString()} ${lifecycle.label}`;
           const terminalResult = await createTradingAccount({
             apiUrl: platformData.api_url,
             apiKey: platformData.api_key,
@@ -88,6 +91,9 @@ export async function POST(request: Request) {
             accountSize: accountSize,
             rules: rules,
             programKey: programKey,
+            phase: lifecycle.terminalPhase,
+            status: lifecycle.terminalStatus,
+            label,
             businessAccountId: crmAccountId
           });
           
@@ -104,7 +110,7 @@ export async function POST(request: Request) {
               terminal_account_id: terminalResult.terminalAccountId || null,
               program_key: programKey,
               phase_group_id: crmAccountId,
-              phase_index: 1,
+              phase_index: lifecycle.phaseIndex,
               balance: accountSize,
               starting_balance: accountSize,
               equity: accountSize,
@@ -112,7 +118,7 @@ export async function POST(request: Request) {
               current_daily_drawdown: 0,
               current_max_drawdown: 0,
               status: "active",
-              phase: "challenge"
+              phase: lifecycle.phase
             });
             
             if (accountError) {

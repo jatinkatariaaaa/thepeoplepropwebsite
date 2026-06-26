@@ -2,55 +2,16 @@ import { randomUUID } from "crypto";
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import { createTradingAccount, disableTradingAccount } from "@/lib/terminal-api";
+import {
+  getNextAccountLifecycle,
+  normalizePhase,
+  type CrmPhase,
+} from "@/lib/program-lifecycle";
 
-type CrmPhase = "challenge" | "verification" | "phase_3" | "funded";
 type WebhookStatus = "active" | "passed" | "breached";
-
-const PHASE_INDEX: Record<CrmPhase, number> = {
-  challenge: 1,
-  verification: 2,
-  phase_3: 3,
-  funded: 99,
-};
-
-const PHASE_LABEL: Record<CrmPhase, string> = {
-  challenge: "Phase 1",
-  verification: "Phase 2",
-  phase_3: "Phase 3",
-  funded: "Funded",
-};
 
 function isUuid(value: string) {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
-}
-
-function normalizePhase(value: unknown): CrmPhase {
-  return value === "verification" || value === "phase_3" || value === "funded" ? value : "challenge";
-}
-
-function nextPhaseFor(currentPhase: CrmPhase, phaseCount: number): CrmPhase | null {
-  const totalPhases = Math.max(1, Number(phaseCount) || 1);
-
-  if (currentPhase === "challenge") {
-    return totalPhases <= 1 ? "funded" : "verification";
-  }
-
-  if (currentPhase === "verification") {
-    return totalPhases <= 2 ? "funded" : "phase_3";
-  }
-
-  if (currentPhase === "phase_3") {
-    return "funded";
-  }
-
-  return null;
-}
-
-function ruleIdForPhase(nextPhase: CrmPhase, program: any, fallbackRuleId: string | null) {
-  if (nextPhase === "verification") return program.phase_2_rule_id || fallbackRuleId;
-  if (nextPhase === "phase_3") return program.phase_3_rule_id || program.funded_rule_id || fallbackRuleId;
-  if (nextPhase === "funded") return program.funded_rule_id || fallbackRuleId;
-  return fallbackRuleId;
 }
 
 function bearerToken(req: Request) {
@@ -98,8 +59,8 @@ async function promoteIfNeeded(account: any, startingBalance: number) {
     return { created: false, reason: "program_not_found" };
   }
 
-  const nextPhase = nextPhaseFor(currentPhase, Number(program.phases));
-  if (!nextPhase) {
+  const nextLifecycle = getNextAccountLifecycle(program, currentPhase, account.rule_id || null);
+  if (!nextLifecycle) {
     return { created: false, reason: "no_next_phase" };
   }
 
@@ -107,7 +68,7 @@ async function promoteIfNeeded(account: any, startingBalance: number) {
     .from("trading_accounts")
     .select("id, login, terminal_account_id, phase, status")
     .eq("previous_account_id", account.id)
-    .eq("phase", nextPhase)
+    .eq("phase", nextLifecycle.phase)
     .maybeSingle();
 
   if (existingError) throw existingError;
@@ -115,15 +76,14 @@ async function promoteIfNeeded(account: any, startingBalance: number) {
     return { created: false, existing: existingNext };
   }
 
-  const nextRuleId = ruleIdForPhase(nextPhase, program, account.rule_id || null);
-  if (!nextRuleId) {
-    return { created: false, reason: `missing_rule_for_${nextPhase}` };
+  if (!nextLifecycle.ruleId) {
+    return { created: false, reason: `missing_rule_for_${nextLifecycle.phase}` };
   }
 
   const { data: nextRules, error: rulesError } = await supabaseAdmin
     .from("trading_rules")
     .select("*")
-    .eq("id", nextRuleId)
+    .eq("id", nextLifecycle.ruleId)
     .single();
 
   if (rulesError || !nextRules) {
@@ -141,9 +101,7 @@ async function promoteIfNeeded(account: any, startingBalance: number) {
 
   const { data: userResult } = await supabaseAdmin.auth.admin.getUserById(account.user_id);
   const crmAccountId = randomUUID();
-  const terminalPhase = nextPhase === "funded" ? "funded" : "challenge";
-  const terminalStatus = nextPhase === "funded" ? "funded" : "active";
-  const label = `TPP $${Number(startingBalance).toLocaleString()} ${PHASE_LABEL[nextPhase]}`;
+  const label = `TPP $${Number(startingBalance).toLocaleString()} ${nextLifecycle.label}`;
 
   const terminalResult = await createTradingAccount({
     apiUrl: platform.api_url,
@@ -153,8 +111,8 @@ async function promoteIfNeeded(account: any, startingBalance: number) {
     accountSize: startingBalance,
     rules: nextRules,
     programKey: account.program_key,
-    phase: terminalPhase,
-    status: terminalStatus,
+    phase: nextLifecycle.terminalPhase,
+    status: nextLifecycle.terminalStatus,
     label,
     businessAccountId: crmAccountId,
   });
@@ -175,7 +133,7 @@ async function promoteIfNeeded(account: any, startingBalance: number) {
     program_key: account.program_key,
     previous_account_id: account.id,
     phase_group_id: account.phase_group_id || account.id,
-    phase_index: PHASE_INDEX[nextPhase],
+    phase_index: nextLifecycle.phaseIndex,
     balance: startingBalance,
     starting_balance: startingBalance,
     equity: startingBalance,
@@ -183,7 +141,7 @@ async function promoteIfNeeded(account: any, startingBalance: number) {
     current_daily_drawdown: 0,
     current_max_drawdown: 0,
     status: "active",
-    phase: nextPhase,
+    phase: nextLifecycle.phase,
   });
 
   if (insertError) {
@@ -192,7 +150,7 @@ async function promoteIfNeeded(account: any, startingBalance: number) {
         .from("trading_accounts")
         .select("id, login, terminal_account_id, phase, status")
         .eq("previous_account_id", account.id)
-        .eq("phase", nextPhase)
+        .eq("phase", nextLifecycle.phase)
         .maybeSingle();
 
       if (retryExisting) return { created: false, existing: retryExisting };
@@ -214,7 +172,7 @@ async function promoteIfNeeded(account: any, startingBalance: number) {
       id: crmAccountId,
       login: terminalResult.login,
       terminal_account_id: terminalResult.terminalAccountId || null,
-      phase: nextPhase,
+      phase: nextLifecycle.phase,
       status: "active",
     },
   };

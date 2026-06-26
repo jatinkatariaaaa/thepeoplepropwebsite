@@ -35,10 +35,10 @@ where not exists (
 
 with rule_ids as (
   select
-    max(id) filter (where name = 'Phase 1 Evaluation') as phase_1_rule_id,
-    max(id) filter (where name = 'Phase 2 Verification') as phase_2_rule_id,
-    max(id) filter (where name = 'Phase 3 Verification') as phase_3_rule_id,
-    max(id) filter (where name = 'Funded Standard') as funded_rule_id
+    (array_agg(id) filter (where name = 'Phase 1 Evaluation'))[1] as phase_1_rule_id,
+    (array_agg(id) filter (where name = 'Phase 2 Verification'))[1] as phase_2_rule_id,
+    (array_agg(id) filter (where name = 'Phase 3 Verification'))[1] as phase_3_rule_id,
+    (array_agg(id) filter (where name = 'Funded Standard'))[1] as funded_rule_id
   from public.trading_rules
 )
 update public.tpp_programs p
