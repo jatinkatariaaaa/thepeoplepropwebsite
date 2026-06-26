@@ -12,13 +12,15 @@ export async function POST(req: Request) {
     }
 
     // 1. Fetch Account and Rules
+    // The Terminal sends its own UUID as 'login', which maps to terminal_account_id in CRM
     const { data: account, error: accError } = await supabaseAdmin
       .from("trading_accounts")
       .select("*, trading_rules(*), tpp_platforms(*)")
-      .eq("login", login)
+      .or(`login.eq.${login},terminal_account_id.eq.${login}`)
       .single();
 
     if (accError || !account) {
+      console.error("Webhook account not found for:", login);
       return NextResponse.json({ error: "Account not found" }, { status: 404 });
     }
 

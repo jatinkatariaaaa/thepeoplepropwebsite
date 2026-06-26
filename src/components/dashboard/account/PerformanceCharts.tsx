@@ -1,6 +1,10 @@
 import { NavbarLogo } from "@/components/ui/resizable-navbar";
 
-export function PerformanceCharts() {
+export function PerformanceCharts({ account }: { account?: any }) {
+  const currentBalance = Number(account?.balance || 0);
+  const currentEquity = Number(account?.equity || 0);
+  const startingBalance = Number(account?.starting_balance || 0);
+  
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
       {/* Score Box */}
@@ -52,11 +56,11 @@ export function PerformanceCharts() {
               <span className="w-2 h-2 rounded-full bg-[var(--ink-950)]" />
               Balance
             </div>
-            <div className="text-[18px] font-bold text-[var(--ink-950)]">$100,000.00</div>
+            <div className="text-[18px] font-bold text-[var(--ink-950)]">${currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2})}</div>
           </div>
           <div className="relative w-full h-[2px] bg-[var(--border)]">
             <div className="absolute right-0 top-1/2 -translate-y-1/2 text-[11px] font-bold text-emerald-600 bg-white pl-2">
-              $100,000.00 Max
+              ${startingBalance.toLocaleString(undefined, {minimumFractionDigits: 2})} Max
             </div>
             <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full border-t border-dashed border-[var(--ink-300)]" />
           </div>
@@ -69,11 +73,11 @@ export function PerformanceCharts() {
               <span className="w-2 h-2 rounded-full bg-[var(--ink-950)]" />
               Equity
             </div>
-            <div className="text-[18px] font-bold text-[var(--ink-950)]">$100,000.00</div>
+            <div className="text-[18px] font-bold text-[var(--ink-950)]">${currentEquity.toLocaleString(undefined, {minimumFractionDigits: 2})}</div>
           </div>
           <div className="relative w-full h-[2px] bg-[var(--border)]">
             <div className="absolute right-0 top-1/2 -translate-y-1/2 text-[11px] font-bold text-emerald-600 bg-white pl-2">
-              $100,000.00 Max
+              ${startingBalance.toLocaleString(undefined, {minimumFractionDigits: 2})} Max
             </div>
             <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full border-t border-dashed border-[var(--ink-300)]" />
           </div>

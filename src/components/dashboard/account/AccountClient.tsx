@@ -61,7 +61,7 @@ export function AccountClient({ accountId }: { accountId: string }) {
     <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out pb-20">
       <AccountHeader account={account} />
       <TopMetrics account={account} />
-      <PerformanceCharts />
+      <PerformanceCharts account={account} />
       <AccountBalanceChart />
       <TradingObjectives account={account} />
       <DailySummary />
