@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
-import crypto, { randomUUID } from "crypto";
-import { getInitialAccountLifecycle } from "@/lib/program-lifecycle";
+import crypto from "crypto";
+import { provisionTradingAccountForPurchase } from "@/lib/account-provisioning";
 
 export async function POST(req: Request) {
   try {
@@ -40,105 +40,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Purchase not found" }, { status: 404 });
     }
 
-    if (purchase.payment_status === "paid") {
-      // Already processed
-      return NextResponse.json({ received: true });
+    if (purchase.payment_status !== "paid") {
+      const { error: paidError } = await supabaseAdmin
+        .from("purchases")
+        .update({ payment_status: "paid" })
+        .eq("id", purchase.id);
+
+      if (paidError) throw paidError;
     }
 
-    // 2. Mark as paid
-    await supabaseAdmin
-      .from("purchases")
-      .update({ payment_status: "paid" })
-      .eq("id", purchase.id);
-
-    // 3. Create Terminal Account
-    const { data: program } = await supabaseAdmin
-      .from("tpp_programs")
-      .select("*")
-      .eq("key", purchase.program_key)
-      .single();
-
-    if (program) {
-      const lifecycle = getInitialAccountLifecycle(program);
-      if (!lifecycle.ruleId) {
-        console.error(`NOWPayments IPN - no initial rule configured for program ${purchase.program_key}`);
-      }
-
-      // Fetch Rules
-      const { data: rules } = lifecycle.ruleId
-        ? await supabaseAdmin
-            .from("trading_rules")
-            .select("*")
-            .eq("id", lifecycle.ruleId)
-            .single()
-        : { data: null };
-
-      // Fetch TPP Terminal Platform
-      const { data: platform } = await supabaseAdmin
-        .from("tpp_platforms")
-        .select("*")
-        .eq("name", "TPP TERMINAL")
-        .eq("is_active", true)
-        .single();
-
-      if (rules && platform) {
-        // Call the Terminal API Bridge
-        const { createTradingAccount } = await import('@/lib/terminal-api');
-        const crmAccountId = randomUUID();
-        const label = `TPP $${Number(purchase.account_size).toLocaleString()} ${lifecycle.label}`;
-        
-        const terminalResult = await createTradingAccount({
-          apiUrl: platform.api_url,
-          apiKey: platform.api_key,
-          userEmail: purchase.email || "user@example.com",
-          userId: purchase.user_id,
-          accountSize: purchase.account_size,
-          rules: rules,
-          programKey: purchase.program_key,
-          phase: lifecycle.terminalPhase,
-          status: lifecycle.terminalStatus,
-          label,
-          businessAccountId: crmAccountId
-        });
-
-        if (terminalResult.success) {
-          const { error: accountError } = await supabaseAdmin
-            .from("trading_accounts")
-            .insert({
-              id: crmAccountId,
-              user_id: purchase.user_id,
-              platform_id: platform.id,
-              rule_id: rules.id,
-              account_number: terminalResult.login,
-              login: terminalResult.login,
-              password: terminalResult.password,
-              terminal_account_id: terminalResult.terminalAccountId || null,
-              program_key: purchase.program_key,
-              phase_group_id: crmAccountId,
-              phase_index: lifecycle.phaseIndex,
-              balance: purchase.account_size,
-              starting_balance: purchase.account_size,
-              equity: purchase.account_size,
-              highest_equity: purchase.account_size,
-              current_daily_drawdown: 0,
-              current_max_drawdown: 0,
-              status: "active",
-              phase: lifecycle.phase
-            });
-
-          if (accountError) {
-            console.error("Account creation failed:", accountError);
-          } else if (terminalResult.terminalAccountId) {
-            await supabaseAdmin
-              .from("accounts")
-              .update({ business_account_id: crmAccountId })
-              .eq("id", terminalResult.terminalAccountId);
-          }
-        } else {
-           console.error("Terminal API refused account creation:", terminalResult.error);
-        }
-      }
-    }
+    const provisioning = await provisionTradingAccountForPurchase(purchase);
 
     // 4. Track Affiliate Commission
     const { data: referral } = await supabaseAdmin
@@ -167,7 +78,11 @@ export async function POST(req: Request) {
       }
     }
 
-    return NextResponse.json({ received: true, message: "Order fulfilled." });
+    return NextResponse.json({
+      received: true,
+      message: provisioning.created ? "Order fulfilled." : "Order already fulfilled.",
+      account: provisioning.account,
+    });
   } catch (error) {
     console.error("IPN Processing Error:", error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

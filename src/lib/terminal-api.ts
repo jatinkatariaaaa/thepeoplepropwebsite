@@ -118,7 +118,7 @@ export interface TerminalAccountResult {
  * No fallback — if the Terminal API fails, the error is returned clearly.
  */
 export async function createTradingAccount(params: TerminalAccountParams): Promise<TerminalAccountResult> {
-  const { apiUrl, apiKey, userEmail, userId, accountSize, rules, programKey, phase, status, label, businessAccountId } = params;
+  const { apiUrl, apiKey, userEmail, userId, accountSize, rules, programKey, phase, status, label } = params;
   
   try {
     const baseUrl = apiUrl.endsWith('/') ? apiUrl.slice(0, -1) : apiUrl;
@@ -142,8 +142,7 @@ export async function createTradingAccount(params: TerminalAccountParams): Promi
         programKey: programKey,
         phase: phase,
         status: status,
-        label: label,
-        businessAccountId: businessAccountId
+        label: label
       }),
       signal: controller.signal
     });

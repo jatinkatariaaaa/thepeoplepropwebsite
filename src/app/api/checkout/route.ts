@@ -1,8 +1,44 @@
 import { NextResponse } from "next/server";
-import { randomUUID } from "crypto";
 import { supabaseAdmin } from "@/lib/supabase";
 import { programs } from "@/data/programs";
-import { getInitialAccountLifecycle } from "@/lib/program-lifecycle";
+import { provisionTradingAccountForPurchase } from "@/lib/account-provisioning";
+
+async function validateFreeCheckoutCoupon(code: unknown, programKey: string) {
+  const couponCode = String(code || "").trim().toUpperCase();
+  if (!couponCode) {
+    return { valid: false, error: "A valid 100% coupon is required for free checkout" };
+  }
+
+  const { data: coupon, error } = await supabaseAdmin
+    .from("tpp_coupons")
+    .select("*")
+    .eq("code", couponCode)
+    .maybeSingle();
+
+  if (error || !coupon || !coupon.is_active) {
+    return { valid: false, error: "Invalid or inactive coupon" };
+  }
+
+  if (coupon.expires_at && new Date(coupon.expires_at).getTime() < Date.now()) {
+    return { valid: false, error: "Coupon has expired" };
+  }
+
+  if (coupon.max_uses != null && Number(coupon.current_uses || 0) >= Number(coupon.max_uses)) {
+    return { valid: false, error: "Coupon usage limit reached" };
+  }
+
+  const scopedProgram = coupon.challenge_specific || coupon.challenge_key;
+  if (scopedProgram && scopedProgram !== programKey) {
+    return { valid: false, error: "Coupon is not valid for this program" };
+  }
+
+  const discountPct = Number(coupon.discount_pct || 0);
+  if (!coupon.free_evaluation && discountPct < 100) {
+    return { valid: false, error: "Coupon does not cover full checkout amount" };
+  }
+
+  return { valid: true, coupon };
+}
 
 export async function POST(request: Request) {
   try {
@@ -27,14 +63,31 @@ export async function POST(request: Request) {
       fullName, 
       address, 
       country, 
-      platform,
       promoCode
     } = body;
+    const amount = Number(priceAmount);
+    const size = Number(accountSize);
+
+    if (!Number.isFinite(amount) || amount < 0) {
+      return NextResponse.json({ error: "Invalid checkout amount" }, { status: 400 });
+    }
+
+    if (!Number.isFinite(size) || size <= 0) {
+      return NextResponse.json({ error: "Invalid account size" }, { status: 400 });
+    }
 
     // 1. Verify program and get rules
     const program = programs.find(p => p.key === programKey);
     if (!program) {
       return NextResponse.json({ error: "Invalid program" }, { status: 400 });
+    }
+
+    const freeCouponValidation = amount <= 0
+      ? await validateFreeCheckoutCoupon(promoCode, programKey)
+      : null;
+
+    if (freeCouponValidation && !freeCouponValidation.valid) {
+      return NextResponse.json({ error: freeCouponValidation.error }, { status: 400 });
     }
 
     // Generate Order ID
@@ -51,8 +104,8 @@ export async function POST(request: Request) {
         country,
         address,
         program_key: programKey,
-        account_size: accountSize,
-        price_amount: priceAmount,
+        account_size: size,
+        price_amount: amount,
         payment_status: 'pending',
         payment_method: 'crypto',
         promo_code: promoCode
@@ -63,82 +116,34 @@ export async function POST(request: Request) {
     if (purchaseError) throw purchaseError;
 
     // 3. Bypass NOWPayments if amount is 0 (Free checkout)
-    if (priceAmount <= 0) {
+    if (amount <= 0) {
       // Mark as paid
-      await supabaseAdmin.from("purchases").update({ payment_status: "paid" }).eq("id", purchase.id);
-      
-      const { data: dbProgram } = await supabaseAdmin.from("tpp_programs").select("*").eq("key", programKey).single();
-      if (dbProgram) {
-        const lifecycle = getInitialAccountLifecycle(dbProgram);
-        if (!lifecycle.ruleId) {
-          console.error(`Free checkout - no initial rule configured for program ${programKey}`);
-        }
+      const { error: paidError } = await supabaseAdmin
+        .from("purchases")
+        .update({ payment_status: "paid" })
+        .eq("id", purchase.id);
 
-        const { data: rules } = lifecycle.ruleId
-          ? await supabaseAdmin.from("trading_rules").select("*").eq("id", lifecycle.ruleId).single()
-          : { data: null };
-        const { data: platformData } = await supabaseAdmin.from("tpp_platforms").select("*").eq("name", "TPP TERMINAL").eq("is_active", true).single();
-        
-        if (rules && platformData) {
-          const { createTradingAccount } = await import('@/lib/terminal-api');
-          const crmAccountId = randomUUID();
-          const label = `TPP $${Number(accountSize).toLocaleString()} ${lifecycle.label}`;
-          const terminalResult = await createTradingAccount({
-            apiUrl: platformData.api_url,
-            apiKey: platformData.api_key,
-            userEmail: user.email || "user@example.com",
-            userId: user.id,
-            accountSize: accountSize,
-            rules: rules,
-            programKey: programKey,
-            phase: lifecycle.terminalPhase,
-            status: lifecycle.terminalStatus,
-            label,
-            businessAccountId: crmAccountId
-          });
-          
-          if (terminalResult.success) {
-            const accountLogin = terminalResult.login;
-            const { error: accountError } = await supabaseAdmin.from("trading_accounts").insert({
-              id: crmAccountId,
-              user_id: user.id,
-              platform_id: platformData.id,
-              rule_id: rules.id,
-              account_number: accountLogin,
-              login: accountLogin,
-              password: terminalResult.password || "auto-generated",
-              terminal_account_id: terminalResult.terminalAccountId || null,
-              program_key: programKey,
-              phase_group_id: crmAccountId,
-              phase_index: lifecycle.phaseIndex,
-              balance: accountSize,
-              starting_balance: accountSize,
-              equity: accountSize,
-              highest_equity: accountSize,
-              current_daily_drawdown: 0,
-              current_max_drawdown: 0,
-              status: "active",
-              phase: lifecycle.phase
-            });
-            
-            if (accountError) {
-              console.error("Free checkout - trading_accounts insert error:", accountError);
-            } else if (terminalResult.terminalAccountId) {
-              await supabaseAdmin
-                .from("accounts")
-                .update({ business_account_id: crmAccountId })
-                .eq("id", terminalResult.terminalAccountId);
-            }
-          } else {
-            console.error("Free checkout - Terminal API failed:", terminalResult.error);
-            // Still return success to user but log the error
-          }
-        }
+      if (paidError) throw paidError;
+
+      const provisioning = await provisionTradingAccountForPurchase({
+        id: purchase.id,
+        user_id: user.id,
+        email: user.email,
+        program_key: programKey,
+        account_size: size,
+      });
+
+      if (freeCouponValidation?.coupon?.id) {
+        await supabaseAdmin
+          .from("tpp_coupons")
+          .update({ current_uses: Number(freeCouponValidation.coupon.current_uses || 0) + 1 })
+          .eq("id", freeCouponValidation.coupon.id);
       }
       
       return NextResponse.json({ 
         success: true, 
         orderId,
+        account: provisioning.account,
         invoice_url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://thepeopleprop.live"}/dashboard?success=true`,
         message: "Free challenge provisioned successfully."
       });
@@ -151,10 +156,10 @@ export async function POST(request: Request) {
     }
 
     const payload = {
-      price_amount: priceAmount,
+      price_amount: amount,
       price_currency: "usd",
       order_id: orderId,
-      order_description: `${program.shortLabel} $${accountSize.toLocaleString()} Challenge`,
+      order_description: `${program.shortLabel} $${size.toLocaleString()} Challenge`,
       success_url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://thepeopleprop.live"}/dashboard?success=true`,
       cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://thepeopleprop.live"}/dashboard?canceled=true`,
       ipn_callback_url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://thepeopleprop.live"}/api/nowpayments-ipn`,
