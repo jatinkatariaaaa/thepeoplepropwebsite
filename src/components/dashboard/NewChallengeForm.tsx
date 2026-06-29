@@ -9,14 +9,18 @@ import {
   ALL_SIZES,
   addOns,
   feeFor,
-  formatSize,
-  formatSizeLong,
   programs,
   type AccountSize,
   type AddOnKey,
   type ProgramKey,
 } from "@/data/programs";
 import { useHydratedPrograms } from "@/hooks/useHydratedPrograms";
+
+type PlatformOption = {
+  id: string | number;
+  name: string;
+  extra_fee_pct?: number | null;
+};
 
 export function NewChallengeForm() {
   const router = useRouter();
@@ -49,7 +53,7 @@ export function NewChallengeForm() {
   const [checkoutMessage, setCheckoutMessage] = useState("");
 
   const { programs: livePrograms, isLoading: isLoadingPrograms } = useHydratedPrograms();
-  const [livePlatforms, setLivePlatforms] = useState<any[]>([]);
+  const [livePlatforms, setLivePlatforms] = useState<PlatformOption[]>([]);
 
   // Auth Check & Fetch Platforms
   useEffect(() => {
@@ -70,11 +74,13 @@ export function NewChallengeForm() {
 
         if (platformsRes.error) throw platformsRes.error;
 
-        if (platformsRes.data && platformsRes.data.length > 0) {
-          setLivePlatforms(platformsRes.data);
+        const fetchedPlatforms = (platformsRes.data ?? []) as PlatformOption[];
+
+        if (fetchedPlatforms.length > 0) {
+          setLivePlatforms(fetchedPlatforms);
           // Auto-select the first available platform if the current one isn't valid
-          if (!platformsRes.data.find((p: any) => p.name === platform)) {
-            setPlatform(platformsRes.data[0].name);
+          if (!fetchedPlatforms.find((p) => p.name === platform)) {
+            setPlatform(fetchedPlatforms[0].name);
           }
         }
       } catch (err) {
@@ -99,7 +105,7 @@ export function NewChallengeForm() {
     return lowerOrEqual ?? offered[0];
   }, [program, size]);
 
-  const { base, total: prePlatformTotal, addOnFees } = useMemo(
+  const { base, total: prePlatformTotal } = useMemo(
     () => feeFor(program, effectiveSize, selectedAddOns),
     [program, effectiveSize, selectedAddOns]
   );
@@ -120,12 +126,13 @@ export function NewChallengeForm() {
 
   // Platform logic
   const selectedPlatformData = livePlatforms.find(p => p.name === platform);
+  const selectedPlatformFeePct = Number(selectedPlatformData?.extra_fee_pct ?? 0);
   let platformExtras = 0;
-  if (selectedPlatformData && selectedPlatformData.extra_fee_pct > 0) {
-    platformExtras = (base ?? 0) * (selectedPlatformData.extra_fee_pct / 100);
+  if (selectedPlatformFeePct > 0) {
+    platformExtras = (base ?? 0) * (selectedPlatformFeePct / 100);
   }
 
-  let total = prePlatformTotal ? prePlatformTotal + platformExtras - promoDiscountAmt - freeRetryAdjustment : 0;
+  const total = prePlatformTotal ? prePlatformTotal + platformExtras - promoDiscountAmt - freeRetryAdjustment : 0;
   
   // Payment gateway fees
   let paymentFeePct = 0;
@@ -191,13 +198,21 @@ export function NewChallengeForm() {
     return currentCurrency.prefix ? `${currentCurrency.symbol}${formatted}` : `${formatted} ${currentCurrency.symbol}`;
   };
 
+  const formatCompactAmount = (value: number) => {
+    if (value >= 1_000_000) return `${Number((value / 1_000_000).toFixed(1))}M`;
+    if (value >= 1_000) return `${Number((value / 1_000).toFixed(1))}K`;
+    return value.toLocaleString("en-US");
+  };
+
   const formatAccSize = (usdSize: number) => {
     if (currency === "INR") {
       const inr = usdSize * 96;
-      return `₹${inr / 100000} lakh`;
+      return `INR ${Number((inr / 100000).toFixed(1))}L`;
     }
     const converted = usdSize * currentCurrency.rate;
-    return currentCurrency.prefix ? `${currentCurrency.symbol}${converted.toLocaleString('en-US')}` : `${converted.toLocaleString('en-US')} ${currentCurrency.symbol}`;
+    return currentCurrency.prefix
+      ? `${currentCurrency.symbol}${formatCompactAmount(converted)}`
+      : `${formatCompactAmount(converted)} ${currentCurrency.symbol}`;
   };
 
   const toggleAddOn = (key: AddOnKey) => {
@@ -240,20 +255,20 @@ export function NewChallengeForm() {
       } else {
         setCheckoutMessage(data.error || "Checkout failed");
       }
-    } catch (err) {
+    } catch {
       setCheckoutMessage("An error occurred during checkout");
     }
     setIsCheckingOut(false);
   };
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 pb-20">
+    <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_minmax(360px,420px)] gap-5 sm:gap-6 lg:gap-8 pb-16 sm:pb-20">
       
       {/* Left Column: Configuration */}
-      <div className="flex-1 space-y-8">
+      <div className="min-w-0 space-y-6 sm:space-y-8">
         
         {/* Personal Information */}
-        <div className="bg-white rounded-[20px] border border-[var(--border)] p-6 shadow-sm">
+        <div className="bg-white rounded-[20px] border border-[var(--border)] p-4 sm:p-6 shadow-sm">
           <h3 className="font-bold text-[16px] text-[var(--ink-950)] mb-1">Personal Information</h3>
           <p className="text-[13px] text-[var(--ink-500)] mb-6">Please enter your billing and contact details</p>
           
@@ -314,13 +329,13 @@ export function NewChallengeForm() {
         {/* Challenge Type */}
         <div>
           <h3 className="font-bold text-[15px] text-[var(--ink-950)] mb-3">Challenge Type</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
             {livePrograms.map(prog => (
               <button
                 key={prog.key}
                 onClick={() => setProgramKey(prog.key as ProgramKey)}
                 className={cn(
-                  "py-3 px-2 rounded-xl text-[13px] font-bold border transition-all text-center",
+                  "min-h-12 px-2.5 py-3 rounded-xl text-[13px] leading-tight font-bold border transition-all text-center flex items-center justify-center",
                   programKey === prog.key 
                     ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)] shadow-sm" 
                     : "bg-white border-[var(--border)] text-[var(--ink-600)] hover:border-[var(--ink-300)]"
@@ -365,11 +380,11 @@ export function NewChallengeForm() {
                 <div key={addon.key}>
                   <div className="text-[14px] font-bold text-[var(--ink-700)] mb-1">{addon.label}</div>
                   <p className="text-[12px] text-[var(--ink-500)] mb-2">{addon.description}</p>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 min-[420px]:grid-cols-2 gap-2">
                     <button
                       onClick={() => isActive && toggleAddOn(addon.key)}
                       className={cn(
-                        "flex items-center justify-between py-3 px-4 rounded-xl text-[13px] font-medium border transition-all",
+                        "flex min-h-12 items-center justify-between gap-3 py-3 px-4 rounded-xl text-[13px] font-medium border transition-all",
                         !isActive 
                           ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)]" 
                           : "bg-white border-[var(--border)] text-[var(--ink-600)]"
@@ -381,7 +396,7 @@ export function NewChallengeForm() {
                     <button
                       onClick={() => !isActive && toggleAddOn(addon.key)}
                       className={cn(
-                        "flex items-center justify-between py-3 px-4 rounded-xl text-[13px] font-medium border transition-all",
+                        "flex min-h-12 items-center justify-between gap-3 py-3 px-4 rounded-xl text-[13px] font-medium border transition-all",
                         isActive 
                           ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)]" 
                           : "bg-white border-[var(--border)] text-[var(--ink-600)]"
@@ -406,7 +421,7 @@ export function NewChallengeForm() {
         {/* Currency */}
         <div>
           <h3 className="font-bold text-[15px] text-[var(--ink-950)] mb-3">Currency</h3>
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-2 min-[420px]:grid-cols-3 sm:flex sm:flex-wrap gap-2">
             {[
               { id: "USD", flag: "🇺🇸" },
               { id: "CHF", flag: "🇨🇭" },
@@ -418,7 +433,7 @@ export function NewChallengeForm() {
                 key={c.id}
                 onClick={() => setCurrency(c.id)}
                 className={cn(
-                  "flex items-center gap-2 py-2 px-4 rounded-xl text-[13px] font-bold border transition-all",
+                  "flex min-h-10 items-center justify-center gap-2 py-2 px-3 sm:px-4 rounded-xl text-[13px] font-bold border transition-all",
                   currency === c.id 
                     ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)]" 
                     : "bg-white border-[var(--border)] text-[var(--ink-600)] hover:border-[var(--ink-300)]"
@@ -437,7 +452,7 @@ export function NewChallengeForm() {
           {isLoadingPrograms ? (
             <div className="animate-pulse bg-[var(--paper-2)] h-24 rounded-xl border border-[var(--border)] w-full"></div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
+            <div className="grid grid-cols-2 min-[430px]:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-2.5">
               {Object.keys(program.fees)
                 .map((s) => Number(s) as AccountSize)
                 .sort((a, b) => a - b)
@@ -446,13 +461,18 @@ export function NewChallengeForm() {
                     key={s}
                     onClick={() => setSize(s)}
                     className={cn(
-                      "py-4 px-2 rounded-xl text-[15px] font-display font-bold border transition-all text-center",
+                      "min-h-[68px] px-2.5 py-3 rounded-xl border transition-all text-center flex flex-col items-center justify-center gap-1 overflow-hidden",
                       effectiveSize === s
                         ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)] shadow-sm" 
                         : "bg-white border-[var(--border)] text-[var(--ink-600)] hover:border-[var(--ink-300)]"
                     )}
                   >
-                    {formatAccSize(s)}
+                    <span className="block max-w-full whitespace-nowrap text-[14px] sm:text-[15px] leading-none font-display font-bold tabular-nums">
+                      {formatAccSize(s)}
+                    </span>
+                    <span className="text-[10px] uppercase tracking-wide text-[var(--ink-400)] font-bold leading-none">
+                      Account
+                    </span>
                   </button>
                 ))}
             </div>
@@ -465,15 +485,15 @@ export function NewChallengeForm() {
           {isLoadingPrograms ? (
             <div className="animate-pulse bg-[var(--paper-2)] h-14 rounded-xl border border-[var(--border)] w-full"></div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               {livePlatforms.map(plat => {
-                const extraCost = (base ?? 0) * (plat.extra_fee_pct / 100);
+                const extraCost = (base ?? 0) * (Number(plat.extra_fee_pct ?? 0) / 100);
                 return (
                   <button
                     key={plat.id}
                     onClick={() => setPlatform(plat.name)}
                     className={cn(
-                      "flex items-center justify-between py-3 px-4 rounded-xl text-[13px] font-medium border transition-all",
+                      "flex min-h-12 items-center justify-between gap-3 py-3 px-4 rounded-xl text-[13px] font-medium border transition-all",
                       platform === plat.name 
                         ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)] shadow-sm" 
                         : "bg-white border-[var(--border)] text-[var(--ink-600)] hover:border-[var(--ink-300)]"
@@ -494,10 +514,10 @@ export function NewChallengeForm() {
 
 
       {/* Right Column: Billing */}
-      <div className="w-full lg:w-[450px] shrink-0">
-        <div className="bg-white rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden sticky top-24">
+      <div className="w-full min-w-0">
+        <div className="bg-white rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden xl:sticky xl:top-24">
           
-          <div className="p-6 border-b border-[var(--border)]">
+          <div className="p-4 sm:p-6 border-b border-[var(--border)]">
             <div className="flex items-center justify-between mb-1 cursor-pointer">
               <h3 className="font-bold text-[16px] text-[var(--ink-950)]">Billing Details</h3>
               <ChevronDown className="w-4 h-4 text-[var(--ink-500)]" />
@@ -505,7 +525,7 @@ export function NewChallengeForm() {
             <p className="text-[13px] text-[var(--ink-500)]">Enter your billing information for the challenge purchase</p>
           </div>
 
-          <div className="p-6 border-b border-[var(--border)] bg-[var(--paper)]">
+          <div className="p-4 sm:p-6 border-b border-[var(--border)] bg-[var(--paper)]">
             <div className="mb-6">
               <button 
                 onClick={() => setIsPromoOpen(!isPromoOpen)}
@@ -516,13 +536,13 @@ export function NewChallengeForm() {
               
               {isPromoOpen && (
                 <div className="mt-3 flex flex-col gap-2">
-                  <div className="flex gap-2">
+                  <div className="flex flex-col min-[420px]:flex-row gap-2">
                     <input 
                       type="text"
                       value={promoInput}
                       onChange={e => setPromoInput(e.target.value)}
                       placeholder="Enter promo code"
-                      className="flex-1 bg-white border border-[var(--border)] rounded-xl h-10 px-3 text-[13px] uppercase focus:outline-none focus:border-[var(--ink-400)] transition-colors"
+                      className="min-w-0 flex-1 bg-white border border-[var(--border)] rounded-xl h-10 px-3 text-[13px] uppercase focus:outline-none focus:border-[var(--ink-400)] transition-colors"
                     />
                     <button 
                       onClick={handleApplyPromo}
@@ -538,16 +558,16 @@ export function NewChallengeForm() {
             </div>
 
             <div className="space-y-3 mb-6">
-              <div className="flex justify-between items-center text-[13px] font-medium text-[var(--ink-700)]">
-                <span>{formatAccSize(effectiveSize)} • {program.shortLabel}</span>
-                <span className="font-bold text-[var(--ink-950)]">{formatCurrency(base ?? 0)}</span>
+              <div className="flex justify-between items-start gap-4 text-[13px] font-medium text-[var(--ink-700)]">
+                <span className="min-w-0 break-words">{formatAccSize(effectiveSize)} • {program.shortLabel}</span>
+                <span className="shrink-0 font-bold text-[var(--ink-950)]">{formatCurrency(base ?? 0)}</span>
               </div>
-              <div className="flex justify-between items-center text-[13px] font-medium text-[var(--ink-500)]">
-                <span>Platform: {platform}</span>
+              <div className="flex justify-between items-start gap-4 text-[13px] font-medium text-[var(--ink-500)]">
+                <span className="min-w-0 break-words">Platform: {platform}</span>
                 {platformExtras > 0 ? (
-                  <span>+{formatCurrency(platformExtras)}</span>
+                  <span className="shrink-0">+{formatCurrency(platformExtras)}</span>
                 ) : (
-                  <span className="text-emerald-600 font-bold">Free</span>
+                  <span className="shrink-0 text-emerald-600 font-bold">Free</span>
                 )}
               </div>
               
@@ -557,9 +577,9 @@ export function NewChallengeForm() {
                 let cost = (base ?? 0) * (addOnDef.feePct / 100);
                 if (isFirstTpp && key === "free-retry") cost = 0;
                 return (
-                  <div key={key} className="flex justify-between items-center text-[13px] font-medium text-[var(--ink-500)]">
-                    <span>{addOnDef.label}</span>
-                    <span className={cost === 0 ? "text-emerald-600 font-bold" : ""}>
+                  <div key={key} className="flex justify-between items-start gap-4 text-[13px] font-medium text-[var(--ink-500)]">
+                    <span className="min-w-0 break-words">{addOnDef.label}</span>
+                    <span className={cn("shrink-0", cost === 0 ? "text-emerald-600 font-bold" : "")}>
                       {cost === 0 ? "Free" : `+${formatCurrency(cost)}`}
                     </span>
                   </div>
@@ -581,13 +601,13 @@ export function NewChallengeForm() {
               )}
             </div>
 
-            <div className="flex justify-between items-end border-t border-[var(--border)] pt-4">
+            <div className="flex justify-between items-end gap-4 border-t border-[var(--border)] pt-4">
               <span className="font-bold text-[15px] text-[var(--ink-950)]">Total</span>
-              <span className="text-[28px] font-display font-bold text-[var(--ink-950)] leading-none">{formatCurrency(finalTotal)}</span>
+              <span className="min-w-0 text-right text-[24px] sm:text-[28px] font-display font-bold text-[var(--ink-950)] leading-none break-words">{formatCurrency(finalTotal)}</span>
             </div>
           </div>
 
-          <div className="p-6 border-b border-[var(--border)]">
+          <div className="p-4 sm:p-6 border-b border-[var(--border)]">
             <label className="flex items-start gap-3 cursor-pointer group">
               <div className="relative flex items-center justify-center mt-0.5">
                 <input 
@@ -605,7 +625,7 @@ export function NewChallengeForm() {
             </label>
           </div>
 
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             <h3 className="font-bold text-[15px] text-[var(--ink-950)] mb-4">Select payment method</h3>
             
             <div className="space-y-2 border border-[var(--border)] rounded-2xl p-2 bg-[var(--paper-2)]/30">
@@ -621,13 +641,13 @@ export function NewChallengeForm() {
                 <label 
                   key={method.id}
                   className={cn(
-                    "flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-colors",
+                    "flex items-center justify-between gap-3 p-3 rounded-xl border cursor-pointer transition-colors",
                     paymentMethod === method.id 
                       ? "bg-white border-[var(--accent)] shadow-sm" 
                       : "border-transparent hover:bg-[var(--paper-2)]"
                   )}
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="min-w-0 flex items-center gap-3">
                     <div className="relative flex items-center justify-center">
                       <input 
                         type="radio" 
@@ -642,12 +662,12 @@ export function NewChallengeForm() {
                       />
                       <div className="w-4 h-4 rounded-full border border-[var(--ink-300)] bg-white peer-checked:border-[var(--accent)] peer-checked:border-[5px] transition-all" />
                     </div>
-                    <span className="text-[13px] font-bold text-[var(--ink-950)] flex items-center gap-2">
+                    <span className="min-w-0 text-[13px] font-bold text-[var(--ink-950)] flex items-center gap-2 truncate">
                       {method.id}
                       {method.fee && <span className="text-[11px] font-medium text-[var(--ink-400)]">{method.fee}</span>}
                     </span>
                   </div>
-                  <div className="text-[14px] font-bold text-[var(--ink-900)] opacity-70">
+                  <div className="shrink-0 text-right text-[12px] sm:text-[14px] font-bold text-[var(--ink-900)] opacity-70">
                     {method.logo} {method.rightLogo && <span>{method.rightLogo}</span>}
                   </div>
                 </label>

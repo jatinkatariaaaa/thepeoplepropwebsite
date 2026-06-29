@@ -7,7 +7,15 @@ import { supabase } from "@/lib/supabase";
 
 type DashboardAccount = Record<string, unknown> & {
   id: string;
-  user_id?: string;
+  user_id?: string | null;
+  label?: string | null;
+  created_at?: string | null;
+  status?: string | null;
+  starting_balance?: number | string | null;
+  equity?: number | string | null;
+  phase?: string | null;
+  terminal_account_id?: string | null;
+  tpp_platforms?: { name?: string | null } | null;
 };
 
 export function DashboardClient() {
@@ -75,7 +83,7 @@ export function DashboardClient() {
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+    <div className="w-full max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
       <StatCards accounts={accounts} totalPayouts={totalPayouts} />
       <ActiveAccounts accounts={accounts} loading={loading} />
     </div>
