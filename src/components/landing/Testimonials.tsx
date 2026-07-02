@@ -155,11 +155,50 @@ export function Testimonials() {
       });
     }
 
+    // Visibility gating: only run the rAF loop while the marquee is on screen
+    // and the tab is foregrounded. This avoids burning CPU/GPU animating
+    // off-screen or backgrounded content, which is the main FPS cost on
+    // low-end Android / older iPhones. The animation itself is unchanged.
+    let onScreen = false;
+    let started = false;
+
+    function startLoop() {
+      if (rafId == null && onScreen && !document.hidden && !mq.matches) {
+        rafId = requestAnimationFrame(tick);
+      }
+    }
+    function stopLoop() {
+      if (rafId != null) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+    }
+
     // Start after a short delay for layout
     const timer = setTimeout(() => {
       recalcWidths();
-      rafId = requestAnimationFrame(tick);
+      started = true;
+      startLoop();
     }, 100);
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        onScreen = entries[0]?.isIntersecting ?? false;
+        if (onScreen) {
+          if (started) startLoop();
+        } else {
+          stopLoop();
+        }
+      },
+      { rootMargin: "200px 0px" }
+    );
+    io.observe(host);
+
+    const onVisibility = () => {
+      if (document.hidden) stopLoop();
+      else startLoop();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
 
     let resizeTimer: ReturnType<typeof setTimeout>;
     const onResize = () => {
@@ -169,16 +208,20 @@ export function Testimonials() {
     window.addEventListener("resize", onResize);
 
     const onMotionChange = (e: MediaQueryListEvent) => {
-      if (e.matches && rafId) {
-        cancelAnimationFrame(rafId);
+      if (e.matches) {
+        stopLoop();
         rows.forEach((r) => { r.style.transform = "none"; });
+      } else {
+        startLoop();
       }
     };
     mq.addEventListener("change", onMotionChange);
 
     return () => {
       clearTimeout(timer);
-      if (rafId) cancelAnimationFrame(rafId);
+      stopLoop();
+      io.disconnect();
+      document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("resize", onResize);
       mq.removeEventListener("change", onMotionChange);
     };
