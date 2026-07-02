@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 
 const logos = [
   { name: "Bloomberg", font: "font-sans font-bold tracking-tight text-[28px] md:text-[36px]" },
@@ -15,6 +16,26 @@ const logos = [
 const marqueeItems = [...logos, ...logos, ...logos, ...logos];
 
 export function FeaturedIn() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const reduceMotion = useReducedMotion();
+  const [onScreen, setOnScreen] = useState(false);
+
+  // Only run the infinite marquee while the strip is visible in the viewport.
+  // This keeps the exact same animation on screen but avoids running the
+  // Framer Motion driver off-screen, improving FPS on mobile.
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => setOnScreen(entries[0]?.isIntersecting ?? false),
+      { rootMargin: "200px 0px" }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  const animate = !reduceMotion && onScreen ? { x: ["0%", "-25%"] } : { x: "0%" };
+
   return (
     <section className="relative pt-12 md:pt-16 pb-2 md:pb-4 overflow-hidden">
       <div className="mx-auto max-w-7xl px-5 md:px-8 mb-6 md:mb-8 text-center">
@@ -24,6 +45,7 @@ export function FeaturedIn() {
       </div>
 
       <div 
+        ref={containerRef}
         className="relative flex overflow-hidden w-full group"
         style={{
           maskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
@@ -32,7 +54,7 @@ export function FeaturedIn() {
       >
         <motion.div
           className="flex whitespace-nowrap items-center w-max"
-          animate={{ x: ["0%", "-25%"] }} // move one full set of logos
+          animate={animate} // move one full set of logos
           transition={{
             repeat: Infinity,
             ease: "linear",
