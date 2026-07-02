@@ -20,28 +20,7 @@ import Link from "next/link";
 import { createBrowserClient } from "@supabase/ssr";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import {
-  TrendingUp,
-  Shield,
-  Clock,
-  Award,
-  CheckCircle2,
-  ChevronUp,
-  ChevronDown,
-  CalendarOff,
-  Monitor,
-  Newspaper,
-  MoonStar,
-  RotateCcw,
-  BadgeDollarSign,
-  Target,
-  KeyRound,
-  DollarSign,
-  Percent,
-  CalendarCheck,
-  ArrowRight,
-  ArrowUpRight,
-} from "lucide-react";
+import { TrendingUp, Shield, Clock, Award, CircleCheck as CheckCircle2, ChevronUp, ChevronDown, CalendarOff, Monitor, Newspaper, MoonStar, RotateCcw, BadgeDollarSign, Target, KeyRound, DollarSign, Percent, CalendarCheck, ArrowRight, ArrowUpRight } from "lucide-react";
 
 import { FeaturedIn } from "@/components/landing/FeaturedIn";
 import { cn } from "@/lib/utils";
@@ -136,6 +115,15 @@ function Reveal({
   delay?: number;
   style?: CSSProperties;
 }) {
+  const reduced = useReducedMotion();
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+  if (reduced || isMobile) return <div className={className} style={style}>{children}</div>;
   return (
     <motion.div
       initial={{ opacity: 0, y: 48 }}
@@ -169,10 +157,17 @@ function GsapWords({
 }) {
   const ref = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
   const words = text.split(" ");
 
   useEffect(() => {
-    if (reduced || !ref.current) return;
+    if (reduced || isMobile || !ref.current) return;
     const targets = ref.current.querySelectorAll<HTMLElement>("[data-word]");
     const ctx = gsap.context(() => {
       gsap.fromTo(
@@ -192,7 +187,7 @@ function GsapWords({
       );
     }, ref);
     return () => ctx.revert();
-  }, [reduced]);
+  }, [reduced, isMobile]);
 
   const MotionTag = Tag as "h2";
   return (
@@ -255,6 +250,15 @@ function Floating({
   duration?: number;
   delay?: number;
 }) {
+  const reduced = useReducedMotion();
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+  if (reduced || isMobile) return <div className={className}>{children}</div>;
   return (
     <motion.div
       className={className}
@@ -272,15 +276,24 @@ function Floating({
 function Magnetic({ children, className = "" }: { children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
   const mx = useSpring(useMotionValue(0), { stiffness: 250, damping: 18 });
   const my = useSpring(useMotionValue(0), { stiffness: 250, damping: 18 });
+
+  if (reduced || isMobile) return <div className={className} style={{ display: "inline-block" }}>{children}</div>;
 
   return (
     <motion.div
       ref={ref}
-      style={{ x: reduced ? 0 : mx, y: reduced ? 0 : my, display: "inline-block" }}
+      style={{ x: mx, y: my, display: "inline-block" }}
       onPointerMove={(e) => {
-        if (reduced || !ref.current) return;
+        if (!ref.current) return;
         const r = ref.current.getBoundingClientRect();
         mx.set((e.clientX - (r.left + r.width / 2)) * 0.25);
         my.set((e.clientY - (r.top + r.height / 2)) * 0.25);
@@ -1190,9 +1203,30 @@ export default function HomePage() {
           <p className="mt-2 text-[15px] font-medium text-[#0c0c0c]/60">What our traders are saying</p>
         </div>
 
-        <div 
+        {/* Mobile: static grid (no marquee animation) */}
+        <div className="grid grid-cols-1 gap-3 px-5 sm:grid-cols-2 lg:hidden">
+          {testimonials.slice(0, 4).map((t, i) => (
+            <div key={i} className="flex h-[180px] flex-col justify-between rounded-[1rem] bg-[#cbfb45] p-6 text-[#0c0c0c] shadow-sm">
+              <p className="text-[13px] font-semibold leading-relaxed">&ldquo;{t.body}&rdquo;</p>
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0c0c0c] text-[13px] font-bold text-white">
+                  {t.name.split(" ").map((n) => n[0]).join("")}
+                </div>
+                <div>
+                  <div className="text-[14px] font-bold">{t.name}</div>
+                  <div className="flex items-center gap-1 text-[12px] font-semibold opacity-70">
+                    <CheckCircle2 className="h-3 w-3" strokeWidth={3} /> {t.payout} paid
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop: marquee animation */}
+        <div
           ref={testimonialsRef}
-          className="relative flex w-full flex-col gap-3 overflow-hidden py-4"
+          className="relative hidden w-full flex-col gap-3 overflow-hidden py-4 lg:flex"
           style={{
             maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
             WebkitMaskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)"
@@ -1205,8 +1239,8 @@ export default function HomePage() {
             transition={{ repeat: Infinity, ease: "linear", duration: 40 }}
           >
             {[...testimonials, ...testimonials].map((t, i) => (
-              <div key={i} className="flex h-[180px] w-[300px] flex-col justify-between rounded-[1rem] bg-[#cbfb45] p-6 text-[#0c0c0c] shadow-sm md:h-[200px] md:w-[350px]">
-                <p className="text-[13px] font-semibold leading-relaxed md:text-[14px]">&ldquo;{t.body}&rdquo;</p>
+              <div key={i} className="flex h-[200px] w-[350px] flex-col justify-between rounded-[1rem] bg-[#cbfb45] p-6 text-[#0c0c0c] shadow-sm">
+                <p className="text-[14px] font-semibold leading-relaxed">&ldquo;{t.body}&rdquo;</p>
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0c0c0c] text-[13px] font-bold text-white">
                     {t.name.split(" ").map((n) => n[0]).join("")}
@@ -1229,8 +1263,8 @@ export default function HomePage() {
             transition={{ repeat: Infinity, ease: "linear", duration: 45 }}
           >
             {[...testimonials.slice().reverse(), ...testimonials.slice().reverse()].map((t, i) => (
-              <div key={i} className="flex h-[180px] w-[300px] flex-col justify-between rounded-[1rem] bg-[#cbfb45] p-6 text-[#0c0c0c] shadow-sm md:h-[200px] md:w-[350px]">
-                <p className="text-[13px] font-semibold leading-relaxed md:text-[14px]">&ldquo;{t.body}&rdquo;</p>
+              <div key={i} className="flex h-[200px] w-[350px] flex-col justify-between rounded-[1rem] bg-[#cbfb45] p-6 text-[#0c0c0c] shadow-sm">
+                <p className="text-[14px] font-semibold leading-relaxed">&ldquo;{t.body}&rdquo;</p>
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0c0c0c] text-[13px] font-bold text-white">
                     {t.name.split(" ").map((n) => n[0]).join("")}

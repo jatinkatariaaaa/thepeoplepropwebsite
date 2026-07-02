@@ -221,6 +221,14 @@ function HeroDashboardVisual() {
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const reduceMotion = useReducedMotion();
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+  const skipParallax = reduceMotion || isMobile;
 
   /* Scroll parallax */
   const { scrollYProgress } = useScroll({
@@ -237,7 +245,7 @@ export function Hero() {
       <motion.div
         aria-hidden="true"
         className="absolute inset-0 pointer-events-none"
-        style={{ scale: reduceMotion ? 1 : bgScale, opacity: bgOpacity }}
+        style={{ scale: skipParallax ? 1 : bgScale, opacity: skipParallax ? 1 : bgOpacity }}
       >
         <div className="absolute inset-0 bg-[url('/hero-overlay-mobile.webp')] md:bg-[url('/hero-overlay.webp')] bg-cover bg-[center_top_3rem] md:bg-[center_top_10%] bg-no-repeat opacity-100" />
         {/* Soften the top edge so it doesn't clash with the transparent navbar */}
