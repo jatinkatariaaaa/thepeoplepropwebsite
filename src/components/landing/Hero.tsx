@@ -16,8 +16,9 @@ import { cn } from "@/lib/utils";
    ─────────────────────────────────────────────── */
 
 /* Word-by-word kinetic reveal */
-function AnimatedWords({ text, className, delay = 0 }: { text: string; className?: string; delay?: number }) {
+function AnimatedWords({ text, className, delay = 0, skip = false }: { text: string; className?: string; delay?: number; skip?: boolean }) {
   const words = text.split(" ");
+  if (skip) return <span className={className}>{text}</span>;
   return (
     <span className={className}>
       {words.map((word, i) => (
@@ -39,11 +40,12 @@ function AnimatedWords({ text, className, delay = 0 }: { text: string; className
   );
 }
 
-function TypewriterWord({ word, className, delay = 0 }: { word: string; className?: string; delay?: number }) {
-  const [displayText, setDisplayText] = useState("");
+function TypewriterWord({ word, className, delay = 0, skip = false }: { word: string; className?: string; delay?: number; skip?: boolean }) {
+  const [displayText, setDisplayText] = useState(skip ? word : "");
   const [isTyping, setIsTyping] = useState(false);
 
   useEffect(() => {
+    if (skip) return;
     let timeout: NodeJS.Timeout;
     let interval: NodeJS.Timeout;
 
@@ -64,7 +66,9 @@ function TypewriterWord({ word, className, delay = 0 }: { word: string; classNam
       clearTimeout(timeout);
       clearInterval(interval);
     };
-  }, [word, delay]);
+  }, [word, delay, skip]);
+
+  if (skip) return <span className={cn("inline-flex items-center", className)}>{word}</span>;
 
   return (
     <span className={cn("inline-flex items-center", className)}>
@@ -220,7 +224,7 @@ function HeroDashboardVisual() {
 
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
-  const skipParallax = useReducedMotion();
+  const skip = useReducedMotion() ?? false;
 
   /* Scroll parallax */
   const { scrollYProgress } = useScroll({
@@ -237,7 +241,7 @@ export function Hero() {
       <motion.div
         aria-hidden="true"
         className="absolute inset-0 pointer-events-none"
-        style={{ scale: skipParallax ? 1 : bgScale, opacity: skipParallax ? 1 : bgOpacity }}
+        style={{ scale: skip ? 1 : bgScale, opacity: skip ? 1 : bgOpacity }}
       >
         <div className="absolute inset-0 bg-[url('/hero-overlay-mobile.webp')] md:bg-[url('/hero-overlay.webp')] bg-cover bg-[center_top_3rem] md:bg-[center_top_10%] bg-no-repeat opacity-100" />
         {/* Soften the top edge so it doesn't clash with the transparent navbar */}
@@ -263,18 +267,18 @@ export function Hero() {
               className="inline-flex items-center justify-center self-center md:self-start w-[90%] sm:w-auto mx-auto md:mx-0 gap-2 chip chip-amber mb-8 md:mb-6 text-[10.5px] md:text-xs font-bold text-center leading-relaxed py-2 md:py-1.5"
             >
               <span className="relative flex w-2 h-2">
-                <span className="absolute inset-0 rounded-full bg-amber-500 animate-ping opacity-75" />
+                <span className={cn("absolute inset-0 rounded-full bg-amber-500", !skip && "animate-ping opacity-75")} />
                 <span className="relative rounded-full w-2 h-2 bg-amber-500" />
               </span>
               Guaranteed free evaluation Prizes on 1 August 2026
             </motion.div>
 
             <h1 className="font-medium leading-[0.98] tracking-[-0.035em] text-[var(--ink-950)] text-[clamp(2.6rem,7vw,5.25rem)] max-w-[55%] sm:max-w-[65%] md:max-w-none">
-              <AnimatedWords text="Trade our capital." delay={0.15} />
+              <AnimatedWords text="Trade our capital." delay={0.15} skip={skip} />
               <br />
-              <AnimatedWords text="Keep the" delay={0.5} />
+              <AnimatedWords text="Keep the" delay={0.5} skip={skip} />
               <br />
-              <TypewriterWord word="profits" className="word-serif" delay={1.0} />
+              <TypewriterWord word="profits" className="word-serif" delay={1.0} skip={skip} />
               <motion.span
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -335,12 +339,12 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Scroll indicator */}
+      {/* Scroll indicator — desktop only */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.8 }}
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        className="hidden md:flex absolute bottom-6 left-1/2 -translate-x-1/2 flex-col items-center gap-2"
       >
         <motion.div
           animate={{ y: [0, 6, 0] }}
@@ -357,5 +361,3 @@ export function Hero() {
     </section>
   );
 }
-
-
