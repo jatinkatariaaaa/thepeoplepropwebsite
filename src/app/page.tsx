@@ -4,12 +4,12 @@ import {
   useRef,
   useEffect,
   useState,
+  useSyncExternalStore,
   type ReactNode,
   type CSSProperties,
 } from "react";
 import {
   motion,
-  useInView,
   useScroll,
   useTransform,
   useSpring,
@@ -56,53 +56,38 @@ const LIME = "#cbfb45";
 /* ─────────────────────────────────────────────────────────────
    Hook: prefers-reduced-motion (respect accessibility)
    ───────────────────────────────────────────────────────────── */
-function useReducedMotion() {
-  const [reduced, setReduced] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const mobile = window.matchMedia("(max-width: 767px)");
-    const update = () => setReduced(mq.matches || mobile.matches);
-    update();
-    mq.addEventListener("change", update);
-    mobile.addEventListener("change", update);
-    return () => {
-      mq.removeEventListener("change", update);
-      mobile.removeEventListener("change", update);
-    };
-  }, []);
-  return reduced;
+const REDUCED_MQ = "(prefers-reduced-motion: reduce)";
+const MOBILE_MQ = "(max-width: 767px)";
+
+function subscribeReducedMotion(callback: () => void) {
+  const mq = window.matchMedia(REDUCED_MQ);
+  const mobile = window.matchMedia(MOBILE_MQ);
+  mq.addEventListener("change", callback);
+  mobile.addEventListener("change", callback);
+  return () => {
+    mq.removeEventListener("change", callback);
+    mobile.removeEventListener("change", callback);
+  };
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Animated Counter (IntersectionObserver-driven)
-   ───────────────────────────────────────────────────────────── */
-function AnimatedCounter({ end, suffix = "" }: { end: number; suffix?: string }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true });
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    if (!inView) return;
-    let start = 0;
-    const duration = 1800;
-    const increment = end / (duration / 16);
-    const timer = setInterval(() => {
-      start += increment;
-      if (start >= end) {
-        setCount(end);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(start));
-      }
-    }, 16);
-    return () => clearInterval(timer);
-  }, [inView, end]);
-
+function getReducedSnapshot() {
   return (
-    <span ref={ref}>
-      {count}
-      {suffix}
-    </span>
+    window.matchMedia(REDUCED_MQ).matches ||
+    window.matchMedia(MOBILE_MQ).matches
+  );
+}
+
+/**
+ * Synchronous reduced-motion / mobile detection.
+ * Reads matchMedia at hydration time (no post-mount state flip), so on
+ * mobile the static variant of every section renders exactly once
+ * instead of mounting the animated variant and then remounting.
+ */
+function useReducedMotion() {
+  return useSyncExternalStore(
+    subscribeReducedMotion,
+    getReducedSnapshot,
+    () => false
   );
 }
 
@@ -608,11 +593,20 @@ export default function HomePage() {
   
   const skipHeroAnim = useReducedMotion();
 
+  /* Mount flag — desktop-only decorative media (x-ray bg, side video)
+     renders only after hydration and never on mobile, so phones don't
+     download or decode assets they can't see. */
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   /* Spotlight X-Ray Mouse Tracking */
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const smoothMouseX = useSpring(mouseX, { stiffness: 50, damping: 20 });
   const smoothMouseY = useSpring(mouseY, { stiffness: 50, damping: 20 });
+  const xrayMask = useMotionTemplate`radial-gradient(450px circle at ${smoothMouseX}px ${smoothMouseY}px, black 0%, transparent 100%)`;
 
   /* Hero parallax */
   const heroRef = useRef<HTMLDivElement>(null);
@@ -681,14 +675,16 @@ export default function HomePage() {
           }}
           className="relative flex h-full flex-col items-center justify-center overflow-hidden rounded-xl bg-[#0a0a0a] px-6 py-20 lg:rounded-2xl lg:px-10"
         >
-          {/* Middle Layer: X-Ray Reveal Image */}
-          <motion.div
-            className="hidden md:block absolute inset-0 z-0 bg-[url('/images/hero-bg.webp')] bg-cover bg-center bg-no-repeat opacity-80 pointer-events-none"
-            style={{
-              maskImage: useMotionTemplate`radial-gradient(450px circle at ${smoothMouseX}px ${smoothMouseY}px, black 0%, transparent 100%)`,
-              WebkitMaskImage: useMotionTemplate`radial-gradient(450px circle at ${smoothMouseX}px ${smoothMouseY}px, black 0%, transparent 100%)`,
-            }}
-          />
+          {/* Middle Layer: X-Ray Reveal Image — desktop only, never mounted on mobile */}
+          {mounted && !skipHeroAnim && (
+            <motion.div
+              className="hidden md:block absolute inset-0 z-0 bg-[url('/images/hero-bg.webp')] bg-cover bg-center bg-no-repeat opacity-80 pointer-events-none"
+              style={{
+                maskImage: xrayMask,
+                WebkitMaskImage: xrayMask,
+              }}
+            />
+          )}
           {/* Ambient parallax orbs - hidden on mobile to fix GPU lag */}
           <Floating className="pointer-events-none absolute left-[8%] top-[16%] hidden h-[46vw] w-[46vw] rounded-full bg-[#cbfb45]/[0.07] blur-[120px] md:block" amplitude={24} duration={9} />
           <Floating className="pointer-events-none absolute bottom-[-12%] right-[8%] hidden h-[36vw] w-[36vw] rounded-full bg-[#cbfb45]/[0.09] blur-[100px] md:block" amplitude={30} duration={11} delay={1} />
@@ -771,19 +767,21 @@ export default function HomePage() {
             </motion.div>
           </motion.div>
 
-          {/* Scroll cue */}
-          <motion.div
-            style={{ opacity: skipHeroAnim ? 1 : heroFade }}
-            className="absolute bottom-7 left-1/2 -translate-x-1/2"
-          >
+          {/* Scroll cue — desktop only; its infinite animation burned CPU on phones */}
+          {!skipHeroAnim && (
             <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-              className="flex h-9 w-6 items-start justify-center rounded-full border border-white/25 p-1.5"
+              style={{ opacity: heroFade }}
+              className="absolute bottom-7 left-1/2 -translate-x-1/2"
             >
-              <span className="h-1.5 w-1 rounded-full bg-[#cbfb45]" />
+              <motion.div
+                animate={{ y: [0, 8, 0] }}
+                transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+                className="flex h-9 w-6 items-start justify-center rounded-full border border-white/25 p-1.5"
+              >
+                <span className="h-1.5 w-1 rounded-full bg-[#cbfb45]" />
+              </motion.div>
             </motion.div>
-          </motion.div>
+          )}
         </motion.div>
       </section>
 
@@ -794,20 +792,22 @@ export default function HomePage() {
       <section className="w-full py-16 lg:py-24">
         <div className="w-full px-5 lg:px-10">
           <div className="grid items-center gap-x-7 gap-y-16 md:grid-cols-12">
-            <Reveal className="hidden md:col-span-3 md:block lg:col-span-2">
-              <Floating amplitude={10} duration={7}>
-                <div className="aspect-[9/10] w-full overflow-hidden rounded-2xl bg-black lg:rounded-3xl">
-                  <video src="/videos/left-video.webm" autoPlay loop muted playsInline className="h-full w-full object-cover" />
-                </div>
-              </Floating>
-            </Reveal>
+            {mounted && !skipHeroAnim && (
+              <Reveal className="hidden md:col-span-3 md:block lg:col-span-2">
+                <Floating amplitude={10} duration={7}>
+                  <div className="aspect-[9/10] w-full overflow-hidden rounded-2xl bg-black lg:rounded-3xl">
+                    <video src="/videos/left-video.webm" autoPlay loop muted playsInline preload="metadata" className="h-full w-full object-cover" />
+                  </div>
+                </Floating>
+              </Reveal>
+            )}
 
             <div className="md:col-span-6 lg:col-span-8">
               <div className="relative">
-                <div className="pointer-events-none relative z-20 text-center mix-blend-difference">
+                <div className="pointer-events-none relative z-20 text-center md:mix-blend-difference">
                   <GsapWords
                     text="We're The People Prop"
-                    className="font-bold tracking-tight text-white"
+                    className="font-bold tracking-tight text-[#0c0c0c] md:text-white"
                     style={{ fontSize: "clamp(3rem, 10vw, 8rem)", lineHeight: 1 }}
                   />
                 </div>
