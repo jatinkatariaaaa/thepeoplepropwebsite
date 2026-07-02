@@ -220,15 +220,7 @@ function HeroDashboardVisual() {
 
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
-  const reduceMotion = useReducedMotion();
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
-  const skipParallax = reduceMotion || isMobile;
+  const skipParallax = useReducedMotion();
 
   /* Scroll parallax */
   const { scrollYProgress } = useScroll({

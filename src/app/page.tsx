@@ -60,10 +60,15 @@ function useReducedMotion() {
   const [reduced, setReduced] = useState(false);
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReduced(mq.matches);
+    const mobile = window.matchMedia("(max-width: 767px)");
+    const update = () => setReduced(mq.matches || mobile.matches);
     update();
     mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
+    mobile.addEventListener("change", update);
+    return () => {
+      mq.removeEventListener("change", update);
+      mobile.removeEventListener("change", update);
+    };
   }, []);
   return reduced;
 }
@@ -116,14 +121,7 @@ function Reveal({
   style?: CSSProperties;
 }) {
   const reduced = useReducedMotion();
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
-  if (reduced || isMobile) return <div className={className} style={style}>{children}</div>;
+  if (reduced) return <div className={className} style={style}>{children}</div>;
   return (
     <motion.div
       initial={{ opacity: 0, y: 48 }}
@@ -157,17 +155,10 @@ function GsapWords({
 }) {
   const ref = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
   const words = text.split(" ");
 
   useEffect(() => {
-    if (reduced || isMobile || !ref.current) return;
+    if (reduced || !ref.current) return;
     const targets = ref.current.querySelectorAll<HTMLElement>("[data-word]");
     const ctx = gsap.context(() => {
       gsap.fromTo(
@@ -187,7 +178,7 @@ function GsapWords({
       );
     }, ref);
     return () => ctx.revert();
-  }, [reduced, isMobile]);
+  }, [reduced]);
 
   const MotionTag = Tag as "h2";
   return (
@@ -251,14 +242,7 @@ function Floating({
   delay?: number;
 }) {
   const reduced = useReducedMotion();
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
-  if (reduced || isMobile) return <div className={className}>{children}</div>;
+  if (reduced) return <div className={className}>{children}</div>;
   return (
     <motion.div
       className={className}
@@ -276,17 +260,10 @@ function Floating({
 function Magnetic({ children, className = "" }: { children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
   const mx = useSpring(useMotionValue(0), { stiffness: 250, damping: 18 });
   const my = useSpring(useMotionValue(0), { stiffness: 250, damping: 18 });
 
-  if (reduced || isMobile) return <div className={className} style={{ display: "inline-block" }}>{children}</div>;
+  if (reduced) return <div className={className} style={{ display: "inline-block" }}>{children}</div>;
 
   return (
     <motion.div
@@ -629,17 +606,7 @@ export default function HomePage() {
   }, []);
 
   
-  const reduced = useReducedMotion();
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  const skipHeroAnim = reduced || isMobile;
+  const skipHeroAnim = useReducedMotion();
 
   /* Spotlight X-Ray Mouse Tracking */
   const mouseX = useMotionValue(0);
@@ -707,7 +674,7 @@ export default function HomePage() {
         <motion.div
           style={{ scale: skipHeroAnim ? 1 : heroScale }}
           onPointerMove={(e) => {
-            if (reduced || isMobile || !heroRef.current) return;
+            if (skipHeroAnim || !heroRef.current) return;
             const { left, top } = heroRef.current.getBoundingClientRect();
             mouseX.set(e.clientX - left);
             mouseY.set(e.clientY - top);

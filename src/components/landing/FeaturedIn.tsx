@@ -19,14 +19,6 @@ export function FeaturedIn() {
   const containerRef = useRef<HTMLDivElement>(null);
   const reduceMotion = useReducedMotion();
   const [onScreen, setOnScreen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
 
   // Only run the infinite marquee while the strip is visible in the viewport.
   // This keeps the exact same animation on screen but avoids running the
@@ -42,7 +34,7 @@ export function FeaturedIn() {
     return () => io.disconnect();
   }, []);
 
-  const animate = !reduceMotion && onScreen && !isMobile ? { x: ["0%", "-25%"] } : { x: "0%" };
+  const animate = !reduceMotion && onScreen ? { x: ["0%", "-25%"] } : { x: "0%" };
 
   return (
     <section className="relative pt-12 md:pt-16 pb-2 md:pb-4 overflow-hidden">
