@@ -4,12 +4,12 @@ import {
   useRef,
   useEffect,
   useState,
+  useSyncExternalStore,
   type ReactNode,
   type CSSProperties,
 } from "react";
 import {
   motion,
-  useInView,
   useScroll,
   useTransform,
   useSpring,
