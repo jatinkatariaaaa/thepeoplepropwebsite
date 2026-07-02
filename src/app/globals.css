@@ -162,6 +162,17 @@ html, body {
   overflow-x: hidden;
 }
 
+/*
+  Ensure native scrolling always works. On touch devices Lenis is disabled, so
+  the `.lenis` class is never added to <html>; without this the `h-full`
+  (height:100%) applied to <html> in layout.tsx would stay in effect and, with
+  overflow-x:hidden, clip overflowing content and break scrolling on mobile.
+*/
+html, body {
+  height: auto;
+  min-height: 100%;
+}
+
 html.lenis, html.lenis body {
   height: auto;
 }
