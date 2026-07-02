@@ -767,19 +767,21 @@ export default function HomePage() {
             </motion.div>
           </motion.div>
 
-          {/* Scroll cue */}
-          <motion.div
-            style={{ opacity: skipHeroAnim ? 1 : heroFade }}
-            className="absolute bottom-7 left-1/2 -translate-x-1/2"
-          >
+          {/* Scroll cue — desktop only; its infinite animation burned CPU on phones */}
+          {!skipHeroAnim && (
             <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-              className="flex h-9 w-6 items-start justify-center rounded-full border border-white/25 p-1.5"
+              style={{ opacity: heroFade }}
+              className="absolute bottom-7 left-1/2 -translate-x-1/2"
             >
-              <span className="h-1.5 w-1 rounded-full bg-[#cbfb45]" />
+              <motion.div
+                animate={{ y: [0, 8, 0] }}
+                transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+                className="flex h-9 w-6 items-start justify-center rounded-full border border-white/25 p-1.5"
+              >
+                <span className="h-1.5 w-1 rounded-full bg-[#cbfb45]" />
+              </motion.div>
             </motion.div>
-          </motion.div>
+          )}
         </motion.div>
       </section>
 
