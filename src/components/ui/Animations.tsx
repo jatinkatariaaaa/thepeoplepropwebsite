@@ -19,6 +19,7 @@ import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 export const EASE = [0.22, 1, 0.36, 1] as const;
 export const LIME = "#cbfb45";
