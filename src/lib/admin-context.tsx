@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, type ReactNode } from "react";
+import { createContext, useContext, useMemo, type ReactNode } from "react";
 
 export type AdminRole = "super_admin" | "finance" | "support" | "marketing";
 
@@ -19,8 +19,11 @@ export function AdminRoleProvider({
   role: AdminRole;
   children: ReactNode;
 }) {
+  // Memoize the context value so consumers only re-render when `role` changes,
+  // not on every provider render (which would happen with a fresh object).
+  const value = useMemo(() => ({ role }), [role]);
   return (
-    <AdminRoleContext.Provider value={{ role }}>
+    <AdminRoleContext.Provider value={value}>
       {children}
     </AdminRoleContext.Provider>
   );

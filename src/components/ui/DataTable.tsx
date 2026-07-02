@@ -16,7 +16,7 @@ interface Props<T> {
   rowClassName?: (row: T, idx: number) => string | undefined;
 }
 
-export function DataTable<T extends Record<string, unknown>>({
+function DataTableInner<T extends Record<string, unknown>>({
   columns,
   rows,
   className,
@@ -83,3 +83,8 @@ export function DataTable<T extends Record<string, unknown>>({
     </div>
   );
 }
+
+// Memoized so the table skips re-rendering when its props are referentially
+// unchanged (e.g. unrelated parent state updates). The cast preserves the
+// original generic signature for call sites.
+export const DataTable = React.memo(DataTableInner) as typeof DataTableInner;
