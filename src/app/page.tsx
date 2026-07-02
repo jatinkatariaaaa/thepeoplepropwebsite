@@ -593,11 +593,20 @@ export default function HomePage() {
   
   const skipHeroAnim = useReducedMotion();
 
+  /* Mount flag — desktop-only decorative media (x-ray bg, side video)
+     renders only after hydration and never on mobile, so phones don't
+     download or decode assets they can't see. */
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   /* Spotlight X-Ray Mouse Tracking */
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const smoothMouseX = useSpring(mouseX, { stiffness: 50, damping: 20 });
   const smoothMouseY = useSpring(mouseY, { stiffness: 50, damping: 20 });
+  const xrayMask = useMotionTemplate`radial-gradient(450px circle at ${smoothMouseX}px ${smoothMouseY}px, black 0%, transparent 100%)`;
 
   /* Hero parallax */
   const heroRef = useRef<HTMLDivElement>(null);
