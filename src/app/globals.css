@@ -1425,6 +1425,13 @@ body.v2-active .v2-page footer {
 
 @layer base {
   html, body {
-    overscroll-behavior-y: none;
+    overscroll-behavior-y: auto;
+  }
+
+  /* Safety net: GSAP ScrollTrigger pin-spacers can leave body with
+     overflow:hidden if a trigger fails to clean up. This rule ensures
+     the document is always scrollable. */
+  html, body {
+    overflow-y: auto !important;
   }
 }

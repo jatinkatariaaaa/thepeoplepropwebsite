@@ -479,11 +479,6 @@ function PinnedSteps() {
 
   useEffect(() => {
     if (reduced || !sectionRef.current || !trackRef.current) return;
-    // Only create the pinned horizontal-scroll ScrollTriggers on lg+ screens
-    // (matches the section's `hidden lg:block` container at the Tailwind lg
-    // breakpoint). matchMedia never instantiates these below 1024px and
-    // reverts all triggers / pin-spacers / listeners on unmount or when the
-    // breakpoint stops matching.
     const mm = gsap.matchMedia();
     mm.add("(min-width: 1024px)", () => {
       const ctx = gsap.context(() => {
@@ -498,8 +493,7 @@ function PinnedSteps() {
             start: "top top",
             end: () => "+=" + getShift(),
             scrub: 1,
-            pin: true,
-            anticipatePin: 1,
+            pin: false,
             invalidateOnRefresh: true,
           },
         });
