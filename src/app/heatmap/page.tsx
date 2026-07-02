@@ -1,9 +1,20 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { PageLayout, PageHero, PageSection } from "@/components/layout";
 import { Reveal, GsapWords, LIME } from "@/components/ui/Animations";
-import ForexHeatmapWidget from "@/components/tradingview/ForexHeatmapWidget";
 import { Globe, Zap, BarChart3 } from "lucide-react";
+
+// Below-the-fold, client-only third-party embed. Dynamically imported so its
+// code (and the injected TradingView script) stays out of the initial bundle.
+// The loading placeholder fills the same container to avoid any layout shift.
+const ForexHeatmapWidget = dynamic(
+  () => import("@/components/tradingview/ForexHeatmapWidget"),
+  {
+    ssr: false,
+    loading: () => <div className="w-full h-full" aria-hidden="true" />,
+  }
+);
 
 const features = [
   {
