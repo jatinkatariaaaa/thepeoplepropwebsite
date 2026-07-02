@@ -147,11 +147,11 @@
   --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, monospace;
 }
 
-/* ── Global base ── */
-html {
-  scroll-behavior: smooth;
-}
-
+/* ── Global base ──
+   NOTE: intentionally NO `scroll-behavior: smooth` here. CSS smooth
+   scrolling conflicts with GSAP ScrollTrigger pinned/scrubbed sections:
+   programmatic scroll writes animate instead of applying instantly,
+   which can fight or stall scrolling. */
 html, body {
   background-color: #f1eade;
   color: var(--ink-950);
@@ -169,8 +169,17 @@ html, body {
   overflow-x:hidden, clip overflowing content and break scrolling on mobile.
 */
 html, body {
-  height: auto;
+  height: auto !important;
   min-height: 100%;
+}
+
+/*
+  Scroll kill-switch: native vertical scrolling must never be disabled.
+  Guards against any stale class (e.g. `lenis-stopped`), cached stylesheet,
+  or third-party script setting overflow:hidden on the root element.
+*/
+html {
+  overflow-y: auto !important;
 }
 
 html.lenis, html.lenis body {
@@ -713,9 +722,8 @@ html.lenis body {
   overscroll-behavior: contain;
 }
 
-.lenis.lenis-stopped {
-  overflow: hidden;
-}
+/* `.lenis.lenis-stopped { overflow: hidden }` intentionally removed —
+   it was a dormant scroll-lock vector now that Lenis is disabled. */
 
 .lenis.lenis-scrolling iframe {
   pointer-events: none;
