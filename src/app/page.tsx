@@ -653,6 +653,20 @@ export default function HomePage() {
   /* Swipeable testimonial deck (mobile) */
   const [activeT, setActiveT] = useState(0);
 
+  /* Testimonials marquee: only animate while the section is on screen. */
+  const testimonialsRef = useRef<HTMLDivElement>(null);
+  const [testimonialsOnScreen, setTestimonialsOnScreen] = useState(false);
+  useEffect(() => {
+    const el = testimonialsRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => setTestimonialsOnScreen(entries[0]?.isIntersecting ?? false),
+      { rootMargin: "200px 0px" }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   /* FAQ */
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const faqItems = faq.slice(0, 6);
@@ -1183,6 +1197,7 @@ export default function HomePage() {
         </div>
 
         <div 
+          ref={testimonialsRef}
           className="relative flex w-full flex-col gap-3 overflow-hidden py-4"
           style={{
             maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
@@ -1192,7 +1207,7 @@ export default function HomePage() {
           {/* Row 1 */}
           <motion.div
             className="flex w-max items-center gap-3"
-            animate={{ x: ["0%", "-50%"] }}
+            animate={testimonialsOnScreen ? { x: ["0%", "-50%"] } : { x: "0%" }}
             transition={{ repeat: Infinity, ease: "linear", duration: 40 }}
           >
             {[...testimonials, ...testimonials].map((t, i) => (
@@ -1216,7 +1231,7 @@ export default function HomePage() {
           {/* Row 2 */}
           <motion.div
             className="flex w-max items-center gap-3"
-            animate={{ x: ["-50%", "0%"] }}
+            animate={testimonialsOnScreen ? { x: ["-50%", "0%"] } : { x: "-50%" }}
             transition={{ repeat: Infinity, ease: "linear", duration: 45 }}
           >
             {[...testimonials.slice().reverse(), ...testimonials.slice().reverse()].map((t, i) => (
