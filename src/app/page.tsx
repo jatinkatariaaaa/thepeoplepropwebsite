@@ -804,10 +804,10 @@ export default function HomePage() {
 
             <div className="md:col-span-6 lg:col-span-8">
               <div className="relative">
-                <div className="pointer-events-none relative z-20 text-center mix-blend-difference">
+                <div className="pointer-events-none relative z-20 text-center md:mix-blend-difference">
                   <GsapWords
                     text="We're The People Prop"
-                    className="font-bold tracking-tight text-white"
+                    className="font-bold tracking-tight text-[#0c0c0c] md:text-white"
                     style={{ fontSize: "clamp(3rem, 10vw, 8rem)", lineHeight: 1 }}
                   />
                 </div>
