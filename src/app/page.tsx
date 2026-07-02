@@ -56,53 +56,38 @@ const LIME = "#cbfb45";
 /* ─────────────────────────────────────────────────────────────
    Hook: prefers-reduced-motion (respect accessibility)
    ───────────────────────────────────────────────────────────── */
-function useReducedMotion() {
-  const [reduced, setReduced] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const mobile = window.matchMedia("(max-width: 767px)");
-    const update = () => setReduced(mq.matches || mobile.matches);
-    update();
-    mq.addEventListener("change", update);
-    mobile.addEventListener("change", update);
-    return () => {
-      mq.removeEventListener("change", update);
-      mobile.removeEventListener("change", update);
-    };
-  }, []);
-  return reduced;
+const REDUCED_MQ = "(prefers-reduced-motion: reduce)";
+const MOBILE_MQ = "(max-width: 767px)";
+
+function subscribeReducedMotion(callback: () => void) {
+  const mq = window.matchMedia(REDUCED_MQ);
+  const mobile = window.matchMedia(MOBILE_MQ);
+  mq.addEventListener("change", callback);
+  mobile.addEventListener("change", callback);
+  return () => {
+    mq.removeEventListener("change", callback);
+    mobile.removeEventListener("change", callback);
+  };
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Animated Counter (IntersectionObserver-driven)
-   ───────────────────────────────────────────────────────────── */
-function AnimatedCounter({ end, suffix = "" }: { end: number; suffix?: string }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true });
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    if (!inView) return;
-    let start = 0;
-    const duration = 1800;
-    const increment = end / (duration / 16);
-    const timer = setInterval(() => {
-      start += increment;
-      if (start >= end) {
-        setCount(end);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(start));
-      }
-    }, 16);
-    return () => clearInterval(timer);
-  }, [inView, end]);
-
+function getReducedSnapshot() {
   return (
-    <span ref={ref}>
-      {count}
-      {suffix}
-    </span>
+    window.matchMedia(REDUCED_MQ).matches ||
+    window.matchMedia(MOBILE_MQ).matches
+  );
+}
+
+/**
+ * Synchronous reduced-motion / mobile detection.
+ * Reads matchMedia at hydration time (no post-mount state flip), so on
+ * mobile the static variant of every section renders exactly once
+ * instead of mounting the animated variant and then remounting.
+ */
+function useReducedMotion() {
+  return useSyncExternalStore(
+    subscribeReducedMotion,
+    getReducedSnapshot,
+    () => false
   );
 }
 
