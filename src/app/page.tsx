@@ -792,13 +792,15 @@ export default function HomePage() {
       <section className="w-full py-16 lg:py-24">
         <div className="w-full px-5 lg:px-10">
           <div className="grid items-center gap-x-7 gap-y-16 md:grid-cols-12">
-            <Reveal className="hidden md:col-span-3 md:block lg:col-span-2">
-              <Floating amplitude={10} duration={7}>
-                <div className="aspect-[9/10] w-full overflow-hidden rounded-2xl bg-black lg:rounded-3xl">
-                  <video src="/videos/left-video.webm" autoPlay loop muted playsInline className="h-full w-full object-cover" />
-                </div>
-              </Floating>
-            </Reveal>
+            {mounted && !skipHeroAnim && (
+              <Reveal className="hidden md:col-span-3 md:block lg:col-span-2">
+                <Floating amplitude={10} duration={7}>
+                  <div className="aspect-[9/10] w-full overflow-hidden rounded-2xl bg-black lg:rounded-3xl">
+                    <video src="/videos/left-video.webm" autoPlay loop muted playsInline preload="metadata" className="h-full w-full object-cover" />
+                  </div>
+                </Floating>
+              </Reveal>
+            )}
 
             <div className="md:col-span-6 lg:col-span-8">
               <div className="relative">
