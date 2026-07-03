@@ -159,12 +159,18 @@ html, body {
   font-feature-settings: "ss01", "cv11";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
 }
 
 html, body {
+  height: auto !important;
+  overflow-y: visible !important;
+  overflow-x: hidden;
+  touch-action: pan-y;
+}
+
+.page-wrapper {
+  min-height: 100vh;
   height: auto;
-  min-height: 100%;
 }
 
 html.lenis, html.lenis body {
