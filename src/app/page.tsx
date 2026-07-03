@@ -479,40 +479,44 @@ function PinnedSteps() {
 
   useEffect(() => {
     if (reduced || !sectionRef.current || !trackRef.current) return;
-    const ctx = gsap.context(() => {
-      const track = trackRef.current!;
-      const getShift = () => Math.max(0, track.scrollWidth - window.innerWidth);
+    const mm = gsap.matchMedia();
+    mm.add("(min-width: 1024px)", () => {
+      const ctx = gsap.context(() => {
+        const track = trackRef.current!;
+        const getShift = () => Math.max(0, track.scrollWidth - window.innerWidth);
 
-      gsap.to(track, {
-        x: () => -getShift(),
-        ease: "none",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: () => "+=" + getShift(),
-          scrub: 1,
-          pin: true,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-        },
-      });
-
-      gsap.fromTo(
-        "[data-steps-progress]",
-        { scaleX: 0 },
-        {
-          scaleX: 1,
+        gsap.to(track, {
+          x: () => -getShift(),
           ease: "none",
           scrollTrigger: {
             trigger: sectionRef.current,
             start: "top top",
             end: () => "+=" + getShift(),
             scrub: 1,
+            pin: true,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
           },
-        }
-      );
-    }, sectionRef);
-    return () => ctx.revert();
+        });
+
+        gsap.fromTo(
+          "[data-steps-progress]",
+          { scaleX: 0 },
+          {
+            scaleX: 1,
+            ease: "none",
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: "top top",
+              end: () => "+=" + getShift(),
+              scrub: 1,
+            },
+          }
+        );
+      }, sectionRef);
+      return () => ctx.revert();
+    });
+    return () => mm.revert();
   }, [reduced]);
 
   return (

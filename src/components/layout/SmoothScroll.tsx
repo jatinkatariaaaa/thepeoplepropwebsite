@@ -7,8 +7,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    // Disable Lenis on touch devices to fix mobile scroll lag
-    if (window.matchMedia("(hover: none) and (pointer: coarse)").matches) {
+    // Disable Lenis on touch devices and screens < 1024px to fix mobile scroll lag and hanging
+    const isMobileUserAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobileUserAgent || window.innerWidth < 1024 || window.matchMedia("(hover: none) and (pointer: coarse)").matches) {
       return;
     }
 
