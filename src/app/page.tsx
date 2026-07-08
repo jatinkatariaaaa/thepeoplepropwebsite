@@ -677,7 +677,7 @@ export default function HomePage() {
 
 
       {/* ═══════════════ SECTION 1 — HERO ═══════════════ */}
-      <section ref={heroRef} className="relative z-0 min-h-[100svh] lg:h-dvh px-[5px] py-[5px]">
+      <section ref={heroRef} className="relative z-0 overflow-hidden min-h-[100svh] lg:h-dvh px-[5px] py-[5px]">
         <motion.div
           style={{ scale: skipHeroAnim ? 1 : heroScale }}
           onPointerMove={(e) => {
