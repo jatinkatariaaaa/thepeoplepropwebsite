@@ -33,10 +33,10 @@ type TooltipEntry = {
 
 const COLORS = {
   win: "#059669",
-  loss: "#dc2626",
+  loss: "#E11D48",
   flat: "#94a3b8",
   dark: "#0f172a",
-  accent: "#65a30d",
+  accent: "#059669",
 };
 
 const money = new Intl.NumberFormat("en-US", {
@@ -75,10 +75,10 @@ function ChartTooltip({
   if (!active || !payload?.length) return null;
 
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-white px-4 py-3 shadow-lg">
-      <p className="mb-1 text-[12px] font-bold text-[var(--ink-500)]">{label}</p>
+    <div className="dash-tooltip">
+      <p className="mb-1 text-[11px] font-medium text-ink-400">{label}</p>
       {payload.map((entry) => (
-        <p key={entry.dataKey || entry.name} className="text-[13px] font-bold text-[var(--ink-950)]">
+        <p key={entry.dataKey || entry.name} className="dash-tooltip-value text-[12px]">
           {entry.name}: {typeof entry.value === "number" ? formatMoney(entry.value) : entry.value}
         </p>
       ))}
@@ -90,30 +90,30 @@ function DirectionPanel({ title, stats }: { title: string; stats: DirectionStats
   const isPositive = stats.netPnl >= 0;
 
   return (
-    <div className="bg-white border border-[var(--border)] rounded-2xl shadow-sm flex flex-col">
-      <div className="p-5 border-b border-[var(--border)]">
-        <h4 className="font-bold text-[15px] text-[var(--ink-950)]">{title}</h4>
+    <div className="dash-card flex flex-col">
+      <div className="border-b border-[var(--dash-hairline)] px-4 py-3.5 sm:px-5">
+        <h4 className="text-[15px] font-semibold tracking-tight text-ink">{title}</h4>
       </div>
-      <div className="p-6 flex-1 flex flex-col items-center justify-center text-center border-b border-[var(--border)] min-h-[190px]">
-        <div className={cn("text-[30px] font-display font-bold mb-1", isPositive ? "text-emerald-600" : "text-red-600")}>
+      <div className="flex min-h-[180px] flex-1 flex-col items-center justify-center border-b border-[var(--dash-hairline)] p-6 text-center">
+        <div className={cn("dash-figure mb-1 text-[26px]", isPositive ? "text-[var(--dash-positive)]" : "text-[var(--dash-negative)]")}>
           {formatSignedMoney(stats.netPnl)}
         </div>
-        <div className="text-[13px] text-[var(--ink-500)]">
+        <div className="text-[13px] text-ink-500">
           {stats.trades} trades / {stats.volume.toLocaleString()} lots
         </div>
       </div>
-      <div className="grid grid-cols-3 p-4 text-center divide-x divide-[var(--border)]">
+      <div className="grid grid-cols-3 divide-x divide-[var(--dash-hairline)] p-4 text-center">
         <div>
-          <div className="text-[11px] font-bold text-[var(--ink-500)] mb-1">Wins ({stats.wins})</div>
-          <div className="text-[14px] font-bold text-[var(--ink-950)]">{formatMoney(stats.grossProfit)}</div>
+          <div className="dash-overline mb-1">Wins ({stats.wins})</div>
+          <div className="dash-num text-[14px] font-semibold text-ink">{formatMoney(stats.grossProfit)}</div>
         </div>
         <div>
-          <div className="text-[11px] font-bold text-[var(--ink-500)] mb-1">Win Rate</div>
-          <div className="text-[14px] font-bold text-[var(--ink-950)]">{formatPct(stats.winRate)}</div>
+          <div className="dash-overline mb-1">Win Rate</div>
+          <div className="dash-num text-[14px] font-semibold text-ink">{formatPct(stats.winRate)}</div>
         </div>
         <div>
-          <div className="text-[11px] font-bold text-[var(--ink-500)] mb-1">Losses ({stats.losses})</div>
-          <div className="text-[14px] font-bold text-[var(--ink-950)]">{formatMoney(stats.grossLoss)}</div>
+          <div className="dash-overline mb-1">Losses ({stats.losses})</div>
+          <div className="dash-num text-[14px] font-semibold text-ink">{formatMoney(stats.grossLoss)}</div>
         </div>
       </div>
     </div>
@@ -142,11 +142,11 @@ export function AnalysisGrid({ metrics }: { metrics?: AccountMetrics | null }) {
         ].map((stat) => {
           const Icon = stat.icon;
           return (
-            <div key={stat.label} className="bg-white border border-[var(--border)] rounded-2xl p-5 shadow-sm">
-              <div className="flex items-center gap-2 text-[13px] font-medium text-[var(--ink-500)] mb-2">
+            <div key={stat.label} className="dash-card dash-card-hover p-4 sm:p-5">
+              <div className="dash-overline mb-2 flex items-center gap-1.5">
                 <Icon className="w-4 h-4" /> {stat.label}
               </div>
-              <div className="text-[20px] font-display font-bold text-[var(--ink-950)]">{stat.value}</div>
+              <div className="dash-figure text-xl">{stat.value}</div>
             </div>
           );
         })}
@@ -162,11 +162,11 @@ export function AnalysisGrid({ metrics }: { metrics?: AccountMetrics | null }) {
         ].map((stat) => {
           const Icon = stat.icon;
           return (
-            <div key={stat.label} className="bg-white border border-[var(--border)] rounded-2xl p-5 shadow-sm">
-              <div className="flex items-center gap-2 text-[12px] font-medium text-[var(--ink-500)] mb-2">
+            <div key={stat.label} className="dash-card dash-card-hover p-4 sm:p-5">
+              <div className="dash-overline mb-2 flex items-center gap-1.5">
                 <Icon className="w-3.5 h-3.5" /> {stat.label}
               </div>
-              <div className="text-[18px] font-display font-bold text-[var(--ink-950)]">{stat.value}</div>
+              <div className="dash-figure text-lg">{stat.value}</div>
             </div>
           );
         })}
@@ -187,11 +187,11 @@ export function AnalysisGrid({ metrics }: { metrics?: AccountMetrics | null }) {
           volume: 0,
         }} />
 
-        <div className="bg-white border border-[var(--border)] rounded-2xl shadow-sm flex flex-col">
-          <div className="p-5 border-b border-[var(--border)]">
-            <h4 className="font-bold text-[15px] text-[var(--ink-950)]">Profitability</h4>
+        <div className="dash-card flex flex-col">
+          <div className="border-b border-[var(--dash-hairline)] px-4 py-3.5 sm:px-5">
+            <h4 className="text-[15px] font-semibold tracking-tight text-ink">Profitability</h4>
           </div>
-          <div className="p-6 flex-1 flex flex-col items-center justify-center text-center border-b border-[var(--border)] min-h-[190px]">
+          <div className="flex min-h-[180px] flex-1 flex-col items-center justify-center border-b border-[var(--dash-hairline)] p-6 text-center">
             {hasProfitabilityData ? (
               <ResponsiveContainer width="100%" height={160}>
                 <PieChart>
@@ -205,23 +205,23 @@ export function AnalysisGrid({ metrics }: { metrics?: AccountMetrics | null }) {
               </ResponsiveContainer>
             ) : (
               <>
-                <PieChartIcon className="w-8 h-8 text-[var(--ink-400)] mb-3" />
-                <div className="text-[14px] font-medium text-[var(--ink-600)]">Start trading to see analysis</div>
+                <PieChartIcon className="mb-3 h-6 w-6 text-ink-300" />
+                <div className="text-sm text-ink-500">Start trading to see analysis</div>
               </>
             )}
           </div>
-          <div className="grid grid-cols-3 p-4 text-center divide-x divide-[var(--border)]">
+          <div className="grid grid-cols-3 divide-x divide-[var(--dash-hairline)] p-4 text-center">
             <div>
-              <div className="text-[11px] font-bold text-[var(--ink-500)] mb-1">Wins</div>
-              <div className="text-[14px] font-bold text-[var(--ink-950)]">{metrics?.wins || 0}</div>
+              <div className="dash-overline mb-1">Wins</div>
+              <div className="dash-num text-[14px] font-semibold text-ink">{metrics?.wins || 0}</div>
             </div>
             <div>
-              <div className="text-[11px] font-bold text-[var(--ink-500)] mb-1">Win Rate</div>
-              <div className="text-[14px] font-bold text-[var(--ink-950)]">{formatPct(metrics?.winRate)}</div>
+              <div className="dash-overline mb-1">Win Rate</div>
+              <div className="dash-num text-[14px] font-semibold text-ink">{formatPct(metrics?.winRate)}</div>
             </div>
             <div>
-              <div className="text-[11px] font-bold text-[var(--ink-500)] mb-1">Losses</div>
-              <div className="text-[14px] font-bold text-[var(--ink-950)]">{metrics?.losses || 0}</div>
+              <div className="dash-overline mb-1">Losses</div>
+              <div className="dash-num text-[14px] font-semibold text-ink">{metrics?.losses || 0}</div>
             </div>
           </div>
         </div>
@@ -242,44 +242,44 @@ export function AnalysisGrid({ metrics }: { metrics?: AccountMetrics | null }) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white border border-[var(--border)] rounded-2xl shadow-sm p-6">
-          <h4 className="font-bold text-[15px] text-[var(--ink-950)] mb-6">PnL Distribution by Duration</h4>
+        <div className="dash-card p-4 sm:p-5">
+          <h4 className="mb-5 text-[15px] font-semibold tracking-tight text-ink">PnL Distribution by Duration</h4>
           {hasDurationData ? (
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={durationData} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
-                <CartesianGrid stroke="#eef2f7" strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#6c6a68" }} />
-                <YAxis axisLine={false} tickLine={false} width={70} tick={{ fontSize: 12, fill: "#6c6a68" }} tickFormatter={(value) => `$${Number(value).toLocaleString()}`} />
+                <CartesianGrid stroke="rgba(15, 23, 42, 0.06)" strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#94A3B8" }} />
+                <YAxis axisLine={false} tickLine={false} width={70} tick={{ fontSize: 11, fill: "#94A3B8" }} tickFormatter={(value) => `$${Number(value).toLocaleString()}`} />
                 <Tooltip content={<ChartTooltip />} />
-                <Bar dataKey="pnl" name="PnL" fill={COLORS.dark} radius={[6, 6, 0, 0]} maxBarSize={48} />
+                <Bar dataKey="pnl" name="PnL" fill={COLORS.dark} radius={[3, 3, 0, 0]} maxBarSize={32} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
             <div className="flex flex-col items-center justify-center min-h-[200px] text-center">
-              <BarChart3 className="w-8 h-8 text-[var(--ink-400)] mb-3" />
-              <div className="text-[14px] font-bold text-[var(--ink-950)] mb-1">No trading data available</div>
-              <div className="text-[13px] text-[var(--ink-500)]">Closed trades will populate this distribution.</div>
+              <BarChart3 className="mb-3 h-6 w-6 text-ink-300" />
+              <div className="mb-1 text-sm font-semibold text-ink">No trading data available</div>
+              <div className="text-[13px] text-ink-500">Closed trades will populate this distribution.</div>
             </div>
           )}
         </div>
 
-        <div className="bg-white border border-[var(--border)] rounded-2xl shadow-sm p-6">
-          <h4 className="font-bold text-[15px] text-[var(--ink-950)] mb-6">Trade Count by Duration</h4>
+        <div className="dash-card p-4 sm:p-5">
+          <h4 className="mb-5 text-[15px] font-semibold tracking-tight text-ink">Trade Count by Duration</h4>
           {hasDurationData ? (
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={durationData} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
-                <CartesianGrid stroke="#eef2f7" strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#6c6a68" }} />
-                <YAxis allowDecimals={false} axisLine={false} tickLine={false} width={40} tick={{ fontSize: 12, fill: "#6c6a68" }} />
+                <CartesianGrid stroke="rgba(15, 23, 42, 0.06)" strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "#94A3B8" }} />
+                <YAxis allowDecimals={false} axisLine={false} tickLine={false} width={40} tick={{ fontSize: 11, fill: "#94A3B8" }} />
                 <Tooltip />
-                <Bar dataKey="trades" name="Trades" fill={COLORS.accent} radius={[6, 6, 0, 0]} maxBarSize={48} />
+                <Bar dataKey="trades" name="Trades" fill={COLORS.accent} radius={[3, 3, 0, 0]} maxBarSize={32} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
             <div className="flex flex-col items-center justify-center min-h-[200px] text-center">
-              <Activity className="w-8 h-8 text-[var(--ink-400)] mb-3" />
-              <div className="text-[14px] font-bold text-[var(--ink-950)] mb-1">No duration data available</div>
-              <div className="text-[13px] text-[var(--ink-500)]">Open and close trades to build this view.</div>
+              <Activity className="mb-3 h-6 w-6 text-ink-300" />
+              <div className="mb-1 text-sm font-semibold text-ink">No duration data available</div>
+              <div className="text-[13px] text-ink-500">Open and close trades to build this view.</div>
             </div>
           )}
         </div>
