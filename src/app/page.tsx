@@ -795,7 +795,6 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════ FEATURED LOGOS ═══════════════ */}
-      <div className="relative z-10">
       <FeaturedIn />
 
       {/* ═══════════════ SECTION 2 — INTRO ═══════════════ */}
@@ -1407,7 +1406,7 @@ export default function HomePage() {
 
         </div>
       </footer>
-      </div>{/* end z-10 wrapper */}
+
     </div>
   );
 }
