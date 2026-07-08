@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import crypto from "crypto";
 import { provisionTradingAccountForPurchase } from "@/lib/account-provisioning";
+import { creditAffiliateCommission } from "@/lib/affiliate-commission";
 
 export async function POST(req: Request) {
   try {
@@ -9,8 +10,13 @@ export async function POST(req: Request) {
     const signature = req.headers.get("x-nowpayments-sig");
     const ipnSecret = process.env.NOWPAYMENTS_IPN_SECRET;
 
-    // Optional IPN Verification if secret exists
-    if (ipnSecret && signature) {
+    // Verify IPN signature. If a secret is configured, a valid signature is required —
+    // otherwise anyone could POST a fake "finished" payment and get a free account.
+    if (ipnSecret) {
+      if (!signature) {
+        console.error("NOWPayments IPN signature missing");
+        return NextResponse.json({ error: "Missing signature" }, { status: 400 });
+      }
       const hmac = crypto.createHmac("sha512", ipnSecret);
       hmac.update(rawBody);
       const calculatedSignature = hmac.digest("hex");
@@ -51,31 +57,10 @@ export async function POST(req: Request) {
 
     const provisioning = await provisionTradingAccountForPurchase(purchase);
 
-    // 4. Track Affiliate Commission
-    const { data: referral } = await supabaseAdmin
-      .from("affiliate_referrals")
-      .select("affiliate_id")
-      .eq("referred_user_id", purchase.user_id)
-      .single();
-
-    if (referral?.affiliate_id) {
-      const commission = purchase.price_amount * 0.10;
-
-      const { data: affiliateData } = await supabaseAdmin
-        .from("affiliates")
-        .select("total_earnings, pending_payout")
-        .eq("user_id", referral.affiliate_id)
-        .single();
-
-      if (affiliateData) {
-        await supabaseAdmin
-          .from("affiliates")
-          .update({
-            total_earnings: Number(affiliateData.total_earnings) + commission,
-            pending_payout: Number(affiliateData.pending_payout) + commission
-          })
-          .eq("user_id", referral.affiliate_id);
-      }
+    // 4. Track Affiliate Commission — only on first fulfillment so that
+    // NOWPayments webhook retries never double-credit the affiliate.
+    if (provisioning.created) {
+      await creditAffiliateCommission(purchase);
     }
 
     return NextResponse.json({
