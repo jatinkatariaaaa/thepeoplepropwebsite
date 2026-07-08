@@ -66,7 +66,7 @@ export default function AdminCmsPage() {
       {announcement && (
         <div className="mb-8 dash-card p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className={`p-3 rounded-xl ${announcement.is_published ? "bg-emerald-50 text-[var(--dash-positive)]" : "bg-gray-50 text-gray-400"}`}>
+            <div className={`p-3 rounded-none ${announcement.is_published ? "bg-emerald-50 text-[var(--dash-positive)]" : "bg-gray-50 text-gray-400"}`}>
               {announcement.is_published ? <CheckCircle2 className="w-6 h-6" /> : <AlertCircle className="w-6 h-6" />}
             </div>
             <div>
@@ -79,7 +79,7 @@ export default function AdminCmsPage() {
           <div className="flex items-center gap-3">
             <button
               onClick={toggleAnnouncement}
-              className={`px-4 py-2 font-semibold rounded-xl transition-colors ${
+              className={`px-4 py-2 font-semibold rounded-none transition-colors ${
                 announcement.is_published 
                   ? "bg-red-50 text-[var(--dash-negative)] hover:bg-red-100" 
                   : "bg-emerald-50 text-[var(--dash-positive)] hover:bg-emerald-100"
@@ -89,7 +89,7 @@ export default function AdminCmsPage() {
             </button>
             <Link 
               href={`/admin/cms/announcement`}
-              className="px-4 py-2 bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] text-[var(--ink-950)] font-semibold rounded-xl hover:bg-ink-100 transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] text-[var(--ink-950)] font-semibold rounded-none hover:bg-ink-100 transition-colors flex items-center gap-2"
             >
               <Edit className="w-4 h-4" /> Edit Content
             </Link>
@@ -107,11 +107,11 @@ export default function AdminCmsPage() {
             className="group block dash-card p-5 hover:shadow-md transition-all hover:border-[var(--ink-300)]"
           >
             <div className="flex justify-between items-start mb-4">
-              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3 group-hover:bg-[var(--accent)] group-hover:text-[var(--ink-950)] transition-colors">
+              <div className="rounded-none border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3 group-hover:bg-[var(--carbon-blue)] group-hover:text-[var(--ink-950)] transition-colors">
                 <Globe className="w-6 h-6" />
               </div>
               <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold uppercase ${
-                page.is_published ? "bg-success-50 text-success-700" : "bg-gray-100 text-gray-500"
+                page.is_published ? "bg-[#a7f0ba] text-[#0e6027]" : "bg-gray-100 text-gray-500"
               }`}>
                 {page.is_published ? "Published" : "Draft"}
               </span>

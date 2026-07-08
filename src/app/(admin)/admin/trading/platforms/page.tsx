@@ -138,11 +138,11 @@ export default function PlatformsAdminPage() {
     }
   }
 
-  if (loading && platforms.length === 0) return <div className="p-10 animate-pulse bg-[var(--dash-canvas)] rounded-xl h-40" />;
+  if (loading && platforms.length === 0) return <div className="p-10 animate-pulse bg-[var(--dash-canvas)] rounded-none h-40" />;
 
   return (
     <div className="max-w-5xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[var(--dash-canvas)] p-6 rounded-3xl border border-[var(--dash-hairline)] shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[var(--dash-canvas)] p-6 rounded-none border border-[var(--dash-hairline)] shadow-sm">
         <div>
           <h1 className="flex items-center gap-2 text-xl font-semibold tracking-tight text-ink sm:text-2xl">
             <Activity className="w-6 h-6 text-[var(--dash-positive)]" /> Terminal Connection
@@ -162,20 +162,20 @@ export default function PlatformsAdminPage() {
            
            return (
           <div key={plat.id} className={cn(
-            "bg-white rounded-3xl p-6 border shadow-xl shadow-black/5 transition-all relative overflow-hidden",
+            "bg-white rounded-none p-6 border shadow-xl shadow-black/5 transition-all relative overflow-hidden",
             plat.is_active ? "border-[var(--dash-hairline)]" : "border-red-100 bg-red-50/30 opacity-70"
           )}>
             <div className="flex items-start justify-between mb-6">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center shadow-lg shadow-gray-900/20">
+                <div className="w-12 h-12 rounded-none bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center shadow-lg shadow-gray-900/20">
                   <Boxes className="w-6 h-6 text-white" />
                 </div>
                 <div>
                   <h3 className="font-bold text-lg text-[var(--ink-950)] leading-none mb-1.5">{plat.name}</h3>
                   <div className="flex gap-2 items-center">
                     <span className={cn(
-                      "inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider",
-                      plat.is_active ? "bg-success-50 text-success-700" : "bg-red-50 text-[var(--dash-negative)]"
+                      "inline-flex px-2 py-0.5 rounded-none text-[10px] font-bold uppercase tracking-wider",
+                      plat.is_active ? "bg-[#a7f0ba] text-[#0e6027]" : "bg-red-50 text-[var(--dash-negative)]"
                     )}>
                       {plat.is_active ? "Active Platform" : "Disabled"}
                     </span>
@@ -186,14 +186,14 @@ export default function PlatformsAdminPage() {
               <button 
                 onClick={() => openEditModal(plat)}
                 title="Edit Configuration"
-                className="w-10 h-10 flex items-center justify-center rounded-xl bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] text-[var(--ink-500)] hover:text-[var(--ink-950)] hover:border-[var(--ink-950)] transition-all"
+                className="w-10 h-10 flex items-center justify-center rounded-none bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] text-[var(--ink-500)] hover:text-[var(--ink-950)] hover:border-[var(--ink-950)] transition-all"
               >
                 <Edit2 className="w-4 h-4" />
               </button>
             </div>
 
             {/* Live Connection Status Board */}
-            <div className="bg-[var(--dash-canvas)] rounded-2xl p-4 border border-[var(--dash-hairline)] mb-4">
+            <div className="bg-[var(--dash-canvas)] rounded-none p-4 border border-[var(--dash-hairline)] mb-4">
                <div className="flex items-center justify-between mb-2">
                   <span className="text-[12px] font-bold text-[var(--ink-500)] uppercase tracking-wider">Live System Status</span>
                   <button 
@@ -259,7 +259,7 @@ export default function PlatformsAdminPage() {
             <div className="pt-2">
               <div className="flex items-center justify-between text-[13px]">
                 <span className="text-[var(--ink-500)] font-medium">Extra Fee Configuration</span>
-                <span className={cn("font-bold px-2 py-1 rounded-lg", plat.extra_fee_pct > 0 ? "bg-[var(--ink-950)] text-white" : "bg-success-50 text-success-700")}>
+                <span className={cn("font-bold px-2 py-1 rounded-none", plat.extra_fee_pct > 0 ? "bg-[var(--carbon-blue)] text-white" : "bg-[#a7f0ba] text-[#0e6027]")}>
                   {plat.extra_fee_pct > 0 ? `+${plat.extra_fee_pct}% Fee` : "Free Delivery"}
                 </span>
               </div>
@@ -268,7 +268,7 @@ export default function PlatformsAdminPage() {
         )})}
 
         {platforms.length === 0 && (
-          <div className="col-span-full py-16 text-center border-2 border-dashed border-[var(--dash-hairline)] rounded-3xl bg-[var(--dash-canvas)]">
+          <div className="col-span-full py-16 text-center border-2 border-dashed border-[var(--dash-hairline)] rounded-none bg-[var(--dash-canvas)]">
             <Boxes className="w-10 h-10 text-[var(--ink-300)] mx-auto mb-4" />
             <h3 className="text-lg font-bold text-[var(--ink-950)] mb-1">No Terminal Connected</h3>
             <p className="text-[var(--ink-500)] font-medium max-w-sm mx-auto">Click "Custom Terminal" above to connect your TPP Trading Terminal.</p>
@@ -278,14 +278,14 @@ export default function PlatformsAdminPage() {
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="flex max-h-[90vh] w-full max-w-md flex-col overflow-hidden rounded-[12px] border border-[var(--dash-hairline)] bg-white shadow-xl">
+          <div className="flex max-h-[90vh] w-full max-w-md flex-col overflow-hidden rounded-none border border-[var(--dash-hairline)] bg-white shadow-xl">
             <div className="flex items-center justify-between p-5 border-b border-[var(--dash-hairline)]">
               <h2 className="font-bold text-[18px] text-[var(--ink-950)]">
                 {editingPlatform ? "Edit Platform" : "Add Platform"}
               </h2>
               <button 
                 onClick={() => setIsModalOpen(false)}
-                className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[var(--dash-canvas)] text-[var(--ink-400)] transition-colors"
+                className="w-8 h-8 flex items-center justify-center rounded-none hover:bg-[var(--dash-canvas)] text-[var(--ink-400)] transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -300,7 +300,7 @@ export default function PlatformsAdminPage() {
                     required
                     value={formData.name}
                     onChange={e => setFormData({...formData, name: e.target.value})}
-                    className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+                    className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-none h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
                     placeholder="e.g. MetaTrader 5"
                   />
                 </div>
@@ -312,7 +312,7 @@ export default function PlatformsAdminPage() {
                       type="url" 
                       value={formData.api_url || ""}
                       onChange={e => setFormData({...formData, api_url: e.target.value})}
-                      className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+                      className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-none h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
                       placeholder="https://api.broker.com"
                     />
                   </div>
@@ -322,7 +322,7 @@ export default function PlatformsAdminPage() {
                       type="text" 
                       value={formData.server_name || ""}
                       onChange={e => setFormData({...formData, server_name: e.target.value})}
-                      className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+                      className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-none h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
                       placeholder="Broker-Live"
                     />
                   </div>
@@ -334,7 +334,7 @@ export default function PlatformsAdminPage() {
                     type="password" 
                     value={formData.api_key || ""}
                     onChange={e => setFormData({...formData, api_key: e.target.value})}
-                    className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+                    className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-none h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
                     placeholder="Secret Key (hidden after saving)"
                   />
                 </div>
@@ -348,7 +348,7 @@ export default function PlatformsAdminPage() {
                     step="0.01"
                     value={formData.extra_fee_pct}
                     onChange={e => setFormData({...formData, extra_fee_pct: parseFloat(e.target.value) || 0})}
-                    className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+                    className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-none h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
                   />
                   <p className="text-[11px] text-[var(--ink-500)] mt-1.5">
                     Enter 0 for Free, or 10 for a +10% extra fee on checkout.

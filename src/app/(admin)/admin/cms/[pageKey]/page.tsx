@@ -84,7 +84,7 @@ export default function CmsEditorPage({ params }: { params: Promise<{ pageKey: s
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
-          <Link href="/admin/cms" className="p-2 bg-white border border-[var(--dash-hairline)] rounded-xl hover:bg-[var(--dash-canvas)] transition-colors">
+          <Link href="/admin/cms" className="p-2 bg-white border border-[var(--dash-hairline)] rounded-none hover:bg-[var(--dash-canvas)] transition-colors">
             <ArrowLeft className="w-5 h-5 text-[var(--ink-600)]" />
           </Link>
           <div>
@@ -105,7 +105,7 @@ export default function CmsEditorPage({ params }: { params: Promise<{ pageKey: s
           <button
             onClick={handleSave}
             disabled={saving}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800 disabled:opacity-50"
+            className="flex items-center gap-2 px-6 py-2.5 carbon-btn-primary disabled:opacity-50"
           >
             <Save className="w-4 h-4" /> {saving ? "Saving..." : "Save Changes"}
           </button>
@@ -125,7 +125,7 @@ export default function CmsEditorPage({ params }: { params: Promise<{ pageKey: s
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    className="w-full border border-[var(--dash-hairline)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)] bg-[var(--dash-canvas)]"
+                    className="w-full border border-[var(--dash-hairline)] rounded-none p-3 text-sm outline-none focus:border-[var(--ink-950)] bg-[var(--dash-canvas)]"
                   />
                 </div>
               </div>
@@ -143,7 +143,7 @@ export default function CmsEditorPage({ params }: { params: Promise<{ pageKey: s
                     type="text"
                     value={contentObj.text || ""}
                     onChange={(e) => setContentObj({ ...contentObj, text: e.target.value })}
-                    className="w-full border border-[var(--dash-hairline)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)] bg-[var(--dash-canvas)]"
+                    className="w-full border border-[var(--dash-hairline)] rounded-none p-3 text-sm outline-none focus:border-[var(--ink-950)] bg-[var(--dash-canvas)]"
                     placeholder="E.g., Huge 20% OFF Sale ends Friday!"
                   />
                 </div>
@@ -153,7 +153,7 @@ export default function CmsEditorPage({ params }: { params: Promise<{ pageKey: s
                     type="text"
                     value={contentObj.link || ""}
                     onChange={(e) => setContentObj({ ...contentObj, link: e.target.value })}
-                    className="w-full border border-[var(--dash-hairline)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)] bg-[var(--dash-canvas)]"
+                    className="w-full border border-[var(--dash-hairline)] rounded-none p-3 text-sm outline-none focus:border-[var(--ink-950)] bg-[var(--dash-canvas)]"
                     placeholder="https://..."
                   />
                 </div>
@@ -166,7 +166,7 @@ export default function CmsEditorPage({ params }: { params: Promise<{ pageKey: s
                     type="text"
                     value={contentObj.hero_title || ""}
                     onChange={(e) => setContentObj({ ...contentObj, hero_title: e.target.value })}
-                    className="w-full border border-[var(--dash-hairline)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)] bg-[var(--dash-canvas)]"
+                    className="w-full border border-[var(--dash-hairline)] rounded-none p-3 text-sm outline-none focus:border-[var(--ink-950)] bg-[var(--dash-canvas)]"
                   />
                 </div>
                 <div>
@@ -174,7 +174,7 @@ export default function CmsEditorPage({ params }: { params: Promise<{ pageKey: s
                   <textarea
                     value={contentObj.hero_subtitle || ""}
                     onChange={(e) => setContentObj({ ...contentObj, hero_subtitle: e.target.value })}
-                    className="w-full border border-[var(--dash-hairline)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)] bg-[var(--dash-canvas)] min-h-[100px]"
+                    className="w-full border border-[var(--dash-hairline)] rounded-none p-3 text-sm outline-none focus:border-[var(--ink-950)] bg-[var(--dash-canvas)] min-h-[100px]"
                   />
                 </div>
               </div>
@@ -184,7 +184,7 @@ export default function CmsEditorPage({ params }: { params: Promise<{ pageKey: s
                 <textarea
                   value={contentObj.markdown || ""}
                   onChange={(e) => setContentObj({ ...contentObj, markdown: e.target.value })}
-                  className="w-full border border-[var(--dash-hairline)] rounded-xl p-4 text-sm font-mono outline-none focus:border-[var(--ink-950)] bg-[var(--dash-canvas)] min-h-[400px]"
+                  className="w-full border border-[var(--dash-hairline)] rounded-none p-4 text-sm font-mono outline-none focus:border-[var(--ink-950)] bg-[var(--dash-canvas)] min-h-[400px]"
                   placeholder="# Heading 1&#10;Paragraph text here..."
                 />
               </div>
@@ -208,7 +208,7 @@ export default function CmsEditorPage({ params }: { params: Promise<{ pageKey: s
                     type="text"
                     value={metaTitle}
                     onChange={(e) => setMetaTitle(e.target.value)}
-                    className="w-full border border-[var(--dash-hairline)] rounded-xl p-2.5 text-sm outline-none focus:border-[var(--ink-950)]"
+                    className="w-full border border-[var(--dash-hairline)] rounded-none p-2.5 text-sm outline-none focus:border-[var(--ink-950)]"
                     placeholder="Usually same as Title"
                   />
                   <p className="text-[11px] text-[var(--ink-400)] mt-1">{metaTitle.length} / 60 characters</p>
@@ -218,14 +218,14 @@ export default function CmsEditorPage({ params }: { params: Promise<{ pageKey: s
                   <textarea
                     value={metaDesc}
                     onChange={(e) => setMetaDesc(e.target.value)}
-                    className="w-full border border-[var(--dash-hairline)] rounded-xl p-2.5 text-sm outline-none focus:border-[var(--ink-950)] min-h-[100px] resize-none"
+                    className="w-full border border-[var(--dash-hairline)] rounded-none p-2.5 text-sm outline-none focus:border-[var(--ink-950)] min-h-[100px] resize-none"
                     placeholder="Brief description for search engines..."
                   />
                   <p className="text-[11px] text-[var(--ink-400)] mt-1">{metaDesc.length} / 160 characters</p>
                 </div>
               </div>
               
-              <div className="mt-6 rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4 border border-[var(--dash-hairline)]">
+              <div className="mt-6 rounded-none border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4 border border-[var(--dash-hairline)]">
                 <p className="text-[11px] font-bold text-[var(--ink-400)] uppercase tracking-wider mb-2">Google Preview</p>
                 <p className="text-[18px] text-[#1a0dab] truncate font-sans">{metaTitle || title || "Page Title"}</p>
                 <p className="text-[13px] text-[#006621] truncate mb-1">thepeopleprop.live/{pageKey}</p>

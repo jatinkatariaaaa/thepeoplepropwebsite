@@ -193,13 +193,13 @@ export default function AdminApiLogsPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && fetchLogs()}
-                className="pl-9 pr-4 py-2 border border-[var(--dash-hairline)] rounded-xl text-sm outline-none focus:ring-2 focus:ring-[var(--ink-950)] w-64"
+                className="pl-9 pr-4 py-2 border border-[var(--dash-hairline)] rounded-none text-sm outline-none focus:ring-2 focus:ring-[var(--ink-950)] w-64"
               />
             </div>
             <select
               value={apiType}
               onChange={(e) => setApiType(e.target.value as ApiType)}
-              className="px-3 py-2 border border-[var(--dash-hairline)] rounded-xl text-sm outline-none bg-white"
+              className="px-3 py-2 border border-[var(--dash-hairline)] rounded-none text-sm outline-none bg-white"
             >
               <option value="all">All APIs</option>
               <option value="payment">Payment API</option>
@@ -211,7 +211,7 @@ export default function AdminApiLogsPage() {
             <select
               value={methodFilter}
               onChange={(e) => setMethodFilter(e.target.value as MethodFilter)}
-              className="px-3 py-2 border border-[var(--dash-hairline)] rounded-xl text-sm outline-none bg-white"
+              className="px-3 py-2 border border-[var(--dash-hairline)] rounded-none text-sm outline-none bg-white"
             >
               <option value="all">All Methods</option>
               <option value="GET">GET</option>
@@ -223,7 +223,7 @@ export default function AdminApiLogsPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 border border-[var(--dash-hairline)] rounded-xl text-sm outline-none bg-white"
+              className="px-3 py-2 border border-[var(--dash-hairline)] rounded-none text-sm outline-none bg-white"
             >
               <option value="all">All Status</option>
               <option value="2xx">2xx Success</option>
@@ -236,20 +236,20 @@ export default function AdminApiLogsPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={clearFilters}
-              className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-[var(--ink-500)] hover:text-[var(--ink-950)] rounded-xl hover:bg-[var(--dash-canvas)] transition-colors"
+              className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-[var(--ink-500)] hover:text-[var(--ink-950)] rounded-none hover:bg-[var(--dash-canvas)] transition-colors"
             >
               <X className="w-3.5 h-3.5" /> Clear
             </button>
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-[var(--ink-500)] hover:text-[var(--ink-950)] rounded-xl hover:bg-[var(--dash-canvas)] transition-colors"
+              className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-[var(--ink-500)] hover:text-[var(--ink-950)] rounded-none hover:bg-[var(--dash-canvas)] transition-colors"
             >
               <Filter className="w-3.5 h-3.5" /> Filters
             </button>
             <button
               onClick={fetchLogs}
               disabled={loading}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800 disabled:opacity-50"
+              className="flex items-center gap-1.5 px-4 py-2 carbon-btn-primary disabled:opacity-50"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} /> Refresh
             </button>
@@ -264,7 +264,7 @@ export default function AdminApiLogsPage() {
                 type="date"
                 value={fromDate}
                 onChange={(e) => setFromDate(e.target.value)}
-                className="border border-[var(--dash-hairline)] rounded-lg px-2 py-1.5 text-sm outline-none bg-white"
+                className="border border-[var(--dash-hairline)] rounded-none px-2 py-1.5 text-sm outline-none bg-white"
               />
             </div>
             <div className="flex items-center gap-2">
@@ -273,7 +273,7 @@ export default function AdminApiLogsPage() {
                 type="date"
                 value={toDate}
                 onChange={(e) => setToDate(e.target.value)}
-                className="border border-[var(--dash-hairline)] rounded-lg px-2 py-1.5 text-sm outline-none bg-white"
+                className="border border-[var(--dash-hairline)] rounded-none px-2 py-1.5 text-sm outline-none bg-white"
               />
             </div>
           </div>
@@ -288,7 +288,7 @@ export default function AdminApiLogsPage() {
           { label: "Errors", value: logs.filter(l => l.error_message).length.toLocaleString(), color: "text-[var(--dash-negative)]" },
           { label: "Success Rate", value: `${logs.length ? Math.round((logs.filter(l => l.status_code >= 200 && l.status_code < 300).length / logs.length) * 100) : 0}%`, color: "text-amber-600" },
         ].map((stat, i) => (
-          <div key={i} className="bg-white rounded-xl border border-[var(--dash-hairline)] p-4 shadow-sm">
+          <div key={i} className="bg-white rounded-none border border-[var(--dash-hairline)] p-4 shadow-sm">
             <p className="text-[11px] font-bold text-[var(--ink-400)] uppercase tracking-wider mb-1">{stat.label}</p>
             <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
           </div>
@@ -308,14 +308,14 @@ export default function AdminApiLogsPage() {
             <button
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="px-3 py-1.5 rounded-lg text-sm font-semibold text-[var(--ink-500)] hover:bg-[var(--dash-canvas)] disabled:opacity-50"
+              className="px-3 py-1.5 rounded-none text-sm font-semibold text-[var(--ink-500)] hover:bg-[var(--dash-canvas)] disabled:opacity-50"
             >
               Previous
             </button>
             <button
               onClick={() => setPage(p => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="px-3 py-1.5 rounded-lg text-sm font-semibold text-[var(--ink-500)] hover:bg-[var(--dash-canvas)] disabled:opacity-50"
+              className="px-3 py-1.5 rounded-none text-sm font-semibold text-[var(--ink-500)] hover:bg-[var(--dash-canvas)] disabled:opacity-50"
             >
               Next
             </button>

@@ -32,10 +32,10 @@ export function Leaderboard({ profile }: { profile: UserProfile | null }) {
   ];
 
   return (
-    <div className="surface-card rounded-2xl overflow-hidden">
+    <div className="surface-card rounded-none overflow-hidden">
       <div className="px-6 py-5 border-b border-[var(--border)] flex items-center justify-between bg-[var(--paper)]">
         <div className="flex items-center gap-3">
-          <div className="grid place-items-center w-9 h-9 rounded-lg bg-[var(--accent-50)] text-[var(--accent-700)]">
+          <div className="grid place-items-center w-9 h-9 rounded-none bg-[var(--accent-50)] text-[var(--carbon-blue)]">
             <Trophy className="w-4 h-4" strokeWidth={2.2} />
           </div>
           <div>
@@ -80,7 +80,7 @@ export function Leaderboard({ profile }: { profile: UserProfile | null }) {
                 {r.name}
               </span>
               {r.you && (
-                <span className="text-[10px] uppercase tracking-wider text-[var(--accent-700)] border border-[var(--accent-200)] bg-white rounded-full px-2 py-0.5">
+                <span className="text-[10px] uppercase tracking-wider text-[var(--carbon-blue)] border border-[var(--accent-200)] bg-white rounded-full px-2 py-0.5">
                   You
                 </span>
               )}
@@ -90,7 +90,7 @@ export function Leaderboard({ profile }: { profile: UserProfile | null }) {
               <div className="text-[10px] text-[var(--ink-500)] uppercase tracking-wider">refs</div>
             </div>
             <div className="text-right hidden sm:block min-w-[80px]">
-              <div className="text-sm text-[var(--accent-700)] tabular-nums font-medium">
+              <div className="text-sm text-[var(--carbon-blue)] tabular-nums font-medium">
                 ${r.earnings.toLocaleString()}
               </div>
               <div className="text-[10px] text-[var(--ink-500)] uppercase tracking-wider">earned</div>

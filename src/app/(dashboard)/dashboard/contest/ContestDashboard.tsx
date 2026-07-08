@@ -148,7 +148,7 @@ export function ContestDashboard() {
         </div>
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="dash-skeleton h-40 rounded-[12px]" />
+            <div key={i} className="dash-skeleton h-40 rounded-none" />
           ))}
         </div>
       </div>
@@ -159,7 +159,7 @@ export function ContestDashboard() {
   if (error && !entry) {
     return (
       <div className="mx-auto max-w-5xl animate-in fade-in duration-500">
-        <div className="dash-card border-[#FECDD3] p-8 text-center">
+        <div className="dash-card p-8 text-center">
           <Gift className="mx-auto mb-4 h-8 w-8 text-rose-400" />
           <h2 className="mb-1.5 text-base font-semibold tracking-tight text-ink">
             Unable to load contest
@@ -167,7 +167,7 @@ export function ContestDashboard() {
           <p className="text-sm text-ink-500">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="mt-5 inline-flex h-10 items-center rounded-lg bg-ink px-5 text-[13px] font-semibold text-white transition-colors hover:bg-ink-800"
+            className="mt-5 inline-flex h-10 items-center rounded-none bg-[var(--carbon-blue)] px-5 text-[13px] font-semibold text-white transition-colors hover:bg-[var(--carbon-blue-hover)]"
           >
             Try Again
           </button>
@@ -183,7 +183,7 @@ export function ContestDashboard() {
     <div className="mx-auto max-w-5xl animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
       {/* ---- claimed banner ---- */}
       {entry?.claimed && (
-        <div className="mb-6 flex items-center gap-3 rounded-[10px] border border-[#A7F3D0] bg-success-50 px-5 py-4">
+        <div className="mb-6 flex items-center gap-3 rounded-none border bg-success-50 px-5 py-4">
           <span className="text-2xl">🎉</span>
           <div className="flex-1">
             <p className="text-sm font-semibold text-success-700">
@@ -292,7 +292,7 @@ export function ContestDashboard() {
         <div className="bg-[var(--dash-canvas)] p-4 sm:p-5">
           {/* link + copy */}
           <div className="mb-4 flex flex-col gap-3 sm:flex-row">
-            <div className="flex h-11 flex-1 items-center overflow-hidden rounded-lg border border-[var(--dash-hairline)] bg-white px-3.5">
+            <div className="flex h-11 flex-1 items-center overflow-hidden rounded-none border border-[var(--dash-hairline)] bg-white px-3.5">
               <Link2 className="mr-2 h-4 w-4 shrink-0 text-ink-400" />
               <span className="dash-num truncate text-[13px] text-ink-600">
                 {link || "Loading..."}
@@ -302,10 +302,10 @@ export function ContestDashboard() {
               onClick={() => handleCopy()}
               disabled={!link}
               className={cn(
-                "flex h-11 shrink-0 items-center justify-center gap-2 rounded-lg px-5 text-[13px] font-semibold transition-all",
+                "flex h-11 shrink-0 items-center justify-center gap-2 rounded-none px-5 text-[13px] font-semibold transition-all",
                 copied
-                  ? "border border-[#A7F3D0] bg-success-50 text-success-700"
-                  : "bg-ink text-white hover:bg-ink-800 active:scale-[0.98]",
+                  ? "border bg-[#a7f0ba] text-[#0e6027]"
+                  : "bg-[var(--carbon-blue)] text-white hover:bg-[var(--carbon-blue-hover)] active:scale-[0.98]",
                 !link && "opacity-50 cursor-not-allowed"
               )}
             >
@@ -327,7 +327,7 @@ export function ContestDashboard() {
               href={shareLinks.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-9 items-center gap-2 rounded-lg border border-[var(--dash-hairline)] bg-white px-3.5 text-[13px] font-medium text-ink-700 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink"
+              className="inline-flex h-9 items-center gap-2 rounded-none border border-[var(--dash-hairline)] bg-white px-3.5 text-[13px] font-medium text-ink-700 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink"
             >
               <Share2 className="w-4 h-4" />
               WhatsApp
@@ -336,7 +336,7 @@ export function ContestDashboard() {
               href={shareLinks.telegram}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-9 items-center gap-2 rounded-lg border border-[var(--dash-hairline)] bg-white px-3.5 text-[13px] font-medium text-ink-700 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink"
+              className="inline-flex h-9 items-center gap-2 rounded-none border border-[var(--dash-hairline)] bg-white px-3.5 text-[13px] font-medium text-ink-700 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink"
             >
               <Share2 className="w-4 h-4" />
               Telegram
@@ -345,14 +345,14 @@ export function ContestDashboard() {
               href={shareLinks.twitter}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-9 items-center gap-2 rounded-lg border border-[var(--dash-hairline)] bg-white px-3.5 text-[13px] font-medium text-ink-700 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink"
+              className="inline-flex h-9 items-center gap-2 rounded-none border border-[var(--dash-hairline)] bg-white px-3.5 text-[13px] font-medium text-ink-700 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink"
             >
               <ExternalLink className="w-4 h-4" />
               Twitter / X
             </a>
             <button
               onClick={() => handleCopy()}
-              className="inline-flex h-9 items-center gap-2 rounded-lg border border-[var(--dash-hairline)] bg-white px-3.5 text-[13px] font-medium text-ink-700 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink"
+              className="inline-flex h-9 items-center gap-2 rounded-none border border-[var(--dash-hairline)] bg-white px-3.5 text-[13px] font-medium text-ink-700 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink"
             >
               <Copy className="w-4 h-4" />
               Copy Link
@@ -401,7 +401,7 @@ export function ContestDashboard() {
                       {formatDate(ref.created_at)}
                     </td>
                     <td>
-                      <span className="inline-flex items-center gap-1 rounded-full border border-[#A7F3D0] bg-success-50 px-2 py-0.5 text-[11px] font-medium text-success-700">
+                      <span className="inline-flex items-center gap-1 rounded-full border bg-success-50 px-2 py-0.5 text-[11px] font-medium text-success-700">
                         <CheckCircle className="h-3 w-3" />
                         Verified
                       </span>
@@ -430,10 +430,10 @@ export function ContestDashboard() {
               onClick={handleClaim}
               disabled={claiming}
               className={cn(
-                "inline-flex h-11 items-center gap-2 rounded-lg px-6 text-sm font-semibold transition-all",
+                "inline-flex h-11 items-center gap-2 rounded-none px-6 text-sm font-semibold transition-all",
                 claiming
                   ? "cursor-wait bg-ink/60 text-white"
-                  : "bg-ink text-white hover:bg-ink-800 active:scale-[0.98]"
+                  : "bg-[var(--carbon-blue)] text-white hover:bg-[var(--carbon-blue-hover)] active:scale-[0.98]"
               )}
             >
               {claiming ? (
@@ -472,7 +472,7 @@ export function ContestDashboard() {
 
       {/* ---- already claimed (came back to page) ---- */}
       {entry?.claimed && !claimSuccess && (
-        <div className="mb-6 rounded-[10px] border border-[#A7F3D0] bg-success-50 p-5">
+        <div className="mb-6 rounded-none border bg-success-50 p-5">
           <div className="flex items-center gap-3">
             <CheckCircle className="h-5 w-5 shrink-0 text-success-700" />
             <div>
@@ -495,7 +495,7 @@ export function ContestDashboard() {
 
       {/* ---- just claimed success ---- */}
       {claimSuccess && (
-        <div className="mb-6 rounded-[10px] border border-[#A7F3D0] bg-success-50 p-8 text-center">
+        <div className="mb-6 rounded-none border bg-success-50 p-8 text-center">
           <h2 className="mb-2 text-lg font-semibold tracking-tight text-success-700">
             Your free 10K account has been claimed!
           </h2>
@@ -505,7 +505,7 @@ export function ContestDashboard() {
           </p>
           <a
             href="/dashboard"
-            className="inline-flex h-10 items-center gap-2 rounded-lg bg-ink px-5 text-[13px] font-semibold text-white transition-colors hover:bg-ink-800"
+            className="inline-flex h-10 items-center gap-2 rounded-none bg-[var(--carbon-blue)] px-5 text-[13px] font-semibold text-white transition-colors hover:bg-[var(--carbon-blue-hover)]"
           >
             Go to Accounts <ArrowRight className="w-4 h-4" />
           </a>
@@ -514,7 +514,7 @@ export function ContestDashboard() {
 
       {/* ---- inline error toast ---- */}
       {error && entry && (
-        <div className="mb-6 rounded-[10px] border border-[#FECDD3] bg-rose-50 px-5 py-4">
+        <div className="mb-6 rounded-none border bg-rose-50 px-5 py-4">
           <p className="text-[13px] text-rose-700">{error}</p>
         </div>
       )}

@@ -122,7 +122,7 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
           return (
             <div
               key={gateway.id}
-              className={`rounded-2xl border transition-all overflow-hidden ${
+              className={`rounded-none border transition-all overflow-hidden ${
                 gateway.is_active
                   ? "border-[var(--dash-hairline)] bg-white shadow-sm"
                   : "border-[var(--dash-hairline)] bg-[var(--dash-canvas)] opacity-70"
@@ -133,7 +133,7 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
                     <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center text-white"
+                      className="w-10 h-10 rounded-none flex items-center justify-center text-white"
                       style={{ backgroundColor: meta.color }}
                     >
                       <Icon className="w-5 h-5" />
@@ -146,14 +146,14 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
                   <div className="flex items-center gap-2">
                     <span
                       className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                        isLive ? "bg-success-50 text-success-700" : "bg-amber-50 text-amber-700"
+                        isLive ? "bg-[#a7f0ba] text-[#0e6027]" : "bg-[#fcf4d6] text-[#8e6a00]"
                       }`}
                     >
                       {isLive ? "Live" : "Sandbox"}
                     </span>
                     <span
                       className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                        gateway.is_active ? "bg-success-50 text-success-700" : "bg-slate-100 text-slate-600"
+                        gateway.is_active ? "bg-[#a7f0ba] text-[#0e6027]" : "bg-slate-100 text-slate-600"
                       }`}
                     >
                       {gateway.is_active ? "Active" : "Inactive"}
@@ -165,17 +165,17 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
               {/* Details */}
               <div className="p-6 space-y-4">
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                  <div className="rounded-none border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
                     <p className="dash-overline mb-1 text-[10px]">Fee</p>
                     <p className="font-semibold text-[var(--ink-950)]">{gateway.fee_percentage}%</p>
                   </div>
-                  <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                  <div className="rounded-none border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
                     <p className="dash-overline mb-1 text-[10px]">Min / Max</p>
                     <p className="font-semibold text-[var(--ink-950)] text-sm">${gateway.min_amount} / ${gateway.max_amount}</p>
                   </div>
                 </div>
 
-                <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <div className="rounded-none border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
                   <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-2">Supported Currencies</p>
                   <div className="flex flex-wrap gap-1.5">
                     {(gateway.supported_currencies || []).map((c) => (
@@ -186,7 +186,7 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
                   </div>
                 </div>
 
-                <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <div className="rounded-none border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
                   <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-2">Payment Methods</p>
                   <div className="flex flex-wrap gap-1.5">
                     {(gateway.supported_methods || []).map((m) => (
@@ -198,7 +198,7 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
                 </div>
 
                 {/* API Key Status */}
-                <div className="flex items-center gap-2 rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <div className="flex items-center gap-2 rounded-none border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
                   <Key className={`w-4 h-4 ${gateway.api_key ? "text-[var(--dash-positive)]" : "text-red-400"}`} />
                   <span className={`text-xs font-medium ${gateway.api_key ? "text-[var(--dash-positive)]" : "text-[var(--dash-negative)]"}`}>
                     {gateway.api_key ? "API Key configured" : "API Key missing"}
@@ -206,7 +206,7 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
                 </div>
 
                 {/* Webhook Status */}
-                <div className="flex items-center gap-2 rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <div className="flex items-center gap-2 rounded-none border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
                   <Webhook className={`w-4 h-4 ${gateway.webhook_url ? "text-[var(--dash-positive)]" : "text-[var(--ink-400)]"}`} />
                   <span className={`text-xs font-medium ${gateway.webhook_url ? "text-[var(--dash-positive)]" : "text-[var(--ink-400)]"}`}>
                     {gateway.webhook_url ? "Webhook configured" : "No webhook URL"}
@@ -218,7 +218,7 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
               <div className="px-6 py-4 border-t border-[var(--dash-hairline)] bg-[var(--dash-canvas)]">
                 <button
                   onClick={() => openEditModal(gateway)}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 carbon-btn-primary"
                 >
                   <Settings className="w-4 h-4" />
                   Configure
@@ -242,7 +242,7 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
             <div className="grid grid-cols-2 gap-4">
               <div
                 onClick={() => updateEditingField("is_active", !editingGateway.is_active)}
-                className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                className={`p-4 rounded-none border cursor-pointer transition-all ${
                   editingGateway.is_active
                     ? "border-emerald-200 bg-emerald-50"
                     : "border-[var(--dash-hairline)] bg-[var(--dash-canvas)]"
@@ -261,7 +261,7 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
 
               <div
                 onClick={() => updateEditingField("is_sandbox", !editingGateway.is_sandbox)}
-                className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                className={`p-4 rounded-none border cursor-pointer transition-all ${
                   !editingGateway.is_sandbox
                     ? "border-emerald-200 bg-emerald-50"
                     : "border-[var(--dash-hairline)] bg-[var(--dash-canvas)]"
@@ -292,7 +292,7 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
                     type={showSecrets["api_key"] ? "text" : "password"}
                     value={editingGateway.api_key || ""}
                     onChange={(e) => updateEditingField("api_key", e.target.value)}
-                    className="w-full pl-3 pr-10 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
+                    className="w-full pl-3 pr-10 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-none text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
                     placeholder="pk_live_..."
                   />
                   <button
@@ -311,7 +311,7 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
                     type={showSecrets["secret_key"] ? "text" : "password"}
                     value={editingGateway.secret_key || ""}
                     onChange={(e) => updateEditingField("secret_key", e.target.value)}
-                    className="w-full pl-3 pr-10 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
+                    className="w-full pl-3 pr-10 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-none text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
                     placeholder="sk_live_..."
                   />
                   <button
@@ -336,7 +336,7 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
                   type="text"
                   value={editingGateway.webhook_url || ""}
                   onChange={(e) => updateEditingField("webhook_url", e.target.value)}
-                  className="w-full px-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
+                  className="w-full px-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-none text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
                   placeholder="https://your-domain.com/api/webhook/..."
                 />
               </div>
@@ -348,7 +348,7 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
                     type={showSecrets["webhook_secret"] ? "text" : "password"}
                     value={editingGateway.webhook_secret || ""}
                     onChange={(e) => updateEditingField("webhook_secret", e.target.value)}
-                    className="w-full pl-3 pr-10 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
+                    className="w-full pl-3 pr-10 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-none text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
                     placeholder="whsec_..."
                   />
                   <button
@@ -377,7 +377,7 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
                       step="0.01"
                       value={editingGateway.fee_percentage}
                       onChange={(e) => updateEditingField("fee_percentage", parseFloat(e.target.value) || 0)}
-                      className="w-full pl-9 pr-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
+                      className="w-full pl-9 pr-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-none text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
                     />
                   </div>
                 </div>
@@ -389,7 +389,7 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
                       type="number"
                       value={editingGateway.min_amount}
                       onChange={(e) => updateEditingField("min_amount", parseFloat(e.target.value) || 0)}
-                      className="w-full pl-9 pr-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
+                      className="w-full pl-9 pr-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-none text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
                     />
                   </div>
                 </div>
@@ -401,7 +401,7 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
                       type="number"
                       value={editingGateway.max_amount}
                       onChange={(e) => updateEditingField("max_amount", parseFloat(e.target.value) || 0)}
-                      className="w-full pl-9 pr-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
+                      className="w-full pl-9 pr-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-none text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
                     />
                   </div>
                 </div>
@@ -422,13 +422,13 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
                     e.target.value.split(",").map((s) => s.trim()).filter(Boolean)
                   )
                 }
-                className="w-full px-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
+                className="w-full px-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-none text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
                 placeholder="USD, EUR, GBP"
               />
             </div>
 
             {/* Security Warning */}
-            <div className="flex items-start gap-3 p-4 bg-amber-50 rounded-xl border border-amber-100">
+            <div className="flex items-start gap-3 p-4 bg-amber-50 rounded-none border border-amber-100">
               <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
               <div>
                 <p className="text-sm font-semibold text-amber-800">Security Notice</p>
@@ -442,14 +442,14 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
             <div className="flex justify-end gap-3 pt-2">
               <button
                 onClick={() => { setIsEditModalOpen(false); setEditingGateway(null); }}
-                className="rounded-lg px-4 py-2 text-[13px] font-medium text-ink-600 transition-colors hover:bg-ink-100 hover:text-ink"
+                className="rounded-none px-4 py-2 text-[13px] font-medium text-ink-600 transition-colors hover:bg-ink-100 hover:text-ink"
               >
                 Cancel
               </button>
               <button
                 onClick={handleUpdate}
                 disabled={loading}
-                className="flex items-center gap-2 px-4 py-2 font-bold text-white rounded-lg bg-ink transition-colors hover:bg-ink-800 disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2 font-bold text-white carbon-btn-primary disabled:opacity-50"
               >
                 <Save className="w-4 h-4" />
                 {loading ? "Saving..." : "Save Changes"}

@@ -15,22 +15,23 @@ import {
   Cell,
 } from "recharts";
 
+// IBM Carbon data-viz palette
 const BRAND_COLORS = {
-  dark: "#0F172A",
-  muted: "#94A3B8",
-  border: "rgba(15, 23, 42, 0.06)",
-  success: "#059669",
-  danger: "#E11D48",
-  warning: "#D97706",
+  dark: "#0f62fe",
+  muted: "#525252",
+  border: "#e0e0e0",
+  success: "#24a148",
+  danger: "#da1e28",
+  warning: "#f1c21b",
 };
 
 const PIE_COLORS = [
-  "#0F172A",
-  "#059669",
-  "#65A30D",
-  "#64748B",
-  "#D97706",
-  "#94A3B8",
+  "#0f62fe",
+  "#6929c4",
+  "#009d9a",
+  "#9f1853",
+  "#570408",
+  "#8a3800",
 ];
 
 interface ChartProps {
@@ -144,7 +145,7 @@ export function AdminBarChart({
           width={50}
         />
         <Tooltip content={<CustomTooltip />} />
-        <Bar dataKey={dataKey} fill={color} radius={[3, 3, 0, 0]} maxBarSize={28} />
+        <Bar dataKey={dataKey} fill={color} radius={[0, 0, 0, 0]} maxBarSize={28} />
       </BarChart>
     </ResponsiveContainer>
   );

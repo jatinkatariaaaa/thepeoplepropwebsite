@@ -76,7 +76,7 @@ export function AffiliateClient() {
         </div>
         <div className="bg-[var(--dash-canvas)] p-4 sm:p-5">
           <div className="flex flex-col sm:flex-row gap-3">
-            <div className="flex h-11 flex-1 items-center overflow-hidden rounded-lg border border-[var(--dash-hairline)] bg-white px-3.5">
+            <div className="flex h-11 flex-1 items-center overflow-hidden rounded-none border border-[var(--dash-hairline)] bg-white px-3.5">
               <span className={cn(
                 "dash-num truncate text-[13px]",
                 userId ? "text-ink-600" : "text-ink-300"
@@ -88,10 +88,10 @@ export function AffiliateClient() {
               onClick={handleCopy}
               disabled={!userId}
               className={cn(
-                "flex h-11 shrink-0 items-center justify-center gap-2 rounded-lg px-5 text-[13px] font-semibold transition-all",
+                "flex h-11 shrink-0 items-center justify-center gap-2 rounded-none px-5 text-[13px] font-semibold transition-all",
                 copied 
-                  ? "border border-[#A7F3D0] bg-success-50 text-success-700" 
-                  : "bg-ink text-white hover:bg-ink-800 active:scale-[0.98]",
+                  ? "border bg-[#a7f0ba] text-[#0e6027]" 
+                  : "bg-[var(--carbon-blue)] text-white hover:bg-[var(--carbon-blue-hover)] active:scale-[0.98]",
                 !userId && "opacity-50 cursor-not-allowed"
               )}
             >

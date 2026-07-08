@@ -36,10 +36,10 @@ interface PaymentsClientProps {
 }
 
 const statusConfig: Record<string, { label: string; icon: any; className: string }> = {
-  pending: { label: "Pending", icon: Clock, className: "border-[#FDE68A] bg-amber-50 text-amber-700" },
-  completed: { label: "Completed", icon: CheckCircle, className: "border-[#A7F3D0] bg-success-50 text-success-700" },
-  failed: { label: "Failed", icon: XCircle, className: "border-[#FECDD3] bg-rose-50 text-rose-700" },
-  refunded: { label: "Refunded", icon: RotateCcw, className: "border-ink-200 bg-ink-50 text-ink-700" },
+  pending: { label: "Pending", icon: Clock, className: "bg-[#fcf4d6] text-[#8e6a00]" },
+  completed: { label: "Completed", icon: CheckCircle, className: "bg-[#a7f0ba] text-[#0e6027]" },
+  failed: { label: "Failed", icon: XCircle, className: "bg-[#ffd7d9] text-[#a2191f]" },
+  refunded: { label: "Refunded", icon: RotateCcw, className: "bg-[#e0e0e0] text-[#393939]" },
   cancelled: { label: "Cancelled", icon: Ban, className: "bg-slate-100 text-slate-600 border-slate-200" },
 };
 
@@ -202,7 +202,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
           <div className="flex items-center gap-1.5">
             <button
               onClick={() => openViewModal(txn)}
-              className="rounded-lg p-1.5 text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink"
+              className="rounded-none p-1.5 text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink"
               title="View Details"
             >
               <Eye className="w-4 h-4" />
@@ -212,7 +212,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
                 <button
                   onClick={() => openActionModal(txn, "verify")}
                   disabled={loading === txn.id}
-                  className="p-1.5 text-[var(--dash-positive)] hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
+                  className="p-1.5 text-[var(--dash-positive)] hover:bg-emerald-50 rounded-none transition-colors disabled:opacity-50"
                   title="Verify"
                 >
                   <Check className="w-4 h-4" />
@@ -220,7 +220,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
                 <button
                   onClick={() => openActionModal(txn, "cancel")}
                   disabled={loading === txn.id}
-                  className="p-1.5 text-slate-500 hover:bg-slate-50 rounded-lg transition-colors disabled:opacity-50"
+                  className="p-1.5 text-slate-500 hover:bg-slate-50 rounded-none transition-colors disabled:opacity-50"
                   title="Cancel"
                 >
                   <Ban className="w-4 h-4" />
@@ -231,7 +231,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
               <button
                 onClick={() => openActionModal(txn, "refund")}
                 disabled={loading === txn.id}
-                className="p-1.5 text-violet-600 hover:bg-violet-50 rounded-lg transition-colors disabled:opacity-50"
+                className="p-1.5 text-violet-600 hover:bg-violet-50 rounded-none transition-colors disabled:opacity-50"
                 title="Refund"
               >
                 <RotateCcw className="w-4 h-4" />
@@ -261,9 +261,9 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
             <button
               key={stat.key}
               onClick={() => setStatusFilter(isActive ? "all" : stat.key)}
-              className={`p-4 rounded-2xl border transition-all text-left ${
+              className={`p-4 rounded-none border transition-all text-left ${
                 isActive
-                  ? "border-[var(--ink-950)] bg-[var(--ink-950)] text-white shadow-md"
+                  ? "border-[var(--carbon-blue)] bg-[var(--carbon-blue)] text-white"
                   : "border-[var(--dash-hairline)] bg-white hover:border-[var(--ink-300)]"
               }`}
             >
@@ -293,7 +293,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
           return (
             <div key={g.key} className="dash-card p-4">
               <div className="flex items-center gap-3 mb-2">
-                <div className={`p-2 rounded-lg ${g.color}`}>
+                <div className={`p-2 rounded-none ${g.color}`}>
                   <Icon className="w-5 h-5" />
                 </div>
                 <p className="text-sm font-medium text-[var(--ink-600)]">{g.label}</p>
@@ -313,7 +313,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
             placeholder="Search by name, email, or transaction ID..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
+            className="w-full pl-9 pr-4 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-none text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
           />
         </div>
         <div className="flex items-center gap-2">
@@ -321,7 +321,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
           <select
             value={gatewayFilter}
             onChange={(e) => setGatewayFilter(e.target.value)}
-            className="px-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10"
+            className="px-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-none text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10"
           >
             <option value="all">All Gateways</option>
             <option value="stripe">Stripe</option>
@@ -344,7 +344,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
         {selectedTxn && (
           <div className="space-y-6">
             {/* User Info */}
-            <div className="flex items-start gap-4 rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4">
+            <div className="flex items-start gap-4 rounded-none border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4">
               <div className="w-10 h-10 rounded-full bg-[var(--ink-950)] flex items-center justify-center text-white font-bold">
                 {(selectedTxn.profiles?.display_name || "?").charAt(0).toUpperCase()}
               </div>
@@ -356,11 +356,11 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
 
             {/* Transaction Info */}
             <div className="grid grid-cols-2 gap-4">
-              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+              <div className="rounded-none border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
                 <p className="dash-overline mb-1">Amount</p>
                 <p className="font-semibold text-[var(--ink-950)] text-lg">${Number(selectedTxn.amount).toLocaleString()} {selectedTxn.currency}</p>
               </div>
-              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+              <div className="rounded-none border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
                 <p className="dash-overline mb-1">Status</p>
                 <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium border ${
                   statusConfig[selectedTxn.status]?.className || statusConfig.pending.className
@@ -372,7 +372,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
                   {statusConfig[selectedTxn.status]?.label || selectedTxn.status}
                 </span>
               </div>
-              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+              <div className="rounded-none border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
                 <p className="dash-overline mb-1">Gateway</p>
                 <div className="flex items-center gap-1.5">
                   {(() => {
@@ -383,15 +383,15 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
                   <span className="font-semibold text-[var(--ink-950)] capitalize">{selectedTxn.gateway}</span>
                 </div>
               </div>
-              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+              <div className="rounded-none border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
                 <p className="dash-overline mb-1">Payment Method</p>
                 <p className="font-semibold text-[var(--ink-950)] capitalize">{selectedTxn.payment_method || "—"}</p>
               </div>
-              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+              <div className="rounded-none border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
                 <p className="dash-overline mb-1">Transaction ID</p>
                 <p className="font-semibold text-[var(--ink-950)] font-mono text-xs">{selectedTxn.transaction_id || selectedTxn.id}</p>
               </div>
-              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+              <div className="rounded-none border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
                 <p className="dash-overline mb-1">Date</p>
                 <p className="font-semibold text-[var(--ink-950)]">{format(new Date(selectedTxn.created_at), "MMM dd, yyyy HH:mm")}</p>
               </div>
@@ -399,9 +399,9 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
 
             {/* Metadata */}
             {selectedTxn.metadata && Object.keys(selectedTxn.metadata).length > 0 && (
-              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4">
+              <div className="rounded-none border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4">
                 <p className="text-xs text-[var(--ink-400)] uppercase tracking-wider font-medium mb-2">Gateway Metadata</p>
-                <pre className="text-xs text-[var(--ink-600)] overflow-auto max-h-32 bg-white p-2 rounded-lg border border-[var(--dash-hairline)]">
+                <pre className="text-xs text-[var(--ink-600)] overflow-auto max-h-32 bg-white p-2 rounded-none border border-[var(--dash-hairline)]">
                   {JSON.stringify(selectedTxn.metadata, null, 2)}
                 </pre>
               </div>
@@ -409,7 +409,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
 
             {/* Refund Info */}
             {selectedTxn.refund_reason && (
-              <div className="p-4 bg-violet-50 rounded-xl border border-violet-100">
+              <div className="p-4 bg-violet-50 rounded-none border border-violet-100">
                 <p className="text-xs text-violet-600 uppercase tracking-wider font-medium mb-1">Refund Reason</p>
                 <p className="text-sm text-violet-700">{selectedTxn.refund_reason}</p>
                 {selectedTxn.refunded_at && (
@@ -424,7 +424,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
                 href={selectedTxn.invoice_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2.5 w-fit rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800"
+                className="flex items-center gap-2 px-4 py-2.5 w-fit carbon-btn-primary"
               >
                 <FileText className="w-4 h-4" />
                 View Invoice
@@ -437,13 +437,13 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
                 <>
                   <button
                     onClick={() => { setIsViewModalOpen(false); openActionModal(selectedTxn, "verify"); }}
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-600 text-white font-semibold rounded-xl hover:bg-emerald-700 transition-colors"
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-600 text-white font-semibold rounded-none hover:bg-emerald-700 transition-colors"
                   >
                     <Check className="w-4 h-4" /> Verify
                   </button>
                   <button
                     onClick={() => { setIsViewModalOpen(false); openActionModal(selectedTxn, "cancel"); }}
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-600 text-white font-semibold rounded-xl hover:bg-slate-700 transition-colors"
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-600 text-white font-semibold rounded-none hover:bg-slate-700 transition-colors"
                   >
                     <Ban className="w-4 h-4" /> Cancel
                   </button>
@@ -452,7 +452,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
               {selectedTxn.status === "completed" && (
                 <button
                   onClick={() => { setIsViewModalOpen(false); openActionModal(selectedTxn, "refund"); }}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-violet-600 text-white font-semibold rounded-xl hover:bg-violet-700 transition-colors"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-violet-600 text-white font-semibold rounded-none hover:bg-violet-700 transition-colors"
                 >
                   <RotateCcw className="w-4 h-4" /> Refund
                 </button>
@@ -481,7 +481,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
                 <textarea
                   value={refundReason}
                   onChange={(e) => setRefundReason(e.target.value)}
-                  className="w-full border border-[var(--dash-hairline)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)] transition-colors"
+                  className="w-full border border-[var(--dash-hairline)] rounded-none p-3 text-sm outline-none focus:border-[var(--ink-950)] transition-colors"
                   rows={3}
                   placeholder="Reason for refund..."
                   required
@@ -489,7 +489,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
               </div>
             )}
             {actionType === "cancel" && (
-              <div className="flex items-start gap-3 p-4 bg-amber-50 rounded-xl border border-amber-100">
+              <div className="flex items-start gap-3 p-4 bg-amber-50 rounded-none border border-amber-100">
                 <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5" />
                 <div>
                   <p className="text-sm font-semibold text-amber-800">Confirm Cancellation</p>
@@ -498,7 +498,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
               </div>
             )}
             {actionType === "verify" && (
-              <div className="flex items-start gap-3 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+              <div className="flex items-start gap-3 p-4 bg-emerald-50 rounded-none border border-emerald-100">
                 <CheckCircle className="w-5 h-5 text-[var(--dash-positive)] mt-0.5" />
                 <div>
                   <p className="text-sm font-semibold text-emerald-800">Confirm Verification</p>
@@ -509,7 +509,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
             <div className="flex justify-end gap-3 pt-2">
               <button
                 onClick={() => { setIsActionModalOpen(false); setRefundReason(""); }}
-                className="rounded-lg px-4 py-2 text-[13px] font-medium text-ink-600 transition-colors hover:bg-ink-100 hover:text-ink"
+                className="rounded-none px-4 py-2 text-[13px] font-medium text-ink-600 transition-colors hover:bg-ink-100 hover:text-ink"
               >
                 Cancel
               </button>

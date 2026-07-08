@@ -74,7 +74,7 @@ export function AccountBalanceChart({ metrics }: { metrics?: AccountMetrics | nu
     <div className="mb-6">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-[15px] font-semibold tracking-tight text-ink">Account Balance</h3>
-        <div className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-[var(--dash-hairline)] bg-white px-3 text-xs font-medium text-ink-600">
+        <div className="inline-flex h-8 items-center gap-1.5 rounded-none border border-[var(--dash-hairline)] bg-white px-3 text-xs font-medium text-ink-600">
           <CalendarDays className="w-4 h-4" />
           {rangeLabel}
         </div>

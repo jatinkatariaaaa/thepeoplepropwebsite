@@ -70,7 +70,7 @@ export function ActiveAccounts({ accounts = [], loading = false }: { accounts?: 
             action={
               <Link
                 href="/dashboard/new-challenge"
-                className="inline-flex h-9 items-center rounded-lg bg-ink px-4 text-[13px] font-medium text-white transition-colors hover:bg-[var(--accent-700)]"
+                className="inline-flex h-9 items-center rounded-none bg-[var(--carbon-blue)] px-4 text-[13px] font-medium text-white transition-colors hover:bg-[var(--carbon-blue-hover)]"
               >
                 Start a New Challenge
               </Link>
@@ -142,14 +142,14 @@ export function ActiveAccounts({ accounts = [], loading = false }: { accounts?: 
               {/* Actions */}
               <div className="flex flex-col gap-2 border-t border-[var(--dash-hairline)] p-4 min-[420px]:flex-row min-[420px]:justify-end sm:px-5">
                 <Link
-                  className="inline-flex h-9 w-full items-center justify-center rounded-lg border border-[var(--dash-hairline)] bg-white px-4 text-[13px] font-medium text-ink-700 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink min-[420px]:w-auto"
+                  className="inline-flex h-9 w-full items-center justify-center rounded-none border border-[var(--dash-hairline)] bg-white px-4 text-[13px] font-medium text-ink-700 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink min-[420px]:w-auto"
                   href={`https://trade.thepeopleprop.live/?accountId=${account.terminal_account_id || account.id}`}
                   target="_blank"
                 >
                   Open Terminal
                 </Link>
                 <Link
-                  className="inline-flex h-9 w-full items-center justify-center gap-1.5 rounded-lg bg-ink px-4 text-[13px] font-medium text-white transition-colors hover:bg-[var(--accent-700)] min-[420px]:w-auto"
+                  className="inline-flex h-9 w-full items-center justify-center gap-1.5 rounded-none bg-[var(--carbon-blue)] px-4 text-[13px] font-medium text-white transition-colors hover:bg-[var(--carbon-blue-hover)] min-[420px]:w-auto"
                   href={`/dashboard/account/${account.id}`}
                 >
                   View Metrics
@@ -163,7 +163,7 @@ export function ActiveAccounts({ accounts = [], loading = false }: { accounts?: 
         {/* New account card */}
         <Link
           href="/dashboard/new-challenge"
-          className="group flex min-h-[220px] cursor-pointer flex-col items-center justify-center rounded-[12px] border border-dashed border-ink-300 p-6 text-center transition-colors hover:border-ink-400 hover:bg-white"
+          className="group flex min-h-[220px] cursor-pointer flex-col items-center justify-center rounded-none border border-dashed border-ink-300 p-6 text-center transition-colors hover:border-ink-400 hover:bg-white"
         >
           <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full border border-ink-200 bg-ink-50 text-ink-400 transition-colors group-hover:text-ink-700">
             <Trophy className="h-4 w-4" aria-hidden="true" />

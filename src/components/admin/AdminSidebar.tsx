@@ -196,7 +196,7 @@ export function AdminSidebar({ role = "super_admin" }: AdminSidebarProps) {
         <NavbarLogo />
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex h-11 w-11 items-center justify-center rounded-lg text-ink-600 transition-colors hover:bg-ink-50 hover:text-ink"
+          className="flex h-11 w-11 items-center justify-center rounded-none text-ink-600 transition-colors hover:bg-ink-50 hover:text-ink"
           aria-label={isOpen ? "Close menu" : "Open menu"}
           aria-expanded={isOpen}
         >
@@ -224,8 +224,8 @@ export function AdminSidebar({ role = "super_admin" }: AdminSidebarProps) {
         <div className="flex flex-col items-start gap-3 border-b border-[var(--dash-hairline)] px-5 pb-4 pt-6">
           <NavbarLogo />
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-ink-200 bg-ink-50 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-[0.06em] text-ink-600">
-              <span className="status-dot bg-lime-600" aria-hidden="true" />
+            <span className="carbon-tag carbon-tag-blue">
+              <span className="status-dot bg-[var(--carbon-blue)]" aria-hidden="true" />
               Admin
             </span>
             <Link
@@ -264,19 +264,19 @@ export function AdminSidebar({ role = "super_admin" }: AdminSidebarProps) {
                       href={item.href}
                       onClick={() => setIsOpen(false)}
                       aria-current={isActive ? "page" : undefined}
-                      className="group relative flex h-9 items-center gap-2.5 rounded-lg px-3 outline-none transition-colors"
+                      className="group relative flex h-10 items-center gap-2.5 px-4 outline-none transition-colors"
                     >
                       {isActive && (
                         <motion.span
                           layoutId="admin-sidebar-active"
-                          className="absolute inset-0 rounded-lg bg-ink-50"
+                          className="absolute inset-0 bg-[#e8e8e8]"
                           initial={false}
                           transition={{ type: "spring", stiffness: 400, damping: 32 }}
                         />
                       )}
                       {isActive && (
                         <span
-                          className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-full bg-lime-600"
+                          className="absolute inset-y-0 left-0 w-1 bg-[var(--carbon-blue)]"
                           aria-hidden="true"
                         />
                       )}
@@ -285,16 +285,16 @@ export function AdminSidebar({ role = "super_admin" }: AdminSidebarProps) {
                         className={cn(
                           "relative z-10 h-4 w-4 transition-colors",
                           isActive
-                            ? "text-ink"
-                            : "text-ink-400 group-hover:text-ink-700"
+                            ? "text-[#161616]"
+                            : "text-[#525252] group-hover:text-[#161616]"
                         )}
                       />
                       <span
                         className={cn(
-                          "relative z-10 text-[13px] font-medium transition-colors",
+                          "relative z-10 text-sm transition-colors",
                           isActive
-                            ? "text-ink"
-                            : "text-ink-600 group-hover:text-ink"
+                            ? "font-semibold text-[#161616]"
+                            : "text-[#525252] group-hover:text-[#161616]"
                         )}
                       >
                         {item.label}

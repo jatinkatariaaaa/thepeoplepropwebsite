@@ -63,14 +63,14 @@ export function PayoutsClient({ fundedAccounts, initialPayouts }: { fundedAccoun
         <h2 className="mb-4 text-[15px] font-semibold tracking-tight text-ink">Request New Payout</h2>
         
         {fundedAccounts.length === 0 ? (
-          <div className="flex items-center gap-3 rounded-[8px] border border-[#FDE68A] bg-amber-50 p-4 text-amber-700">
+          <div className="flex items-center gap-3 rounded-none border bg-amber-50 p-4 text-amber-700">
             <AlertCircle className="h-4 w-4 flex-shrink-0" />
             <p className="text-sm font-medium">You need an active funded account to request a payout.</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="rounded-[8px] border border-[#FECDD3] bg-rose-50 p-3 text-[13px] text-rose-700">
+              <div className="rounded-none border bg-rose-50 p-3 text-[13px] text-rose-700">
                 {error}
               </div>
             )}
@@ -80,7 +80,7 @@ export function PayoutsClient({ fundedAccounts, initialPayouts }: { fundedAccoun
               <select 
                 value={selectedAccountId}
                 onChange={(e) => setSelectedAccountId(e.target.value)}
-                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                className="h-10 w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
               >
                 <option value="">-- Choose Account --</option>
                 {fundedAccounts.map(acc => (
@@ -104,7 +104,7 @@ export function PayoutsClient({ fundedAccounts, initialPayouts }: { fundedAccoun
                     onChange={(e) => setAmount(e.target.value)}
                     max={maxProfit}
                     placeholder="0.00"
-                    className="dash-num h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white pl-9 pr-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                    className="dash-num h-10 w-full rounded-none border border-[var(--dash-hairline)] bg-white pl-9 pr-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                   />
                 </div>
                 {selectedAccountId && (
@@ -121,7 +121,7 @@ export function PayoutsClient({ fundedAccounts, initialPayouts }: { fundedAccoun
                   value={cryptoAddress}
                   onChange={(e) => setCryptoAddress(e.target.value)}
                   placeholder="Enter wallet address..."
-                  className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 font-mono text-[13px] text-ink outline-none transition-colors focus:border-ink-400"
+                  className="h-10 w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 font-mono text-[13px] text-ink outline-none transition-colors focus:border-ink-400"
                 />
               </div>
             </div>

@@ -61,14 +61,14 @@ export function AccountActionsMenu({ account, handlers }: AccountActionsMenuProp
     <div className="relative flex justify-end" ref={ref}>
       <button
         onClick={() => setOpen((v) => !v)}
-        className="p-2 hover:bg-[var(--dash-canvas)] rounded-lg text-[var(--ink-500)] transition-colors"
+        className="p-2 hover:bg-[var(--dash-canvas)] rounded-none text-[var(--ink-500)] transition-colors"
         aria-label="Account actions"
       >
         <MoreHorizontal className="w-5 h-5" />
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-1 w-52 bg-white border border-[var(--dash-hairline)] rounded-xl shadow-lg py-1 z-[100] overflow-hidden">
+        <div className="absolute right-0 top-full mt-1 w-52 bg-white border border-[var(--dash-hairline)] rounded-none shadow-lg py-1 z-[100] overflow-hidden">
           <Link
             href={`/admin/trading/accounts/${account.id}`}
             className={itemClass}

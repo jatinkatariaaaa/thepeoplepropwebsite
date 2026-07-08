@@ -87,14 +87,14 @@ export function ClientSidebar() {
         <div className="flex items-center gap-1">
           <Link
             href="/dashboard/new-challenge"
-            className="flex h-11 w-11 items-center justify-center rounded-lg text-ink-600 transition-colors hover:bg-ink-50 hover:text-ink"
+            className="flex h-11 w-11 items-center justify-center rounded-none text-ink-600 transition-colors hover:bg-ink-50 hover:text-ink"
             aria-label="New challenge"
           >
             <Plus className="h-5 w-5" />
           </Link>
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="flex h-11 w-11 items-center justify-center rounded-lg text-ink-600 transition-colors hover:bg-ink-50 hover:text-ink"
+            className="flex h-11 w-11 items-center justify-center rounded-none text-ink-600 transition-colors hover:bg-ink-50 hover:text-ink"
             aria-label={isOpen ? "Close menu" : "Open menu"}
             aria-expanded={isOpen}
           >
@@ -135,7 +135,7 @@ export function ClientSidebar() {
           <Link
             href="/dashboard/new-challenge"
             onClick={() => setIsOpen(false)}
-            className="group flex h-9 w-full items-center justify-center gap-2 rounded-lg bg-ink text-[13px] font-medium text-white transition-colors hover:bg-[var(--accent-700)]"
+            className="carbon-btn-primary w-full justify-center"
           >
             <Plus className="h-4 w-4" />
             New Challenge
@@ -165,19 +165,19 @@ export function ClientSidebar() {
                       href={item.href}
                       onClick={() => setIsOpen(false)}
                       aria-current={isActive ? "page" : undefined}
-                      className="group relative flex h-9 items-center gap-2.5 rounded-lg px-3 outline-none transition-colors"
+                      className="group relative flex h-10 items-center gap-2.5 px-4 outline-none transition-colors"
                     >
                       {isActive && (
                         <motion.span
                           layoutId="sidebar-active"
-                          className="absolute inset-0 rounded-lg bg-ink-50"
+                          className="absolute inset-0 bg-[#e8e8e8]"
                           initial={false}
                           transition={{ type: "spring", stiffness: 400, damping: 32 }}
                         />
                       )}
                       {isActive && (
                         <span
-                          className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-full bg-lime-600"
+                          className="absolute inset-y-0 left-0 w-1 bg-[var(--carbon-blue)]"
                           aria-hidden="true"
                         />
                       )}
@@ -185,16 +185,16 @@ export function ClientSidebar() {
                         className={cn(
                           "relative z-10 h-4 w-4 transition-colors",
                           isActive
-                            ? "text-ink"
-                            : "text-ink-400 group-hover:text-ink-700"
+                            ? "text-[#161616]"
+                            : "text-[#525252] group-hover:text-[#161616]"
                         )}
                       />
                       <span
                         className={cn(
-                          "relative z-10 text-[13px] font-medium transition-colors",
+                          "relative z-10 text-sm transition-colors",
                           isActive
-                            ? "text-ink"
-                            : "text-ink-600 group-hover:text-ink"
+                            ? "font-semibold text-[#161616]"
+                            : "text-[#525252] group-hover:text-[#161616]"
                         )}
                       >
                         {item.label}
@@ -211,7 +211,7 @@ export function ClientSidebar() {
         <div className="border-t border-[var(--dash-hairline)] p-3">
           <button
             onClick={handleSignOut}
-            className="flex h-9 w-full items-center gap-2.5 rounded-lg px-3 text-[13px] font-medium text-ink-500 transition-colors hover:bg-rose-50 hover:text-rose-700"
+            className="flex h-10 w-full items-center gap-2.5 px-4 text-sm text-[#525252] transition-colors hover:bg-[#e8e8e8] hover:text-[#da1e28]"
           >
             <LogOut className="h-4 w-4" />
             Sign Out

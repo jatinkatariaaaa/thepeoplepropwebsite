@@ -88,7 +88,7 @@ export function DailySummary({ metrics }: { metrics?: AccountMetrics | null }) {
           <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-2">
               <button
-                className="flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--dash-hairline)] text-ink-500 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink"
+                className="flex h-8 w-8 items-center justify-center rounded-none border border-[var(--dash-hairline)] text-ink-500 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink"
                 onClick={() => setMonthOffset((value) => value - 1)}
                 aria-label="Previous month"
               >
@@ -96,14 +96,14 @@ export function DailySummary({ metrics }: { metrics?: AccountMetrics | null }) {
               </button>
               <div className="px-3 text-sm font-semibold text-ink">{formatMonth(visibleMonth)}</div>
               <button
-                className="flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--dash-hairline)] text-ink-500 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink"
+                className="flex h-8 w-8 items-center justify-center rounded-none border border-[var(--dash-hairline)] text-ink-500 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink"
                 onClick={() => setMonthOffset((value) => value + 1)}
                 aria-label="Next month"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
               <button
-                className="ml-1 inline-flex h-8 items-center gap-1.5 rounded-lg border border-[var(--dash-hairline)] px-3 text-xs font-medium text-ink-600 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink"
+                className="ml-1 inline-flex h-8 items-center gap-1.5 rounded-none border border-[var(--dash-hairline)] px-3 text-xs font-medium text-ink-600 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink"
                 onClick={() => setMonthOffset(todayOffset)}
               >
                 <CalendarIcon className="w-4 h-4" /> Today
@@ -128,11 +128,11 @@ export function DailySummary({ metrics }: { metrics?: AccountMetrics | null }) {
               <div 
                 key={cell.key} 
                 className={cn(
-                  "aspect-square rounded-lg border border-[var(--dash-hairline)] p-1.5 text-[12px] transition-colors",
+                  "aspect-square rounded-none border border-[var(--dash-hairline)] p-1.5 text-[12px] transition-colors",
                   !cell.day && "border-dashed bg-[var(--paper-2)] border-transparent text-[var(--ink-300)]",
                   cell.day && !hasActivity && "text-[var(--ink-400)] bg-white",
-                  pnl > 0 && "border-[#A7F3D0] bg-success-50 text-success-700",
-                  pnl < 0 && "border-[#FECDD3] bg-rose-50 text-rose-700",
+                  pnl > 0 && "bg-[#a7f0ba] text-[#0e6027]",
+                  pnl < 0 && "bg-[#ffd7d9] text-[#a2191f]",
                   pnl === 0 && hasActivity && "border-[var(--border)] bg-[var(--paper-2)] text-[var(--ink-700)]"
                 )}
               >

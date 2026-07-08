@@ -23,7 +23,7 @@ export function PerformanceCharts({ account, metrics }: { account?: AccountSumma
   return (
     <div className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
       {/* Score Box */}
-      <div className="relative flex min-h-[300px] flex-col items-center justify-center overflow-hidden rounded-[12px] bg-ink p-6 text-white lg:col-span-1">
+      <div className="relative flex min-h-[300px] flex-col items-center justify-center overflow-hidden rounded-none bg-ink p-6 text-white lg:col-span-1">
         <p className="dash-overline absolute left-6 top-6 text-white/50">
           Performance Score
         </p>

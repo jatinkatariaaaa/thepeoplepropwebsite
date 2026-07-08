@@ -56,14 +56,14 @@ export function AdminFaqsClient({ initialFaqs }: { initialFaqs: any[] }) {
             setIsAdding(true);
             setEditingId(null);
           }}
-          className="bg-[#cbfb45] text-black px-4 py-2 rounded-lg font-semibold flex items-center gap-2"
+          className="bg-[#cbfb45] text-black px-4 py-2 rounded-none font-semibold flex items-center gap-2"
         >
           <Plus className="w-4 h-4" /> Add FAQ
         </button>
       </div>
 
       {(isAdding || editingId) && (
-        <div className="bg-white p-6 rounded-2xl border border-[var(--dash-hairline)] shadow-sm">
+        <div className="bg-white p-6 rounded-none border border-[var(--dash-hairline)] shadow-sm">
           <h2 className="text-lg font-semibold mb-4">{editingId ? "Edit FAQ" : "Add New FAQ"}</h2>
           <div className="space-y-4">
             <div>
@@ -72,7 +72,7 @@ export function AdminFaqsClient({ initialFaqs }: { initialFaqs: any[] }) {
                 type="text" 
                 value={form.question} 
                 onChange={(e) => setForm({...form, question: e.target.value})}
-                className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                className="w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400"
               />
             </div>
             <div>
@@ -80,7 +80,7 @@ export function AdminFaqsClient({ initialFaqs }: { initialFaqs: any[] }) {
               <textarea 
                 value={form.answer} 
                 onChange={(e) => setForm({...form, answer: e.target.value})}
-                className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400 h-24"
+                className="w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400 h-24"
               />
             </div>
             <div className="flex gap-4">
@@ -90,7 +90,7 @@ export function AdminFaqsClient({ initialFaqs }: { initialFaqs: any[] }) {
                   type="text" 
                   value={form.category} 
                   onChange={(e) => setForm({...form, category: e.target.value})}
-                  className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                  className="w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                 />
               </div>
               <div className="w-32">
@@ -99,20 +99,20 @@ export function AdminFaqsClient({ initialFaqs }: { initialFaqs: any[] }) {
                   type="number" 
                   value={form.sort_order} 
                   onChange={(e) => setForm({...form, sort_order: parseInt(e.target.value)})}
-                  className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                  className="w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                 />
               </div>
             </div>
             <div className="flex justify-end gap-3 pt-4">
               <button 
                 onClick={() => { setIsAdding(false); setEditingId(null); }}
-                className="px-4 py-2 border rounded-lg font-medium hover:bg-gray-50"
+                className="px-4 py-2 border rounded-none font-medium hover:bg-gray-50"
               >
                 Cancel
               </button>
               <button 
                 onClick={handleSave}
-                className="px-4 py-2 bg-black text-white rounded-lg font-medium"
+                className="px-4 py-2 bg-black text-white rounded-none font-medium"
               >
                 Save
               </button>

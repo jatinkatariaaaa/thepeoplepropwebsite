@@ -290,7 +290,7 @@ export default function AdminDashboardClient() {
               </h3>
               <p className="text-[12px] text-ink-400">Last 30 days</p>
             </div>
-            <span className="dash-num rounded-full border border-[#A7F3D0] bg-success-50 px-2.5 py-0.5 text-[12px] font-semibold text-success-700">
+            <span className="dash-num rounded-full border bg-success-50 px-2.5 py-0.5 text-[12px] font-semibold text-success-700">
               ${(stats?.totalRevenue || 0).toLocaleString()}
             </span>
           </div>

@@ -102,7 +102,9 @@
   --color-paper-2: var(--paper-2);
   --color-paper-3: var(--paper-3);
   --color-ink: var(--ink-950);
+  --color-ink-950: var(--ink-950);
   --color-ink-900: var(--ink-900);
+  --color-ink-800: var(--ink-800);
   --color-ink-700: var(--ink-700);
   --color-ink-600: var(--ink-600);
   --color-ink-500: var(--ink-500);
@@ -269,7 +271,7 @@ h1, h2, h3, h4 {
   border-top: 1px solid var(--border);
 }
 
-/* ════════════════════��═════════════════
+/* ════════════════════���═════════════════
    Background motifs
    ══════════════════════════════════════ */
 
@@ -1433,106 +1435,116 @@ body.v2-active .v2-page footer {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   Dashboard Design System — Institutional Fintech
-   Scoped additions for /dashboard and /admin surfaces.
-   Refined light: near-white canvas, hairline borders, ink type,
-   tabular numerals, restrained lime accent.
-   Marketing utilities above are untouched.
+   Dashboard Design System — IBM Carbon (White theme)
+   Scoped to /dashboard and /admin surfaces via .dash-scope.
+   White canvas, gray-10 layer tiles, sharp corners, IBM Plex,
+   Carbon Blue #0f62fe interactive. Marketing utilities untouched.
    ══════════════════════════════════════════════════════════════ */
 
 :root {
-  --dash-canvas: #FAFAF9;
-  --dash-card: #FFFFFF;
-  --dash-hairline: #E7E5E4;
-  --dash-hairline-strong: #D6D3D1;
-  --dash-radius: 12px;
-  --dash-radius-sm: 8px;
-  --dash-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
-  --dash-shadow-md: 0 1px 2px rgba(16, 24, 40, 0.04), 0 4px 12px -2px rgba(16, 24, 40, 0.05);
-  --dash-positive: #059669;
-  --dash-negative: #E11D48;
-  --dash-pending: #D97706;
+  /* Carbon White theme tokens */
+  --dash-canvas: #ffffff;            /* background */
+  --dash-card: #f4f4f4;              /* layer-01 */
+  --dash-card-hover: #e8e8e8;        /* layer-hover-01 */
+  --dash-layer-accent: #e0e0e0;      /* layer-accent-01 */
+  --dash-hairline: #e0e0e0;          /* border-subtle-01 */
+  --dash-hairline-strong: #8d8d8d;   /* border-strong-01 */
+  --dash-radius: 0px;
+  --dash-radius-sm: 0px;
+  --dash-shadow: none;
+  --dash-shadow-md: none;
+  --dash-positive: #24a148;          /* support-success */
+  --dash-negative: #da1e28;          /* support-error */
+  --dash-pending: #8e6a00;           /* warning text on #f1c21b family */
+  --carbon-blue: #0f62fe;            /* interactive */
+  --carbon-blue-hover: #0353e9;
+  --carbon-blue-active: #002d9c;
+  --carbon-text-primary: #161616;
+  --carbon-text-secondary: #525252;
+  --carbon-text-helper: #6f6f6f;
+  --font-carbon: var(--font-carbon-sans), "IBM Plex Sans", system-ui, sans-serif;
+  --font-carbon-mono-stack: var(--font-carbon-mono), "IBM Plex Mono", ui-monospace, monospace;
 }
 
 /* Canvas scope — applied on dashboard/admin shells */
 .dash-scope {
   background: var(--dash-canvas);
-  color: var(--ink-950);
-  font-feature-settings: "ss01", "cv11", "tnum";
+  color: var(--carbon-text-primary);
+  font-family: var(--font-carbon);
+  font-feature-settings: "tnum";
 }
 
-/* Card */
+/* Tile (Carbon layer-01: gray on white, sharp, no border, no shadow) */
 .dash-card {
   background: var(--dash-card);
-  border: 1px solid var(--dash-hairline);
-  border-radius: var(--dash-radius);
-  box-shadow: var(--dash-shadow);
-  transition: border-color 180ms ease-out, background-color 180ms ease-out, box-shadow 180ms ease-out;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
 .dash-card-hover:hover {
-  border-color: var(--dash-hairline-strong);
-  box-shadow: var(--dash-shadow-md);
+  background: var(--dash-card-hover);
 }
 
-/* Overline label — 11px, tracked, uppercase */
+/* Label-01 — Carbon caption */
 .dash-overline {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ink-400);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.32px;
+  text-transform: none;
+  color: var(--carbon-text-secondary);
 }
 
-/* Key figure — mono, tabular */
+/* Key figure — Carbon fluid heading, light weight */
 .dash-figure {
-  font-family: var(--font-mono), ui-monospace, SFMono-Regular, monospace;
+  font-family: var(--font-carbon);
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
-  font-weight: 600;
-  color: var(--ink-950);
+  letter-spacing: 0;
+  font-weight: 300;
+  color: var(--carbon-text-primary);
 }
 
-/* Numeric table cell */
+/* Numeric table cell — IBM Plex Mono */
 .dash-num {
   font-variant-numeric: tabular-nums;
-  font-family: var(--font-mono), ui-monospace, SFMono-Regular, monospace;
+  font-family: var(--font-carbon-mono-stack);
 }
 
 /* Status dot */
 .status-dot {
   display: inline-block;
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
   border-radius: 9999px;
   flex-shrink: 0;
 }
 
-/* Focus ring inside dashboard scope */
+/* Carbon focus: 2px blue outline, inset */
 .dash-scope :is(a, button, input, select, textarea, [tabindex]):focus-visible {
-  outline: 2px solid var(--ink-950);
-  outline-offset: 2px;
-  border-radius: 4px;
+  outline: 2px solid var(--carbon-blue);
+  outline-offset: -2px;
+  border-radius: 0;
 }
 
-/* Thin institutional progress track */
+/* Progress track — square ends, blue fill */
 .dash-track {
   height: 4px;
-  border-radius: 9999px;
-  background: var(--ink-100);
+  border-radius: 0;
+  background: var(--dash-layer-accent);
   overflow: hidden;
 }
 .dash-track > div {
   height: 100%;
-  border-radius: 9999px;
-  transition: width 400ms ease-out;
+  border-radius: 0;
+  transition: width 400ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
 
 /* Skeleton shimmer */
 .dash-skeleton {
-  background: linear-gradient(90deg, var(--ink-100) 25%, var(--ink-50) 50%, var(--ink-100) 75%);
+  background: linear-gradient(90deg, #e8e8e8 25%, #f4f4f4 50%, #e8e8e8 75%);
   background-size: 200% 100%;
   animation: dash-shimmer 1.6s ease-in-out infinite;
-  border-radius: 6px;
+  border-radius: 0;
 }
 @keyframes dash-shimmer {
   0% { background-position: 200% 0; }
@@ -1542,64 +1554,222 @@ body.v2-active .v2-page footer {
   .dash-skeleton { animation: none; }
 }
 
-/* Data table refinements */
+/* Carbon DataTable */
 .dash-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
+  font-size: 14px;
 }
 .dash-table thead th {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-400);
+  letter-spacing: 0.16px;
+  text-transform: none;
+  color: var(--carbon-text-primary);
   text-align: left;
-  padding: 10px 16px;
-  border-bottom: 1px solid var(--dash-hairline);
-  background: var(--dash-canvas);
+  padding: 15px 16px;
+  border-bottom: none;
+  background: var(--dash-layer-accent);
   white-space: nowrap;
 }
 .dash-table tbody td {
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--ink-100);
-  color: var(--ink-700);
+  padding: 15px 16px;
+  border-bottom: 1px solid var(--dash-hairline);
+  color: var(--carbon-text-secondary);
   vertical-align: middle;
 }
 .dash-table tbody tr:last-child td { border-bottom: none; }
 .dash-table tbody tr {
-  transition: background-color 150ms ease-out;
+  transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
-.dash-table tbody tr:hover { background: var(--ink-50); }
+.dash-table tbody tr:hover { background: var(--dash-card-hover); }
 
-/* Horizontal scroll container with edge fade (mobile tables) */
+/* Horizontal scroll container (mobile tables) */
 .dash-scroll-x {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
 }
 
-/* Chart tooltip */
+/* Carbon tooltip — dark */
 .dash-tooltip {
-  background: #FFFFFF;
-  border: 1px solid var(--dash-hairline);
-  border-radius: 8px;
-  box-shadow: var(--dash-shadow-md);
-  padding: 8px 12px;
+  background: #161616;
+  border: none;
+  border-radius: 2px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  padding: 8px 16px;
   font-size: 12px;
-  color: var(--ink-700);
+  color: #f4f4f4;
 }
 .dash-tooltip .dash-tooltip-value {
-  font-family: var(--font-mono), ui-monospace, monospace;
+  font-family: var(--font-carbon-mono-stack);
   font-variant-numeric: tabular-nums;
   font-weight: 600;
-  color: var(--ink-950);
+  color: #ffffff;
 }
 
 /* Scoped scrollbar refinement */
 .dash-scope ::-webkit-scrollbar { width: 6px; height: 6px; }
 .dash-scope ::-webkit-scrollbar-thumb {
-  background: var(--ink-200);
+  background: #c6c6c6;
   border: none;
-  border-radius: 6px;
+  border-radius: 0;
+}
+
+/* ── Carbon buttons ── */
+.carbon-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--carbon-blue);
+  color: #ffffff;
+  font-family: var(--font-carbon);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.16px;
+  border: 1px solid transparent;
+  border-radius: 0;
+  padding: 0 15px;
+  min-height: 40px;
+  cursor: pointer;
+  transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9);
+}
+.carbon-btn-primary:hover:not(:disabled) { background: var(--carbon-blue-hover); }
+.carbon-btn-primary:active:not(:disabled) { background: var(--carbon-blue-active); }
+.carbon-btn-primary:disabled {
+  background: #c6c6c6;
+  color: #8d8d8d;
+  cursor: not-allowed;
+}
+
+.carbon-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #393939;
+  color: #ffffff;
+  font-family: var(--font-carbon);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.16px;
+  border: 1px solid transparent;
+  border-radius: 0;
+  padding: 0 15px;
+  min-height: 40px;
+  cursor: pointer;
+  transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9);
+}
+.carbon-btn-secondary:hover:not(:disabled) { background: #4c4c4c; }
+.carbon-btn-secondary:active:not(:disabled) { background: #6f6f6f; }
+.carbon-btn-secondary:disabled {
+  background: #c6c6c6;
+  color: #8d8d8d;
+  cursor: not-allowed;
+}
+
+.carbon-btn-tertiary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--carbon-blue);
+  font-family: var(--font-carbon);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.16px;
+  border: 1px solid var(--carbon-blue);
+  border-radius: 0;
+  padding: 0 15px;
+  min-height: 40px;
+  cursor: pointer;
+  transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9), color 110ms cubic-bezier(0.2, 0, 0.38, 0.9);
+}
+.carbon-btn-tertiary:hover:not(:disabled) { background: var(--carbon-blue-hover); color: #ffffff; }
+.carbon-btn-tertiary:disabled { border-color: #c6c6c6; color: #c6c6c6; cursor: not-allowed; }
+
+.carbon-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--carbon-blue);
+  font-family: var(--font-carbon);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.16px;
+  border: 1px solid transparent;
+  border-radius: 0;
+  padding: 0 15px;
+  min-height: 40px;
+  cursor: pointer;
+  transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9);
+}
+.carbon-btn-ghost:hover:not(:disabled) { background: var(--dash-card-hover); }
+.carbon-btn-ghost:disabled { color: #c6c6c6; cursor: not-allowed; }
+
+.carbon-btn-danger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--dash-negative);
+  color: #ffffff;
+  font-family: var(--font-carbon);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.16px;
+  border: 1px solid transparent;
+  border-radius: 0;
+  padding: 0 15px;
+  min-height: 40px;
+  cursor: pointer;
+  transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9);
+}
+.carbon-btn-danger:hover:not(:disabled) { background: #b81922; }
+.carbon-btn-danger:disabled { background: #c6c6c6; color: #8d8d8d; cursor: not-allowed; }
+
+/* ── Carbon tags (status pills — Carbon tags keep round shape) ── */
+.carbon-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-carbon);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.32px;
+  border-radius: 9999px;
+  padding: 2px 8px;
+  min-height: 18px;
+  white-space: nowrap;
+}
+.carbon-tag-green { background: #a7f0ba; color: #0e6027; }
+.carbon-tag-red { background: #ffd7d9; color: #a2191f; }
+.carbon-tag-blue { background: #d0e2ff; color: #0043ce; }
+.carbon-tag-gray { background: #e0e0e0; color: #393939; }
+.carbon-tag-amber { background: #fdd13a33; color: #8e6a00; background-color: #fcf4d6; }
+.carbon-tag-teal { background: #9ef0f0; color: #005d5d; }
+.carbon-tag-purple { background: #e8daff; color: #6929c4; }
+
+/* ── Carbon text input / select ── */
+.carbon-field {
+  background: var(--dash-card);
+  border: none;
+  border-bottom: 1px solid var(--dash-hairline-strong);
+  border-radius: 0;
+  font-family: var(--font-carbon);
+  font-size: 14px;
+  color: var(--carbon-text-primary);
+  padding: 0 16px;
+  min-height: 40px;
+  transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9);
+}
+.carbon-field::placeholder { color: #a8a8a8; }
+.carbon-field:focus {
+  outline: 2px solid var(--carbon-blue);
+  outline-offset: -2px;
+}
+.carbon-field:disabled {
+  background: #f4f4f4;
+  border-bottom-color: transparent;
+  color: #c6c6c6;
+  cursor: not-allowed;
 }

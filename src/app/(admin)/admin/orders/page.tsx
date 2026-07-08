@@ -101,10 +101,10 @@ export default function AdminOrdersPage() {
         const s = row.original.payment_status;
         return (
           <span className={`inline-flex px-2 py-0.5 rounded-full text-[11px] font-bold uppercase ${
-            s === "paid" ? "bg-success-50 text-success-700" :
-            s === "refunded" ? "bg-rose-50 text-rose-700" :
-            s === "failed" ? "bg-rose-50 text-rose-700" :
-            "bg-amber-50 text-amber-700"
+            s === "paid" ? "bg-[#a7f0ba] text-[#0e6027]" :
+            s === "refunded" ? "bg-[#ffd7d9] text-[#a2191f]" :
+            s === "failed" ? "bg-[#ffd7d9] text-[#a2191f]" :
+            "bg-[#fcf4d6] text-[#8e6a00]"
           }`}>
             {s}
           </span>
@@ -149,7 +149,7 @@ export default function AdminOrdersPage() {
             onClick={() => setStatusFilter(tab.value)}
             className={`px-4 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap transition-colors ${
               statusFilter === tab.value 
-                ? "bg-[var(--ink-950)] text-white" 
+                ? "bg-[var(--carbon-blue)] text-white" 
                 : "bg-white border border-[var(--dash-hairline)] text-[var(--ink-500)] hover:text-[var(--ink-950)]"
             }`}
           >
@@ -173,9 +173,9 @@ export default function AdminOrdersPage() {
                 <p className="text-sm font-mono text-[var(--ink-500)]">{selectedOrder.order_id}</p>
               </div>
               <span className={`inline-flex px-3 py-1 rounded-full text-xs font-bold uppercase ${
-                selectedOrder.payment_status === "paid" ? "bg-success-50 text-success-700" :
-                selectedOrder.payment_status === "refunded" ? "bg-rose-50 text-rose-700" :
-                "bg-amber-50 text-amber-700"
+                selectedOrder.payment_status === "paid" ? "bg-[#a7f0ba] text-[#0e6027]" :
+                selectedOrder.payment_status === "refunded" ? "bg-[#ffd7d9] text-[#a2191f]" :
+                "bg-[#fcf4d6] text-[#8e6a00]"
               }`}>
                 {selectedOrder.payment_status}
               </span>
@@ -203,7 +203,7 @@ export default function AdminOrdersPage() {
             </div>
 
             {selectedOrder.applied_coupon && (
-              <div className="bg-amber-50 border border-amber-200 p-3 rounded-xl flex justify-between items-center text-sm">
+              <div className="bg-amber-50 border border-amber-200 p-3 rounded-none flex justify-between items-center text-sm">
                 <span className="font-bold text-amber-800">Coupon Used:</span>
                 <span className="font-mono font-bold text-amber-600">{selectedOrder.applied_coupon}</span>
               </div>
@@ -213,7 +213,7 @@ export default function AdminOrdersPage() {
               {selectedOrder.payment_status === "paid" && (
                 <button
                   onClick={() => setIsRefundModalOpen(true)}
-                  className="flex items-center gap-2 px-4 py-2 bg-red-50 text-[var(--dash-negative)] rounded-xl font-bold hover:bg-red-100 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 bg-red-50 text-[var(--dash-negative)] rounded-none font-bold hover:bg-red-100 transition-colors"
                 >
                   <RefreshCw className="w-4 h-4" /> Mark Refunded
                 </button>
@@ -232,12 +232,12 @@ export default function AdminOrdersPage() {
           <p className="text-sm text-[var(--ink-600)]">
             Are you sure you want to mark order <strong className="font-mono">{selectedOrder?.order_id}</strong> as refunded?
           </p>
-          <div className="bg-amber-50 text-amber-800 p-3 rounded-xl text-xs font-semibold">
+          <div className="bg-amber-50 text-amber-800 p-3 rounded-none text-xs font-semibold">
             Note: This action only updates the status in the database. You must process the actual refund manually via your payment gateway (e.g., Stripe, Confirmo).
           </div>
           <div className="flex justify-end gap-3 mt-6">
             <button onClick={() => setIsRefundModalOpen(false)} className="px-4 py-2 text-[var(--ink-500)] font-semibold">Cancel</button>
-            <button onClick={() => handleStatusChange("refunded")} className="px-4 py-2 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700">Confirm Refund</button>
+            <button onClick={() => handleStatusChange("refunded")} className="px-4 py-2 bg-red-600 text-white rounded-none font-bold hover:bg-red-700">Confirm Refund</button>
           </div>
         </div>
       </AdminModal>
