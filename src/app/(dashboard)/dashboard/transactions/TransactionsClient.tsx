@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Download, Search, FileText } from "lucide-react";
-import { StatusPill } from "@/components/dashboard/ui/primitives";
+import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 
 export function TransactionsClient() {
@@ -31,11 +31,11 @@ export function TransactionsClient() {
   }, []);
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
-      <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+    <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight text-ink sm:text-2xl">Transactions</h1>
-          <p className="mt-1 text-sm text-ink-500">View and download your past purchases and payouts.</p>
+          <h1 className="text-2xl lg:text-3xl font-display font-bold text-[var(--ink-950)] mb-2">Transaction History</h1>
+          <p className="text-[var(--ink-500)]">View and download your past purchases and payouts.</p>
         </div>
         
         <div className="flex items-center gap-3">
@@ -44,61 +44,66 @@ export function TransactionsClient() {
             <input 
               type="text" 
               placeholder="Search..." 
-              className="h-9 w-full rounded-none border border-[var(--dash-hairline)] bg-white pl-9 pr-3 text-[13px] outline-none transition-colors focus:border-ink-400 sm:w-64"
+              className="pl-9 pr-4 py-2 bg-white border border-[var(--border)] rounded-xl text-[13px] focus:outline-none focus:border-[var(--ink-400)] transition-colors w-full sm:w-64"
             />
           </div>
-          <button className="inline-flex h-9 items-center gap-1.5 rounded-none border border-[var(--dash-hairline)] bg-white px-3.5 text-[13px] font-medium text-ink-700 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink">
+          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-[var(--border)] rounded-xl text-[13px] font-bold text-[var(--ink-700)] hover:text-[var(--ink-950)] hover:bg-[var(--paper-2)] transition-colors">
             <Download className="w-4 h-4" />
             Export
           </button>
         </div>
       </div>
 
-      <div className="dash-card overflow-hidden">
-        <div className="dash-scroll-x">
-          <table className="dash-table">
+      <div className="bg-white rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
             <thead>
-              <tr>
-                <th>Date</th>
-                <th>Description</th>
-                <th className="text-right">Amount</th>
-                <th>Method</th>
-                <th>Status</th>
-                <th className="text-right">Invoice</th>
+              <tr className="bg-[var(--paper-2)] border-b border-[var(--border)]">
+                <th className="px-6 py-4 text-[12px] font-bold text-[var(--ink-500)] uppercase tracking-wider">Date</th>
+                <th className="px-6 py-4 text-[12px] font-bold text-[var(--ink-500)] uppercase tracking-wider">Description</th>
+                <th className="px-6 py-4 text-[12px] font-bold text-[var(--ink-500)] uppercase tracking-wider">Amount</th>
+                <th className="px-6 py-4 text-[12px] font-bold text-[var(--ink-500)] uppercase tracking-wider">Method</th>
+                <th className="px-6 py-4 text-[12px] font-bold text-[var(--ink-500)] uppercase tracking-wider">Status</th>
+                <th className="px-6 py-4 text-[12px] font-bold text-[var(--ink-500)] uppercase tracking-wider text-right">Invoice</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-[var(--border)]">
               {loading ? (
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center">
-                    <div className="mx-auto h-6 w-6 animate-spin rounded-full border-2 border-ink border-t-transparent" role="status" aria-label="Loading transactions"></div>
+                    <div className="w-8 h-8 rounded-full border-4 border-[var(--accent)] border-t-transparent animate-spin mx-auto"></div>
                   </td>
                 </tr>
               ) : transactions.length > 0 ? (
                 transactions.map((trx) => (
-                  <tr key={trx.id} className="group">
-                    <td className="whitespace-nowrap">
-                      <div className="text-[13px] font-medium text-ink">
+                  <tr key={trx.id} className="hover:bg-[var(--paper-2)] transition-colors group">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-[13px] font-medium text-[var(--ink-950)]">
                         {new Date(trx.created_at).toLocaleDateString()}
                       </div>
-                      <div className="dash-num text-[11px] text-ink-400">{trx.id.substring(0, 8)}...</div>
+                      <div className="text-[11px] text-[var(--ink-400)]">{trx.id.substring(0, 8)}...</div>
                     </td>
-                    <td>
-                      <div className="text-[13px] font-medium capitalize text-ink-700">{trx.program_name?.replace(/-/g, ' ')}</div>
+                    <td className="px-6 py-4">
+                      <div className="text-[13px] font-medium text-[var(--ink-700)] capitalize">{trx.program_name?.replace(/-/g, ' ')}</div>
                     </td>
-                    <td className="whitespace-nowrap text-right">
-                      <div className="dash-num text-[13px] font-semibold text-ink">${trx.amount?.toFixed(2)}</div>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-[14px] font-bold text-[var(--ink-950)]">${trx.amount?.toFixed(2)}</div>
                     </td>
-                    <td className="whitespace-nowrap">
-                      <div className="text-[13px] capitalize text-ink-600">{trx.payment_method || 'Credit Card'}</div>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-[13px] text-[var(--ink-600)] capitalize">{trx.payment_method || 'Credit Card'}</div>
                     </td>
-                    <td className="whitespace-nowrap">
-                      <StatusPill tone={trx.status === "processing" ? "pending" : "success"} className="capitalize">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={cn(
+                        "inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold capitalize",
+                        trx.status === "completed" ? "bg-emerald-100 text-emerald-700" :
+                        trx.status === "processing" ? "bg-amber-100 text-amber-700" :
+                        "bg-emerald-100 text-emerald-700" // Default to completed for test purchases
+                      )}>
                         {trx.status || "Completed"}
-                      </StatusPill>
+                      </span>
                     </td>
-                    <td className="whitespace-nowrap text-right">
-                      <button className="inline-flex h-8 w-8 items-center justify-center rounded-none border border-transparent text-ink-400 opacity-0 transition-colors hover:border-[var(--dash-hairline)] hover:text-ink focus:opacity-100 group-hover:opacity-100" aria-label="Download invoice">
+                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                      <button className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-[var(--ink-400)] hover:text-[var(--ink-950)] hover:bg-white border border-transparent hover:border-[var(--border)] hover:shadow-sm transition-all opacity-0 group-hover:opacity-100 focus:opacity-100">
                         <FileText className="w-4 h-4" />
                       </button>
                     </td>
@@ -107,10 +112,10 @@ export function TransactionsClient() {
               ) : (
                 <tr>
                   <td colSpan={6}>
-                    <div className="px-6 py-14 text-center">
-                      <FileText className="mx-auto mb-3 h-6 w-6 text-ink-300" />
-                      <p className="text-sm font-semibold text-ink">No transactions found</p>
-                      <p className="mt-1 text-[13px] text-ink-500">Your transaction history will appear here.</p>
+                    <div className="p-12 text-center">
+                      <FileText className="w-10 h-10 text-[var(--ink-300)] mx-auto mb-3" />
+                      <p className="text-[14px] font-medium text-[var(--ink-950)]">No transactions found</p>
+                      <p className="text-[13px] text-[var(--ink-500)] mt-1">Your transaction history will appear here.</p>
                     </div>
                   </td>
                 </tr>

@@ -75,7 +75,7 @@ function StatusIcon({ status }: { status: string }) {
 
 function MiniMetric({ label, value, tone = "" }: { label: string; value: string; tone?: string }) {
   return (
-    <div className="bg-white p-5 rounded-none border border-[var(--dash-hairline)]">
+    <div className="bg-white p-5 rounded-2xl border border-[var(--border)]">
       <p className="text-[12px] font-bold text-[var(--ink-500)] uppercase tracking-wider mb-1">{label}</p>
       <p className={cn("text-xl font-bold text-[var(--ink-950)]", tone)}>{value}</p>
     </div>
@@ -179,7 +179,7 @@ export default function TradingAccountDetailsPage() {
     }
   }
 
-  if (loading) return <div className="p-10 animate-pulse bg-[var(--dash-canvas)] rounded-none h-64" />;
+  if (loading) return <div className="p-10 animate-pulse bg-[var(--paper)] rounded-xl h-64" />;
   if (!overview) return null;
 
   const { account, terminal, metrics, phaseHistory, events } = overview;
@@ -196,18 +196,18 @@ export default function TradingAccountDetailsPage() {
     <div className="max-w-7xl mx-auto space-y-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
         <div className="flex items-center gap-4">
-          <Link href="/admin/trading/accounts" className="w-10 h-10 flex items-center justify-center rounded-none bg-white border border-[var(--dash-hairline)] hover:bg-[var(--dash-canvas)] transition-colors">
+          <Link href="/admin/trading/accounts" className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-[var(--border)] hover:bg-[var(--paper-2)] transition-colors">
             <ArrowLeft className="w-5 h-5 text-[var(--ink-500)]" />
           </Link>
           <div>
             <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-xl font-semibold tracking-tight text-ink sm:text-2xl">Account #{account.account_number}</h1>
+              <h1 className="text-2xl font-display font-bold text-[var(--ink-950)]">Account #{account.account_number}</h1>
               <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider border", statusTone(status))}>
                 <StatusIcon status={status} />
                 {status}
               </span>
               {terminal?.status && (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider border bg-[var(--dash-canvas)] text-[var(--ink-700)] border-[var(--dash-hairline)]">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider border bg-[var(--paper-2)] text-[var(--ink-700)] border-[var(--border)]">
                   Terminal: {terminal.status}
                 </span>
               )}
@@ -223,7 +223,7 @@ export default function TradingAccountDetailsPage() {
             <RefreshCw className="w-4 h-4" /> Refresh
           </Button>
           {status !== "breached" && (
-            <Button variant="outline" className="text-[var(--dash-negative)] border-red-200 hover:bg-red-50" onClick={() => updateStatus("breached")} disabled={updating}>
+            <Button variant="outline" className="text-red-600 border-red-200 hover:bg-red-50" onClick={() => updateStatus("breached")} disabled={updating}>
               Mark Breached
             </Button>
           )}
@@ -233,7 +233,7 @@ export default function TradingAccountDetailsPage() {
             </Button>
           )}
           {status === "suspended" ? (
-            <Button variant="outline" className="text-[var(--dash-positive)] border-emerald-200 hover:bg-emerald-50" onClick={() => updateStatus("active")} disabled={updating}>
+            <Button variant="outline" className="text-emerald-600 border-emerald-200 hover:bg-emerald-50" onClick={() => updateStatus("active")} disabled={updating}>
               Enable Account
             </Button>
           ) : (
@@ -246,16 +246,16 @@ export default function TradingAccountDetailsPage() {
 
       <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
         <MiniMetric label="Live Balance" value={money(balance)} />
-        <MiniMetric label="Live Equity" value={money(equity)} tone={equity >= balance ? "text-[var(--dash-positive)]" : "text-[var(--dash-negative)]"} />
-        <MiniMetric label="P/L" value={`${profit >= 0 ? "+" : ""}${money(profit)}`} tone={profit >= 0 ? "text-[var(--dash-positive)]" : "text-[var(--dash-negative)]"} />
-        <MiniMetric label="P/L %" value={`${profitPct >= 0 ? "+" : ""}${percent(profitPct)}`} tone={profit >= 0 ? "text-[var(--dash-positive)]" : "text-[var(--dash-negative)]"} />
+        <MiniMetric label="Live Equity" value={money(equity)} tone={equity >= balance ? "text-emerald-600" : "text-red-600"} />
+        <MiniMetric label="P/L" value={`${profit >= 0 ? "+" : ""}${money(profit)}`} tone={profit >= 0 ? "text-emerald-600" : "text-red-600"} />
+        <MiniMetric label="P/L %" value={`${profitPct >= 0 ? "+" : ""}${percent(profitPct)}`} tone={profit >= 0 ? "text-emerald-600" : "text-red-600"} />
         <MiniMetric label="Win Rate" value={percent(metrics.winRate)} />
         <MiniMetric label="Trades" value={String(metrics.totalTrades)} />
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <div className="xl:col-span-2 space-y-6">
-          <div className="dash-card p-5">
+          <div className="bg-white rounded-2xl border border-[var(--border)] p-6">
             <div className="flex items-center justify-between mb-5">
               <div>
                 <h3 className="text-[16px] font-bold text-[var(--ink-950)] flex items-center gap-2">
@@ -272,24 +272,24 @@ export default function TradingAccountDetailsPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <MiniMetric label="Profit Factor" value={metrics.profitFactor == null ? "No loss" : metrics.profitFactor.toFixed(2)} />
-            <MiniMetric label="Average Win" value={money(metrics.averageWin)} tone="text-[var(--dash-positive)]" />
-            <MiniMetric label="Average Loss" value={money(metrics.averageLoss)} tone="text-[var(--dash-negative)]" />
+            <MiniMetric label="Average Win" value={money(metrics.averageWin)} tone="text-emerald-600" />
+            <MiniMetric label="Average Loss" value={money(metrics.averageLoss)} tone="text-red-600" />
           </div>
 
-          <div className="dash-card p-5">
+          <div className="bg-white rounded-2xl border border-[var(--border)] p-6">
             <h3 className="text-[16px] font-bold text-[var(--ink-950)] flex items-center gap-2 mb-5">
               <GitBranch className="w-5 h-5" /> Phase Progression History
             </h3>
             <div className="space-y-3">
               {phaseHistory.map((phase) => (
-                <div key={phase.id} className="flex items-start gap-4 p-4 rounded-none border border-[var(--dash-hairline)] bg-[var(--dash-canvas)]">
+                <div key={phase.id} className="flex items-start gap-4 p-4 rounded-xl border border-[var(--border)] bg-[var(--paper-2)]">
                   <div className={cn("mt-0.5 w-9 h-9 rounded-full border flex items-center justify-center", statusTone(phase.status))}>
                     <StatusIcon status={phase.status} />
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <p className="font-bold text-[14px] text-[var(--ink-950)]">{phaseLabel(phase.phase)}</p>
-                      <span className="text-[11px] font-bold uppercase px-2 py-0.5 rounded bg-white border border-[var(--dash-hairline)]">{phase.status}</span>
+                      <span className="text-[11px] font-bold uppercase px-2 py-0.5 rounded bg-white border border-[var(--border)]">{phase.status}</span>
                       <span className="text-[11px] text-[var(--ink-500)]">{phase.account_number}</span>
                     </div>
                     <p className="text-[12px] text-[var(--ink-500)] mt-1">
@@ -307,13 +307,13 @@ export default function TradingAccountDetailsPage() {
         </div>
 
         <div className="space-y-6">
-          <div className="dash-card overflow-hidden">
-            <div className="p-5 border-b border-[var(--dash-hairline)] bg-[var(--dash-canvas)]">
+          <div className="bg-white rounded-2xl border border-[var(--border)] overflow-hidden">
+            <div className="p-5 border-b border-[var(--border)] bg-[var(--paper)]">
               <h3 className="font-bold text-[16px] text-[var(--ink-950)] flex items-center gap-2">
                 <Wallet className="w-4 h-4" /> Account Details
               </h3>
             </div>
-            <div className="divide-y divide-[var(--dash-hairline)]">
+            <div className="divide-y divide-[var(--border)]">
               {[
                 ["Program", account.program_key || "Not set"],
                 ["Phase", phaseLabel(account.phase)],
@@ -332,7 +332,7 @@ export default function TradingAccountDetailsPage() {
             </div>
           </div>
 
-          <div className="dash-card p-5">
+          <div className="bg-white rounded-2xl border border-[var(--border)] p-5">
             <h3 className="font-bold text-[16px] text-[var(--ink-950)] flex items-center gap-2 mb-4">
               <Target className="w-4 h-4" /> Rules Snapshot
             </h3>
@@ -351,7 +351,7 @@ export default function TradingAccountDetailsPage() {
                       <span>Profit Target Progress</span>
                       <span>{money(Math.max(0, profit))} / {money(profitTargetAmount)}</span>
                     </div>
-                    <div className="h-2.5 bg-[var(--dash-canvas)] rounded-full overflow-hidden">
+                    <div className="h-2.5 bg-[var(--paper-2)] rounded-full overflow-hidden">
                       <div className="h-full bg-emerald-500" style={{ width: `${Math.min(100, (Math.max(0, profit) / Math.max(1, profitTargetAmount)) * 100)}%` }} />
                     </div>
                   </div>
@@ -362,14 +362,14 @@ export default function TradingAccountDetailsPage() {
             )}
           </div>
 
-          <div className="dash-card p-5">
+          <div className="bg-white rounded-2xl border border-[var(--border)] p-5">
             <h3 className="font-bold text-[16px] text-[var(--ink-950)] flex items-center gap-2 mb-4">
               <ShieldAlert className="w-4 h-4" /> Terminal Events
             </h3>
             {events.length > 0 ? (
               <div className="space-y-3">
                 {events.slice(0, 8).map((event) => (
-                  <div key={event.id} className="border border-[var(--dash-hairline)] rounded-none p-3">
+                  <div key={event.id} className="border border-[var(--border)] rounded-xl p-3">
                     <div className="flex items-center justify-between gap-3">
                       <p className="text-[12px] font-bold uppercase text-[var(--ink-950)]">{String(event.type).replace("_", " ")}</p>
                       <Clock className="w-3.5 h-3.5 text-[var(--ink-400)]" />
@@ -384,7 +384,7 @@ export default function TradingAccountDetailsPage() {
             )}
           </div>
 
-          <div className="dash-card p-5">
+          <div className="bg-white rounded-2xl border border-[var(--border)] p-5">
             <h3 className="font-bold text-[16px] text-[var(--ink-950)] flex items-center gap-2 mb-4">
               <BarChart3 className="w-4 h-4" /> Direction Split
             </h3>
@@ -393,12 +393,12 @@ export default function TradingAccountDetailsPage() {
                 ["Long", metrics.longStats],
                 ["Short", metrics.shortStats],
               ].map(([label, stats]: any) => (
-                <div key={label} className="flex justify-between items-center border border-[var(--dash-hairline)] rounded-none p-3">
+                <div key={label} className="flex justify-between items-center border border-[var(--border)] rounded-xl p-3">
                   <div>
                     <p className="text-[13px] font-bold">{label}</p>
                     <p className="text-[11px] text-[var(--ink-500)]">{stats.trades} trades · {percent(stats.winRate)}</p>
                   </div>
-                  <p className={cn("text-[13px] font-bold", stats.netPnl >= 0 ? "text-[var(--dash-positive)]" : "text-[var(--dash-negative)]")}>{money(stats.netPnl)}</p>
+                  <p className={cn("text-[13px] font-bold", stats.netPnl >= 0 ? "text-emerald-600" : "text-red-600")}>{money(stats.netPnl)}</p>
                 </div>
               ))}
             </div>

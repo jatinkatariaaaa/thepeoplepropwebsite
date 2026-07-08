@@ -2,10 +2,10 @@ import { EconomicCalendar } from "@/components/dashboard/EconomicCalendar";
 
 export default function CalendarPage() {
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out pb-16">
-      <div className="mb-6">
-        <p className="dash-overline mb-1.5">Markets</p>
-        <h1 className="text-xl font-semibold tracking-tight text-ink sm:text-2xl">
+    <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out pb-20">
+      
+      <div className="mb-8 flex items-center gap-3">
+        <h1 className="text-2xl lg:text-3xl font-display font-bold text-[var(--ink-950)] tracking-tight">
           Economic Calendar
         </h1>
       </div>

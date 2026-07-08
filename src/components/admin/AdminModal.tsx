@@ -63,9 +63,9 @@ export function AdminModal({
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className={`w-full ${sizeClasses[size]} bg-white rounded-none shadow-2xl border border-[var(--dash-hairline)] overflow-hidden flex flex-col max-h-[90vh] pointer-events-auto`}
+              className={`w-full ${sizeClasses[size]} bg-white rounded-2xl shadow-2xl border border-[var(--border)] overflow-hidden flex flex-col max-h-[90vh] pointer-events-auto`}
             >
-              <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--dash-hairline)] bg-[var(--dash-canvas)]">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border)] bg-[var(--paper-2)]">
                 <div>
                   <h2 className="text-lg font-bold text-[var(--ink-950)]">{title}</h2>
                   {description && (
@@ -74,7 +74,7 @@ export function AdminModal({
                 </div>
                 <button
                   onClick={onClose}
-                  className="p-2 -mr-2 text-[var(--ink-400)] hover:text-[var(--ink-950)] hover:bg-ink-100 rounded-none transition-colors"
+                  className="p-2 -mr-2 text-[var(--ink-400)] hover:text-[var(--ink-950)] hover:bg-[var(--border)] rounded-lg transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </button>

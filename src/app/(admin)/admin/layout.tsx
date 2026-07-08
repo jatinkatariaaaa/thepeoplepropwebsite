@@ -65,15 +65,13 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="dash-scope min-h-dvh">
+    <div className="min-h-screen bg-[var(--paper-2)]">
       <AdminRoleProvider role={role}>
         <AdminSidebar role={role} />
-        <div className="flex min-h-dvh flex-col pt-14 lg:pl-[248px] lg:pt-0">
+        <div className="lg:pl-[260px] flex flex-col min-h-screen">
           <DashboardHeader />
-          <main className="flex-1">
-            <div className="mx-auto w-full max-w-[1280px] px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-              {children}
-            </div>
+          <main className="flex-1 p-4 sm:p-6 lg:p-10 pt-20 lg:pt-10">
+            {children}
           </main>
         </div>
       </AdminRoleProvider>

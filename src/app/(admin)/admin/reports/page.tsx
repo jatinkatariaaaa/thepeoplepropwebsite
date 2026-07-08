@@ -80,7 +80,7 @@ export default function AdminReportsPage() {
 
     if (activeTab === "revenue") {
       return [
-        { icon: DollarSign, color: "text-[var(--dash-positive)] bg-emerald-50", label: "Total Revenue", value: `$${(s.total_revenue || 0).toLocaleString()}` },
+        { icon: DollarSign, color: "text-emerald-600 bg-emerald-50", label: "Total Revenue", value: `$${(s.total_revenue || 0).toLocaleString()}` },
         { icon: ShoppingCart, color: "text-blue-600 bg-blue-50", label: "Paid Orders", value: (s.total_orders || 0).toLocaleString() },
         { icon: Activity, color: "text-amber-600 bg-amber-50", label: "Avg Order Value", value: `$${s.avg_order_value?.toFixed(2) || "0.00"}` },
       ];
@@ -88,13 +88,13 @@ export default function AdminReportsPage() {
     if (activeTab === "users") {
       return [
         { icon: Users, color: "text-blue-600 bg-blue-50", label: "Total Signups", value: (s.total_users || 0).toLocaleString() },
-        { icon: Activity, color: "text-[var(--dash-positive)] bg-emerald-50", label: "Active Users", value: (s.active_users || 0).toLocaleString() },
+        { icon: Activity, color: "text-emerald-600 bg-emerald-50", label: "Active Users", value: (s.active_users || 0).toLocaleString() },
         { icon: ShoppingCart, color: "text-amber-600 bg-amber-50", label: "Challenge Purchases", value: (s.challenge_purchases || 0).toLocaleString() },
       ];
     }
     return [
-      { icon: TrendingUp, color: "text-[var(--dash-positive)] bg-emerald-50", label: "Pass Rate", value: `${(s.pass_rate || 0).toFixed(1)}%` },
-      { icon: TrendingDown, color: "text-[var(--dash-negative)] bg-red-50", label: "Fail Rate", value: `${(s.fail_rate || 0).toFixed(1)}%` },
+      { icon: TrendingUp, color: "text-emerald-600 bg-emerald-50", label: "Pass Rate", value: `${(s.pass_rate || 0).toFixed(1)}%` },
+      { icon: TrendingDown, color: "text-red-600 bg-red-50", label: "Fail Rate", value: `${(s.fail_rate || 0).toFixed(1)}%` },
       { icon: Activity, color: "text-blue-600 bg-blue-50", label: "Active Accounts", value: (s.active_accounts || 0).toLocaleString() },
     ];
   }, [reportData, activeTab]);
@@ -103,7 +103,7 @@ export default function AdminReportsPage() {
     if (activeTab === "revenue") {
       return [
         { accessorKey: "date", header: "Date", cell: ({ row }) => <span className="text-[13px] font-semibold">{row.original.date}</span> },
-        { accessorKey: "revenue", header: "Revenue", cell: ({ row }) => <span className="text-[13px] font-semibold text-[var(--dash-positive)]">${row.original.revenue?.toLocaleString()}</span> },
+        { accessorKey: "revenue", header: "Revenue", cell: ({ row }) => <span className="text-[13px] font-semibold text-emerald-600">${row.original.revenue?.toLocaleString()}</span> },
         { accessorKey: "orders", header: "Orders", cell: ({ row }) => <span className="text-[13px]">{row.original.orders}</span> },
       ];
     }
@@ -117,17 +117,17 @@ export default function AdminReportsPage() {
     }
     return [
       { accessorKey: "date", header: "Date", cell: ({ row }) => <span className="text-[13px] font-semibold">{row.original.date}</span> },
-      { accessorKey: "pass_count", header: "Passed", cell: ({ row }) => <span className="text-[13px] font-semibold text-[var(--dash-positive)]">{row.original.pass_count}</span> },
-      { accessorKey: "fail_count", header: "Failed", cell: ({ row }) => <span className="text-[13px] font-semibold text-[var(--dash-negative)]">{row.original.fail_count}</span> },
+      { accessorKey: "pass_count", header: "Passed", cell: ({ row }) => <span className="text-[13px] font-semibold text-emerald-600">{row.original.pass_count}</span> },
+      { accessorKey: "fail_count", header: "Failed", cell: ({ row }) => <span className="text-[13px] font-semibold text-red-600">{row.original.fail_count}</span> },
       { accessorKey: "active_count", header: "Active", cell: ({ row }) => <span className="text-[13px] text-blue-600">{row.original.active_count}</span> },
     ];
   }, [activeTab]);
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out pb-12">
+    <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out pb-12">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
-          <h1 className="flex items-center gap-2 text-xl font-semibold tracking-tight text-ink">
+          <h1 className="text-2xl font-bold text-[var(--ink-950)] flex items-center gap-2">
             <BarChart3 className="w-6 h-6" /> Analytics & Reports
           </h1>
           <p className="text-[var(--ink-500)] mt-1">Generate insights on revenue, users, and trading performance.</p>
@@ -135,19 +135,19 @@ export default function AdminReportsPage() {
         <div className="relative">
           <button
             onClick={() => setShowExportMenu(!showExportMenu)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] text-[var(--ink-950)] rounded-none font-bold hover:bg-ink-100 transition-colors"
+            className="flex items-center gap-2 px-4 py-2.5 bg-[var(--paper-2)] border border-[var(--border)] text-[var(--ink-950)] rounded-xl font-bold hover:bg-[var(--border)] transition-colors"
           >
             <Download className="w-4 h-4" /> Export <ChevronDown className="w-3 h-3" />
           </button>
           {showExportMenu && (
-            <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-[var(--dash-hairline)] rounded-none shadow-lg z-50 overflow-hidden">
-              <button onClick={() => handleExport("csv")} className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold hover:bg-[var(--dash-canvas)] transition-colors">
+            <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-[var(--border)] rounded-xl shadow-lg z-50 overflow-hidden">
+              <button onClick={() => handleExport("csv")} className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold hover:bg-[var(--paper-2)] transition-colors">
                 <FileText className="w-4 h-4" /> CSV
               </button>
-              <button onClick={() => handleExport("excel")} className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold hover:bg-[var(--dash-canvas)] transition-colors">
+              <button onClick={() => handleExport("excel")} className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold hover:bg-[var(--paper-2)] transition-colors">
                 <FileSpreadsheet className="w-4 h-4" /> Excel
               </button>
-              <button onClick={() => handleExport("pdf")} className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold hover:bg-[var(--dash-canvas)] transition-colors">
+              <button onClick={() => handleExport("pdf")} className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold hover:bg-[var(--paper-2)] transition-colors">
                 <FileDown className="w-4 h-4" /> PDF
               </button>
             </div>
@@ -155,13 +155,13 @@ export default function AdminReportsPage() {
         </div>
       </div>
 
-      <div className="dash-card p-5 mb-8 flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center">
-        <div className="flex bg-[var(--dash-canvas)] p-1 rounded-none">
+      <div className="bg-white rounded-2xl border border-[var(--border)] p-6 shadow-sm mb-8 flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center">
+        <div className="flex bg-[var(--paper-2)] p-1 rounded-xl">
           {(["revenue", "users", "trading"] as ReportTab[]).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-4 py-1.5 rounded-none text-sm font-bold transition-colors ${activeTab === tab ? "bg-white text-[var(--ink-950)] shadow-sm" : "text-[var(--ink-500)] hover:text-[var(--ink-950)]"}`}
+              className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-colors ${activeTab === tab ? "bg-white text-[var(--ink-950)] shadow-sm" : "text-[var(--ink-500)] hover:text-[var(--ink-950)]"}`}
             >
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
             </button>
@@ -169,12 +169,12 @@ export default function AdminReportsPage() {
         </div>
 
         <div className="flex items-center gap-3 flex-wrap">
-          <div className="flex items-center gap-2 bg-[var(--dash-canvas)] p-1 rounded-none">
+          <div className="flex items-center gap-2 bg-[var(--paper-2)] p-1 rounded-xl">
             {periodOptions.map((p) => (
               <button
                 key={p.value}
                 onClick={() => setPeriod(p.value)}
-                className={`px-3 py-1 rounded-none text-xs font-bold transition-colors ${period === p.value ? "bg-white text-[var(--ink-950)] shadow-sm" : "text-[var(--ink-500)] hover:text-[var(--ink-950)]"}`}
+                className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors ${period === p.value ? "bg-white text-[var(--ink-950)] shadow-sm" : "text-[var(--ink-500)] hover:text-[var(--ink-950)]"}`}
               >
                 {p.label}
               </button>
@@ -186,20 +186,20 @@ export default function AdminReportsPage() {
               type="date"
               value={fromDate}
               onChange={(e) => setFromDate(e.target.value)}
-              className="border border-[var(--dash-hairline)] rounded-none px-2 py-1.5 text-sm outline-none bg-white"
+              className="border border-[var(--border)] rounded-lg px-2 py-1.5 text-sm outline-none bg-white"
             />
             <span className="text-[var(--ink-400)] text-sm">to</span>
             <input
               type="date"
               value={toDate}
               onChange={(e) => setToDate(e.target.value)}
-              className="border border-[var(--dash-hairline)] rounded-none px-2 py-1.5 text-sm outline-none bg-white"
+              className="border border-[var(--border)] rounded-lg px-2 py-1.5 text-sm outline-none bg-white"
             />
           </div>
           <button
             onClick={fetchReport}
             disabled={loading}
-            className="px-4 py-1.5 flex items-center gap-2 carbon-btn-primary disabled:opacity-50"
+            className="px-4 py-1.5 bg-[var(--ink-950)] text-white rounded-lg text-sm font-bold hover:bg-black disabled:opacity-50 flex items-center gap-2"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} /> Generate
           </button>
@@ -215,9 +215,9 @@ export default function AdminReportsPage() {
           {/* Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {summaryCards.map((card, i) => (
-              <div key={i} className="dash-card p-5">
+              <div key={i} className="bg-white rounded-2xl border border-[var(--border)] p-6 shadow-sm">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className={`p-2 rounded-none ${card.color}`}>
+                  <div className={`p-2 rounded-lg ${card.color}`}>
                     <card.icon className={`w-5 h-5 ${card.color.split(" ")[0]}`} />
                   </div>
                   <h3 className="font-bold text-[var(--ink-600)]">{card.label}</h3>
@@ -228,7 +228,7 @@ export default function AdminReportsPage() {
           </div>
 
           {/* Chart */}
-          <div className="dash-card p-5">
+          <div className="bg-white rounded-2xl border border-[var(--border)] p-6 shadow-sm">
             <h3 className="font-bold text-lg text-[var(--ink-950)] mb-6 capitalize">{activeTab} Trend</h3>
             {activeTab === "trading" && reportData.chart_data ? (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -265,7 +265,7 @@ export default function AdminReportsPage() {
 
           {/* Data Table */}
           {reportData.table_data && reportData.table_data.length > 0 && (
-            <div className="dash-card p-5">
+            <div className="bg-white rounded-2xl border border-[var(--border)] p-6 shadow-sm">
               <div className="flex items-center gap-2 mb-4">
                 <Filter className="w-4 h-4 text-[var(--ink-400)]" />
                 <h3 className="font-bold text-[var(--ink-950)]">Detailed Data</h3>

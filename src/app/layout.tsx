@@ -1,11 +1,5 @@
 import type { Metadata } from "next";
-import {
-  Inter,
-  Instrument_Serif,
-  JetBrains_Mono,
-  IBM_Plex_Sans,
-  IBM_Plex_Mono,
-} from "next/font/google";
+import { Inter, Instrument_Serif, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { ChromeGate } from "@/components/layout/ChromeGate";
@@ -28,20 +22,6 @@ const serif = Instrument_Serif({
 
 const mono = JetBrains_Mono({
   variable: "--font-mono",
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  display: "swap",
-});
-
-const carbonSans = IBM_Plex_Sans({
-  variable: "--font-carbon-sans",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-  display: "swap",
-});
-
-const carbonMono = IBM_Plex_Mono({
-  variable: "--font-carbon-mono",
   subsets: ["latin"],
   weight: ["400", "500"],
   display: "swap",
@@ -77,7 +57,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${serif.variable} ${mono.variable} ${carbonSans.variable} ${carbonMono.variable}`}
+      className={`${inter.variable} ${serif.variable} ${mono.variable}`}
       suppressHydrationWarning
     >
       <body className="flex flex-col text-ink antialiased">

@@ -45,7 +45,7 @@ const events = [
 
 export function ActivityTimeline() {
   return (
-    <div className="surface-card rounded-none p-6 md:p-7">
+    <div className="surface-card rounded-2xl p-6 md:p-7">
       <div className="flex items-center justify-between mb-6">
         <h3 className="font-display text-lg text-[var(--ink-950)]">Recent activity</h3>
         <button className="text-xs text-[var(--ink-500)] hover:text-[var(--ink-950)] transition-colors">
@@ -63,7 +63,7 @@ export function ActivityTimeline() {
             <div
               className={`relative z-10 grid place-items-center w-8 h-8 rounded-full border shrink-0 ${
                 e.accent
-                  ? "bg-[var(--accent-50)] border-[var(--accent-200)] text-[var(--carbon-blue)]"
+                  ? "bg-[var(--accent-50)] border-[var(--accent-200)] text-[var(--accent-700)]"
                   : "bg-white border-[var(--border)] text-[var(--ink-700)]"
               }`}
             >

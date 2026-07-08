@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { DollarSign, AlertCircle } from "lucide-react";
-import { StatusPill } from "@/components/dashboard/ui/primitives";
+import { DollarSign, AlertCircle, Clock, CheckCircle, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
 export function PayoutsClient({ fundedAccounts, initialPayouts }: { fundedAccounts: any[], initialPayouts: any[] }) {
@@ -59,28 +58,28 @@ export function PayoutsClient({ fundedAccounts, initialPayouts }: { fundedAccoun
   return (
     <div className="space-y-6">
       {/* Request Form */}
-      <div className="dash-card p-4 sm:p-5">
-        <h2 className="mb-4 text-[15px] font-semibold tracking-tight text-ink">Request New Payout</h2>
+      <div className="p-6 bg-white rounded-2xl border border-[var(--border)] shadow-sm">
+        <h2 className="text-lg font-medium text-[var(--ink-950)] mb-4">Request New Payout</h2>
         
         {fundedAccounts.length === 0 ? (
-          <div className="flex items-center gap-3 rounded-none border bg-amber-50 p-4 text-amber-700">
-            <AlertCircle className="h-4 w-4 flex-shrink-0" />
+          <div className="flex items-center gap-3 p-4 bg-orange-50 text-orange-700 rounded-xl border border-orange-100">
+            <AlertCircle className="w-5 h-5 text-orange-500 flex-shrink-0" />
             <p className="text-sm font-medium">You need an active funded account to request a payout.</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="rounded-none border bg-rose-50 p-3 text-[13px] text-rose-700">
+              <div className="p-3 bg-red-50 text-red-700 text-sm rounded-lg border border-red-100">
                 {error}
               </div>
             )}
 
             <div>
-              <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Select Funded Account</label>
+              <label className="block text-sm font-medium text-[var(--ink-700)] mb-1">Select Funded Account</label>
               <select 
                 value={selectedAccountId}
                 onChange={(e) => setSelectedAccountId(e.target.value)}
-                className="h-10 w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                className="w-full px-4 py-2 bg-[var(--paper-2)] border border-[var(--border)] rounded-xl outline-none focus:border-[var(--brand-500)] text-[var(--ink-950)]"
               >
                 <option value="">-- Choose Account --</option>
                 {fundedAccounts.map(acc => (
@@ -93,10 +92,10 @@ export function PayoutsClient({ fundedAccounts, initialPayouts }: { fundedAccoun
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Amount (USD)</label>
+                <label className="block text-sm font-medium text-[var(--ink-700)] mb-1">Amount (USD)</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <DollarSign className="h-4 w-4 text-ink-400" />
+                    <DollarSign className="w-5 h-5 text-[var(--ink-400)]" />
                   </div>
                   <input 
                     type="number" 
@@ -104,24 +103,24 @@ export function PayoutsClient({ fundedAccounts, initialPayouts }: { fundedAccoun
                     onChange={(e) => setAmount(e.target.value)}
                     max={maxProfit}
                     placeholder="0.00"
-                    className="dash-num h-10 w-full rounded-none border border-[var(--dash-hairline)] bg-white pl-9 pr-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                    className="w-full pl-10 pr-4 py-2 bg-[var(--paper-2)] border border-[var(--border)] rounded-xl outline-none focus:border-[var(--brand-500)] text-[var(--ink-950)]"
                   />
                 </div>
                 {selectedAccountId && (
-                  <p className="dash-num mt-1 text-xs text-ink-500">
+                  <p className="text-xs text-[var(--ink-500)] mt-1">
                     Max available: ${maxProfit.toLocaleString()}
                   </p>
                 )}
               </div>
               
               <div>
-                <label className="mb-1.5 block text-[13px] font-medium text-ink-700">USDT (TRC20) Address</label>
+                <label className="block text-sm font-medium text-[var(--ink-700)] mb-1">USDT (TRC20) Address</label>
                 <input 
                   type="text" 
                   value={cryptoAddress}
                   onChange={(e) => setCryptoAddress(e.target.value)}
                   placeholder="Enter wallet address..."
-                  className="h-10 w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 font-mono text-[13px] text-ink outline-none transition-colors focus:border-ink-400"
+                  className="w-full px-4 py-2 bg-[var(--paper-2)] border border-[var(--border)] rounded-xl outline-none focus:border-[var(--brand-500)] text-[var(--ink-950)] font-mono text-sm"
                 />
               </div>
             </div>
@@ -134,41 +133,41 @@ export function PayoutsClient({ fundedAccounts, initialPayouts }: { fundedAccoun
       </div>
 
       {/* History */}
-      <div className="dash-card p-4 sm:p-5">
-        <h2 className="mb-4 text-[15px] font-semibold tracking-tight text-ink">Payout History</h2>
+      <div className="p-6 bg-white rounded-2xl border border-[var(--border)] shadow-sm">
+        <h2 className="text-lg font-medium text-[var(--ink-950)] mb-4">Payout History</h2>
         
-        <div className="dash-scroll-x -mx-4 sm:-mx-5">
-          <table className="dash-table">
-            <thead>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead className="text-xs text-[var(--ink-500)] uppercase bg-[var(--paper-2)]">
               <tr>
-                <th>ID</th>
-                <th>Account</th>
-                <th className="text-right">Amount</th>
-                <th>Address</th>
-                <th>Status</th>
-                <th>Date</th>
+                <th className="px-6 py-3 rounded-l-lg">ID</th>
+                <th className="px-6 py-3">Account</th>
+                <th className="px-6 py-3">Amount</th>
+                <th className="px-6 py-3">Address</th>
+                <th className="px-6 py-3">Status</th>
+                <th className="px-6 py-3 rounded-r-lg">Date</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-[var(--border)]">
               {payouts.map((payout) => (
-                <tr key={payout.id}>
-                  <td className="dash-num text-xs">{payout.id.substring(0, 8)}</td>
-                  <td className="dash-num text-xs">{payout.account_id.substring(0, 8)}</td>
-                  <td className="dash-num text-right font-medium text-ink">${Number(payout.amount).toLocaleString()}</td>
-                  <td className="dash-num max-w-[150px] truncate text-xs" title={payout.crypto_address}>{payout.crypto_address}</td>
-                  <td>
-                    {payout.status === "pending" && <StatusPill tone="pending">Pending</StatusPill>}
-                    {payout.status === "paid" && <StatusPill tone="success">Paid</StatusPill>}
-                    {payout.status === "rejected" && <StatusPill tone="danger">Rejected</StatusPill>}
+                <tr key={payout.id} className="hover:bg-[var(--paper-2)] transition-colors">
+                  <td className="px-6 py-4 font-mono text-xs">{payout.id.substring(0, 8)}</td>
+                  <td className="px-6 py-4 font-mono text-xs">{payout.account_id.substring(0, 8)}</td>
+                  <td className="px-6 py-4 font-medium text-[var(--ink-950)]">${Number(payout.amount).toLocaleString()}</td>
+                  <td className="px-6 py-4 font-mono text-xs truncate max-w-[150px]" title={payout.crypto_address}>{payout.crypto_address}</td>
+                  <td className="px-6 py-4">
+                    {payout.status === "pending" && <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800"><Clock className="w-3 h-3" /> Pending</span>}
+                    {payout.status === "paid" && <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"><CheckCircle className="w-3 h-3" /> Paid</span>}
+                    {payout.status === "rejected" && <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800"><XCircle className="w-3 h-3" /> Rejected</span>}
                   </td>
-                  <td className="whitespace-nowrap text-ink-500">
+                  <td className="px-6 py-4 text-[var(--ink-500)] whitespace-nowrap">
                     {new Date(payout.created_at).toLocaleDateString()}
                   </td>
                 </tr>
               ))}
               {payouts.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="py-10 text-center text-[13px] text-ink-500">
+                  <td colSpan={6} className="px-6 py-8 text-center text-[var(--ink-500)]">
                     No payouts requested yet.
                   </td>
                 </tr>

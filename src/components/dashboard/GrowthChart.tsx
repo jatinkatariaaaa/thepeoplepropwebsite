@@ -19,7 +19,7 @@ export function GrowthChart() {
   const max = Math.max(...data.map((d) => d.v));
 
   return (
-    <div className="surface-card rounded-none p-6 md:p-7">
+    <div className="surface-card rounded-2xl p-6 md:p-7">
       <div className="flex items-start justify-between mb-6">
         <div>
           <div className="text-xs uppercase tracking-[0.2em] text-[var(--ink-500)] mb-1">
@@ -29,7 +29,7 @@ export function GrowthChart() {
         </div>
         <div className="text-right">
           <div className="font-display text-xl text-[var(--ink-950)] tabular-nums">+38</div>
-          <div className="text-xs text-[var(--carbon-blue)] font-medium">+12% MoM</div>
+          <div className="text-xs text-[var(--accent-700)] font-medium">+12% MoM</div>
         </div>
       </div>
 
@@ -40,16 +40,16 @@ export function GrowthChart() {
           return (
             <div key={d.m} className="group relative flex-1 flex flex-col items-center justify-end">
               <div
-                className={`w-full rounded-none transition-all duration-500 ${
+                className={`w-full rounded-t-md transition-all duration-500 ${
                   isLatest
-                    ? "bg-[var(--carbon-blue)]"
-                    : "bg-[#e0e0e0] hover:bg-[#c6c6c6]"
+                    ? "bg-gradient-to-t from-[var(--accent-700)] to-[var(--accent-600)]"
+                    : "bg-[var(--paper-2)] border border-[var(--border)] hover:bg-[var(--accent-50)] hover:border-[var(--accent-200)]"
                 }`}
                 style={{ height: `${h}%` }}
                 title={`${d.m}: ${d.v} referrals`}
               />
               {/* Tooltip */}
-              <span className="absolute -top-7 opacity-0 group-hover:opacity-100 transition-opacity bg-[var(--carbon-blue)] text-white text-[10px] px-2 py-1 rounded-none tabular-nums pointer-events-none">
+              <span className="absolute -top-7 opacity-0 group-hover:opacity-100 transition-opacity bg-[var(--ink-950)] text-white text-[10px] px-2 py-1 rounded-md tabular-nums pointer-events-none">
                 {d.v}
               </span>
             </div>

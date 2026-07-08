@@ -19,76 +19,97 @@ export async function LeaderboardTable() {
   }));
 
   return (
-    <div className="dash-card overflow-hidden">
-      <div className="flex items-center gap-2 bg-[var(--dash-card)] px-4 py-4 sm:px-5">
-        <Trophy className="h-4 w-4 text-[var(--carbon-text-secondary)]" aria-hidden="true" />
-        <h2 className="text-base font-semibold tracking-tight text-[var(--carbon-text-primary)]">Global Rankings</h2>
+    <div className="bg-white rounded-[24px] border border-[var(--border)] overflow-hidden shadow-sm">
+      <div className="flex items-center gap-3 px-6 py-5 border-b border-[var(--border)]">
+        <Trophy className="w-5 h-5 text-[var(--accent-600)]" />
+        <h2 className="text-[18px] font-display font-bold text-[var(--ink-950)]">Global Rankings</h2>
       </div>
       
-      <div className="dash-scroll-x">
-        <table className="dash-table whitespace-nowrap">
+      <div className="overflow-x-auto">
+        <table className="w-full text-left whitespace-nowrap">
           <thead>
-            <tr>
-              <th>Rank</th>
-              <th>Trader</th>
-              <th>Country</th>
-              <th>Account Size</th>
-              <th>Profit</th>
-              <th>Profit %</th>
-              <th>Win Ratio</th>
-              <th>Pair</th>
-              <th>Avg. Win</th>
-              <th>Avg. Loss</th>
-              <th>Avg. Duration</th>
-              <th>Trades</th>
-              <th className="text-center">Losing Streak</th>
+            <tr className="bg-[var(--paper-2)]/50 text-[11px] font-bold text-[var(--ink-500)] tracking-wider uppercase border-b border-[var(--border)]">
+              <th className="px-6 py-4 font-bold">Rank</th>
+              <th className="px-6 py-4 font-bold">Trader</th>
+              <th className="px-6 py-4 font-bold">Country</th>
+              <th className="px-6 py-4 font-bold">Account Size</th>
+              <th className="px-6 py-4 font-bold">Profit</th>
+              <th className="px-6 py-4 font-bold">Profit %</th>
+              <th className="px-6 py-4 font-bold">Win Ratio</th>
+              <th className="px-6 py-4 font-bold">Pair</th>
+              <th className="px-6 py-4 font-bold">Avg. Win</th>
+              <th className="px-6 py-4 font-bold">Avg. Loss</th>
+              <th className="px-6 py-4 font-bold">Avg. Duration</th>
+              <th className="px-6 py-4 font-bold">Trades</th>
+              <th className="px-6 py-4 font-bold text-center">Losing Streak</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-[var(--border)] text-[13.5px] font-medium text-[var(--ink-950)]">
             {leaderboardData.map((row) => (
-              <tr key={row.rank} className="group">
-                <td>
-                  {row.rank <= 3 ? (
-                    <span className="carbon-tag carbon-tag-blue dash-num font-medium">{row.rank}</span>
-                  ) : (
-                    <span className="dash-num text-[13px] text-[var(--carbon-text-secondary)]">{row.rank}</span>
-                  )}
+              <tr key={row.rank} className="hover:bg-[var(--paper-2)]/50 transition-colors group">
+                <td className="px-6 py-4">
+                  <div className="flex items-center gap-2">
+                    {row.rank === 1 && (
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-200 to-yellow-500 flex items-center justify-center shadow-sm">
+                        <span className="text-yellow-900 font-bold text-xs">#1</span>
+                      </div>
+                    )}
+                    {row.rank === 2 && (
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-slate-200 to-slate-400 flex items-center justify-center shadow-sm">
+                        <span className="text-slate-800 font-bold text-xs">#2</span>
+                      </div>
+                    )}
+                    {row.rank === 3 && (
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-200 to-orange-400 flex items-center justify-center shadow-sm">
+                        <span className="text-orange-900 font-bold text-xs">#3</span>
+                      </div>
+                    )}
+                    {row.rank > 3 && (
+                      <div className="w-8 h-8 rounded-full bg-[var(--paper-2)] border border-[var(--border)] flex items-center justify-center">
+                        <span className="text-[var(--ink-500)] text-xs">{row.rank}</span>
+                      </div>
+                    )}
+                  </div>
                 </td>
-                <td className="font-medium text-ink">{row.trader}</td>
-                <td className="text-base">{row.country}</td>
-                <td>
-                  <span className="carbon-tag carbon-tag-gray dash-num">{row.account_size}</span>
+                <td className="px-6 py-4">{row.trader}</td>
+                <td className="px-6 py-4 text-xl">{row.country}</td>
+                <td className="px-6 py-4">
+                  <span className="px-2.5 py-1 rounded-md bg-[var(--ink-100)] text-[var(--ink-700)] font-bold text-[12px]">
+                    {row.account_size}
+                  </span>
                 </td>
-                <td>
-                  <span className="dash-num font-medium text-[var(--dash-positive)]">
+                <td className="px-6 py-4">
+                  <span className="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-600 font-bold">
                     {row.profitStr}
                   </span>
                 </td>
-                <td className="dash-num text-[var(--dash-positive)]">{row.profitPercentStr}</td>
-                <td>
-                  <div className="dash-num flex items-center gap-2">
-                    <div className="flex h-4 w-1 flex-col justify-end overflow-hidden bg-[var(--dash-layer-accent)]">
-                      <div
-                        className="w-full bg-[var(--dash-positive)]"
+                <td className="px-6 py-4 text-emerald-600 font-bold">{row.profitPercentStr}</td>
+                <td className="px-6 py-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-4 rounded-full bg-[var(--border)] overflow-hidden flex flex-col justify-end">
+                      <div 
+                        className="w-full bg-emerald-500 rounded-full" 
                         style={{ height: row.winRatioStr }}
                       />
                     </div>
                     {row.winRatioStr}
                   </div>
                 </td>
-                <td>
-                  <span className="carbon-tag carbon-tag-gray dash-num">{row.pair}</span>
+                <td className="px-6 py-4">
+                  <span className="px-2 py-1 rounded-md bg-[var(--ink-100)] text-[12px] font-bold text-[var(--ink-700)]">
+                    {row.pair}
+                  </span>
                 </td>
-                <td className="dash-num text-[var(--dash-positive)]">{row.avgWinStr}</td>
-                <td className="dash-num text-[var(--dash-negative)]">{row.avgLossStr}</td>
-                <td className="text-ink-600">{row.duration}</td>
-                <td className="dash-num">{row.trades}</td>
-                <td className="dash-num text-center font-medium text-[var(--dash-negative)]">{row.losing_streak}</td>
+                <td className="px-6 py-4 text-emerald-600">{row.avgWinStr}</td>
+                <td className="px-6 py-4 text-rose-600">{row.avgLossStr}</td>
+                <td className="px-6 py-4 text-[var(--ink-600)]">{row.duration}</td>
+                <td className="px-6 py-4">{row.trades}</td>
+                <td className="px-6 py-4 text-center text-rose-600 font-bold">{row.losing_streak}</td>
               </tr>
             ))}
             {leaderboardData.length === 0 && (
               <tr>
-                <td colSpan={13} className="py-10 text-center text-[13px] text-ink-500">
+                <td colSpan={13} className="px-6 py-8 text-center text-[var(--ink-500)] italic">
                   Leaderboard is currently being updated. Check back soon.
                 </td>
               </tr>

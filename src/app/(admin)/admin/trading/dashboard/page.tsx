@@ -89,13 +89,13 @@ export default function RiskDashboardPage() {
     setLoading(false);
   }
 
-  if (loading) return <div className="p-10 animate-pulse bg-[var(--dash-canvas)] rounded-none h-64" />;
+  if (loading) return <div className="p-10 animate-pulse bg-[var(--paper)] rounded-xl h-64" />;
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="flex items-center gap-2 text-xl font-semibold tracking-tight text-ink sm:text-2xl">
+          <h1 className="text-2xl font-display font-bold text-[var(--ink-950)] flex items-center gap-2">
             <Activity className="w-6 h-6 text-indigo-600" /> Risk Dashboard
           </h1>
           <p className="text-[var(--ink-500)] text-[14px]">Monitor live trading metrics and risk warnings.</p>
@@ -106,24 +106,24 @@ export default function RiskDashboardPage() {
         
         {/* Left Col: Alerts */}
         <div className="lg:col-span-1 space-y-6">
-          <div className="dash-card overflow-hidden">
-            <div className="p-4 border-b border-[var(--dash-hairline)] bg-[var(--dash-canvas)] flex items-center justify-between">
+          <div className="bg-white rounded-2xl border border-[var(--border)] overflow-hidden">
+            <div className="p-4 border-b border-[var(--border)] bg-[var(--paper)] flex items-center justify-between">
               <h3 className="font-bold text-[14px] text-[var(--ink-950)] flex items-center gap-2">
                 <ShieldAlert className="w-4 h-4 text-amber-600" /> Recent Alerts
               </h3>
             </div>
-            <div className="divide-y divide-[var(--dash-hairline)]">
+            <div className="divide-y divide-[var(--border)]">
               {alerts.length === 0 ? (
                 <div className="p-6 text-center text-[var(--ink-500)] text-[13px]">No recent alerts.</div>
               ) : (
                 alerts.map(alert => (
-                  <div key={alert.id} className="p-4 hover:bg-[var(--dash-canvas)] transition-colors">
+                  <div key={alert.id} className="p-4 hover:bg-[var(--paper-2)] transition-colors">
                     <div className="flex items-start gap-3">
                       <div className={cn(
-                        "mt-0.5 p-1.5 rounded-none shrink-0",
-                        alert.type === 'drawdown_warning' ? "bg-[#fcf4d6] text-[#8e6a00]" :
-                        alert.type === 'rule_violation' ? "bg-[#ffd7d9] text-[#a2191f]" :
-                        alert.type === 'passing_soon' ? "bg-[#a7f0ba] text-[#0e6027]" :
+                        "mt-0.5 p-1.5 rounded-lg shrink-0",
+                        alert.type === 'drawdown_warning' ? "bg-amber-100 text-amber-700" :
+                        alert.type === 'rule_violation' ? "bg-red-100 text-red-700" :
+                        alert.type === 'passing_soon' ? "bg-emerald-100 text-emerald-700" :
                         "bg-gray-100 text-gray-700"
                       )}>
                         <AlertTriangle className="w-4 h-4" />
@@ -152,17 +152,17 @@ export default function RiskDashboardPage() {
         <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
           
           {/* Nearing Daily Drawdown */}
-          <div className="dash-card overflow-hidden">
-            <div className="p-4 border-b border-[var(--dash-hairline)] bg-[var(--dash-canvas)]">
+          <div className="bg-white rounded-2xl border border-[var(--border)] overflow-hidden">
+            <div className="p-4 border-b border-[var(--border)] bg-[var(--paper)]">
               <h3 className="font-bold text-[14px] text-[var(--ink-950)] flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-[var(--dash-negative)]" /> Nearing Daily Limit
+                <AlertTriangle className="w-4 h-4 text-red-500" /> Nearing Daily Limit
               </h3>
             </div>
             <div className="p-0">
               {nearingDaily.length === 0 ? (
                 <div className="p-6 text-center text-[var(--ink-500)] text-[13px]">No accounts near daily limit.</div>
               ) : (
-                <div className="divide-y divide-[var(--dash-hairline)]">
+                <div className="divide-y divide-[var(--border)]">
                   {nearingDaily.map(acc => (
                     <div key={acc.id} className="p-4 flex items-center justify-between">
                       <div>
@@ -172,7 +172,7 @@ export default function RiskDashboardPage() {
                         <p className="text-[11px] text-[var(--ink-500)]">{acc.profiles?.display_name}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-[13px] font-bold text-[var(--dash-negative)]">{acc.riskPct.toFixed(1)}%</p>
+                        <p className="text-[13px] font-bold text-red-600">{acc.riskPct.toFixed(1)}%</p>
                         <p className="text-[10px] text-[var(--ink-500)] uppercase font-semibold">of Limit</p>
                       </div>
                     </div>
@@ -183,17 +183,17 @@ export default function RiskDashboardPage() {
           </div>
 
           {/* Nearing Max Drawdown */}
-          <div className="dash-card overflow-hidden">
-            <div className="p-4 border-b border-[var(--dash-hairline)] bg-[var(--dash-canvas)]">
+          <div className="bg-white rounded-2xl border border-[var(--border)] overflow-hidden">
+            <div className="p-4 border-b border-[var(--border)] bg-[var(--paper)]">
               <h3 className="font-bold text-[14px] text-[var(--ink-950)] flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-[var(--dash-negative)]" /> Nearing Max Limit
+                <TrendingUp className="w-4 h-4 text-red-600" /> Nearing Max Limit
               </h3>
             </div>
             <div className="p-0">
               {nearingMax.length === 0 ? (
                 <div className="p-6 text-center text-[var(--ink-500)] text-[13px]">No accounts near max limit.</div>
               ) : (
-                <div className="divide-y divide-[var(--dash-hairline)]">
+                <div className="divide-y divide-[var(--border)]">
                   {nearingMax.map(acc => (
                     <div key={acc.id} className="p-4 flex items-center justify-between">
                       <div>
@@ -203,7 +203,7 @@ export default function RiskDashboardPage() {
                         <p className="text-[11px] text-[var(--ink-500)]">{acc.profiles?.display_name}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-[13px] font-bold text-[var(--dash-negative)]">{acc.riskPct.toFixed(1)}%</p>
+                        <p className="text-[13px] font-bold text-red-600">{acc.riskPct.toFixed(1)}%</p>
                         <p className="text-[10px] text-[var(--ink-500)] uppercase font-semibold">of Limit</p>
                       </div>
                     </div>
@@ -214,32 +214,32 @@ export default function RiskDashboardPage() {
           </div>
 
           {/* Passing Soon */}
-          <div className="dash-card overflow-hidden md:col-span-2">
-            <div className="p-4 border-b border-[var(--dash-hairline)] bg-[var(--dash-canvas)]">
+          <div className="bg-white rounded-2xl border border-[var(--border)] overflow-hidden md:col-span-2">
+            <div className="p-4 border-b border-[var(--border)] bg-[var(--paper)]">
               <h3 className="font-bold text-[14px] text-[var(--ink-950)] flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[var(--dash-positive)]" /> Passing Soon
+                <CheckCircle2 className="w-4 h-4 text-emerald-500" /> Passing Soon
               </h3>
             </div>
             <div className="p-0">
               {passingSoon.length === 0 ? (
                 <div className="p-6 text-center text-[var(--ink-500)] text-[13px]">No accounts close to profit target.</div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-[var(--dash-hairline)]">
+                <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-[var(--border)]">
                   {passingSoon.map(acc => (
                     <div key={acc.id} className="p-4 flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center border border-emerald-100">
-                          <Wallet className="w-4 h-4 text-[var(--dash-positive)]" />
+                          <Wallet className="w-4 h-4 text-emerald-600" />
                         </div>
                         <div>
-                          <Link href={`/admin/trading/accounts/${acc.id}`} className="font-bold text-[13px] text-[var(--ink-950)] hover:text-[var(--dash-positive)]">
+                          <Link href={`/admin/trading/accounts/${acc.id}`} className="font-bold text-[13px] text-[var(--ink-950)] hover:text-emerald-600">
                             {acc.account_number}
                           </Link>
                           <p className="text-[11px] text-[var(--ink-500)]">{acc.profiles?.display_name}</p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-[13px] font-bold text-[var(--dash-positive)]">{acc.progressPct.toFixed(1)}%</p>
+                        <p className="text-[13px] font-bold text-emerald-600">{acc.progressPct.toFixed(1)}%</p>
                         <p className="text-[10px] text-[var(--ink-500)] uppercase font-semibold">to Target</p>
                       </div>
                     </div>

@@ -47,7 +47,7 @@ export function DashboardSidebar({
       </div>
       <Link
         href="/"
-        className="flex items-center gap-2 mx-3 mt-3 px-3 py-2 rounded-none text-[12px] text-[var(--ink-500)] hover:text-[var(--ink-950)] hover:bg-[var(--paper-2)]"
+        className="flex items-center gap-2 mx-3 mt-3 px-3 py-2 rounded-lg text-[12px] text-[var(--ink-500)] hover:text-[var(--ink-950)] hover:bg-[var(--paper-2)]"
       >
         <ArrowLeft className="w-3.5 h-3.5" />
         Back to site
@@ -59,9 +59,9 @@ export function DashboardSidebar({
             key={it.label}
             onClick={() => onChange(it.label)}
             className={cn(
-              "w-full flex items-center gap-3 px-3 py-2.5 rounded-none text-[13.5px] transition-all cursor-pointer",
+              "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] transition-all cursor-pointer",
               active === it.label
-                ? "bg-[var(--accent-50)] text-[var(--carbon-blue)] border border-[rgba(14,124,92,0.18)] font-medium"
+                ? "bg-[var(--accent-50)] text-[var(--accent-700)] border border-[rgba(14,124,92,0.18)] font-medium"
                 : "text-[var(--ink-500)] hover:text-[var(--ink-950)] hover:bg-[var(--paper-2)] border border-transparent",
             )}
           >
@@ -73,7 +73,7 @@ export function DashboardSidebar({
 
       <div className="p-4 border-t border-[var(--border)]">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-9 h-9 rounded-full bg-[var(--carbon-blue)] text-white grid place-items-center text-[12px] font-medium tracking-wide">
+          <div className="w-9 h-9 rounded-full bg-[var(--ink-950)] text-white grid place-items-center text-[12px] font-medium tracking-wide">
             {profile?.display_name ? profile.display_name.substring(0, 2).toUpperCase() : "US"}
           </div>
           <div className="min-w-0">
@@ -87,7 +87,7 @@ export function DashboardSidebar({
         </div>
         <button
           onClick={handleSignOut}
-          className="w-full flex items-center gap-2 px-3 py-2 rounded-none text-[13.5px] text-[var(--ink-500)] hover:text-[var(--ink-950)] hover:bg-[var(--paper-2)] transition-colors cursor-pointer"
+          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[13.5px] text-[var(--ink-500)] hover:text-[var(--ink-950)] hover:bg-[var(--paper-2)] transition-colors cursor-pointer"
         >
           <LogOut className="w-4 h-4" strokeWidth={2} />
           Sign out
@@ -130,7 +130,7 @@ export function MobileTopBar({
             className={cn(
               "shrink-0 flex items-center gap-2 px-3.5 py-2 rounded-full text-[12px] whitespace-nowrap transition-all border",
               active === it.label
-                ? "bg-[var(--accent-50)] text-[var(--carbon-blue)] border-[rgba(14,124,92,0.22)] font-medium"
+                ? "bg-[var(--accent-50)] text-[var(--accent-700)] border-[rgba(14,124,92,0.22)] font-medium"
                 : "border-[var(--border)] text-[var(--ink-500)] hover:text-[var(--ink-950)] bg-white",
             )}
           >

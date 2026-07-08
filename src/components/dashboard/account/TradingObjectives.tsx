@@ -1,70 +1,12 @@
 import { Clock, Info } from "lucide-react";
 
-function Money({ value }: { value: number }) {
-  return (
-    <span className="dash-num">
-      ${value.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-    </span>
-  );
-}
-
-function ObjectiveRow({
-  title,
-  badge,
-  rightLabel,
-  rightValue,
-  facts,
-  progress,
-  barColor,
-}: {
-  title: string;
-  badge?: React.ReactNode;
-  rightLabel: string;
-  rightValue: number;
-  facts: Array<{ label: string; value: number }>;
-  progress: number;
-  barColor: string;
-}) {
-  return (
-    <div className="p-4 sm:p-5">
-      <div className="mb-3 flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
-        <div className="flex flex-wrap items-center gap-2.5">
-          <h4 className="flex items-center gap-1.5 text-sm font-semibold text-ink">
-            {title}
-            <Info className="h-3.5 w-3.5 text-ink-300" aria-hidden="true" />
-          </h4>
-          {badge}
-        </div>
-        <div className="text-[13px] text-ink-500">
-          {rightLabel}:{" "}
-          <span className="dash-num font-medium text-ink">
-            ${rightValue.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-          </span>
-        </div>
-      </div>
-
-      <div className="mb-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-xs text-ink-500">
-        {facts.map((f) => (
-          <span key={f.label}>
-            {f.label}: <Money value={f.value} />
-          </span>
-        ))}
-      </div>
-
-      <div className="dash-track">
-        <div className={barColor} style={{ width: `${progress}%` }} />
-      </div>
-    </div>
-  );
-}
-
 export function TradingObjectives({ account }: { account: any }) {
   const startingBalance = Number(account?.starting_balance || 0);
   const currentEquity = Number(account?.equity || 0);
-
+  
   // Calculate Daily Loss limit
-  const maxDailyLossPercent = account?.trading_rules?.max_daily_drawdown_pct
-    ? Number(account.trading_rules.max_daily_drawdown_pct) / 100
+  const maxDailyLossPercent = account?.trading_rules?.max_daily_drawdown_pct 
+    ? Number(account.trading_rules.max_daily_drawdown_pct) / 100 
     : 0.05;
   const maxAllowedDailyLoss = startingBalance * maxDailyLossPercent;
   // Simplified daily loss remaining (assuming equity hasn't dropped below start)
@@ -93,51 +35,80 @@ export function TradingObjectives({ account }: { account: any }) {
 
   return (
     <div className="mb-8">
-      <h3 className="mb-3 text-[15px] font-semibold tracking-tight text-ink">Trading Objectives</h3>
+      <h3 className="font-bold text-[16px] text-[var(--ink-950)] mb-4">Trading Objectives</h3>
+      
+      <div className="bg-white border border-[var(--border)] rounded-[24px] shadow-sm divide-y divide-[var(--border)] overflow-hidden">
+        
+        {/* Daily Loss */}
+        <div className="p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+            <div className="flex items-center gap-3">
+              <h4 className="font-bold text-[15px] text-[var(--ink-950)] flex items-center gap-2">
+                Maximum Daily Loss <Info className="w-4 h-4 text-[var(--ink-400)]" />
+              </h4>
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[var(--ink-950)] text-white text-[12px] font-bold">
+                <Clock className="w-3.5 h-3.5" />
+                Resets In: 24:00:00
+              </div>
+            </div>
+            <div className="text-[13px] font-medium text-[var(--ink-950)]">
+              Remaining: ${remainingDailyLoss.toLocaleString(undefined, {minimumFractionDigits: 2})}
+            </div>
+          </div>
+          
+          <div className="flex flex-wrap items-center gap-6 text-[13px] text-[var(--ink-500)] mb-4 font-medium">
+            <span>Maximum Allowed Daily Loss: ${maxAllowedDailyLoss.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+            <span>Todays Starting Equity: ${startingBalance.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+            <span>Balance Threshold: ${dailyBalanceThreshold.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+          </div>
 
-      <div className="dash-card divide-y divide-[var(--dash-hairline)] overflow-hidden">
-        <ObjectiveRow
-          title="Maximum Daily Loss"
-          badge={
-            <span className="inline-flex items-center gap-1 rounded-full border border-ink-200 bg-ink-50 px-2 py-0.5 text-[11px] font-medium text-ink-600">
-              <Clock className="h-3 w-3" aria-hidden="true" />
-              Resets in 24:00:00
-            </span>
-          }
-          rightLabel="Remaining"
-          rightValue={remainingDailyLoss}
-          facts={[
-            { label: "Max allowed daily loss", value: maxAllowedDailyLoss },
-            { label: "Today's starting equity", value: startingBalance },
-            { label: "Balance threshold", value: dailyBalanceThreshold },
-          ]}
-          progress={dailyLossProgress}
-          barColor={dailyLossProgress > 90 ? "bg-[var(--dash-negative)]" : "bg-ink"}
-        />
+          <div className="h-2 w-full bg-[var(--paper-2)] rounded-full overflow-hidden">
+            <div className={`h-full ${dailyLossProgress > 90 ? 'bg-rose-500' : 'bg-[var(--accent)]'}`} style={{ width: `${dailyLossProgress}%` }} />
+          </div>
+        </div>
 
-        <ObjectiveRow
-          title="Maximum Overall Loss"
-          rightLabel="Remaining"
-          rightValue={remainingOverallLoss}
-          facts={[
-            { label: "Max allowed loss", value: maxAllowedOverallLoss },
-            { label: "Balance threshold", value: overallBalanceThreshold },
-          ]}
-          progress={overallLossProgress}
-          barColor={overallLossProgress > 90 ? "bg-[var(--dash-negative)]" : "bg-ink"}
-        />
+        {/* Max Loss */}
+        <div className="p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+            <h4 className="font-bold text-[15px] text-[var(--ink-950)] flex items-center gap-2">
+              Maximum Overall Loss <Info className="w-4 h-4 text-[var(--ink-400)]" />
+            </h4>
+            <div className="text-[13px] font-medium text-[var(--ink-950)]">
+              Remaining: ${remainingOverallLoss.toLocaleString(undefined, {minimumFractionDigits: 2})}
+            </div>
+          </div>
+          
+          <div className="flex flex-wrap items-center gap-6 text-[13px] text-[var(--ink-500)] mb-4 font-medium">
+            <span>Maximum Allowed Loss: ${maxAllowedOverallLoss.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+            <span>Balance Threshold: ${overallBalanceThreshold.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+          </div>
 
-        <ObjectiveRow
-          title="Profit Target"
-          rightLabel="Current Profit"
-          rightValue={currentProfit}
-          facts={[
-            { label: "Target amount", value: profitTargetAmount },
-            { label: "Target balance", value: startingBalance + profitTargetAmount },
-          ]}
-          progress={profitTargetProgress}
-          barColor="bg-[var(--dash-positive)]"
-        />
+          <div className="h-2 w-full bg-[var(--paper-2)] rounded-full overflow-hidden">
+            <div className={`h-full ${overallLossProgress > 90 ? 'bg-rose-500' : 'bg-[var(--accent)]'}`} style={{ width: `${overallLossProgress}%` }} />
+          </div>
+        </div>
+
+        {/* Profit Target */}
+        <div className="p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+            <h4 className="font-bold text-[15px] text-[var(--ink-950)] flex items-center gap-2">
+              Profit Target <Info className="w-4 h-4 text-[var(--ink-400)]" />
+            </h4>
+            <div className="text-[13px] font-medium text-[var(--ink-950)]">
+              Current Profit: ${currentProfit.toLocaleString(undefined, {minimumFractionDigits: 2})}
+            </div>
+          </div>
+          
+          <div className="flex flex-wrap items-center gap-6 text-[13px] text-[var(--ink-500)] mb-4 font-medium">
+            <span>Target Amount: ${profitTargetAmount.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+            <span>Target Balance: ${(startingBalance + profitTargetAmount).toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+          </div>
+
+          <div className="h-2 w-full bg-[var(--paper-2)] rounded-full overflow-hidden">
+            <div className="h-full bg-emerald-500" style={{ width: `${profitTargetProgress}%` }} />
+          </div>
+        </div>
+
       </div>
     </div>
   );

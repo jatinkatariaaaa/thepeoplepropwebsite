@@ -93,16 +93,16 @@ export default function AdminRolesPage() {
         return (
           <div className="flex items-center gap-2">
             <span className={`inline-flex px-2.5 py-1 rounded-full text-[11px] font-bold uppercase ${
-              r === "super_admin" ? "bg-[var(--carbon-blue)] text-white" :
+              r === "super_admin" ? "bg-[var(--ink-950)] text-white" :
               r === "finance" ? "bg-violet-100 text-violet-700" :
-              r === "support" ? "bg-[#e0e0e0] text-[#393939]" :
-              r === "marketing" ? "bg-[#fcf4d6] text-[#8e6a00]" :
+              r === "support" ? "bg-blue-100 text-blue-700" :
+              r === "marketing" ? "bg-amber-100 text-amber-700" :
               "bg-gray-100 text-gray-700"
             }`}>
               {r.replace("_", " ")}
             </span>
             {row.original.is_legacy && (
-              <span className="text-[10px] bg-red-50 text-[var(--dash-negative)] px-1.5 py-0.5 rounded font-bold" title="Needs migration to admin_roles table">Legacy</span>
+              <span className="text-[10px] bg-red-50 text-red-600 px-1.5 py-0.5 rounded font-bold" title="Needs migration to admin_roles table">Legacy</span>
             )}
           </div>
         );
@@ -120,7 +120,7 @@ export default function AdminRolesPage() {
         isSuperAdmin ? (
           <button
             onClick={() => handleRevoke(row.original.user_id)}
-            className="p-1.5 text-[var(--ink-400)] hover:text-[var(--dash-negative)] hover:bg-red-50 rounded transition-colors"
+            className="p-1.5 text-[var(--ink-400)] hover:text-red-600 hover:bg-red-50 rounded transition-colors"
             title="Revoke Access"
           >
             <Trash2 className="w-4 h-4" />
@@ -133,10 +133,10 @@ export default function AdminRolesPage() {
   ];
 
   return (
-    <div className="max-w-6xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
+    <div className="max-w-6xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
-          <h1 className="flex items-center gap-2 text-xl font-semibold tracking-tight text-ink">
+          <h1 className="text-2xl font-bold text-[var(--ink-950)] flex items-center gap-2">
             <Shield className="w-6 h-6" /> Admin Roles
           </h1>
           <p className="text-[var(--ink-500)] mt-1">Manage admin access and role-based permissions.</p>
@@ -144,7 +144,7 @@ export default function AdminRolesPage() {
         {isSuperAdmin && (
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 carbon-btn-primary"
+            className="flex items-center gap-2 px-4 py-2 bg-[var(--ink-950)] text-white rounded-xl font-bold hover:bg-black transition-colors"
           >
             <Plus className="w-4 h-4" /> Add Admin
           </button>
@@ -152,7 +152,7 @@ export default function AdminRolesPage() {
       </div>
 
       {!isSuperAdmin && (
-        <div className="mb-6 bg-blue-50 border border-blue-200 text-blue-800 p-4 rounded-none flex items-start gap-3">
+        <div className="mb-6 bg-blue-50 border border-blue-200 text-blue-800 p-4 rounded-xl flex items-start gap-3">
           <ShieldAlert className="w-5 h-5 mt-0.5 shrink-0" />
           <div>
             <p className="font-bold text-sm">Read-Only View</p>
@@ -170,22 +170,22 @@ export default function AdminRolesPage() {
       >
         <div className="space-y-4">
           <div>
-            <label className="mb-1.5 block text-[13px] font-medium text-ink-700">User Email</label>
+            <label className="block text-sm font-semibold mb-1">User Email</label>
             <input
               type="email"
               value={newEmail}
               onChange={(e) => setNewEmail(e.target.value)}
-              className="w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+              className="w-full border border-[var(--border)] rounded-xl p-2.5 outline-none focus:border-[var(--ink-950)]"
               placeholder="Existing user's email address"
             />
             <p className="text-[11px] text-[var(--ink-500)] mt-1">User must already have an account.</p>
           </div>
           <div>
-            <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Role</label>
+            <label className="block text-sm font-semibold mb-1">Role</label>
             <select
               value={newRole}
               onChange={(e) => setNewRole(e.target.value)}
-              className="w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400 bg-white"
+              className="w-full border border-[var(--border)] rounded-xl p-2.5 outline-none focus:border-[var(--ink-950)] bg-white"
             >
               <option value="super_admin">Super Admin (Full Access)</option>
               <option value="finance">Finance (Orders, Reports, Dashboards)</option>
@@ -195,7 +195,7 @@ export default function AdminRolesPage() {
           </div>
           <div className="flex justify-end gap-3 mt-6">
             <button onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-[var(--ink-500)] font-semibold">Cancel</button>
-            <button onClick={handleAssignRole} className="px-4 py-2 carbon-btn-primary">Assign Role</button>
+            <button onClick={handleAssignRole} className="px-4 py-2 bg-[var(--ink-950)] text-white rounded-xl font-bold">Assign Role</button>
           </div>
         </div>
       </AdminModal>

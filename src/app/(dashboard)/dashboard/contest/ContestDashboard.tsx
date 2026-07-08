@@ -141,14 +141,17 @@ export function ContestDashboard() {
   /* --- loading skeleton --- */
   if (loading) {
     return (
-      <div className="mx-auto max-w-5xl animate-in fade-in duration-500">
-        <div className="mb-6">
-          <div className="dash-skeleton h-7 w-48" />
-          <div className="dash-skeleton mt-3 h-4 w-80" />
+      <div className="max-w-5xl mx-auto animate-in fade-in duration-500">
+        <div className="mb-8">
+          <div className="h-8 w-48 bg-[var(--border)] rounded-lg animate-pulse" />
+          <div className="h-5 w-80 bg-[var(--border)] rounded-lg animate-pulse mt-3" />
         </div>
-        <div className="space-y-4">
+        <div className="space-y-6">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="dash-skeleton h-40 rounded-none" />
+            <div
+              key={i}
+              className="bg-white rounded-2xl border border-[var(--border)] shadow-sm h-40 animate-pulse"
+            />
           ))}
         </div>
       </div>
@@ -158,16 +161,16 @@ export function ContestDashboard() {
   /* --- error fallback --- */
   if (error && !entry) {
     return (
-      <div className="mx-auto max-w-5xl animate-in fade-in duration-500">
-        <div className="dash-card p-8 text-center">
-          <Gift className="mx-auto mb-4 h-8 w-8 text-rose-400" />
-          <h2 className="mb-1.5 text-base font-semibold tracking-tight text-ink">
+      <div className="max-w-5xl mx-auto animate-in fade-in duration-500">
+        <div className="bg-white rounded-2xl border border-red-200 shadow-sm p-8 text-center">
+          <Gift className="w-12 h-12 text-red-400 mx-auto mb-4" />
+          <h2 className="text-[18px] font-bold text-[var(--ink-950)] mb-2">
             Unable to load contest
           </h2>
-          <p className="text-sm text-ink-500">{error}</p>
+          <p className="text-[14px] text-[var(--ink-500)]">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="mt-5 inline-flex h-10 items-center rounded-none bg-[var(--carbon-blue)] px-5 text-[13px] font-semibold text-white transition-colors hover:bg-[var(--carbon-blue-hover)]"
+            className="mt-5 bg-[var(--accent)] hover:bg-[var(--accent-700)] text-white rounded-xl px-5 py-2.5 font-medium text-[14px] transition-colors"
           >
             Try Again
           </button>
@@ -180,22 +183,22 @@ export function ContestDashboard() {
      MAIN RENDER
      ============================================================ */
   return (
-    <div className="mx-auto max-w-5xl animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
+    <div className="max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
       {/* ---- claimed banner ---- */}
       {entry?.claimed && (
-        <div className="mb-6 flex items-center gap-3 rounded-none border bg-success-50 px-5 py-4">
+        <div className="mb-6 bg-emerald-50 border border-emerald-200 rounded-2xl px-6 py-4 flex items-center gap-3">
           <span className="text-2xl">🎉</span>
           <div className="flex-1">
-            <p className="text-sm font-semibold text-success-700">
+            <p className="text-[14px] font-semibold text-emerald-800">
               You claimed your free 10K 3-Step account!
             </p>
-            <p className="mt-0.5 text-[13px] text-success-700/80">
+            <p className="text-[13px] text-emerald-600 mt-0.5">
               Check your accounts page to view it.
             </p>
           </div>
           <a
             href="/dashboard"
-            className="flex items-center gap-1.5 text-[13px] font-medium text-success-700 transition-colors hover:text-ink"
+            className="flex items-center gap-1.5 text-[13px] font-medium text-emerald-700 hover:text-emerald-900 transition-colors"
           >
             View Accounts <ArrowRight className="w-4 h-4" />
           </a>
@@ -203,98 +206,146 @@ export function ContestDashboard() {
       )}
 
       {/* ---- page header ---- */}
-      <div className="mb-6">
-        <p className="dash-overline mb-1.5">Rewards</p>
-        <h1 className="text-xl font-semibold tracking-tight text-ink sm:text-2xl">
-          Contest
-        </h1>
-        <p className="mt-1 text-sm text-ink-500">
-          Invite 10 friends and claim your free 10K account.
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-10 h-10 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center">
+            <Gift className="w-5 h-5 text-[var(--accent)]" />
+          </div>
+          <h1 className="text-2xl font-display font-bold text-[var(--ink-950)]">
+            Contest
+          </h1>
+        </div>
+        <p className="text-[14px] text-[var(--ink-500)]">
+          Invite 10 friends and claim your free 10K account
         </p>
       </div>
 
       {/* ---- progress section ---- */}
-      <div className="dash-card mb-6 overflow-hidden">
-        <div className="border-b border-[var(--dash-hairline)] px-4 py-3.5 sm:px-5">
-          <h2 className="text-[15px] font-semibold tracking-tight text-ink">
+      <div className="bg-white rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden mb-6">
+        <div className="p-6 border-b border-[var(--border)]">
+          <h2 className="text-[16px] font-bold text-[var(--ink-950)]">
             Your Progress
           </h2>
         </div>
-        <div className="p-4 sm:p-5">
+        <div className="p-6">
           {/* step circles removed */}
 
           {/* label */}
-          <div className="mb-3 flex items-baseline justify-between">
-            <span className="dash-num text-sm font-semibold text-ink">{count} <span className="font-normal text-ink-400">/ {target}</span></span>
-            <span className="dash-num text-xs text-ink-500">{pct}% complete</span>
-          </div>
+          <p className="text-center text-[14px] font-medium text-[var(--ink-600)] mb-4">
+            {count} of {target} referrals completed
+          </p>
 
           {/* progress bar */}
-          <div className="dash-track">
-            <div className="bg-ink-950" style={{ width: `${pct}%` }} />
+          <div className="h-2 rounded-full bg-[var(--border)] overflow-hidden">
+            <div
+              className="h-full rounded-full bg-[var(--accent)] transition-all duration-700 ease-out"
+              style={{ width: `${pct}%` }}
+            />
           </div>
         </div>
       </div>
 
       {/* ---- stats grid ---- */}
-      <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         {/* total referrals */}
-        <div className="dash-card dash-card-hover p-4 sm:p-5">
-          <div className="mb-3 flex items-center justify-between">
-            <p className="dash-overline">Total Referrals</p>
-            <Users className="h-4 w-4 text-ink-300" aria-hidden="true" />
+        <div className="bg-white rounded-2xl p-6 border border-[var(--border)] shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center">
+              <Users className="w-6 h-6 text-blue-600" />
+            </div>
+            <div>
+              <p className="text-[13px] font-medium text-[var(--ink-500)]">
+                Total Referrals
+              </p>
+              <p className="text-[32px] font-bold text-[var(--ink-950)] leading-tight mt-0.5">
+                {count}
+              </p>
+            </div>
           </div>
-          <p className="dash-figure text-2xl">{count}</p>
         </div>
 
         {/* remaining */}
-        <div className="dash-card dash-card-hover p-4 sm:p-5">
-          <div className="mb-3 flex items-center justify-between">
-            <p className="dash-overline">Remaining</p>
-            <Clock className="h-4 w-4 text-ink-300" aria-hidden="true" />
+        <div className="bg-white rounded-2xl p-6 border border-[var(--border)] shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center">
+              <Clock className="w-6 h-6 text-amber-600" />
+            </div>
+            <div>
+              <p className="text-[13px] font-medium text-[var(--ink-500)]">
+                Remaining
+              </p>
+              <p className="text-[32px] font-bold text-[var(--ink-950)] leading-tight mt-0.5">
+                {remaining}
+              </p>
+            </div>
           </div>
-          <p className="dash-figure text-2xl">{remaining}</p>
         </div>
 
         {/* status */}
-        <div className="dash-card dash-card-hover p-4 sm:p-5">
-          <div className="mb-3 flex items-center justify-between">
-            <p className="dash-overline">Status</p>
-            <Trophy className="h-4 w-4 text-ink-300" aria-hidden="true" />
+        <div className="bg-white rounded-2xl p-6 border border-[var(--border)] shadow-sm">
+          <div className="flex items-center gap-4">
+            <div
+              className={cn(
+                "w-12 h-12 rounded-xl flex items-center justify-center",
+                entry?.claimed
+                  ? "bg-emerald-50"
+                  : canClaim
+                    ? "bg-[var(--accent)]/10"
+                    : "bg-purple-50"
+              )}
+            >
+              <Trophy
+                className={cn(
+                  "w-6 h-6",
+                  entry?.claimed
+                    ? "text-emerald-600"
+                    : canClaim
+                      ? "text-[var(--accent)]"
+                      : "text-purple-600"
+                )}
+              />
+            </div>
+            <div>
+              <p className="text-[13px] font-medium text-[var(--ink-500)]">
+                Status
+              </p>
+              <p
+                className={cn(
+                  "text-[16px] font-bold leading-tight mt-0.5",
+                  entry?.claimed
+                    ? "text-emerald-600"
+                    : canClaim
+                      ? "text-[var(--accent)]"
+                      : "text-[var(--ink-950)]"
+                )}
+              >
+                {entry?.claimed
+                  ? "Claimed ✅"
+                  : canClaim
+                    ? "Ready to Claim!"
+                    : "In Progress"}
+              </p>
+            </div>
           </div>
-          <p
-            className={cn(
-              "text-base font-semibold tracking-tight",
-              entry?.claimed || canClaim
-                ? "text-[var(--dash-positive)]"
-                : "text-ink"
-            )}
-          >
-            {entry?.claimed
-              ? "Claimed"
-              : canClaim
-                ? "Ready to Claim"
-                : "In Progress"}
-          </p>
         </div>
       </div>
 
       {/* ---- referral link ---- */}
-      <div className="dash-card mb-6 overflow-hidden">
-        <div className="border-b border-[var(--dash-hairline)] px-4 py-3.5 sm:px-5">
-          <h2 className="text-[15px] font-semibold tracking-tight text-ink">
+      <div className="bg-white rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden mb-6">
+        <div className="p-6 border-b border-[var(--border)]">
+          <h2 className="text-[16px] font-bold text-[var(--ink-950)]">
             Your Referral Link
           </h2>
-          <p className="mt-1 text-[13px] text-ink-500">
+          <p className="text-[13px] text-[var(--ink-500)] mt-1">
             Share this link with friends to earn referrals
           </p>
         </div>
-        <div className="bg-[var(--dash-canvas)] p-4 sm:p-5">
+        <div className="p-6 bg-[var(--paper-2)]">
           {/* link + copy */}
-          <div className="mb-4 flex flex-col gap-3 sm:flex-row">
-            <div className="flex h-11 flex-1 items-center overflow-hidden rounded-none border border-[var(--dash-hairline)] bg-white px-3.5">
-              <Link2 className="mr-2 h-4 w-4 shrink-0 text-ink-400" />
-              <span className="dash-num truncate text-[13px] text-ink-600">
+          <div className="flex flex-col sm:flex-row gap-3 mb-5">
+            <div className="flex-1 bg-white border border-[var(--border)] rounded-xl h-12 flex items-center px-4 overflow-hidden">
+              <Link2 className="w-4 h-4 text-[var(--ink-400)] shrink-0 mr-2" />
+              <span className="text-[14px] font-mono text-[var(--ink-600)] truncate">
                 {link || "Loading..."}
               </span>
             </div>
@@ -302,10 +353,10 @@ export function ContestDashboard() {
               onClick={() => handleCopy()}
               disabled={!link}
               className={cn(
-                "flex h-11 shrink-0 items-center justify-center gap-2 rounded-none px-5 text-[13px] font-semibold transition-all",
+                "h-12 px-6 rounded-xl font-bold text-[14px] flex items-center justify-center gap-2 transition-all shrink-0",
                 copied
-                  ? "border bg-[#a7f0ba] text-[#0e6027]"
-                  : "bg-[var(--carbon-blue)] text-white hover:bg-[var(--carbon-blue-hover)] active:scale-[0.98]",
+                  ? "bg-emerald-100 text-emerald-700 border border-emerald-200"
+                  : "bg-[var(--ink-950)] hover:bg-[var(--ink-800)] text-white shadow-md active:scale-[0.98]",
                 !link && "opacity-50 cursor-not-allowed"
               )}
             >
@@ -327,7 +378,7 @@ export function ContestDashboard() {
               href={shareLinks.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-9 items-center gap-2 rounded-none border border-[var(--dash-hairline)] bg-white px-3.5 text-[13px] font-medium text-ink-700 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-medium bg-[#25D366] hover:bg-[#20bd5a] text-white transition-colors"
             >
               <Share2 className="w-4 h-4" />
               WhatsApp
@@ -336,7 +387,7 @@ export function ContestDashboard() {
               href={shareLinks.telegram}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-9 items-center gap-2 rounded-none border border-[var(--dash-hairline)] bg-white px-3.5 text-[13px] font-medium text-ink-700 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-medium bg-[#0088CC] hover:bg-[#007ab8] text-white transition-colors"
             >
               <Share2 className="w-4 h-4" />
               Telegram
@@ -345,14 +396,14 @@ export function ContestDashboard() {
               href={shareLinks.twitter}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-9 items-center gap-2 rounded-none border border-[var(--dash-hairline)] bg-white px-3.5 text-[13px] font-medium text-ink-700 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-medium bg-[var(--ink-900)] hover:bg-[var(--ink-800)] text-white transition-colors"
             >
               <ExternalLink className="w-4 h-4" />
               Twitter / X
             </a>
             <button
               onClick={() => handleCopy()}
-              className="inline-flex h-9 items-center gap-2 rounded-none border border-[var(--dash-hairline)] bg-white px-3.5 text-[13px] font-medium text-ink-700 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-medium bg-white border border-[var(--border)] hover:bg-[var(--paper-2)] text-[var(--ink-700)] transition-colors"
             >
               <Copy className="w-4 h-4" />
               Copy Link
@@ -362,9 +413,9 @@ export function ContestDashboard() {
       </div>
 
       {/* ---- referrals table ---- */}
-      <div className="dash-card mb-6 overflow-hidden">
-        <div className="border-b border-[var(--dash-hairline)] px-4 py-3.5 sm:px-5">
-          <h2 className="text-[15px] font-semibold tracking-tight text-ink">
+      <div className="bg-white rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden mb-6">
+        <div className="p-6 border-b border-[var(--border)]">
+          <h2 className="text-[16px] font-bold text-[var(--ink-950)]">
             Your Referrals
           </h2>
         </div>
@@ -372,37 +423,46 @@ export function ContestDashboard() {
         {referrals.length === 0 ? (
           <div className="p-6">
             <div className="text-center py-10">
-              <Users className="mx-auto mb-3 h-6 w-6 text-ink-300" />
-              <p className="text-sm font-semibold text-ink">
+              <Users className="w-10 h-10 text-[var(--ink-300)] mx-auto mb-3" />
+              <p className="text-[14px] font-medium text-[var(--ink-950)]">
                 No referrals yet
               </p>
-              <p className="mt-1 text-[13px] text-ink-500">
+              <p className="text-[13px] text-[var(--ink-500)] mt-1">
                 Share your link to start getting referrals
               </p>
             </div>
           </div>
         ) : (
-          <div className="dash-scroll-x">
-            <table className="dash-table">
+          <div className="overflow-x-auto">
+            <table className="w-full text-[13px]">
               <thead>
-                <tr>
-                  <th>Email</th>
-                  <th>Signed Up</th>
-                  <th>Status</th>
+                <tr className="border-b border-[var(--border)]">
+                  <th className="text-left px-6 py-3 text-[var(--ink-500)] font-medium uppercase tracking-wider text-[11px]">
+                    Email
+                  </th>
+                  <th className="text-left px-6 py-3 text-[var(--ink-500)] font-medium uppercase tracking-wider text-[11px]">
+                    Signed Up
+                  </th>
+                  <th className="text-left px-6 py-3 text-[var(--ink-500)] font-medium uppercase tracking-wider text-[11px]">
+                    Status
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {referrals.map((ref) => (
-                  <tr key={ref.id}>
-                    <td className="dash-num text-ink-700">
+                  <tr
+                    key={ref.id}
+                    className="border-b border-[var(--border)] last:border-0 hover:bg-[var(--paper-2)] transition-colors"
+                  >
+                    <td className="px-6 py-4 text-[var(--ink-700)] font-mono">
                       {maskEmail(ref.email)}
                     </td>
-                    <td className="text-ink-600">
+                    <td className="px-6 py-4 text-[var(--ink-600)]">
                       {formatDate(ref.created_at)}
                     </td>
-                    <td>
-                      <span className="inline-flex items-center gap-1 rounded-full border bg-success-50 px-2 py-0.5 text-[11px] font-medium text-success-700">
-                        <CheckCircle className="h-3 w-3" />
+                    <td className="px-6 py-4">
+                      <span className="inline-flex items-center gap-1 text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full text-[12px] font-medium">
+                        <CheckCircle className="w-3.5 h-3.5" />
                         Verified
                       </span>
                     </td>
@@ -416,30 +476,31 @@ export function ContestDashboard() {
 
       {/* ---- claim section ---- */}
       {canClaim && !claimSuccess && (
-        <div className="dash-card relative mb-6 overflow-hidden border-ink-950">
+        <div className="bg-white rounded-2xl border-2 border-[var(--accent)] shadow-sm overflow-hidden mb-6 relative">
           {/* subtle confetti-like accent */}
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-0.5 bg-lime-500" aria-hidden="true" />
-          <div className="relative p-8 text-center">
-            <h2 className="mb-2 text-lg font-semibold tracking-tight text-ink">
+          <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent)]/5 via-transparent to-[var(--accent)]/5 pointer-events-none" />
+          <div className="p-8 text-center relative">
+            <span className="text-4xl mb-4 block">🎉</span>
+            <h2 className="text-[20px] font-bold text-[var(--ink-950)] mb-2">
               Congratulations! You&apos;ve completed all {target} referrals!
             </h2>
-            <p className="mb-6 text-sm text-ink-500">
+            <p className="text-[14px] text-[var(--ink-500)] mb-6">
               Click below to claim your free 10K 3-Step trading account
             </p>
             <button
               onClick={handleClaim}
               disabled={claiming}
               className={cn(
-                "inline-flex h-11 items-center gap-2 rounded-none px-6 text-sm font-semibold transition-all",
+                "inline-flex items-center gap-2 px-8 py-3.5 rounded-xl font-bold text-[16px] transition-all shadow-lg",
                 claiming
-                  ? "cursor-wait bg-ink/60 text-white"
-                  : "bg-[var(--carbon-blue)] text-white hover:bg-[var(--carbon-blue-hover)] active:scale-[0.98]"
+                  ? "bg-[var(--accent)]/60 text-white cursor-wait"
+                  : "bg-[var(--accent)] hover:bg-[var(--accent-700)] text-white hover:shadow-xl active:scale-[0.98]"
               )}
             >
               {claiming ? (
                 <>
                   <svg
-                    className="h-4 w-4 animate-spin"
+                    className="animate-spin w-5 h-5"
                     viewBox="0 0 24 24"
                     fill="none"
                   >
@@ -461,7 +522,7 @@ export function ContestDashboard() {
                 </>
               ) : (
                 <>
-                  <Trophy className="h-4 w-4" />
+                  <Trophy className="w-5 h-5" />
                   Claim Your Free 10K Account
                 </>
               )}
@@ -472,20 +533,20 @@ export function ContestDashboard() {
 
       {/* ---- already claimed (came back to page) ---- */}
       {entry?.claimed && !claimSuccess && (
-        <div className="mb-6 rounded-none border bg-success-50 p-5">
+        <div className="bg-emerald-50 rounded-2xl border border-emerald-200 shadow-sm p-6 mb-6">
           <div className="flex items-center gap-3">
-            <CheckCircle className="h-5 w-5 shrink-0 text-success-700" />
+            <CheckCircle className="w-6 h-6 text-emerald-600 shrink-0" />
             <div>
-              <p className="text-sm font-semibold text-success-700">
+              <p className="text-[14px] font-semibold text-emerald-800">
                 You&apos;ve already claimed your free account
               </p>
-              <p className="mt-0.5 text-[13px] text-success-700/80">
+              <p className="text-[13px] text-emerald-600 mt-0.5">
                 Head to your accounts page to start trading.
               </p>
             </div>
             <a
               href="/dashboard"
-              className="ml-auto flex shrink-0 items-center gap-1.5 text-[13px] font-medium text-success-700 transition-colors hover:text-ink"
+              className="ml-auto flex items-center gap-1.5 text-[13px] font-medium text-emerald-700 hover:text-emerald-900 transition-colors shrink-0"
             >
               View Accounts <ArrowRight className="w-4 h-4" />
             </a>
@@ -495,17 +556,18 @@ export function ContestDashboard() {
 
       {/* ---- just claimed success ---- */}
       {claimSuccess && (
-        <div className="mb-6 rounded-none border bg-success-50 p-8 text-center">
-          <h2 className="mb-2 text-lg font-semibold tracking-tight text-success-700">
+        <div className="bg-emerald-50 rounded-2xl border border-emerald-200 shadow-sm p-8 mb-6 text-center">
+          <span className="text-4xl mb-3 block">🎉</span>
+          <h2 className="text-[20px] font-bold text-emerald-800 mb-2">
             Your free 10K account has been claimed!
           </h2>
-          <p className="mb-5 text-sm text-success-700/80">
+          <p className="text-[14px] text-emerald-600 mb-5">
             Check your accounts page to view and start trading on your new
             account.
           </p>
           <a
             href="/dashboard"
-            className="inline-flex h-10 items-center gap-2 rounded-none bg-[var(--carbon-blue)] px-5 text-[13px] font-semibold text-white transition-colors hover:bg-[var(--carbon-blue-hover)]"
+            className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-6 py-3 font-medium text-[14px] transition-colors"
           >
             Go to Accounts <ArrowRight className="w-4 h-4" />
           </a>
@@ -514,8 +576,8 @@ export function ContestDashboard() {
 
       {/* ---- inline error toast ---- */}
       {error && entry && (
-        <div className="mb-6 rounded-none border bg-rose-50 px-5 py-4">
-          <p className="text-[13px] text-rose-700">{error}</p>
+        <div className="bg-red-50 border border-red-200 rounded-2xl px-6 py-4 mb-6">
+          <p className="text-[13px] text-red-700">{error}</p>
         </div>
       )}
     </div>

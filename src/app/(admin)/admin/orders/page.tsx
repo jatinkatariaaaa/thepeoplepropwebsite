@@ -101,10 +101,10 @@ export default function AdminOrdersPage() {
         const s = row.original.payment_status;
         return (
           <span className={`inline-flex px-2 py-0.5 rounded-full text-[11px] font-bold uppercase ${
-            s === "paid" ? "bg-[#a7f0ba] text-[#0e6027]" :
-            s === "refunded" ? "bg-[#ffd7d9] text-[#a2191f]" :
-            s === "failed" ? "bg-[#ffd7d9] text-[#a2191f]" :
-            "bg-[#fcf4d6] text-[#8e6a00]"
+            s === "paid" ? "bg-emerald-50 text-emerald-700" :
+            s === "refunded" ? "bg-red-50 text-red-700" :
+            s === "failed" ? "bg-rose-50 text-rose-700" :
+            "bg-amber-50 text-amber-700"
           }`}>
             {s}
           </span>
@@ -123,7 +123,7 @@ export default function AdminOrdersPage() {
         <div className="flex gap-2">
           <button
             onClick={() => { setSelectedOrder(row.original); setIsModalOpen(true); }}
-            className="p-1.5 text-[var(--ink-400)] hover:text-[var(--ink-950)] hover:bg-ink-100 rounded"
+            className="p-1.5 text-[var(--ink-400)] hover:text-[var(--ink-950)] hover:bg-[var(--border)] rounded"
             title="View Details"
           >
             <Eye className="w-4 h-4" />
@@ -134,9 +134,9 @@ export default function AdminOrdersPage() {
   ];
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
+    <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
       <div className="mb-8">
-        <h1 className="flex items-center gap-2 text-xl font-semibold tracking-tight text-ink">
+        <h1 className="text-2xl font-bold text-[var(--ink-950)] flex items-center gap-2">
           <ShoppingCart className="w-6 h-6" /> Orders & Purchases
         </h1>
         <p className="text-[var(--ink-500)] mt-1">Manage challenge purchases, check statuses, and process manual refunds.</p>
@@ -149,8 +149,8 @@ export default function AdminOrdersPage() {
             onClick={() => setStatusFilter(tab.value)}
             className={`px-4 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap transition-colors ${
               statusFilter === tab.value 
-                ? "bg-[var(--carbon-blue)] text-white" 
-                : "bg-white border border-[var(--dash-hairline)] text-[var(--ink-500)] hover:text-[var(--ink-950)]"
+                ? "bg-[var(--ink-950)] text-white" 
+                : "bg-white border border-[var(--border)] text-[var(--ink-500)] hover:text-[var(--ink-950)]"
             }`}
           >
             {tab.label}
@@ -167,15 +167,15 @@ export default function AdminOrdersPage() {
       >
         {selectedOrder && (
           <div className="space-y-6">
-            <div className="flex justify-between items-start border-b border-[var(--dash-hairline)] pb-4">
+            <div className="flex justify-between items-start border-b border-[var(--border)] pb-4">
               <div>
                 <h2 className="text-xl font-bold text-[var(--ink-950)]">${selectedOrder.price_amount?.toFixed(2)}</h2>
                 <p className="text-sm font-mono text-[var(--ink-500)]">{selectedOrder.order_id}</p>
               </div>
               <span className={`inline-flex px-3 py-1 rounded-full text-xs font-bold uppercase ${
-                selectedOrder.payment_status === "paid" ? "bg-[#a7f0ba] text-[#0e6027]" :
-                selectedOrder.payment_status === "refunded" ? "bg-[#ffd7d9] text-[#a2191f]" :
-                "bg-[#fcf4d6] text-[#8e6a00]"
+                selectedOrder.payment_status === "paid" ? "bg-emerald-50 text-emerald-700" :
+                selectedOrder.payment_status === "refunded" ? "bg-red-50 text-red-700" :
+                "bg-amber-50 text-amber-700"
               }`}>
                 {selectedOrder.payment_status}
               </span>
@@ -203,17 +203,17 @@ export default function AdminOrdersPage() {
             </div>
 
             {selectedOrder.applied_coupon && (
-              <div className="bg-amber-50 border border-amber-200 p-3 rounded-none flex justify-between items-center text-sm">
+              <div className="bg-amber-50 border border-amber-200 p-3 rounded-xl flex justify-between items-center text-sm">
                 <span className="font-bold text-amber-800">Coupon Used:</span>
                 <span className="font-mono font-bold text-amber-600">{selectedOrder.applied_coupon}</span>
               </div>
             )}
 
-            <div className="flex gap-3 pt-4 border-t border-[var(--dash-hairline)]">
+            <div className="flex gap-3 pt-4 border-t border-[var(--border)]">
               {selectedOrder.payment_status === "paid" && (
                 <button
                   onClick={() => setIsRefundModalOpen(true)}
-                  className="flex items-center gap-2 px-4 py-2 bg-red-50 text-[var(--dash-negative)] rounded-none font-bold hover:bg-red-100 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-xl font-bold hover:bg-red-100 transition-colors"
                 >
                   <RefreshCw className="w-4 h-4" /> Mark Refunded
                 </button>
@@ -232,12 +232,12 @@ export default function AdminOrdersPage() {
           <p className="text-sm text-[var(--ink-600)]">
             Are you sure you want to mark order <strong className="font-mono">{selectedOrder?.order_id}</strong> as refunded?
           </p>
-          <div className="bg-amber-50 text-amber-800 p-3 rounded-none text-xs font-semibold">
+          <div className="bg-amber-50 text-amber-800 p-3 rounded-xl text-xs font-semibold">
             Note: This action only updates the status in the database. You must process the actual refund manually via your payment gateway (e.g., Stripe, Confirmo).
           </div>
           <div className="flex justify-end gap-3 mt-6">
             <button onClick={() => setIsRefundModalOpen(false)} className="px-4 py-2 text-[var(--ink-500)] font-semibold">Cancel</button>
-            <button onClick={() => handleStatusChange("refunded")} className="px-4 py-2 bg-red-600 text-white rounded-none font-bold hover:bg-red-700">Confirm Refund</button>
+            <button onClick={() => handleStatusChange("refunded")} className="px-4 py-2 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700">Confirm Refund</button>
           </div>
         </div>
       </AdminModal>
