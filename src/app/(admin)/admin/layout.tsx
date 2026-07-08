@@ -17,48 +17,52 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  let role: AdminRole = "super_admin";
+
+  // Only enforce auth when Supabase is configured; otherwise render in preview mode.
+  if (supabaseUrl && supabaseAnonKey) {
+    const cookieStore = await cookies();
+    const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
       cookies: {
         getAll() {
           return cookieStore.getAll();
         },
       },
+    });
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      redirect("/login");
     }
-  );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    // Check if user is admin via profiles table
+    const { data: profile } = await supabaseAdmin
+      .from("profiles")
+      .select("is_admin")
+      .eq("id", user.id)
+      .single();
 
-  if (!user) {
-    redirect("/login");
+    // Check admin_roles table for a specific role
+    const { data: adminRole } = await supabaseAdmin
+      .from("admin_roles")
+      .select("role")
+      .eq("user_id", user.id)
+      .single();
+
+    // Must be flagged as admin OR have an entry in admin_roles
+    if (!profile?.is_admin && !adminRole) {
+      redirect("/dashboard");
+    }
+
+    // Resolve the role: admin_roles table takes precedence, fallback to super_admin for is_admin users
+    role = (adminRole?.role as AdminRole) ?? "super_admin";
   }
-
-  // Check if user is admin via profiles table
-  const { data: profile } = await supabaseAdmin
-    .from("profiles")
-    .select("is_admin")
-    .eq("id", user.id)
-    .single();
-
-  // Check admin_roles table for a specific role
-  const { data: adminRole } = await supabaseAdmin
-    .from("admin_roles")
-    .select("role")
-    .eq("user_id", user.id)
-    .single();
-
-  // Must be flagged as admin OR have an entry in admin_roles
-  if (!profile?.is_admin && !adminRole) {
-    redirect("/dashboard");
-  }
-
-  // Resolve the role: admin_roles table takes precedence, fallback to super_admin for is_admin users
-  const role: AdminRole = (adminRole?.role as AdminRole) ?? "super_admin";
 
   return (
     <div className="dash-scope min-h-dvh">
