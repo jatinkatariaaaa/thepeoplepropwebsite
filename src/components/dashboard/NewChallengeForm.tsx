@@ -268,58 +268,58 @@ export function NewChallengeForm() {
       <div className="min-w-0 space-y-6 sm:space-y-8">
         
         {/* Personal Information */}
-        <div className="bg-white rounded-[20px] border border-[var(--border)] p-4 sm:p-6 shadow-sm">
-          <h3 className="font-bold text-[16px] text-[var(--ink-950)] mb-1">Personal Information</h3>
-          <p className="text-[13px] text-[var(--ink-500)] mb-6">Please enter your billing and contact details</p>
+        <div className="dash-card p-4 sm:p-6">
+          <h3 className="mb-1 text-[15px] font-semibold tracking-tight text-ink">Personal Information</h3>
+          <p className="mb-5 text-[13px] text-ink-500">Please enter your billing and contact details</p>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">First Name</label>
+              <label className="mb-1.5 block text-[13px] font-medium text-ink-700">First Name</label>
               <input 
                 type="text" 
                 value={personalInfo.firstName}
                 onChange={e => setPersonalInfo({...personalInfo, firstName: e.target.value})}
-                className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)] transition-colors"
+                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                 placeholder="John"
               />
             </div>
             <div>
-              <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Last Name</label>
+              <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Last Name</label>
               <input 
                 type="text" 
                 value={personalInfo.lastName}
                 onChange={e => setPersonalInfo({...personalInfo, lastName: e.target.value})}
-                className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)] transition-colors"
+                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                 placeholder="Doe"
               />
             </div>
             <div>
-              <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Phone Number</label>
+              <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Phone Number</label>
               <input 
                 type="tel" 
                 value={personalInfo.phone}
                 onChange={e => setPersonalInfo({...personalInfo, phone: e.target.value})}
-                className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)] transition-colors"
+                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                 placeholder="+1 234 567 8900"
               />
             </div>
             <div>
-              <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Zip/Postal Code</label>
+              <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Zip/Postal Code</label>
               <input 
                 type="text" 
                 value={personalInfo.zipCode}
                 onChange={e => setPersonalInfo({...personalInfo, zipCode: e.target.value})}
-                className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)] transition-colors"
+                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                 placeholder="10001"
               />
             </div>
             <div className="sm:col-span-2">
-              <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Billing Address</label>
+              <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Billing Address</label>
               <input 
                 type="text" 
                 value={personalInfo.address}
                 onChange={e => setPersonalInfo({...personalInfo, address: e.target.value})}
-                className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)] transition-colors"
+                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                 placeholder="123 Trading St, Suite 400"
               />
             </div>
@@ -328,17 +328,17 @@ export function NewChallengeForm() {
 
         {/* Challenge Type */}
         <div>
-          <h3 className="font-bold text-[15px] text-[var(--ink-950)] mb-3">Challenge Type</h3>
+          <h3 className="mb-3 text-[15px] font-semibold tracking-tight text-ink">Challenge Type</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
             {livePrograms.map(prog => (
               <button
                 key={prog.key}
                 onClick={() => setProgramKey(prog.key as ProgramKey)}
                 className={cn(
-                  "min-h-12 px-2.5 py-3 rounded-xl text-[13px] leading-tight font-bold border transition-all text-center flex items-center justify-center",
+                  "flex min-h-11 items-center justify-center rounded-[10px] border px-2.5 py-2.5 text-center text-[13px] font-medium leading-tight transition-all",
                   programKey === prog.key 
-                    ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)] shadow-sm" 
-                    : "bg-white border-[var(--border)] text-[var(--ink-600)] hover:border-[var(--ink-300)]"
+                    ? "border-ink-950 bg-white text-ink shadow-[0_1px_2px_rgba(16,24,40,0.06)] ring-1 ring-ink-950" 
+                    : "border-[var(--dash-hairline)] bg-white text-ink-600 hover:border-[var(--dash-hairline-strong)]"
                 )}
               >
                 {prog.shortLabel}
@@ -349,8 +349,8 @@ export function NewChallengeForm() {
 
         {/* Customise Trading Rules (Add-ons) */}
         <div>
-          <h3 className="font-bold text-[15px] text-[var(--ink-950)]">Customise Trading Rules</h3>
-          <p className="text-[13px] text-[var(--ink-500)] mb-4">Adjust your challenge parameters to match your trading style</p>
+          <h3 className="text-[15px] font-semibold tracking-tight text-ink">Customise Trading Rules</h3>
+          <p className="mb-4 mt-0.5 text-[13px] text-ink-500">Adjust your challenge parameters to match your trading style</p>
           
           <div className="space-y-4">
             {addOns.filter(a => a.appliesTo.includes(programKey)).map(addon => {
@@ -378,32 +378,32 @@ export function NewChallengeForm() {
 
               return (
                 <div key={addon.key}>
-                  <div className="text-[14px] font-bold text-[var(--ink-700)] mb-1">{addon.label}</div>
-                  <p className="text-[12px] text-[var(--ink-500)] mb-2">{addon.description}</p>
+                  <div className="mb-0.5 text-[13px] font-semibold text-ink">{addon.label}</div>
+                  <p className="mb-2 text-[12px] text-ink-500">{addon.description}</p>
                   <div className="grid grid-cols-1 min-[420px]:grid-cols-2 gap-2">
                     <button
                       onClick={() => isActive && toggleAddOn(addon.key)}
                       className={cn(
-                        "flex min-h-12 items-center justify-between gap-3 py-3 px-4 rounded-xl text-[13px] font-medium border transition-all",
+                        "flex min-h-11 items-center justify-between gap-3 rounded-[10px] border px-3.5 py-2.5 text-[13px] font-medium transition-all",
                         !isActive 
-                          ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)]" 
-                          : "bg-white border-[var(--border)] text-[var(--ink-600)]"
+                          ? "border-ink-950 bg-white text-ink shadow-[0_1px_2px_rgba(16,24,40,0.06)] ring-1 ring-ink-950" 
+                          : "border-[var(--dash-hairline)] bg-white text-ink-600 hover:border-[var(--dash-hairline-strong)]"
                       )}
                     >
-                      <span className="font-bold">{noLabel}</span>
-                      <span className="text-[var(--ink-400)] text-[12px]">{noSub}</span>
+                      <span className="font-medium">{noLabel}</span>
+                      <span className="text-[11px] text-ink-400">{noSub}</span>
                     </button>
                     <button
                       onClick={() => !isActive && toggleAddOn(addon.key)}
                       className={cn(
-                        "flex min-h-12 items-center justify-between gap-3 py-3 px-4 rounded-xl text-[13px] font-medium border transition-all",
+                        "flex min-h-11 items-center justify-between gap-3 rounded-[10px] border px-3.5 py-2.5 text-[13px] font-medium transition-all",
                         isActive 
-                          ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)]" 
-                          : "bg-white border-[var(--border)] text-[var(--ink-600)]"
+                          ? "border-ink-950 bg-white text-ink shadow-[0_1px_2px_rgba(16,24,40,0.06)] ring-1 ring-ink-950" 
+                          : "border-[var(--dash-hairline)] bg-white text-ink-600 hover:border-[var(--dash-hairline-strong)]"
                       )}
                     >
-                      <span className="font-bold">{yesLabel}</span>
-                      <span className="text-emerald-600 font-bold text-[12px]">{extraCost === 0 ? "Free" : `+${formatCurrency(extraCost)}`}</span>
+                      <span className="font-medium">{yesLabel}</span>
+                      <span className="dash-num text-[11px] font-semibold text-[var(--dash-positive)]">{extraCost === 0 ? "Free" : `+${formatCurrency(extraCost)}`}</span>
                     </button>
                   </div>
                 </div>
@@ -411,7 +411,7 @@ export function NewChallengeForm() {
             })}
             
             {addOns.filter(a => a.appliesTo.includes(programKey)).length === 0 && (
-              <div className="text-[13px] text-[var(--ink-500)] p-4 border border-[var(--border)] rounded-xl bg-[var(--paper)]">
+              <div className="rounded-[10px] border border-[var(--dash-hairline)] bg-white p-4 text-[13px] text-ink-500">
                 No customisations available for this challenge type.
               </div>
             )}
@@ -420,7 +420,7 @@ export function NewChallengeForm() {
 
         {/* Currency */}
         <div>
-          <h3 className="font-bold text-[15px] text-[var(--ink-950)] mb-3">Currency</h3>
+          <h3 className="mb-3 text-[15px] font-semibold tracking-tight text-ink">Currency</h3>
           <div className="grid grid-cols-2 min-[420px]:grid-cols-3 sm:flex sm:flex-wrap gap-2">
             {[
               { id: "USD", flag: "🇺🇸" },
@@ -433,7 +433,7 @@ export function NewChallengeForm() {
                 key={c.id}
                 onClick={() => setCurrency(c.id)}
                 className={cn(
-                  "flex min-h-10 items-center justify-center gap-2 py-2 px-3 sm:px-4 rounded-xl text-[13px] font-bold border transition-all",
+                  "flex min-h-10 items-center justify-center gap-2 rounded-[10px] border px-3 py-2 text-[13px] font-medium transition-all sm:px-4",
                   currency === c.id 
                     ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)]" 
                     : "bg-white border-[var(--border)] text-[var(--ink-600)] hover:border-[var(--ink-300)]"
@@ -448,9 +448,9 @@ export function NewChallengeForm() {
 
         {/* Account Size */}
         <div>
-          <h3 className="font-bold text-[15px] text-[var(--ink-950)] mb-3 mt-8">Account Size</h3>
+          <h3 className="mb-3 mt-2 text-[15px] font-semibold tracking-tight text-ink">Account Size</h3>
           {isLoadingPrograms ? (
-            <div className="animate-pulse bg-[var(--paper-2)] h-24 rounded-xl border border-[var(--border)] w-full"></div>
+            <div className="dash-skeleton h-24 w-full"></div>
           ) : (
             <div className="grid grid-cols-2 min-[430px]:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-2.5">
               {Object.keys(program.fees)
@@ -461,16 +461,16 @@ export function NewChallengeForm() {
                     key={s}
                     onClick={() => setSize(s)}
                     className={cn(
-                      "min-h-[68px] px-2.5 py-3 rounded-xl border transition-all text-center flex flex-col items-center justify-center gap-1 overflow-hidden",
+                      "flex min-h-[64px] flex-col items-center justify-center gap-1 overflow-hidden rounded-[10px] border px-2.5 py-3 text-center transition-all",
                       effectiveSize === s
-                        ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)] shadow-sm" 
-                        : "bg-white border-[var(--border)] text-[var(--ink-600)] hover:border-[var(--ink-300)]"
+                        ? "border-ink-950 bg-white text-ink shadow-[0_1px_2px_rgba(16,24,40,0.06)] ring-1 ring-ink-950" 
+                        : "border-[var(--dash-hairline)] bg-white text-ink-600 hover:border-[var(--dash-hairline-strong)]"
                     )}
                   >
-                    <span className="block max-w-full whitespace-nowrap text-[14px] sm:text-[15px] leading-none font-display font-bold tabular-nums">
+                    <span className="dash-num block max-w-full whitespace-nowrap text-[14px] font-semibold leading-none sm:text-[15px]">
                       {formatAccSize(s)}
                     </span>
-                    <span className="text-[10px] uppercase tracking-wide text-[var(--ink-400)] font-bold leading-none">
+                    <span className="text-[10px] font-semibold uppercase leading-none tracking-[0.08em] text-ink-400">
                       Account
                     </span>
                   </button>
@@ -481,9 +481,9 @@ export function NewChallengeForm() {
 
         {/* Trading Platform */}
         <div>
-          <h3 className="font-bold text-[15px] text-[var(--ink-950)] mb-3">Trading Platform</h3>
+          <h3 className="mb-3 text-[15px] font-semibold tracking-tight text-ink">Trading Platform</h3>
           {isLoadingPrograms ? (
-            <div className="animate-pulse bg-[var(--paper-2)] h-14 rounded-xl border border-[var(--border)] w-full"></div>
+            <div className="dash-skeleton h-14 w-full"></div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               {livePlatforms.map(plat => {
@@ -493,14 +493,14 @@ export function NewChallengeForm() {
                     key={plat.id}
                     onClick={() => setPlatform(plat.name)}
                     className={cn(
-                      "flex min-h-12 items-center justify-between gap-3 py-3 px-4 rounded-xl text-[13px] font-medium border transition-all",
+                      "flex min-h-11 items-center justify-between gap-3 rounded-[10px] border px-3.5 py-2.5 text-[13px] font-medium transition-all",
                       platform === plat.name 
-                        ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)] shadow-sm" 
-                        : "bg-white border-[var(--border)] text-[var(--ink-600)] hover:border-[var(--ink-300)]"
+                        ? "border-ink-950 bg-white text-ink shadow-[0_1px_2px_rgba(16,24,40,0.06)] ring-1 ring-ink-950" 
+                        : "border-[var(--dash-hairline)] bg-white text-ink-600 hover:border-[var(--dash-hairline-strong)]"
                     )}
                   >
-                    <span className="font-bold">{plat.name}</span>
-                    <span className={extraCost === 0 ? "text-emerald-600 font-bold text-[12px]" : "text-[var(--ink-400)] text-[12px]"}>
+                    <span className="font-medium">{plat.name}</span>
+                    <span className={extraCost === 0 ? "dash-num text-[11px] font-semibold text-[var(--dash-positive)]" : "dash-num text-[11px] text-ink-400"}>
                       {extraCost === 0 ? "Free" : `+${formatCurrency(extraCost)}`}
                     </span>
                   </button>
@@ -515,21 +515,21 @@ export function NewChallengeForm() {
 
       {/* Right Column: Billing */}
       <div className="w-full min-w-0">
-        <div className="bg-white rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden xl:sticky xl:top-24">
+        <div className="dash-card overflow-hidden xl:sticky xl:top-20">
           
-          <div className="p-4 sm:p-6 border-b border-[var(--border)]">
+          <div className="border-b border-[var(--dash-hairline)] p-4 sm:p-5">
             <div className="flex items-center justify-between mb-1 cursor-pointer">
-              <h3 className="font-bold text-[16px] text-[var(--ink-950)]">Billing Details</h3>
-              <ChevronDown className="w-4 h-4 text-[var(--ink-500)]" />
+              <h3 className="text-[15px] font-semibold tracking-tight text-ink">Billing Details</h3>
+              <ChevronDown className="h-4 w-4 text-ink-400" />
             </div>
-            <p className="text-[13px] text-[var(--ink-500)]">Enter your billing information for the challenge purchase</p>
+            <p className="text-[13px] text-ink-500">Enter your billing information for the challenge purchase</p>
           </div>
 
-          <div className="p-4 sm:p-6 border-b border-[var(--border)] bg-[var(--paper)]">
+          <div className="border-b border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4 sm:p-5">
             <div className="mb-6">
               <button 
                 onClick={() => setIsPromoOpen(!isPromoOpen)}
-                className="flex items-center gap-2 text-[13px] font-bold text-[var(--ink-700)] hover:text-[var(--ink-950)] transition-colors"
+                className="flex items-center gap-1.5 text-[13px] font-medium text-ink-700 transition-colors hover:text-ink"
               >
                 Have a promo code? <ChevronDown className={cn("w-4 h-4 transition-transform", isPromoOpen && "rotate-180")} />
               </button>
@@ -542,32 +542,32 @@ export function NewChallengeForm() {
                       value={promoInput}
                       onChange={e => setPromoInput(e.target.value)}
                       placeholder="Enter promo code"
-                      className="min-w-0 flex-1 bg-white border border-[var(--border)] rounded-xl h-10 px-3 text-[13px] uppercase focus:outline-none focus:border-[var(--ink-400)] transition-colors"
+                      className="h-9 min-w-0 flex-1 rounded-lg border border-[var(--dash-hairline)] bg-white px-3 text-[13px] uppercase text-ink outline-none transition-colors focus:border-ink-400"
                     />
                     <button 
                       onClick={handleApplyPromo}
-                      className="h-10 px-4 bg-[var(--ink-950)] hover:bg-[var(--ink-800)] text-white text-[13px] font-bold rounded-xl transition-all"
+                      className="h-9 rounded-lg bg-ink px-4 text-[13px] font-semibold text-white transition-colors hover:bg-ink-800"
                     >
                       Apply
                     </button>
                   </div>
-                  {promoError && <p className="text-red-500 text-[12px] font-medium px-1">{promoError}</p>}
-                  {appliedPromo && <p className="text-emerald-600 text-[12px] font-medium px-1">Promo applied successfully!</p>}
+                  {promoError && <p className="px-1 text-[12px] font-medium text-[var(--dash-negative)]">{promoError}</p>}
+                  {appliedPromo && <p className="px-1 text-[12px] font-medium text-[var(--dash-positive)]">Promo applied successfully!</p>}
                 </div>
               )}
             </div>
 
             <div className="space-y-3 mb-6">
-              <div className="flex justify-between items-start gap-4 text-[13px] font-medium text-[var(--ink-700)]">
+              <div className="flex items-start justify-between gap-4 text-[13px] text-ink-700">
                 <span className="min-w-0 break-words">{formatAccSize(effectiveSize)} • {program.shortLabel}</span>
-                <span className="shrink-0 font-bold text-[var(--ink-950)]">{formatCurrency(base ?? 0)}</span>
+                <span className="dash-num shrink-0 font-semibold text-ink">{formatCurrency(base ?? 0)}</span>
               </div>
-              <div className="flex justify-between items-start gap-4 text-[13px] font-medium text-[var(--ink-500)]">
+              <div className="flex items-start justify-between gap-4 text-[13px] text-ink-500">
                 <span className="min-w-0 break-words">Platform: {platform}</span>
                 {platformExtras > 0 ? (
-                  <span className="shrink-0">+{formatCurrency(platformExtras)}</span>
+                  <span className="dash-num shrink-0">+{formatCurrency(platformExtras)}</span>
                 ) : (
-                  <span className="shrink-0 text-emerald-600 font-bold">Free</span>
+                  <span className="shrink-0 font-semibold text-[var(--dash-positive)]">Free</span>
                 )}
               </div>
               
@@ -577,9 +577,9 @@ export function NewChallengeForm() {
                 let cost = (base ?? 0) * (addOnDef.feePct / 100);
                 if (isFirstTpp && key === "free-retry") cost = 0;
                 return (
-                  <div key={key} className="flex justify-between items-start gap-4 text-[13px] font-medium text-[var(--ink-500)]">
+                  <div key={key} className="flex items-start justify-between gap-4 text-[13px] text-ink-500">
                     <span className="min-w-0 break-words">{addOnDef.label}</span>
-                    <span className={cn("shrink-0", cost === 0 ? "text-emerald-600 font-bold" : "")}>
+                    <span className={cn("dash-num shrink-0", cost === 0 ? "font-semibold text-[var(--dash-positive)]" : "")}>
                       {cost === 0 ? "Free" : `+${formatCurrency(cost)}`}
                     </span>
                   </div>
@@ -587,27 +587,27 @@ export function NewChallengeForm() {
               })}
 
               {promoDiscountAmt > 0 && (
-                <div className="flex justify-between items-center text-[13px] font-bold text-emerald-600 pt-2 border-t border-[var(--border)]">
+                <div className="dash-num flex items-center justify-between border-t border-[var(--dash-hairline)] pt-2 text-[13px] font-semibold text-[var(--dash-positive)]">
                   <span>Promo ({appliedPromo.toUpperCase()})</span>
                   <span>-{formatCurrency(promoDiscountAmt)}</span>
                 </div>
               )}
 
               {paymentFeePct > 0 && (
-                 <div className="flex justify-between items-center text-[13px] font-medium text-amber-600">
+                 <div className="dash-num flex items-center justify-between text-[13px] font-medium text-[var(--dash-pending)]">
                   <span>Payment Gateway Fee</span>
                   <span>+{paymentFeePct}%</span>
                 </div>
               )}
             </div>
 
-            <div className="flex justify-between items-end gap-4 border-t border-[var(--border)] pt-4">
-              <span className="font-bold text-[15px] text-[var(--ink-950)]">Total</span>
-              <span className="min-w-0 text-right text-[24px] sm:text-[28px] font-display font-bold text-[var(--ink-950)] leading-none break-words">{formatCurrency(finalTotal)}</span>
+            <div className="flex items-end justify-between gap-4 border-t border-[var(--dash-hairline)] pt-4">
+              <span className="text-sm font-semibold text-ink">Total</span>
+              <span className="dash-figure min-w-0 break-words text-right text-[22px] leading-none sm:text-[26px]">{formatCurrency(finalTotal)}</span>
             </div>
           </div>
 
-          <div className="p-4 sm:p-6 border-b border-[var(--border)]">
+          <div className="border-b border-[var(--dash-hairline)] p-4 sm:p-5">
             <label className="flex items-start gap-3 cursor-pointer group">
               <div className="relative flex items-center justify-center mt-0.5">
                 <input 
@@ -616,19 +616,19 @@ export function NewChallengeForm() {
                   onChange={(e) => setAgreed(e.target.checked)}
                   className="peer sr-only" 
                 />
-                <div className="w-4 h-4 rounded border border-[var(--ink-300)] bg-white peer-checked:bg-[var(--accent)] peer-checked:border-[var(--accent)] transition-colors" />
+                <div className="h-4 w-4 rounded border border-ink-300 bg-white transition-colors peer-checked:border-ink-950 peer-checked:bg-ink-950" />
                 <Check className="w-3 h-3 text-white absolute opacity-0 peer-checked:opacity-100 transition-opacity" />
               </div>
-              <div className="text-[12px] text-[var(--ink-500)] leading-relaxed flex-1 select-none">
-                I have read and agreed to the <span className="text-[var(--ink-950)] font-medium underline underline-offset-2">Trading Objectives</span> and <span className="text-[var(--ink-950)] font-medium underline underline-offset-2">Terms & Conditions</span>. All information provided is correct and matches government-issued ID. I confirm that I am not a U.S. citizen or resident.
+              <div className="flex-1 select-none text-[12px] leading-relaxed text-ink-500">
+                I have read and agreed to the <span className="font-medium text-ink underline underline-offset-2">Trading Objectives</span> and <span className="font-medium text-ink underline underline-offset-2">Terms & Conditions</span>. All information provided is correct and matches government-issued ID. I confirm that I am not a U.S. citizen or resident.
               </div>
             </label>
           </div>
 
           <div className="p-4 sm:p-6">
-            <h3 className="font-bold text-[15px] text-[var(--ink-950)] mb-4">Select payment method</h3>
+            <h3 className="mb-3 text-[15px] font-semibold tracking-tight text-ink">Select payment method</h3>
             
-            <div className="space-y-2 border border-[var(--border)] rounded-2xl p-2 bg-[var(--paper-2)]/30">
+            <div className="space-y-1 rounded-[10px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-1.5">
               {[
                 { id: "Credit / Debit Card", logo: "VISA", rightLogo: "Mastercard" },
                 { id: "Crypto", logo: "₿" },
@@ -641,10 +641,10 @@ export function NewChallengeForm() {
                 <label 
                   key={method.id}
                   className={cn(
-                    "flex items-center justify-between gap-3 p-3 rounded-xl border cursor-pointer transition-colors",
+                    "flex cursor-pointer items-center justify-between gap-3 rounded-lg border p-2.5 transition-colors",
                     paymentMethod === method.id 
-                      ? "bg-white border-[var(--accent)] shadow-sm" 
-                      : "border-transparent hover:bg-[var(--paper-2)]"
+                      ? "border-ink-950 bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06)]" 
+                      : "border-transparent hover:bg-white"
                   )}
                 >
                   <div className="min-w-0 flex items-center gap-3">
@@ -660,14 +660,14 @@ export function NewChallengeForm() {
                         }}
                         className="peer sr-only" 
                       />
-                      <div className="w-4 h-4 rounded-full border border-[var(--ink-300)] bg-white peer-checked:border-[var(--accent)] peer-checked:border-[5px] transition-all" />
+                      <div className="h-4 w-4 rounded-full border border-ink-300 bg-white transition-all peer-checked:border-[5px] peer-checked:border-ink-950" />
                     </div>
-                    <span className="min-w-0 text-[13px] font-bold text-[var(--ink-950)] flex items-center gap-2 truncate">
+                    <span className="flex min-w-0 items-center gap-2 truncate text-[13px] font-medium text-ink">
                       {method.id}
-                      {method.fee && <span className="text-[11px] font-medium text-[var(--ink-400)]">{method.fee}</span>}
+                      {method.fee && <span className="dash-num text-[11px] text-ink-400">{method.fee}</span>}
                     </span>
                   </div>
-                  <div className="shrink-0 text-right text-[12px] sm:text-[14px] font-bold text-[var(--ink-900)] opacity-70">
+                  <div className="shrink-0 text-right text-[11px] font-semibold uppercase tracking-[0.04em] text-ink-400 sm:text-[12px]">
                     {method.logo} {method.rightLogo && <span>{method.rightLogo}</span>}
                   </div>
                 </label>
@@ -675,7 +675,7 @@ export function NewChallengeForm() {
             </div>
 
             {isFirstTpp && paymentMethod !== "Crypto" && (
-              <div className="mt-4 p-3 bg-red-50 border-l-4 border-red-500 rounded-r-xl text-[12px] font-bold text-red-700 shadow-sm">
+              <div className="mt-4 rounded-[8px] border border-[#FECDD3] bg-rose-50 p-3 text-[12px] font-medium text-rose-700">
                 Promo code applied only on crypto payments
               </div>
             )}
@@ -683,12 +683,12 @@ export function NewChallengeForm() {
             <button 
               onClick={handleCheckout}
               disabled={!agreed || (isFirstTpp && paymentMethod !== "Crypto") || isCheckingOut}
-              className="w-full mt-6 h-12 bg-[var(--ink-950)] hover:bg-[var(--ink-800)] text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md active:scale-[0.98]"
+              className="mt-5 h-11 w-full rounded-lg bg-ink text-sm font-semibold text-white transition-all hover:bg-ink-800 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isCheckingOut ? "Processing..." : "Proceed to Payment"}
             </button>
             {checkoutMessage && (
-              <div className="mt-4 text-center text-[13px] font-bold text-emerald-600">
+              <div className="mt-4 text-center text-[13px] font-medium text-[var(--dash-positive)]">
                 {checkoutMessage}
               </div>
             )}

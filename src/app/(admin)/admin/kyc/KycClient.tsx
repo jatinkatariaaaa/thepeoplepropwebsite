@@ -34,9 +34,9 @@ interface KycClientProps {
 }
 
 const statusConfig: Record<string, { label: string; icon: any; className: string }> = {
-  pending: { label: "Pending", icon: Clock, className: "bg-amber-50 text-amber-700 border-amber-200" },
-  approved: { label: "Approved", icon: CheckCircle, className: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-  rejected: { label: "Rejected", icon: XCircle, className: "bg-red-50 text-red-700 border-red-200" },
+  pending: { label: "Pending", icon: Clock, className: "border-[#FDE68A] bg-amber-50 text-amber-700" },
+  approved: { label: "Approved", icon: CheckCircle, className: "border-[#A7F3D0] bg-success-50 text-success-700" },
+  rejected: { label: "Rejected", icon: XCircle, className: "border-[#FECDD3] bg-rose-50 text-rose-700" },
   expired: { label: "Expired", icon: AlertCircle, className: "bg-slate-100 text-slate-600 border-slate-200" },
   reupload_requested: { label: "Re-upload", icon: RefreshCw, className: "bg-sky-50 text-sky-700 border-sky-200" },
 };
@@ -205,7 +205,7 @@ export function KycClient({ initialDocuments, statusCounts }: KycClientProps) {
           <div className="flex items-center gap-1.5">
             <button
               onClick={() => openViewModal(doc)}
-              className="p-1.5 text-[var(--ink-400)] hover:text-[var(--ink-950)] hover:bg-[var(--border)] rounded-lg transition-colors"
+              className="rounded-lg p-1.5 text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink"
               title="View Details"
             >
               <Eye className="w-4 h-4" />
@@ -215,7 +215,7 @@ export function KycClient({ initialDocuments, statusCounts }: KycClientProps) {
                 <button
                   onClick={() => openActionModal(doc, "approve")}
                   disabled={loading === doc.id}
-                  className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
+                  className="p-1.5 text-[var(--dash-positive)] hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
                   title="Approve"
                 >
                   <Check className="w-4 h-4" />
@@ -223,7 +223,7 @@ export function KycClient({ initialDocuments, statusCounts }: KycClientProps) {
                 <button
                   onClick={() => openActionModal(doc, "reject")}
                   disabled={loading === doc.id}
-                  className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                  className="p-1.5 text-[var(--dash-negative)] hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
                   title="Reject"
                 >
                   <X className="w-4 h-4" />
@@ -250,8 +250,8 @@ export function KycClient({ initialDocuments, statusCounts }: KycClientProps) {
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         {[
           { key: "pending", label: "Pending", icon: Clock, color: "text-amber-600", bg: "bg-amber-50" },
-          { key: "approved", label: "Approved", icon: CheckCircle, color: "text-emerald-600", bg: "bg-emerald-50" },
-          { key: "rejected", label: "Rejected", icon: XCircle, color: "text-red-600", bg: "bg-red-50" },
+          { key: "approved", label: "Approved", icon: CheckCircle, color: "text-[var(--dash-positive)]", bg: "bg-emerald-50" },
+          { key: "rejected", label: "Rejected", icon: XCircle, color: "text-[var(--dash-negative)]", bg: "bg-red-50" },
           { key: "expired", label: "Expired", icon: AlertCircle, color: "text-slate-500", bg: "bg-slate-50" },
           { key: "reupload_requested", label: "Re-upload", icon: RefreshCw, color: "text-sky-600", bg: "bg-sky-50" },
         ].map((stat) => {
@@ -265,7 +265,7 @@ export function KycClient({ initialDocuments, statusCounts }: KycClientProps) {
               className={`p-4 rounded-2xl border transition-all text-left ${
                 isActive
                   ? "border-[var(--ink-950)] bg-[var(--ink-950)] text-white shadow-md"
-                  : "border-[var(--border)] bg-white hover:border-[var(--ink-300)]"
+                  : "border-[var(--dash-hairline)] bg-white hover:border-[var(--ink-300)]"
               }`}
             >
               <div className="flex items-center justify-between mb-2">
@@ -291,7 +291,7 @@ export function KycClient({ initialDocuments, statusCounts }: KycClientProps) {
             placeholder="Search by name, email, or document number..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 bg-white border border-[var(--border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
+            className="w-full pl-9 pr-4 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
           />
         </div>
         <div className="flex items-center gap-2">
@@ -299,7 +299,7 @@ export function KycClient({ initialDocuments, statusCounts }: KycClientProps) {
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="px-3 py-2.5 bg-white border border-[var(--border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10"
+            className="px-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10"
           >
             <option value="all">All Types</option>
             <option value="passport">Passport</option>
@@ -324,7 +324,7 @@ export function KycClient({ initialDocuments, statusCounts }: KycClientProps) {
         {selectedDoc && (
           <div className="space-y-6">
             {/* User Info */}
-            <div className="flex items-start gap-4 p-4 bg-[var(--paper-2)] rounded-xl">
+            <div className="flex items-start gap-4 rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4">
               <div className="w-10 h-10 rounded-full bg-[var(--ink-950)] flex items-center justify-center text-white font-bold">
                 {(selectedDoc.profiles?.display_name || "?").charAt(0).toUpperCase()}
               </div>
@@ -337,12 +337,12 @@ export function KycClient({ initialDocuments, statusCounts }: KycClientProps) {
 
             {/* Document Info */}
             <div className="grid grid-cols-2 gap-4">
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                <p className="text-xs text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Document Type</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <p className="dash-overline mb-1">Document Type</p>
                 <p className="font-semibold text-[var(--ink-950)]">{docTypeLabels[selectedDoc.document_type]}</p>
               </div>
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                <p className="text-xs text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Status</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <p className="dash-overline mb-1">Status</p>
                 <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium border ${
                   statusConfig[selectedDoc.status]?.className || statusConfig.pending.className
                 }`}>
@@ -353,20 +353,20 @@ export function KycClient({ initialDocuments, statusCounts }: KycClientProps) {
                   {statusConfig[selectedDoc.status]?.label || selectedDoc.status}
                 </span>
               </div>
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                <p className="text-xs text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Country</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <p className="dash-overline mb-1">Country</p>
                 <p className="font-semibold text-[var(--ink-950)]">{selectedDoc.country || "—"}</p>
               </div>
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                <p className="text-xs text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Document Number</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <p className="dash-overline mb-1">Document Number</p>
                 <p className="font-semibold text-[var(--ink-950)] font-mono">{selectedDoc.document_number || "—"}</p>
               </div>
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                <p className="text-xs text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Submitted</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <p className="dash-overline mb-1">Submitted</p>
                 <p className="font-semibold text-[var(--ink-950)]">{format(new Date(selectedDoc.created_at), "MMM dd, yyyy HH:mm")}</p>
               </div>
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                <p className="text-xs text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Expires</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <p className="dash-overline mb-1">Expires</p>
                 <p className="font-semibold text-[var(--ink-950)]">{selectedDoc.expires_at ? format(new Date(selectedDoc.expires_at), "MMM dd, yyyy") : "—"}</p>
               </div>
             </div>
@@ -375,8 +375,8 @@ export function KycClient({ initialDocuments, statusCounts }: KycClientProps) {
 
             {/* Admin Notes */}
             {selectedDoc.admin_notes && (
-              <div className="p-4 bg-[var(--paper-2)] rounded-xl">
-                <p className="text-xs text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Admin Notes</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4">
+                <p className="dash-overline mb-1">Admin Notes</p>
                 <p className="text-sm text-[var(--ink-700)]">{selectedDoc.admin_notes}</p>
               </div>
             )}
@@ -384,7 +384,7 @@ export function KycClient({ initialDocuments, statusCounts }: KycClientProps) {
             {/* Rejection Reason */}
             {selectedDoc.rejection_reason && (
               <div className="p-4 bg-red-50 rounded-xl border border-red-100">
-                <p className="text-xs text-red-600 uppercase tracking-wider font-medium mb-1">Rejection Reason</p>
+                <p className="text-xs text-[var(--dash-negative)] uppercase tracking-wider font-medium mb-1">Rejection Reason</p>
                 <p className="text-sm text-red-700">{selectedDoc.rejection_reason}</p>
               </div>
             )}
@@ -431,11 +431,11 @@ export function KycClient({ initialDocuments, statusCounts }: KycClientProps) {
           <div className="space-y-4">
             {actionType === "reject" && (
               <div>
-                <label className="block text-sm font-semibold text-[var(--ink-950)] mb-1">Rejection Reason</label>
+                <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Rejection Reason</label>
                 <textarea
                   value={rejectionReason}
                   onChange={(e) => setRejectionReason(e.target.value)}
-                  className="w-full border border-[var(--border)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)] transition-colors"
+                  className="w-full border border-[var(--dash-hairline)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)] transition-colors"
                   rows={3}
                   placeholder="Explain why this document was rejected..."
                   required
@@ -443,11 +443,11 @@ export function KycClient({ initialDocuments, statusCounts }: KycClientProps) {
               </div>
             )}
             <div>
-              <label className="block text-sm font-semibold text-[var(--ink-950)] mb-1">Admin Notes (Internal)</label>
+              <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Admin Notes (Internal)</label>
               <textarea
                 value={adminNotes}
                 onChange={(e) => setAdminNotes(e.target.value)}
-                className="w-full border border-[var(--border)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)] transition-colors"
+                className="w-full border border-[var(--dash-hairline)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)] transition-colors"
                 rows={2}
                 placeholder="Add internal notes (not visible to user)..."
               />
@@ -455,7 +455,7 @@ export function KycClient({ initialDocuments, statusCounts }: KycClientProps) {
             <div className="flex justify-end gap-3 pt-2">
               <button
                 onClick={() => { setIsActionModalOpen(false); setRejectionReason(""); setAdminNotes(""); }}
-                className="px-4 py-2 font-semibold text-[var(--ink-600)] hover:bg-[var(--border)] rounded-full transition-colors"
+                className="rounded-lg px-4 py-2 text-[13px] font-medium text-ink-600 transition-colors hover:bg-ink-100 hover:text-ink"
               >
                 Cancel
               </button>

@@ -3,12 +3,62 @@
 import { useEffect, useState } from "react";
 import { Bell, Plus } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/Button";
+import { usePathname } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
+const TITLE_MAP: Array<{ prefix: string; title: string }> = [
+  // Trader
+  { prefix: "/dashboard/account", title: "Account" },
+  { prefix: "/dashboard/new-challenge", title: "New Challenge" },
+  { prefix: "/dashboard/transactions", title: "Transactions" },
+  { prefix: "/dashboard/payouts", title: "Payouts" },
+  { prefix: "/dashboard/competitions", title: "Competitions" },
+  { prefix: "/dashboard/leaderboard", title: "Leaderboard" },
+  { prefix: "/dashboard/calendar", title: "Economic Calendar" },
+  { prefix: "/dashboard/affiliate", title: "Affiliate" },
+  { prefix: "/dashboard/contest", title: "Contest" },
+  { prefix: "/dashboard/settings", title: "Settings" },
+  { prefix: "/dashboard/certificates", title: "Certificates" },
+  { prefix: "/dashboard", title: "Overview" },
+  // Admin
+  { prefix: "/admin/users", title: "Users" },
+  { prefix: "/admin/purchases", title: "Purchases" },
+  { prefix: "/admin/payouts", title: "Payouts" },
+  { prefix: "/admin/affiliates", title: "Affiliates" },
+  { prefix: "/admin/kyc", title: "KYC" },
+  { prefix: "/admin/payments", title: "Payments" },
+  { prefix: "/admin/trading/dashboard", title: "Risk Dashboard" },
+  { prefix: "/admin/trading/accounts", title: "Trading Accounts" },
+  { prefix: "/admin/trading/rules", title: "Rule Engine" },
+  { prefix: "/admin/trading/platforms", title: "Platforms & API" },
+  { prefix: "/admin/challenges", title: "Challenges" },
+  { prefix: "/admin/coupons", title: "Coupons" },
+  { prefix: "/admin/tickets", title: "Support Tickets" },
+  { prefix: "/admin/cms", title: "CMS" },
+  { prefix: "/admin/faqs", title: "FAQs" },
+  { prefix: "/admin/stats", title: "Stats" },
+  { prefix: "/admin/fraud", title: "Fraud Detection" },
+  { prefix: "/admin/notifications", title: "Notifications" },
+  { prefix: "/admin/email", title: "Email" },
+  { prefix: "/admin/roles", title: "Roles & Permissions" },
+  { prefix: "/admin/reports", title: "Reports" },
+  { prefix: "/admin/api-logs", title: "API Logs" },
+  { prefix: "/admin/settings", title: "Settings" },
+  { prefix: "/admin/audit", title: "Audit Logs" },
+  { prefix: "/admin/orders", title: "Orders" },
+  { prefix: "/admin", title: "Admin Overview" },
+];
+
+function pageTitle(pathname: string): string {
+  const match = TITLE_MAP.find((t) => pathname.startsWith(t.prefix));
+  return match?.title ?? "Dashboard";
+}
+
 export function DashboardHeader() {
+  const pathname = usePathname();
   const [displayName, setDisplayName] = useState("");
   const [initials, setInitials] = useState("");
+  const isAdmin = pathname.startsWith("/admin");
 
   useEffect(() => {
     async function loadUser() {
@@ -35,37 +85,41 @@ export function DashboardHeader() {
   }, []);
 
   return (
-    <header className="sticky top-16 lg:top-0 z-30 mt-16 lg:mt-0 flex min-h-[84px] w-full items-center justify-between gap-3 bg-[var(--paper-2)]/85 backdrop-blur-xl px-4 py-3 border-b border-[var(--border)] sm:px-6 lg:h-24 lg:px-10 lg:py-0">
-      <div className="min-w-0 flex items-center gap-3 sm:gap-4">
-        {/* The user avatar and greeting */}
-        <div className="hidden sm:flex h-12 w-12 items-center justify-center rounded-full bg-[var(--paper)] border border-[var(--border)] shadow-sm font-display font-bold text-[var(--ink-950)] text-lg">
-          {initials || "?"}
-        </div>
-        <div className="min-w-0">
-          <h1 className="truncate text-lg sm:text-xl lg:text-2xl font-display font-bold text-[var(--ink-950)] tracking-tight">
-            Hey, {displayName || "..."}
-          </h1>
-          <p className="text-[12px] sm:text-[13px] text-[var(--ink-500)] font-medium">
-            Welcome back to your dashboard
-          </p>
-        </div>
+    <header className="sticky top-14 lg:top-0 z-30 flex h-14 w-full items-center justify-between gap-3 border-b border-[var(--dash-hairline)] bg-white/85 px-4 backdrop-blur-md sm:px-6 lg:h-16 lg:px-8">
+      <div className="flex min-w-0 items-center gap-3">
+        <h1 className="truncate text-[15px] font-semibold tracking-tight text-ink sm:text-base">
+          {pageTitle(pathname)}
+        </h1>
       </div>
 
-      <div className="shrink-0 flex items-center gap-2 sm:gap-3">
-        <button className="relative flex h-10 w-10 items-center justify-center rounded-full bg-[var(--paper)] border border-[var(--border)] shadow-sm text-[var(--ink-500)] hover:text-[var(--ink-950)] transition-colors">
-          <Bell className="w-5 h-5" />
-          <span className="absolute top-2 right-2.5 flex h-2 w-2">
-            <span className="absolute inset-0 animate-ping rounded-full bg-[var(--accent)] opacity-75"></span>
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--accent)]"></span>
-          </span>
+      <div className="flex shrink-0 items-center gap-2">
+        <button
+          className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--dash-hairline)] bg-white text-ink-500 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink"
+          aria-label="Notifications"
+        >
+          <Bell className="h-4 w-4" />
+          <span
+            className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-lime-600"
+            aria-hidden="true"
+          />
         </button>
-        
-        <Link href="/dashboard/new-challenge">
-          <Button className="flex items-center justify-center gap-2 h-10 w-10 sm:w-auto sm:px-5 rounded-full bg-[var(--accent)] hover:bg-[var(--accent-700)] text-white shadow-md text-[14px] font-medium">
-            <Plus className="w-4 h-4" />
-            <span className="hidden sm:inline">New Challenge</span>
-          </Button>
-        </Link>
+
+        {!isAdmin && (
+          <Link
+            href="/dashboard/new-challenge"
+            className="hidden h-9 items-center gap-1.5 rounded-lg bg-ink px-3.5 text-[13px] font-medium text-white transition-colors hover:bg-[var(--accent-700)] sm:inline-flex"
+          >
+            <Plus className="h-4 w-4" />
+            New Challenge
+          </Link>
+        )}
+
+        <div
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--dash-hairline)] bg-ink-50 text-[13px] font-semibold text-ink"
+          title={displayName || undefined}
+        >
+          {initials || "?"}
+        </div>
       </div>
     </header>
   );

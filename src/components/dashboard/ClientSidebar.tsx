@@ -3,13 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { 
-  Home, 
-  Briefcase, 
-  Trophy, 
-  Settings, 
-  LogOut, 
-  Award,
+import {
+  Home,
+  Settings,
+  LogOut,
   History,
   Menu,
   X,
@@ -19,7 +16,9 @@ import {
   Plus,
   Users,
   DollarSign,
-  Gift
+  Gift,
+  Trophy,
+  type LucideIcon,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -27,16 +26,47 @@ import { NavbarLogo } from "@/components/ui/resizable-navbar";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 
-const navItems = [
-  { icon: Home, label: "Home", href: "/dashboard" },
-  { icon: Gift, label: "Contest 🔥", href: "/dashboard/contest" },
-  { icon: History, label: "Transaction History", href: "/dashboard/transactions" },
-  { icon: Trophy, label: "Competitions", href: "/dashboard/competitions" },
-  { icon: ListOrdered, label: "Leaderboard", href: "/dashboard/leaderboard" },
-  { icon: CalendarDays, label: "Calendar", href: "/dashboard/calendar" },
-  { icon: Users, label: "Affiliate", href: "/dashboard/affiliate" },
-  { icon: DollarSign, label: "Payouts", href: "/dashboard/payouts" },
-  { icon: Settings, label: "Settings", href: "/dashboard/settings" },
+interface NavItem {
+  icon: LucideIcon;
+  label: string;
+  href: string;
+}
+
+interface NavSection {
+  title: string;
+  items: NavItem[];
+}
+
+const sections: NavSection[] = [
+  {
+    title: "Overview",
+    items: [
+      { icon: Home, label: "Home", href: "/dashboard" },
+      { icon: CalendarDays, label: "Calendar", href: "/dashboard/calendar" },
+    ],
+  },
+  {
+    title: "Trading",
+    items: [
+      { icon: History, label: "Transactions", href: "/dashboard/transactions" },
+      { icon: DollarSign, label: "Payouts", href: "/dashboard/payouts" },
+      { icon: Trophy, label: "Competitions", href: "/dashboard/competitions" },
+      { icon: ListOrdered, label: "Leaderboard", href: "/dashboard/leaderboard" },
+    ],
+  },
+  {
+    title: "Growth",
+    items: [
+      { icon: Gift, label: "Contest", href: "/dashboard/contest" },
+      { icon: Users, label: "Affiliate", href: "/dashboard/affiliate" },
+    ],
+  },
+  {
+    title: "Account",
+    items: [
+      { icon: Settings, label: "Settings", href: "/dashboard/settings" },
+    ],
+  },
 ];
 
 export function ClientSidebar() {
@@ -51,91 +81,139 @@ export function ClientSidebar() {
 
   return (
     <>
-      {/* Mobile Toggle */}
-      <div className="lg:hidden fixed top-0 left-0 w-full h-16 bg-white/80 backdrop-blur-md z-40 border-b border-[var(--border)] flex items-center justify-between px-4">
+      {/* Mobile top bar */}
+      <div className="lg:hidden fixed top-0 left-0 z-40 flex h-14 w-full items-center justify-between border-b border-[var(--dash-hairline)] bg-white/90 px-4 backdrop-blur-md">
         <NavbarLogo />
-        <button 
-          onClick={() => setIsOpen(!isOpen)}
-          className="p-2 text-[var(--ink-700)] hover:text-[var(--ink-950)]"
-        >
-          {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+        <div className="flex items-center gap-1">
+          <Link
+            href="/dashboard/new-challenge"
+            className="flex h-11 w-11 items-center justify-center rounded-lg text-ink-600 transition-colors hover:bg-ink-50 hover:text-ink"
+            aria-label="New challenge"
+          >
+            <Plus className="h-5 w-5" />
+          </Link>
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="flex h-11 w-11 items-center justify-center rounded-lg text-ink-600 transition-colors hover:bg-ink-50 hover:text-ink"
+            aria-label={isOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isOpen}
+          >
+            {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
       </div>
 
-      {/* Overlay for mobile */}
+      {/* Mobile overlay */}
       {isOpen && (
-        <div 
-          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 lg:hidden"
+        <div
+          className="fixed inset-0 z-40 bg-black/30 lg:hidden"
           onClick={() => setIsOpen(false)}
+          aria-hidden="true"
         />
       )}
 
-      {/* Sidebar Content */}
-      <aside className={cn(
-        "fixed inset-y-0 left-0 z-50 w-[260px] bg-[var(--paper)] border-r border-[var(--border)] transform transition-transform duration-300 ease-in-out lg:translate-x-0 flex flex-col",
-        isOpen ? "translate-x-0" : "-translate-x-full"
-      )}>
-        {/* Logo Section */}
-        <div className="pt-8 pb-4 flex flex-col items-start px-6 border-b border-[var(--border)]">
+      {/* Sidebar */}
+      <aside
+        className={cn(
+          "fixed inset-y-0 left-0 z-50 flex w-[248px] transform flex-col border-r border-[var(--dash-hairline)] bg-white transition-transform duration-300 ease-out lg:translate-x-0",
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
+        {/* Logo */}
+        <div className="flex flex-col items-start gap-3 border-b border-[var(--dash-hairline)] px-5 pb-4 pt-6">
           <NavbarLogo />
-          <Link href="/" className="mt-4 flex items-center gap-1.5 text-[12px] font-bold text-[var(--ink-500)] hover:text-[var(--accent)] transition-colors uppercase tracking-wider bg-[var(--paper-2)] px-3 py-1.5 rounded-full border border-[var(--border)]">
-            Go to site <ArrowUpRight className="w-3.5 h-3.5" />
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-400 transition-colors hover:text-ink"
+          >
+            Go to site <ArrowUpRight className="h-3 w-3" />
           </Link>
         </div>
 
-        {/* New Challenge Button */}
-        <div className="px-6 pt-6 pb-2">
-          <Link href="/dashboard/new-challenge" onClick={() => setIsOpen(false)}>
-            <div className="w-12 h-12 rounded-full bg-[var(--ink-950)] text-white flex items-center justify-center hover:bg-[var(--accent)] hover:scale-105 transition-all shadow-md cursor-pointer group">
-              <Plus className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" />
-            </div>
+        {/* Primary action */}
+        <div className="px-4 pb-1 pt-4">
+          <Link
+            href="/dashboard/new-challenge"
+            onClick={() => setIsOpen(false)}
+            className="group flex h-9 w-full items-center justify-center gap-2 rounded-lg bg-ink text-[13px] font-medium text-white transition-colors hover:bg-[var(--accent-700)]"
+          >
+            <Plus className="h-4 w-4" />
+            New Challenge
           </Link>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = pathname === item.href;
-
-            return (
-              <Link 
-                key={item.href} 
-                href={item.href}
-                onClick={() => setIsOpen(false)}
-                className="relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group outline-none"
-              >
-                {isActive && (
-                  <motion.div
-                    layoutId="sidebar-active"
-                    className="absolute inset-0 bg-[var(--accent-50)] rounded-xl"
-                    initial={false}
-                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                  />
+        <nav className="flex-1 overflow-y-auto px-3 py-3" aria-label="Dashboard navigation">
+          {sections.map((section, sIdx) => (
+            <div key={section.title}>
+              <p
+                className={cn(
+                  "dash-overline px-3 mb-1.5",
+                  sIdx === 0 ? "mt-2" : "mt-5"
                 )}
-                
-                <Icon className={cn(
-                  "w-5 h-5 relative z-10 transition-colors",
-                  isActive ? "text-[var(--accent-700)]" : "text-[var(--ink-500)] group-hover:text-[var(--ink-900)]"
-                )} />
-                <span className={cn(
-                  "text-[14px] font-medium relative z-10 transition-colors",
-                  isActive ? "text-[var(--accent-700)]" : "text-[var(--ink-700)] group-hover:text-[var(--ink-950)]"
-                )}>
-                  {item.label}
-                </span>
-              </Link>
-            );
-          })}
+              >
+                {section.title}
+              </p>
+              <div className="flex flex-col gap-0.5">
+                {section.items.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = pathname === item.href;
+
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setIsOpen(false)}
+                      aria-current={isActive ? "page" : undefined}
+                      className="group relative flex h-9 items-center gap-2.5 rounded-lg px-3 outline-none transition-colors"
+                    >
+                      {isActive && (
+                        <motion.span
+                          layoutId="sidebar-active"
+                          className="absolute inset-0 rounded-lg bg-ink-50"
+                          initial={false}
+                          transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                        />
+                      )}
+                      {isActive && (
+                        <span
+                          className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-full bg-lime-600"
+                          aria-hidden="true"
+                        />
+                      )}
+                      <Icon
+                        className={cn(
+                          "relative z-10 h-4 w-4 transition-colors",
+                          isActive
+                            ? "text-ink"
+                            : "text-ink-400 group-hover:text-ink-700"
+                        )}
+                      />
+                      <span
+                        className={cn(
+                          "relative z-10 text-[13px] font-medium transition-colors",
+                          isActive
+                            ? "text-ink"
+                            : "text-ink-600 group-hover:text-ink"
+                        )}
+                      >
+                        {item.label}
+                      </span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
 
-        {/* Footer / Logout */}
-        <div className="p-4 border-t border-[var(--border)]">
-          <button 
+        {/* Footer */}
+        <div className="border-t border-[var(--dash-hairline)] p-3">
+          <button
             onClick={handleSignOut}
-            className="flex items-center gap-3 px-3 py-2.5 w-full rounded-xl transition-all text-[var(--ink-500)] hover:text-red-600 hover:bg-red-50 font-medium text-[14px]"
+            className="flex h-9 w-full items-center gap-2.5 rounded-lg px-3 text-[13px] font-medium text-ink-500 transition-colors hover:bg-rose-50 hover:text-rose-700"
           >
-            <LogOut className="w-5 h-5" />
+            <LogOut className="h-4 w-4" />
             Sign Out
           </button>
         </div>

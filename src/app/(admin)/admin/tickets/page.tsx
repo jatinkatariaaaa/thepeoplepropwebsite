@@ -84,9 +84,9 @@ export default function AdminTicketsPage() {
         const p = row.original.priority;
         return (
           <span className={`inline-flex px-2 py-0.5 rounded text-[11px] font-bold uppercase ${
-            p === "urgent" ? "bg-red-100 text-red-700" :
-            p === "high" ? "bg-amber-100 text-amber-700" :
-            p === "medium" ? "bg-blue-100 text-blue-700" :
+            p === "urgent" ? "bg-rose-50 text-rose-700" :
+            p === "high" ? "bg-amber-50 text-amber-700" :
+            p === "medium" ? "bg-ink-50 text-ink-700" :
             "bg-gray-100 text-gray-700"
           }`}>
             {p}
@@ -101,9 +101,9 @@ export default function AdminTicketsPage() {
         const s = row.original.status;
         return (
           <span className={`inline-flex px-2 py-0.5 rounded-full text-[11px] font-bold uppercase ${
-            s === "open" ? "bg-blue-50 text-blue-700" :
+            s === "open" ? "bg-ink-50 text-ink-700" :
             s === "in_progress" ? "bg-amber-50 text-amber-700" :
-            s === "resolved" ? "bg-emerald-50 text-emerald-700" :
+            s === "resolved" ? "bg-success-50 text-success-700" :
             "bg-gray-100 text-gray-600"
           }`}>
             {s.replace("_", " ")}
@@ -131,17 +131,17 @@ export default function AdminTicketsPage() {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+    <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[var(--ink-950)] flex items-center gap-2">
+          <h1 className="flex items-center gap-2 text-xl font-semibold tracking-tight text-ink">
             <MessageSquare className="w-6 h-6" /> Support Tickets
           </h1>
           <p className="text-[var(--ink-500)] mt-1">Manage user support requests and inquiries.</p>
         </div>
         <button
           onClick={() => setIsNewTicketModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-[var(--ink-950)] text-white rounded-xl font-bold hover:bg-black transition-colors"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800"
         >
           <Plus className="w-4 h-4" /> New Ticket
         </button>
@@ -155,7 +155,7 @@ export default function AdminTicketsPage() {
             className={`px-4 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap transition-colors ${
               statusFilter === tab.value 
                 ? "bg-[var(--ink-950)] text-white" 
-                : "bg-white border border-[var(--border)] text-[var(--ink-500)] hover:text-[var(--ink-950)]"
+                : "bg-white border border-[var(--dash-hairline)] text-[var(--ink-500)] hover:text-[var(--ink-950)]"
             }`}
           >
             {tab.label}
@@ -172,31 +172,31 @@ export default function AdminTicketsPage() {
       >
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold mb-1">User Email</label>
+            <label className="mb-1.5 block text-[13px] font-medium text-ink-700">User Email</label>
             <input
               type="email"
               value={newTicketEmail}
               onChange={(e) => setNewTicketEmail(e.target.value)}
-              className="w-full border border-[var(--border)] rounded-xl p-2.5 outline-none focus:border-[var(--ink-950)]"
+              className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400"
               placeholder="user@example.com"
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold mb-1">Subject</label>
+            <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Subject</label>
             <input
               type="text"
               value={newTicketSubject}
               onChange={(e) => setNewTicketSubject(e.target.value)}
-              className="w-full border border-[var(--border)] rounded-xl p-2.5 outline-none focus:border-[var(--ink-950)]"
+              className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400"
               placeholder="Ticket subject"
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold mb-1">Priority</label>
+            <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Priority</label>
             <select
               value={newTicketPriority}
               onChange={(e) => setNewTicketPriority(e.target.value)}
-              className="w-full border border-[var(--border)] rounded-xl p-2.5 outline-none focus:border-[var(--ink-950)] bg-white"
+              className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400 bg-white"
             >
               <option value="low">Low</option>
               <option value="medium">Medium</option>
@@ -206,7 +206,7 @@ export default function AdminTicketsPage() {
           </div>
           <div className="flex justify-end gap-3 mt-6">
             <button onClick={() => setIsNewTicketModalOpen(false)} className="px-4 py-2 text-[var(--ink-500)] font-semibold">Cancel</button>
-            <button onClick={handleCreateTicket} className="px-4 py-2 bg-[var(--ink-950)] text-white rounded-xl font-bold">Create Ticket</button>
+            <button onClick={handleCreateTicket} className="px-4 py-2 rounded-lg bg-ink text-[13px] font-semibold text-white">Create Ticket</button>
           </div>
         </div>
       </AdminModal>

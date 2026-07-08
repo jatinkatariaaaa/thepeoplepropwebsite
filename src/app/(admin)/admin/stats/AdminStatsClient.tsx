@@ -27,18 +27,18 @@ export function AdminStatsClient({ initialStats }: { initialStats: any[] }) {
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden">
+    <div className="dash-card overflow-hidden">
       <table className="w-full text-left border-collapse">
         <thead>
-          <tr className="bg-[var(--paper-2)] border-b border-[var(--border)] text-[13px] uppercase tracking-wider text-[var(--ink-500)]">
+          <tr className="bg-[var(--dash-canvas)] border-b border-[var(--dash-hairline)] text-[13px] uppercase tracking-wider text-[var(--ink-500)]">
             <th className="px-6 py-4 font-medium">Stat Name</th>
             <th className="px-6 py-4 font-medium">Value</th>
             <th className="px-6 py-4 font-medium text-right">Actions</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-[var(--border)]">
+        <tbody className="divide-y divide-[var(--dash-hairline)]">
           {stats.map(stat => (
-            <tr key={stat.id} className="hover:bg-[var(--paper-2)] transition-colors">
+            <tr key={stat.id} className="hover:bg-[var(--dash-canvas)] transition-colors">
               <td className="px-6 py-4 font-medium text-[var(--ink-950)]">
                 {stat.label} <span className="text-xs text-gray-400 font-mono ml-2">({stat.key_name})</span>
               </td>

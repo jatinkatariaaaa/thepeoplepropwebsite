@@ -33,14 +33,14 @@ export function EconomicCalendar() {
   }, []);
 
   return (
-    <div className="bg-white rounded-[24px] border border-[var(--border)] shadow-sm overflow-hidden w-full h-[800px] p-2 relative">
-      <div className="tradingview-widget-container w-full h-full" ref={containerRef}>
-        <div className="tradingview-widget-container__widget w-full h-[calc(100%-32px)]"></div>
-        <div className="tradingview-widget-copyright text-center text-[11px] mt-2">
-          <a href="https://www.tradingview.com/economic-calendar/" rel="noopener nofollow" target="_blank" className="text-[var(--accent)] hover:underline">
+    <div className="dash-card relative h-[800px] w-full overflow-hidden p-2">
+      <div className="tradingview-widget-container h-full w-full" ref={containerRef}>
+        <div className="tradingview-widget-container__widget h-[calc(100%-32px)] w-full"></div>
+        <div className="tradingview-widget-copyright mt-2 text-center text-[11px]">
+          <a href="https://www.tradingview.com/economic-calendar/" rel="noopener nofollow" target="_blank" className="text-ink-600 hover:underline">
             Economic Calendar
           </a>
-          <span className="text-[var(--ink-500)] ml-1">by TradingView</span>
+          <span className="ml-1 text-ink-400">by TradingView</span>
         </div>
       </div>
     </div>

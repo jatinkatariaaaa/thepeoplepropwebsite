@@ -34,9 +34,9 @@ interface AdminPayoutsClientProps {
 }
 
 const statusConfig: Record<string, { label: string; className: string }> = {
-  pending: { label: "Pending", className: "bg-amber-50 text-amber-700 border-amber-200" },
-  paid: { label: "Paid", className: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-  rejected: { label: "Rejected", className: "bg-red-50 text-red-700 border-red-200" },
+  pending: { label: "Pending", className: "border-[#FDE68A] bg-amber-50 text-amber-700" },
+  paid: { label: "Paid", className: "border-[#A7F3D0] bg-success-50 text-success-700" },
+  rejected: { label: "Rejected", className: "border-[#FECDD3] bg-rose-50 text-rose-700" },
 };
 
 export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingAmount, totalPaidAmount }: AdminPayoutsClientProps) {
@@ -197,7 +197,7 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
           <div className="flex items-center gap-1">
             <button
               onClick={() => openViewModal(p)}
-              className="p-1.5 text-[var(--ink-400)] hover:text-[var(--ink-950)] hover:bg-[var(--border)] rounded-lg transition-colors"
+              className="rounded-lg p-1.5 text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink"
               title="View Details"
             >
               <Eye className="w-4 h-4" />
@@ -207,7 +207,7 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
                 <button
                   onClick={() => openActionModal(p, "approve")}
                   disabled={loading === p.id}
-                  className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
+                  className="p-1.5 text-[var(--dash-positive)] hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
                   title="Approve & Pay"
                 >
                   <CheckCircle className="w-4 h-4" />
@@ -215,7 +215,7 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
                 <button
                   onClick={() => openActionModal(p, "reject")}
                   disabled={loading === p.id}
-                  className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                  className="p-1.5 text-[var(--dash-negative)] hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
                   title="Reject"
                 >
                   <XCircle className="w-4 h-4" />
@@ -239,9 +239,9 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
           { key: "pending", label: "Pending", count: statusCounts.pending, icon: Clock, color: "text-amber-600", bg: "bg-amber-50", amount: totalPendingAmount },
-          { key: "paid", label: "Paid", count: statusCounts.paid, icon: CheckCircle, color: "text-emerald-600", bg: "bg-emerald-50", amount: totalPaidAmount },
-          { key: "rejected", label: "Rejected", count: statusCounts.rejected, icon: XCircle, color: "text-red-600", bg: "bg-red-50", amount: 0 },
-          { key: "total", label: "Total Volume", count: payouts.length, icon: TrendingUp, color: "text-[var(--ink-700)]", bg: "bg-[var(--paper-2)]", amount: totalPaidAmount + totalPendingAmount },
+          { key: "paid", label: "Paid", count: statusCounts.paid, icon: CheckCircle, color: "text-[var(--dash-positive)]", bg: "bg-emerald-50", amount: totalPaidAmount },
+          { key: "rejected", label: "Rejected", count: statusCounts.rejected, icon: XCircle, color: "text-[var(--dash-negative)]", bg: "bg-red-50", amount: 0 },
+          { key: "total", label: "Total Volume", count: payouts.length, icon: TrendingUp, color: "text-[var(--ink-700)]", bg: "bg-[var(--dash-canvas)]", amount: totalPaidAmount + totalPendingAmount },
         ].map((stat) => {
           const Icon = stat.icon;
           const isActive = statusFilter === stat.key;
@@ -252,7 +252,7 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
               className={`p-4 rounded-2xl border transition-all text-left ${
                 isActive
                   ? "border-[var(--ink-950)] bg-[var(--ink-950)] text-white shadow-md"
-                  : "border-[var(--border)] bg-white hover:border-[var(--ink-300)]"
+                  : "border-[var(--dash-hairline)] bg-white hover:border-[var(--ink-300)]"
               }`}
             >
               <div className="flex items-center justify-between mb-2">
@@ -283,7 +283,7 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
             placeholder="Search by trader, email, or wallet..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 bg-white border border-[var(--border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
+            className="w-full pl-9 pr-4 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
           />
         </div>
       </div>
@@ -301,7 +301,7 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
         {selectedPayout && (
           <div className="space-y-5">
             {/* User */}
-            <div className="flex items-start gap-4 p-4 bg-[var(--paper-2)] rounded-xl">
+            <div className="flex items-start gap-4 rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4">
               <div className="w-10 h-10 rounded-full bg-[var(--ink-950)] flex items-center justify-center text-white font-bold">
                 {(selectedPayout.profiles?.display_name || "?").charAt(0).toUpperCase()}
               </div>
@@ -313,37 +313,37 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
 
             {/* Details Grid */}
             <div className="grid grid-cols-2 gap-4">
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Amount</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <p className="dash-overline mb-1 text-[10px]">Amount</p>
                 <p className="font-semibold text-[var(--ink-950)] text-lg">${Number(selectedPayout.amount).toLocaleString()}</p>
               </div>
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Status</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <p className="dash-overline mb-1 text-[10px]">Status</p>
                 <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium border ${
                   statusConfig[selectedPayout.status]?.className || statusConfig.pending.className
                 }`}>
                   {statusConfig[selectedPayout.status]?.label}
                 </span>
               </div>
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Profit</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <p className="dash-overline mb-1 text-[10px]">Profit</p>
                 <p className="font-semibold text-[var(--ink-950)]">${Number(selectedPayout.profit).toLocaleString()}</p>
               </div>
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Profit Split</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <p className="dash-overline mb-1 text-[10px]">Profit Split</p>
                 <p className="font-semibold text-[var(--ink-950)]">{selectedPayout.profit_split}%</p>
               </div>
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl col-span-2">
-                <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Wallet Address</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3 col-span-2">
+                <p className="dash-overline mb-1 text-[10px]">Wallet Address</p>
                 <p className="font-mono text-sm text-[var(--ink-700)] break-all">{selectedPayout.crypto_address}</p>
               </div>
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Requested</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <p className="dash-overline mb-1 text-[10px]">Requested</p>
                 <p className="font-semibold text-[var(--ink-950)]">{format(new Date(selectedPayout.created_at), "MMM dd, yyyy HH:mm")}</p>
               </div>
               {selectedPayout.processed_at && (
-                <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                  <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Processed</p>
+                <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                  <p className="dash-overline mb-1 text-[10px]">Processed</p>
                   <p className="font-semibold text-[var(--ink-950)]">{format(new Date(selectedPayout.processed_at), "MMM dd, yyyy HH:mm")}</p>
                 </div>
               )}
@@ -351,7 +351,7 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
 
             {/* Account Info */}
             {selectedPayout.accounts && (
-              <div className="p-4 bg-[var(--paper-2)] rounded-xl">
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4">
                 <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-2">Trading Account</p>
                 <div className="grid grid-cols-3 gap-3">
                   <div>
@@ -410,7 +410,7 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
           <div className="space-y-4">
             {actionType === "approve" ? (
               <div className="flex items-start gap-3 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
-                <CheckCircle className="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0" />
+                <CheckCircle className="w-5 h-5 text-[var(--dash-positive)] mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="text-sm font-semibold text-emerald-800">Confirm Approval</p>
                   <p className="text-sm text-emerald-700 mt-1">This will mark the payout as paid. Ensure the crypto transfer has been completed before confirming.</p>
@@ -418,7 +418,7 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
               </div>
             ) : (
               <div className="flex items-start gap-3 p-4 bg-red-50 rounded-xl border border-red-100">
-                <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+                <AlertTriangle className="w-5 h-5 text-[var(--dash-negative)] mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="text-sm font-semibold text-red-800">Confirm Rejection</p>
                   <p className="text-sm text-red-700 mt-1">This will reject the payout and refund the amount back to the trader&apos;s account balance.</p>
@@ -427,11 +427,11 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
             )}
 
             <div>
-              <label className="block text-sm font-semibold text-[var(--ink-950)] mb-1">Admin Notes</label>
+              <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Admin Notes</label>
               <textarea
                 value={adminNotes}
                 onChange={(e) => setAdminNotes(e.target.value)}
-                className="w-full border border-[var(--border)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)] transition-colors"
+                className="w-full border border-[var(--dash-hairline)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)] transition-colors"
                 rows={3}
                 placeholder="Add internal notes (optional)..."
               />
@@ -440,7 +440,7 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
             <div className="flex justify-end gap-3 pt-2">
               <button
                 onClick={() => { setIsActionModalOpen(false); setAdminNotes(""); }}
-                className="px-4 py-2 font-semibold text-[var(--ink-600)] hover:bg-[var(--border)] rounded-full transition-colors"
+                className="rounded-lg px-4 py-2 text-[13px] font-medium text-ink-600 transition-colors hover:bg-ink-100 hover:text-ink"
               >
                 Cancel
               </button>

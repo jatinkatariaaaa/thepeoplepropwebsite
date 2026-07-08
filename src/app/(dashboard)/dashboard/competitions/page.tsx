@@ -11,7 +11,7 @@ const activeCompetitions = [
     participants: 1245,
     timeLeft: "12 Days Left",
     status: "Active",
-    image: "bg-gradient-to-br from-emerald-500 to-teal-700",
+    image: "bg-ink-950",
   }
 ];
 
@@ -23,7 +23,7 @@ const upcomingCompetitions = [
     participants: 342,
     startsIn: "Starts in 18 Days",
     status: "Upcoming",
-    image: "bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a]",
+    image: "bg-ink-950",
   },
   {
     id: "COMP-24-08",
@@ -32,65 +32,66 @@ const upcomingCompetitions = [
     participants: 156,
     startsIn: "Starts in 45 Days",
     status: "Upcoming",
-    image: "bg-gradient-to-br from-purple-500 to-violet-700",
+    image: "bg-ink-950",
   }
 ];
 
 export default function CompetitionsPage() {
   return (
-    <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
-      <div className="mb-8">
-        <h1 className="text-2xl lg:text-3xl font-display font-bold text-[var(--ink-950)] mb-2">Competitions</h1>
-        <p className="text-[var(--ink-500)]">Compete against other traders to win cash prizes and funded accounts.</p>
+    <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
+      <div className="mb-6">
+        <p className="dash-overline mb-1.5">Compete</p>
+        <h1 className="text-xl font-semibold tracking-tight text-ink sm:text-2xl">Competitions</h1>
+        <p className="mt-1 text-sm text-ink-500">Compete against other traders to win cash prizes and funded accounts.</p>
       </div>
 
       {/* Active Competitions */}
-      <div className="mb-10">
-        <h2 className="text-[18px] font-bold text-[var(--ink-950)] mb-4 flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+      <div className="mb-8">
+        <h2 className="mb-3 flex items-center gap-2 text-[15px] font-semibold tracking-tight text-ink">
+          <span className="status-dot bg-[var(--dash-positive)]" aria-hidden="true"></span>
           Active Competitions
         </h2>
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {activeCompetitions.map((comp) => (
-            <div key={comp.id} className="bg-white rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden group">
+            <div key={comp.id} className="dash-card dash-card-hover group overflow-hidden">
               <div className={cn("h-32 p-6 flex items-start justify-between relative overflow-hidden", comp.image)}>
-                <div className="absolute inset-0 bg-black/10"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-white/[0.03] to-transparent" aria-hidden="true"></div>
                 <div className="relative z-10">
-                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-white/20 text-white backdrop-blur-md mb-2 border border-white/10">
+                  <span className="mb-2 inline-flex items-center rounded-full border border-white/15 bg-white/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-white/90">
                     Free Entry
                   </span>
-                  <h3 className="text-xl font-bold text-white font-display">{comp.title}</h3>
+                  <h3 className="text-lg font-semibold tracking-tight text-white">{comp.title}</h3>
                 </div>
-                <Trophy className="w-16 h-16 text-white/20 absolute -right-2 -bottom-2 transform -rotate-12 group-hover:scale-110 transition-transform duration-500" />
+                <Trophy className="absolute -bottom-2 -right-2 h-14 w-14 -rotate-12 text-white/10 transition-transform duration-500 group-hover:scale-105" aria-hidden="true" />
               </div>
               
               <div className="p-6">
-                <div className="grid grid-cols-3 gap-4 mb-6">
+                <div className="mb-5 grid grid-cols-3 gap-4">
                   <div>
-                    <p className="text-[12px] font-bold text-[var(--ink-500)] uppercase tracking-wider mb-1">Prize Pool</p>
-                    <p className="text-[18px] font-bold text-[var(--ink-950)] flex items-center gap-1.5">
-                      <Medal className="w-4 h-4 text-amber-500" />
+                    <p className="dash-overline mb-1">Prize Pool</p>
+                    <p className="dash-figure flex items-center gap-1.5 text-base">
+                      <Medal className="h-4 w-4 text-amber-500" />
                       {comp.prizePool}
                     </p>
                   </div>
                   <div>
-                    <p className="text-[12px] font-bold text-[var(--ink-500)] uppercase tracking-wider mb-1">Participants</p>
-                    <p className="text-[18px] font-bold text-[var(--ink-950)] flex items-center gap-1.5">
-                      <Users className="w-4 h-4 text-blue-500" />
+                    <p className="dash-overline mb-1">Participants</p>
+                    <p className="dash-figure flex items-center gap-1.5 text-base">
+                      <Users className="h-4 w-4 text-ink-400" />
                       {comp.participants}
                     </p>
                   </div>
                   <div>
-                    <p className="text-[12px] font-bold text-[var(--ink-500)] uppercase tracking-wider mb-1">Time Left</p>
-                    <p className="text-[18px] font-bold text-[var(--ink-950)] flex items-center gap-1.5">
-                      <Clock className="w-4 h-4 text-red-500" />
+                    <p className="dash-overline mb-1">Time Left</p>
+                    <p className="dash-figure flex items-center gap-1.5 text-base">
+                      <Clock className="h-4 w-4 text-ink-400" />
                       {comp.timeLeft}
                     </p>
                   </div>
                 </div>
                 
-                <button className="w-full h-11 bg-[var(--ink-950)] hover:bg-[var(--ink-800)] text-white text-[14px] font-bold rounded-xl transition-all shadow-md active:scale-[0.98] flex items-center justify-center gap-2">
+                <button className="flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-ink text-[13px] font-semibold text-white transition-all hover:bg-ink-800 active:scale-[0.98]">
                   Enter Competition <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
@@ -101,19 +102,19 @@ export default function CompetitionsPage() {
 
       {/* Upcoming Competitions */}
       <div>
-        <h2 className="text-[18px] font-bold text-[var(--ink-950)] mb-4 flex items-center gap-2">
-          <Calendar className="w-5 h-5 text-[var(--ink-500)]" />
+        <h2 className="mb-3 flex items-center gap-2 text-[15px] font-semibold tracking-tight text-ink">
+          <Calendar className="h-4 w-4 text-ink-400" />
           Upcoming Competitions
         </h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {upcomingCompetitions.map((comp) => (
-            <div key={comp.id} className="bg-white rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden group">
+            <div key={comp.id} className="dash-card dash-card-hover group overflow-hidden">
               <div className={cn("h-24 p-5 flex items-start justify-between relative overflow-hidden", comp.image)}>
-                <div className="absolute inset-0 bg-black/10"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-white/[0.03] to-transparent" aria-hidden="true"></div>
                 <div className="relative z-10 w-full">
-                  <h3 className="text-lg font-bold text-white font-display mb-1">{comp.title}</h3>
-                  <div className="flex items-center gap-2 text-white/80 text-[12px] font-medium">
+                  <h3 className="mb-1 text-base font-semibold tracking-tight text-white">{comp.title}</h3>
+                  <div className="flex items-center gap-1.5 text-[12px] font-medium text-white/70">
                     <Clock className="w-3.5 h-3.5" />
                     {comp.startsIn}
                   </div>
@@ -123,16 +124,16 @@ export default function CompetitionsPage() {
               <div className="p-5">
                 <div className="flex justify-between items-center mb-5">
                   <div>
-                    <p className="text-[11px] font-bold text-[var(--ink-500)] uppercase tracking-wider">Prize Pool</p>
-                    <p className="text-[15px] font-bold text-[var(--ink-950)]">{comp.prizePool}</p>
+                    <p className="dash-overline">Prize Pool</p>
+                    <p className="dash-figure text-[15px]">{comp.prizePool}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-[11px] font-bold text-[var(--ink-500)] uppercase tracking-wider">Pre-registered</p>
-                    <p className="text-[15px] font-bold text-[var(--ink-950)]">{comp.participants}</p>
+                    <p className="dash-overline">Pre-registered</p>
+                    <p className="dash-figure text-[15px]">{comp.participants}</p>
                   </div>
                 </div>
                 
-                <button className="w-full h-10 bg-[var(--paper-2)] hover:bg-[var(--border)] text-[var(--ink-950)] text-[13px] font-bold rounded-xl transition-colors border border-[var(--border)]">
+                <button className="h-10 w-full rounded-lg border border-[var(--dash-hairline)] bg-white text-[13px] font-semibold text-ink transition-colors hover:border-[var(--dash-hairline-strong)] hover:bg-ink-50">
                   Register Early
                 </button>
               </div>

@@ -78,46 +78,46 @@ export function DailySummary({ metrics }: { metrics?: AccountMetrics | null }) {
   return (
     <div className="mb-8">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-bold text-[16px] text-[var(--ink-950)]">Daily Summary</h3>
+        <h3 className="text-[15px] font-semibold tracking-tight text-ink">Daily Summary</h3>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6">
         
         {/* Calendar Box */}
-        <div className="flex-1 bg-white border border-[var(--border)] rounded-[24px] shadow-sm p-6">
+        <div className="dash-card flex-1 p-4 sm:p-5">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-2">
               <button
-                className="w-9 h-9 flex items-center justify-center rounded-lg border border-[var(--border)] text-[var(--ink-500)] hover:bg-[var(--paper-2)]"
+                className="flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--dash-hairline)] text-ink-500 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink"
                 onClick={() => setMonthOffset((value) => value - 1)}
                 aria-label="Previous month"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <div className="px-4 text-[15px] font-bold text-[var(--ink-950)]">{formatMonth(visibleMonth)}</div>
+              <div className="px-3 text-sm font-semibold text-ink">{formatMonth(visibleMonth)}</div>
               <button
-                className="w-9 h-9 flex items-center justify-center rounded-lg border border-[var(--border)] text-[var(--ink-500)] hover:bg-[var(--paper-2)]"
+                className="flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--dash-hairline)] text-ink-500 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink"
                 onClick={() => setMonthOffset((value) => value + 1)}
                 aria-label="Next month"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
               <button
-                className="flex items-center gap-2 ml-2 px-3 py-1.5 border border-[var(--border)] rounded-lg text-[13px] font-medium text-[var(--ink-700)] hover:bg-[var(--paper-2)]"
+                className="ml-1 inline-flex h-8 items-center gap-1.5 rounded-lg border border-[var(--dash-hairline)] px-3 text-xs font-medium text-ink-600 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink"
                 onClick={() => setMonthOffset(todayOffset)}
               >
                 <CalendarIcon className="w-4 h-4" /> Today
               </button>
             </div>
-            <div className="flex items-center gap-4 text-[13px] font-bold">
-              <span className="text-[var(--ink-500)]">Total PnL: <span className="text-[var(--ink-950)]">{money.format(metrics?.totalPnL || 0)}</span></span>
-              <span className="text-[var(--ink-500)]">Active Days: <span className="text-[var(--ink-950)]">{metrics?.dailyPnL?.length || 0}</span></span>
+            <div className="flex items-center gap-4 text-xs">
+              <span className="text-ink-500">Total PnL: <span className="dash-num font-medium text-ink">{money.format(metrics?.totalPnL || 0)}</span></span>
+              <span className="text-ink-500">Active Days: <span className="dash-num font-medium text-ink">{metrics?.dailyPnL?.length || 0}</span></span>
             </div>
           </div>
 
           <div className="grid grid-cols-7 gap-2">
             {days.map(d => (
-              <div key={d} className="text-center text-[12px] font-bold text-[var(--ink-400)] mb-2">
+              <div key={d} className="dash-overline mb-2 text-center">
                 {d}
               </div>
             ))}
@@ -128,11 +128,11 @@ export function DailySummary({ metrics }: { metrics?: AccountMetrics | null }) {
               <div 
                 key={cell.key} 
                 className={cn(
-                  "aspect-square rounded-xl border border-[var(--border)] p-2 text-[12px] font-medium transition-colors",
+                  "aspect-square rounded-lg border border-[var(--dash-hairline)] p-1.5 text-[12px] transition-colors",
                   !cell.day && "border-dashed bg-[var(--paper-2)] border-transparent text-[var(--ink-300)]",
                   cell.day && !hasActivity && "text-[var(--ink-400)] bg-white",
-                  pnl > 0 && "border-emerald-200 bg-emerald-50 text-emerald-700",
-                  pnl < 0 && "border-red-200 bg-red-50 text-red-700",
+                  pnl > 0 && "border-[#A7F3D0] bg-success-50 text-success-700",
+                  pnl < 0 && "border-[#FECDD3] bg-rose-50 text-rose-700",
                   pnl === 0 && hasActivity && "border-[var(--border)] bg-[var(--paper-2)] text-[var(--ink-700)]"
                 )}
               >
@@ -140,7 +140,7 @@ export function DailySummary({ metrics }: { metrics?: AccountMetrics | null }) {
                   <div className="flex h-full flex-col justify-between">
                     <span>{cell.day}</span>
                     {hasActivity && (
-                      <span className="truncate text-[10px] font-bold">
+                      <span className="dash-num truncate text-[10px] font-semibold">
                         {pnl >= 0 ? "+" : ""}{money.format(pnl)}
                       </span>
                     )}
@@ -154,25 +154,25 @@ export function DailySummary({ metrics }: { metrics?: AccountMetrics | null }) {
 
         {/* Weekly Summary */}
         <div className="w-full lg:w-[320px] shrink-0">
-          <h4 className="text-[14px] font-medium text-[var(--ink-500)] mb-4">Weekly Summary</h4>
+          <h4 className="dash-overline mb-3">Weekly Summary</h4>
           <div className="space-y-3">
             {weeklyRows.length > 0 ? weeklyRows.map((week) => (
-              <div key={week.weekStart} className="bg-white border border-[var(--border)] rounded-xl p-4 shadow-sm">
+              <div key={week.weekStart} className="dash-card p-4">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="font-bold text-[14px] text-[var(--ink-950)]">
+                  <span className="dash-num text-sm font-semibold text-ink">
                     {money.format(week.pnl)}
                   </span>
-                  <span className="text-[12px] text-[var(--ink-500)]">
+                  <span className="text-xs text-ink-500">
                     {formatShortDate(week.weekStart)} - {formatShortDate(week.weekEnd)}
                   </span>
                 </div>
-                <div className="text-[13px] text-[var(--ink-500)]">
+                <div className="text-[13px] text-ink-500">
                   {week.trades} trades / {week.wins} wins / {week.losses} losses
                 </div>
               </div>
             )) : (
-              <div className="bg-white border border-[var(--border)] rounded-xl p-4 shadow-sm">
-                <div className="text-[13px] text-[var(--ink-500)]">No closed trades</div>
+              <div className="dash-card p-4">
+                <div className="text-[13px] text-ink-500">No closed trades</div>
               </div>
             )}
           </div>

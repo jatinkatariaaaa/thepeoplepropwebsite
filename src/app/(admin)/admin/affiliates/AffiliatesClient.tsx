@@ -53,9 +53,9 @@ interface AffiliatesClientProps {
 }
 
 const statusConfig: Record<string, { label: string; className: string }> = {
-  active: { label: "Active", className: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-  pending: { label: "Pending", className: "bg-amber-50 text-amber-700 border-amber-200" },
-  suspended: { label: "Suspended", className: "bg-red-50 text-red-700 border-red-200" },
+  active: { label: "Active", className: "border-[#A7F3D0] bg-success-50 text-success-700" },
+  pending: { label: "Pending", className: "border-[#FDE68A] bg-amber-50 text-amber-700" },
+  suspended: { label: "Suspended", className: "border-[#FECDD3] bg-rose-50 text-rose-700" },
 };
 
 export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarnings, totalPending }: AffiliatesClientProps) {
@@ -227,8 +227,8 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
       header: "Earnings",
       cell: ({ row }) => (
         <div className="flex items-center gap-1">
-          <TrendingUp className="w-3.5 h-3.5 text-emerald-500" />
-          <span className="font-semibold text-emerald-600">${Number(row.original.total_earnings).toLocaleString()}</span>
+          <TrendingUp className="w-3.5 h-3.5 text-[var(--dash-positive)]" />
+          <span className="font-semibold text-[var(--dash-positive)]">${Number(row.original.total_earnings).toLocaleString()}</span>
         </div>
       ),
     },
@@ -278,14 +278,14 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
           <div className="flex items-center gap-1">
             <button
               onClick={() => openViewModal(aff)}
-              className="p-1.5 text-[var(--ink-400)] hover:text-[var(--ink-950)] hover:bg-[var(--border)] rounded-lg transition-colors"
+              className="rounded-lg p-1.5 text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink"
               title="View Details"
             >
               <Eye className="w-4 h-4" />
             </button>
             <button
               onClick={() => openEditModal(aff)}
-              className="p-1.5 text-[var(--ink-400)] hover:text-[var(--ink-950)] hover:bg-[var(--border)] rounded-lg transition-colors"
+              className="rounded-lg p-1.5 text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink"
               title="Edit Commission"
             >
               <Edit3 className="w-4 h-4" />
@@ -294,7 +294,7 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
               <button
                 onClick={() => handleStatusChange(aff, "active")}
                 disabled={loading === aff.user_id}
-                className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
+                className="p-1.5 text-[var(--dash-positive)] hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
                 title="Approve"
               >
                 <Check className="w-4 h-4" />
@@ -304,7 +304,7 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
               <button
                 onClick={() => handleStatusChange(aff, "suspended")}
                 disabled={loading === aff.user_id}
-                className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                className="p-1.5 text-[var(--dash-negative)] hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
                 title="Suspend"
               >
                 <Ban className="w-4 h-4" />
@@ -331,10 +331,10 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { key: "active", label: "Active", count: statusCounts.active, icon: CheckCircle, color: "text-emerald-600", bg: "bg-emerald-50" },
+          { key: "active", label: "Active", count: statusCounts.active, icon: CheckCircle, color: "text-[var(--dash-positive)]", bg: "bg-emerald-50" },
           { key: "pending", label: "Pending", count: statusCounts.pending, icon: Clock, color: "text-amber-600", bg: "bg-amber-50" },
-          { key: "suspended", label: "Suspended", count: statusCounts.suspended, icon: AlertCircle, color: "text-red-600", bg: "bg-red-50" },
-          { key: "earnings", label: "Total Earnings", count: affiliates.length, icon: TrendingUp, color: "text-[var(--ink-700)]", bg: "bg-[var(--paper-2)]", amount: totalEarnings },
+          { key: "suspended", label: "Suspended", count: statusCounts.suspended, icon: AlertCircle, color: "text-[var(--dash-negative)]", bg: "bg-red-50" },
+          { key: "earnings", label: "Total Earnings", count: affiliates.length, icon: TrendingUp, color: "text-[var(--ink-700)]", bg: "bg-[var(--dash-canvas)]", amount: totalEarnings },
         ].map((stat) => {
           const Icon = stat.icon;
           const isActive = statusFilter === stat.key;
@@ -345,7 +345,7 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
               className={`p-4 rounded-2xl border transition-all text-left ${
                 isActive
                   ? "border-[var(--ink-950)] bg-[var(--ink-950)] text-white shadow-md"
-                  : "border-[var(--border)] bg-white hover:border-[var(--ink-300)]"
+                  : "border-[var(--dash-hairline)] bg-white hover:border-[var(--ink-300)]"
               }`}
             >
               <div className="flex items-center justify-between mb-2">
@@ -386,7 +386,7 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
           placeholder="Search by name, email, or referral code..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-9 pr-4 py-2.5 bg-white border border-[var(--border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
+          className="w-full pl-9 pr-4 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
         />
       </div>
 
@@ -402,7 +402,7 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
       >
         {selectedAffiliate && (
           <div className="space-y-5">
-            <div className="flex items-start gap-4 p-4 bg-[var(--paper-2)] rounded-xl">
+            <div className="flex items-start gap-4 rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4">
               <div className="w-10 h-10 rounded-full bg-[var(--ink-950)] flex items-center justify-center text-white font-bold">
                 {(selectedAffiliate.profiles?.display_name || "?").charAt(0).toUpperCase()}
               </div>
@@ -414,28 +414,28 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
             </div>
 
             <div className="grid grid-cols-3 gap-4">
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Total Referrals</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <p className="dash-overline mb-1 text-[10px]">Total Referrals</p>
                 <p className="font-semibold text-[var(--ink-950)]">{selectedAffiliate.total_referrals}</p>
               </div>
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Link Clicks</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <p className="dash-overline mb-1 text-[10px]">Link Clicks</p>
                 <p className="font-semibold text-[var(--ink-950)]">{selectedAffiliate.link_clicks.toLocaleString()}</p>
               </div>
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Commission Rate</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <p className="dash-overline mb-1 text-[10px]">Commission Rate</p>
                 <p className="font-semibold text-[var(--ink-950)]">{selectedAffiliate.commission_rate || 10}%</p>
               </div>
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Total Earnings</p>
-                <p className="font-semibold text-emerald-600">${Number(selectedAffiliate.total_earnings).toLocaleString()}</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <p className="dash-overline mb-1 text-[10px]">Total Earnings</p>
+                <p className="font-semibold text-[var(--dash-positive)]">${Number(selectedAffiliate.total_earnings).toLocaleString()}</p>
               </div>
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Pending Payout</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <p className="dash-overline mb-1 text-[10px]">Pending Payout</p>
                 <p className="font-semibold text-amber-600">${Number(selectedAffiliate.pending_payout).toLocaleString()}</p>
               </div>
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Status</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <p className="dash-overline mb-1 text-[10px]">Status</p>
                 <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border ${
                   statusConfig[selectedAffiliate.status]?.className || statusConfig.pending.className
                 }`}>
@@ -450,13 +450,13 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
                 <p className="text-sm font-bold text-[var(--ink-950)] mb-3">Recent Referrals</p>
                 <div className="space-y-2 max-h-64 overflow-y-auto">
                   {selectedAffiliate.referral_list.map((ref: any) => (
-                    <div key={ref.id} className="flex items-center justify-between p-3 bg-[var(--paper-2)] rounded-xl">
+                    <div key={ref.id} className="flex items-center justify-between rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
                       <div>
                         <p className="text-sm font-medium text-[var(--ink-950)]">{ref.referred_email || "User"}</p>
                         <p className="text-xs text-[var(--ink-400)]">{format(new Date(ref.created_at), "MMM dd, yyyy")}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-semibold text-emerald-600">${Number(ref.commission_earned || 0).toLocaleString()}</p>
+                        <p className="text-sm font-semibold text-[var(--dash-positive)]">${Number(ref.commission_earned || 0).toLocaleString()}</p>
                         <p className="text-xs text-[var(--ink-400)]">{ref.status}</p>
                       </div>
                     </div>
@@ -487,7 +487,7 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
         {selectedAffiliate && (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold text-[var(--ink-950)] mb-1">Commission Rate (%)</label>
+              <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Commission Rate (%)</label>
               <div className="relative">
                 <Percent className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--ink-400)]" />
                 <input
@@ -497,21 +497,21 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
                   step={0.1}
                   value={commissionRate}
                   onChange={(e) => setCommissionRate(parseFloat(e.target.value) || 0)}
-                  className="w-full pl-9 pr-3 py-2.5 bg-white border border-[var(--border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
+                  className="w-full pl-9 pr-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
                 />
               </div>
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <button
                 onClick={() => setIsEditModalOpen(false)}
-                className="px-4 py-2 font-semibold text-[var(--ink-600)] hover:bg-[var(--border)] rounded-full transition-colors"
+                className="rounded-lg px-4 py-2 text-[13px] font-medium text-ink-600 transition-colors hover:bg-ink-100 hover:text-ink"
               >
                 Cancel
               </button>
               <button
                 onClick={handleCommissionUpdate}
                 disabled={loading === selectedAffiliate.user_id}
-                className="px-4 py-2 font-bold text-white bg-[var(--ink-950)] rounded-full hover:bg-black transition-colors disabled:opacity-50"
+                className="px-4 py-2 font-bold text-white rounded-lg bg-ink transition-colors hover:bg-ink-800 disabled:opacity-50"
               >
                 {loading === selectedAffiliate.user_id ? "Saving..." : "Save"}
               </button>
@@ -530,7 +530,7 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
         {selectedAffiliate && (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold text-[var(--ink-950)] mb-1">Payout Amount</label>
+              <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Payout Amount</label>
               <div className="relative">
                 <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--ink-400)]" />
                 <input
@@ -540,7 +540,7 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
                   step={0.01}
                   value={payoutAmount}
                   onChange={(e) => setPayoutAmount(Math.min(parseFloat(e.target.value) || 0, selectedAffiliate.pending_payout))}
-                  className="w-full pl-9 pr-3 py-2.5 bg-white border border-[var(--border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
+                  className="w-full pl-9 pr-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
                 />
               </div>
               <p className="text-xs text-[var(--ink-400)] mt-1">Max: ${selectedAffiliate.pending_payout.toLocaleString()}</p>
@@ -548,7 +548,7 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
             <div className="flex justify-end gap-3 pt-2">
               <button
                 onClick={() => { setIsPayoutModalOpen(false); setPayoutAmount(0); }}
-                className="px-4 py-2 font-semibold text-[var(--ink-600)] hover:bg-[var(--border)] rounded-full transition-colors"
+                className="rounded-lg px-4 py-2 text-[13px] font-medium text-ink-600 transition-colors hover:bg-ink-100 hover:text-ink"
               >
                 Cancel
               </button>

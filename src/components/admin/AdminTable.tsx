@@ -60,27 +60,27 @@ export function AdminTable<T>({
     <div className="w-full">
       {searchable && (
         <div className="mb-4 relative w-full sm:w-96">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--ink-400)]" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-400" />
           <input
             type="text"
             placeholder="Search all columns..."
             value={activeGlobalFilter}
             onChange={(e) => activeSetGlobalFilter(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-white border border-[var(--border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)] transition-all"
+            className="h-9 w-full rounded-lg border border-[var(--dash-hairline)] bg-white pl-9 pr-3 text-[13px] text-ink outline-none transition-colors focus:border-ink-400"
           />
         </div>
       )}
 
-      <div className="rounded-2xl border border-[var(--border)] bg-white overflow-visible shadow-sm">
-        <div className="overflow-visible">
-          <table className="w-full text-left text-sm whitespace-nowrap">
-            <thead className="bg-[var(--paper-2)] border-b border-[var(--border)] text-[var(--ink-500)] font-semibold">
+      <div className="dash-card overflow-visible">
+        <div className="dash-scroll-x overflow-x-auto">
+          <table className="w-full whitespace-nowrap text-left text-[13px]">
+            <thead className="border-b border-[var(--dash-hairline)] bg-[var(--dash-canvas)]">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
                     <th
                       key={header.id}
-                      className={`px-6 py-4 cursor-pointer select-none ${header.column.getCanSort() ? "hover:text-[var(--ink-950)]" : ""}`}
+                      className={`cursor-pointer select-none px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.06em] text-ink-400 ${header.column.getCanSort() ? "transition-colors hover:text-ink" : ""}`}
                       onClick={header.column.getToggleSortingHandler()}
                     >
                       <div className="flex items-center gap-2">
@@ -89,7 +89,7 @@ export function AdminTable<T>({
                           header.getContext()
                         )}
                         {header.column.getCanSort() && (
-                          <ArrowUpDown className="w-3 h-3 opacity-50" />
+                          <ArrowUpDown className="h-3 w-3 opacity-40" />
                         )}
                       </div>
                     </th>
@@ -97,26 +97,26 @@ export function AdminTable<T>({
                 </tr>
               ))}
             </thead>
-            <tbody className="divide-y divide-[var(--border)] text-[var(--ink-950)]">
+            <tbody className="divide-y divide-[var(--ink-100)] text-ink-700">
               {loading ? (
                 <tr>
-                  <td colSpan={columns.length} className="px-6 py-12 text-center text-[var(--ink-400)]">
-                    <div className="flex justify-center items-center">
-                      <div className="w-6 h-6 border-2 border-[var(--ink-200)] border-t-[var(--ink-950)] rounded-full animate-spin"></div>
+                  <td colSpan={columns.length} className="px-4 py-12 text-center text-ink-400">
+                    <div className="flex items-center justify-center">
+                      <div className="h-6 w-6 animate-spin rounded-full border-2 border-ink-200 border-t-ink" role="status" aria-label="Loading data"></div>
                     </div>
                   </td>
                 </tr>
               ) : table.getRowModel().rows.length === 0 ? (
                 <tr>
-                  <td colSpan={columns.length} className="px-6 py-12 text-center text-[var(--ink-400)]">
+                  <td colSpan={columns.length} className="px-4 py-12 text-center text-[13px] text-ink-400">
                     No results found
                   </td>
                 </tr>
               ) : (
                 table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} className="hover:bg-[var(--paper-2)] transition-colors">
+                  <tr key={row.id} className="transition-colors hover:bg-ink-50">
                     {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className="px-6 py-4">
+                      <td key={cell.id} className="px-4 py-3">
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </td>
                     ))}
@@ -129,49 +129,49 @@ export function AdminTable<T>({
 
         {/* Pagination */}
         {table.getPageCount() > 1 && (
-          <div className="flex items-center justify-between px-6 py-3 border-t border-[var(--border)] bg-[var(--paper-2)]">
-            <div className="text-sm text-[var(--ink-500)]">
+          <div className="flex items-center justify-between border-t border-[var(--dash-hairline)] bg-[var(--dash-canvas)] px-4 py-2.5">
+            <div className="dash-num text-xs text-ink-500">
               Showing{" "}
-              <span className="font-medium text-[var(--ink-950)]">
+              <span className="font-medium text-ink">
                 {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1}
               </span>{" "}
               to{" "}
-              <span className="font-medium text-[var(--ink-950)]">
+              <span className="font-medium text-ink">
                 {Math.min(
                   (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
                   data.length
                 )}
               </span>{" "}
-              of <span className="font-medium text-[var(--ink-950)]">{data.length}</span> results
+              of <span className="font-medium text-ink">{data.length}</span> results
             </div>
             <div className="flex items-center gap-1">
               <button
                 onClick={() => table.setPageIndex(0)}
                 disabled={!table.getCanPreviousPage()}
-                className="p-1 rounded text-[var(--ink-500)] hover:text-[var(--ink-950)] hover:bg-[var(--border)] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="rounded-md p-1 text-ink-500 transition-colors hover:bg-ink-100 hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
               >
-                <ChevronsLeft className="w-5 h-5" />
+                <ChevronsLeft className="h-4 w-4" />
               </button>
               <button
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
-                className="p-1 rounded text-[var(--ink-500)] hover:text-[var(--ink-950)] hover:bg-[var(--border)] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="rounded-md p-1 text-ink-500 transition-colors hover:bg-ink-100 hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
               >
-                <ChevronLeft className="w-5 h-5" />
+                <ChevronLeft className="h-4 w-4" />
               </button>
               <button
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
-                className="p-1 rounded text-[var(--ink-500)] hover:text-[var(--ink-950)] hover:bg-[var(--border)] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="rounded-md p-1 text-ink-500 transition-colors hover:bg-ink-100 hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
               >
-                <ChevronRight className="w-5 h-5" />
+                <ChevronRight className="h-4 w-4" />
               </button>
               <button
                 onClick={() => table.setPageIndex(table.getPageCount() - 1)}
                 disabled={!table.getCanNextPage()}
-                className="p-1 rounded text-[var(--ink-500)] hover:text-[var(--ink-950)] hover:bg-[var(--border)] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="rounded-md p-1 text-ink-500 transition-colors hover:bg-ink-100 hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
               >
-                <ChevronsRight className="w-5 h-5" />
+                <ChevronsRight className="h-4 w-4" />
               </button>
             </div>
           </div>

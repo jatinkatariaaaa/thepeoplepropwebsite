@@ -19,12 +19,12 @@ export function CertificatesClient({ accounts }: { accounts: any[] }) {
 
   if (accounts.length === 0) {
     return (
-      <div className="bg-white rounded-2xl border border-[var(--border)] shadow-sm flex flex-col items-center justify-center text-center p-12 min-h-[300px]">
-        <div className="w-16 h-16 rounded-full bg-[var(--paper-2)] flex items-center justify-center mb-4">
-          <Award className="w-8 h-8 text-[var(--ink-400)]" strokeWidth={1.5} />
+      <div className="dash-card flex min-h-[300px] flex-col items-center justify-center p-10 text-center">
+        <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-full border border-ink-200 bg-ink-50">
+          <Award className="h-5 w-5 text-ink-400" strokeWidth={1.5} />
         </div>
-        <h3 className="text-xl font-bold text-[var(--ink-950)] mb-2">No Certificates Yet</h3>
-        <p className="text-base text-[var(--ink-500)] max-w-md">
+        <h3 className="mb-1.5 text-base font-semibold tracking-tight text-ink">No Certificates Yet</h3>
+        <p className="max-w-md text-sm text-ink-500">
           Pass your evaluation or get funded to unlock your first certificate. Keep trading!
         </p>
       </div>
@@ -32,25 +32,25 @@ export function CertificatesClient({ accounts }: { accounts: any[] }) {
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
       {/* Sidebar List */}
-      <div className="lg:col-span-1 space-y-3">
-        <h3 className="text-sm font-bold text-[var(--ink-500)] uppercase tracking-wider mb-4">Your Achievements</h3>
+      <div className="space-y-2 lg:col-span-1">
+        <h3 className="dash-overline mb-3">Your Achievements</h3>
         {accounts.map(acc => (
           <button
             key={acc.id}
             onClick={() => setSelectedAccountId(acc.id)}
-            className={`w-full text-left p-4 rounded-xl border transition-all ${
+            className={`w-full rounded-[10px] border p-3.5 text-left transition-all ${
               selectedAccountId === acc.id 
-                ? "bg-[var(--brand-50)] border-[var(--brand-500)] shadow-sm ring-1 ring-[var(--brand-500)]" 
-                : "bg-white border-[var(--border)] hover:bg-[var(--paper-2)]"
+                ? "border-ink-400 bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06)] ring-1 ring-ink-400" 
+                : "border-[var(--dash-hairline)] bg-white hover:border-[var(--dash-hairline-strong)]"
             }`}
           >
-            <div className="font-bold text-[var(--ink-950)] flex items-center gap-2">
-              <Award className={`w-4 h-4 ${selectedAccountId === acc.id ? "text-[var(--brand-500)]" : "text-[var(--ink-400)]"}`} />
-              ${acc.starting_balance.toLocaleString()} Account
+            <div className="flex items-center gap-2 text-[13px] font-semibold text-ink">
+              <Award className={`h-4 w-4 ${selectedAccountId === acc.id ? "text-lime-600" : "text-ink-400"}`} />
+              <span className="dash-num">${acc.starting_balance.toLocaleString()}</span> Account
             </div>
-            <div className="text-xs text-[var(--ink-500)] mt-1.5 flex items-center justify-between">
+            <div className="mt-1.5 flex items-center justify-between text-xs text-ink-500">
               <span className="capitalize">{acc.status}</span>
               <span>{new Date(acc.updated_at).toLocaleDateString()}</span>
             </div>
@@ -61,10 +61,10 @@ export function CertificatesClient({ accounts }: { accounts: any[] }) {
       {/* Main View */}
       <div className="lg:col-span-3">
         {selectedAccount && (
-          <div className="bg-white rounded-3xl border border-[var(--border)] shadow-sm overflow-hidden p-3">
-            <div className="relative aspect-[1.41] w-full rounded-2xl overflow-hidden bg-[var(--paper-2)]">
+          <div className="dash-card overflow-hidden p-3">
+            <div className="relative aspect-[1.41] w-full overflow-hidden rounded-[8px] bg-ink-50">
               {/* Fallback loading state while image loads */}
-              <div className="absolute inset-0 flex items-center justify-center text-[var(--ink-400)]">
+              <div className="absolute inset-0 flex items-center justify-center text-sm text-ink-400">
                 Loading certificate...
               </div>
               <Image 
@@ -76,15 +76,15 @@ export function CertificatesClient({ accounts }: { accounts: any[] }) {
               />
             </div>
             
-            <div className="p-6 flex flex-wrap items-center justify-between gap-4 border-t border-[var(--border)] mt-3">
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-4 border-t border-[var(--dash-hairline)] p-4 sm:p-5">
               <div>
-                <h3 className="text-lg font-bold text-[var(--ink-950)]">Certificate of Funding</h3>
-                <p className="text-sm text-[var(--ink-500)]">ID: {selectedAccount.id.split("-")[0].toUpperCase()}</p>
+                <h3 className="text-[15px] font-semibold tracking-tight text-ink">Certificate of Funding</h3>
+                <p className="dash-num mt-0.5 text-xs text-ink-500">ID: {selectedAccount.id.split("-")[0].toUpperCase()}</p>
               </div>
               <div className="flex items-center gap-3">
                 <button 
                   onClick={handleCopyLink}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm border border-[var(--border)] bg-white text-[var(--ink-700)] hover:bg-[var(--paper-2)] transition-colors"
+                  className="inline-flex h-10 items-center gap-2 rounded-lg border border-[var(--dash-hairline)] bg-white px-4 text-[13px] font-medium text-ink-700 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink"
                 >
                   <Share2 className="w-4 h-4" />
                   Share Link
@@ -94,7 +94,7 @@ export function CertificatesClient({ accounts }: { accounts: any[] }) {
                   download={`TPP_Certificate_${selectedAccount.id.split("-")[0]}.png`}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm bg-[var(--ink-950)] text-white hover:bg-[var(--ink-800)] transition-colors"
+                  className="inline-flex h-10 items-center gap-2 rounded-lg bg-ink px-4 text-[13px] font-semibold text-white transition-colors hover:bg-ink-800"
                 >
                   <Download className="w-4 h-4" />
                   Download PNG

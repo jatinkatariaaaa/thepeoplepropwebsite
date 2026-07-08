@@ -97,34 +97,36 @@ export default function SettingsPage() {
 
   if (isLoading) {
     return (
-      <div className="max-w-4xl mx-auto flex items-center justify-center py-24">
-        <div className="w-6 h-6 border-2 border-[var(--ink-200)] border-t-[var(--ink-950)] rounded-full animate-spin"></div>
+      <div className="mx-auto flex max-w-4xl items-center justify-center py-24">
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-ink-200 border-t-ink" role="status" aria-label="Loading profile"></div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
-      <div className="mb-8">
-        <h1 className="text-2xl lg:text-3xl font-display font-bold text-[var(--ink-950)] mb-2">Profile Details</h1>
+    <div className="mx-auto max-w-4xl animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
+      <div className="mb-6">
+        <p className="dash-overline mb-1.5">Account</p>
+        <h1 className="text-xl font-semibold tracking-tight text-ink sm:text-2xl">Profile Details</h1>
+        <p className="mt-1 text-sm text-ink-500">Manage your personal information and verification status.</p>
       </div>
 
       <div className="space-y-6">
         {/* Personal Information */}
-        <div className="bg-white rounded-2xl p-6 lg:p-8 border border-[var(--border)] shadow-sm">
+        <div className="dash-card p-5 sm:p-6">
           <div className="mb-6">
-            <h2 className="text-[16px] font-bold text-[var(--ink-950)]">Personal Information</h2>
-            <p className="text-[13px] text-[var(--ink-500)] mt-1">Update your personal details and contact information.</p>
+            <h2 className="text-[15px] font-semibold tracking-tight text-ink">Personal Information</h2>
+            <p className="mt-1 text-[13px] text-ink-500">Update your personal details and contact information.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-[13px] font-bold text-[var(--ink-950)]">Title</label>
+              <label className="text-[13px] font-medium text-ink-700">Title</label>
               <select 
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
-                className="w-full bg-white border border-[var(--border)] rounded-xl h-11 px-3 text-[14px] text-[var(--ink-900)] focus:outline-none focus:border-[var(--ink-400)] transition-colors appearance-none"
+                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400 appearance-none"
               >
                 <option value="">Select...</option>
                 <option value="Mr.">Mr.</option>
@@ -135,58 +137,58 @@ export default function SettingsPage() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-[13px] font-bold text-[var(--ink-950)]">First Name</label>
+              <label className="text-[13px] font-medium text-ink-700">First Name</label>
               <input 
                 type="text"
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleChange}
                 placeholder="Enter your first name"
-                className="w-full bg-white border border-[var(--border)] rounded-xl h-11 px-3 text-[14px] text-[var(--ink-900)] focus:outline-none focus:border-[var(--ink-400)] transition-colors"
+                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
               />
             </div>
 
             <div className="space-y-2">
-              <label className="text-[13px] font-bold text-[var(--ink-950)]">Last Name</label>
+              <label className="text-[13px] font-medium text-ink-700">Last Name</label>
               <input 
                 type="text"
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleChange}
                 placeholder="Enter your last name"
-                className="w-full bg-white border border-[var(--border)] rounded-xl h-11 px-3 text-[14px] text-[var(--ink-900)] focus:outline-none focus:border-[var(--ink-400)] transition-colors"
+                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
               />
             </div>
 
             <div className="space-y-2">
-              <label className="text-[13px] font-bold text-[var(--ink-950)]">Date of Birth</label>
+              <label className="text-[13px] font-medium text-ink-700">Date of Birth</label>
               <input 
                 type="date"
                 name="dob"
                 value={formData.dob}
                 onChange={handleChange}
-                className="w-full bg-white border border-[var(--border)] rounded-xl h-11 px-3 text-[14px] text-[var(--ink-900)] focus:outline-none focus:border-[var(--ink-400)] transition-colors"
+                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
               />
             </div>
 
             <div className="space-y-2">
-              <label className="text-[13px] font-bold text-[var(--ink-950)]">Email Address</label>
+              <label className="text-[13px] font-medium text-ink-700">Email Address</label>
               <input 
                 type="email"
                 name="email"
                 value={formData.email}
                 disabled
-                className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-3 text-[14px] text-[var(--ink-500)] cursor-not-allowed"
+                className="h-10 w-full cursor-not-allowed rounded-[8px] border border-[var(--dash-hairline)] bg-ink-50 px-3 text-sm text-ink-500"
               />
             </div>
 
             <div className="space-y-2">
-              <label className="text-[13px] font-bold text-[var(--ink-950)]">Preferred Time Zone</label>
+              <label className="text-[13px] font-medium text-ink-700">Preferred Time Zone</label>
               <select 
                 name="timezone"
                 value={formData.timezone}
                 onChange={handleChange}
-                className="w-full bg-white border border-[var(--border)] rounded-xl h-11 px-3 text-[14px] text-[var(--ink-900)] focus:outline-none focus:border-[var(--ink-400)] transition-colors appearance-none"
+                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400 appearance-none"
               >
                 <option value="">Select timezone...</option>
                 <option value="Asia/Kolkata">Asia/Kolkata (IST)</option>
@@ -203,56 +205,56 @@ export default function SettingsPage() {
         </div>
 
         {/* Address Information */}
-        <div className="bg-white rounded-2xl p-6 lg:p-8 border border-[var(--border)] shadow-sm">
+        <div className="dash-card p-5 sm:p-6">
           <div className="mb-6">
-            <h2 className="text-[16px] font-bold text-[var(--ink-950)]">Address Information</h2>
-            <p className="text-[13px] text-[var(--ink-500)] mt-1">Your residential address for verification and billing purposes.</p>
+            <h2 className="text-[15px] font-semibold tracking-tight text-ink">Address Information</h2>
+            <p className="mt-1 text-[13px] text-ink-500">Your residential address for verification and billing purposes.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2 space-y-2">
-              <label className="text-[13px] font-bold text-[var(--ink-950)]">Street Address</label>
+              <label className="text-[13px] font-medium text-ink-700">Street Address</label>
               <input 
                 type="text"
                 name="street"
                 value={formData.street}
                 onChange={handleChange}
                 placeholder="Enter your street address"
-                className="w-full bg-white border border-[var(--border)] rounded-xl h-11 px-3 text-[14px] text-[var(--ink-900)] focus:outline-none focus:border-[var(--ink-400)] transition-colors"
+                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
               />
             </div>
 
             <div className="space-y-2">
-              <label className="text-[13px] font-bold text-[var(--ink-950)]">City</label>
+              <label className="text-[13px] font-medium text-ink-700">City</label>
               <input 
                 type="text"
                 name="city"
                 value={formData.city}
                 onChange={handleChange}
                 placeholder="Enter your city"
-                className="w-full bg-white border border-[var(--border)] rounded-xl h-11 px-3 text-[14px] text-[var(--ink-900)] focus:outline-none focus:border-[var(--ink-400)] transition-colors"
+                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
               />
             </div>
 
             <div className="space-y-2">
-              <label className="text-[13px] font-bold text-[var(--ink-950)]">Postal Code</label>
+              <label className="text-[13px] font-medium text-ink-700">Postal Code</label>
               <input 
                 type="text"
                 name="postalCode"
                 value={formData.postalCode}
                 onChange={handleChange}
                 placeholder="Enter postal code"
-                className="w-full bg-white border border-[var(--border)] rounded-xl h-11 px-3 text-[14px] text-[var(--ink-900)] focus:outline-none focus:border-[var(--ink-400)] transition-colors"
+                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
               />
             </div>
 
             <div className="space-y-2">
-              <label className="text-[13px] font-bold text-[var(--ink-950)]">Country</label>
+              <label className="text-[13px] font-medium text-ink-700">Country</label>
               <select 
                 name="country"
                 value={formData.country}
                 onChange={handleChange}
-                className="w-full bg-white border border-[var(--border)] rounded-xl h-11 px-3 text-[14px] text-[var(--ink-900)] focus:outline-none focus:border-[var(--ink-400)] transition-colors appearance-none"
+                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400 appearance-none"
               >
                 <option value="">Select country...</option>
                 <option value="India">India</option>
@@ -269,23 +271,23 @@ export default function SettingsPage() {
         </div>
 
         {/* Identity Verification (KYC) */}
-        <div className="bg-white rounded-2xl p-6 lg:p-8 border border-[var(--border)] shadow-sm">
+        <div className="dash-card p-5 sm:p-6">
           <div className="mb-6">
-            <h2 className="text-[16px] font-bold text-[var(--ink-950)]">Identity Verification (KYC)</h2>
-            <p className="text-[13px] text-[var(--ink-500)] mt-1">Verify your identity to unlock payouts and funded accounts.</p>
+            <h2 className="text-[15px] font-semibold tracking-tight text-ink">Identity Verification (KYC)</h2>
+            <p className="mt-1 text-[13px] text-ink-500">Verify your identity to unlock payouts and funded accounts.</p>
           </div>
 
-          <div className="flex flex-col p-4 bg-[var(--paper)] rounded-xl border border-[var(--border)] gap-4">
+          <div className="flex flex-col gap-4 rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4">
             <div className="flex items-center justify-between">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[14px] font-bold text-[var(--ink-950)]">Current Status:</span>
+                  <span className="text-[13px] font-semibold text-ink">Current Status:</span>
                   <span className={cn(
-                    "px-2.5 py-0.5 rounded-full text-[12px] font-bold uppercase tracking-wider",
-                    formData.kycStatus === 'verified' ? "bg-emerald-50 text-emerald-600" :
-                    formData.kycStatus === 'pending' ? "bg-amber-50 text-amber-600" :
-                    formData.kycStatus === 'rejected' ? "bg-red-50 text-red-600" :
-                    "bg-[var(--ink-100)] text-[var(--ink-600)]"
+                    "rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.06em]",
+                    formData.kycStatus === 'verified' ? "border border-[#A7F3D0] bg-success-50 text-success-700" :
+                    formData.kycStatus === 'pending' ? "bg-amber-50 text-amber-700 border border-[#FDE68A]" :
+                    formData.kycStatus === 'rejected' ? "bg-rose-50 text-rose-700 border border-[#FECDD3]" :
+                    "border border-ink-200 bg-ink-50 text-ink-600"
                   )}>
                     {formData.kycStatus || 'unverified'}
                   </span>
@@ -300,14 +302,14 @@ export default function SettingsPage() {
             </div>
 
             {(!formData.kycStatus || formData.kycStatus === 'none' || formData.kycStatus === 'rejected') && (
-              <div className="mt-4 space-y-4 pt-4 border-t border-[var(--border)]">
+              <div className="mt-2 space-y-4 border-t border-[var(--dash-hairline)] pt-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-[13px] font-bold text-[var(--ink-950)] mb-1">Document Type *</label>
+                    <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Document Type *</label>
                     <select
                       value={kycForm.documentType}
                       onChange={(e) => setKycForm({ ...kycForm, documentType: e.target.value })}
-                      className="w-full h-11 px-4 bg-white border border-[var(--border)] rounded-xl text-[14px] focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10"
+                      className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                     >
                       <option value="national_id">National ID</option>
                       <option value="passport">Passport</option>
@@ -315,23 +317,23 @@ export default function SettingsPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-[13px] font-bold text-[var(--ink-950)] mb-1">Document Number *</label>
+                    <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Document Number *</label>
                     <input
                       type="text"
                       placeholder="Enter ID Number"
                       value={kycForm.documentNumber}
                       onChange={(e) => setKycForm({ ...kycForm, documentNumber: e.target.value })}
-                      className="w-full h-11 px-4 bg-white border border-[var(--border)] rounded-xl text-[14px] focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10"
+                      className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                     />
                   </div>
                   <div>
-                    <label className="block text-[13px] font-bold text-[var(--ink-950)] mb-1">Issuing Country *</label>
+                    <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Issuing Country *</label>
                     <input
                       type="text"
                       placeholder="e.g. United States"
                       value={kycForm.country}
                       onChange={(e) => setKycForm({ ...kycForm, country: e.target.value })}
-                      className="w-full h-11 px-4 bg-white border border-[var(--border)] rounded-xl text-[14px] focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10"
+                      className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                     />
                   </div>
                 </div>
@@ -371,7 +373,7 @@ export default function SettingsPage() {
                         }
                       }
                     }}
-                    className="h-10 px-6 bg-[var(--accent)] hover:bg-[var(--accent-700)] text-white text-[13px] font-bold rounded-xl transition-all shadow-sm active:scale-[0.98] whitespace-nowrap"
+                    className="inline-flex h-10 items-center whitespace-nowrap rounded-lg bg-ink px-5 text-[13px] font-semibold text-white transition-all hover:bg-ink-800 active:scale-[0.98]"
                   >
                     Submit KYC
                   </button>
@@ -382,11 +384,11 @@ export default function SettingsPage() {
         </div>
 
         <div className="flex items-center justify-end gap-4 pt-4">
-          {message && <span className={cn("text-[13px] font-medium", message.includes("success") ? "text-emerald-600" : "text-red-600")}>{message}</span>}
+          {message && <span className={cn("text-[13px] font-medium", message.includes("success") ? "text-[var(--dash-positive)]" : "text-[var(--dash-negative)]")}>{message}</span>}
           <button 
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="h-11 px-6 bg-[var(--ink-950)] hover:bg-[var(--ink-800)] text-white text-[14px] font-bold rounded-xl transition-all shadow-md active:scale-[0.98] disabled:opacity-50"
+            className="inline-flex h-10 items-center rounded-lg bg-ink px-5 text-[13px] font-semibold text-white transition-all hover:bg-ink-800 active:scale-[0.98] disabled:opacity-50"
           >
             {isSubmitting ? "Saving..." : "Save Changes"}
           </button>

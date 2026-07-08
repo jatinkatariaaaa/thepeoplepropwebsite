@@ -10,10 +10,10 @@ export default async function AdminFaqsPage() {
     .order("sort_order", { ascending: true });
 
   return (
-    <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+    <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
       <div className="mb-8 flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-display font-bold text-[var(--ink-950)] mb-2">FAQ Management</h1>
+          <h1 className="mb-1 text-xl font-semibold tracking-tight text-ink sm:text-2xl">FAQ Management</h1>
           <p className="text-[var(--ink-500)]">Manage the Frequently Asked Questions shown on your website.</p>
         </div>
       </div>

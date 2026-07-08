@@ -1,81 +1,85 @@
 import Link from "next/link";
 import { ChevronRight, Share2, Key, Lock } from "lucide-react";
-import { NavbarLogo } from "@/components/ui/resizable-navbar";
+import { StatusPill, type StatusTone } from "@/components/dashboard/ui/primitives";
 
 interface Props {
   account: any;
 }
 
+function statusTone(status: string | null | undefined): StatusTone {
+  if (status === "active" || status === "funded") return "success";
+  if (status === "breached") return "danger";
+  if (status === "passed") return "info";
+  return "pending";
+}
+
 export function AccountHeader({ account }: Props) {
-  const creationDate = account?.created_at 
+  const creationDate = account?.created_at
     ? new Date(account.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
     : 'Unknown Date';
-    
+
+  const phaseLabel =
+    account.phase === 'challenge' ? 'Phase 1'
+    : account.phase === 'verification' ? 'Phase 2'
+    : account.phase === 'phase_3' ? 'Phase 3'
+    : account.phase === 'funded' ? 'Funded'
+    : account.phase || 'Phase 1';
+
   return (
-    <div className="space-y-6 mb-6">
+    <div className="mb-6 space-y-5">
       {/* Breadcrumbs */}
-      <div className="flex items-center text-[13px] font-medium text-[var(--ink-500)]">
-        <Link href="/dashboard" className="hover:text-[var(--ink-950)] transition-colors">Home</Link>
-        <ChevronRight className="w-4 h-4 mx-2" />
-        <Link href="/dashboard" className="hover:text-[var(--ink-950)] transition-colors">Accounts</Link>
-        <ChevronRight className="w-4 h-4 mx-2" />
-        <span className="text-[var(--ink-950)]">#{account.id.substring(0, 8)}</span>
-      </div>
+      <nav className="flex items-center text-[13px] text-ink-500" aria-label="Breadcrumb">
+        <Link href="/dashboard" className="transition-colors hover:text-ink">Home</Link>
+        <ChevronRight className="mx-1.5 h-3.5 w-3.5 text-ink-300" aria-hidden="true" />
+        <Link href="/dashboard" className="transition-colors hover:text-ink">Accounts</Link>
+        <ChevronRight className="mx-1.5 h-3.5 w-3.5 text-ink-300" aria-hidden="true" />
+        <span className="dash-num font-medium text-ink">{account.id.substring(0, 8)}</span>
+      </nav>
 
       {/* Trading Disabled Alert */}
       {account.status === 'breached' && (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex gap-3 text-amber-800">
-          <Lock className="w-5 h-5 shrink-0 mt-0.5" />
+        <div className="flex gap-3 rounded-[12px] border border-rose-100 bg-rose-50 p-4 text-rose-700">
+          <Lock className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
           <div>
-            <h4 className="font-bold text-[14px]">Trading Disabled</h4>
-            <p className="text-[13px] mt-0.5 opacity-90">Trading is currently disabled because this account has been breached.</p>
+            <h4 className="text-sm font-semibold">Trading Disabled</h4>
+            <p className="mt-0.5 text-[13px] opacity-90">Trading is currently disabled because this account has been breached.</p>
           </div>
         </div>
       )}
 
       {/* Main Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        <div>
-          <div className="flex flex-wrap items-center gap-4 mb-3">
-            <div className="scale-[0.8] origin-left -my-2">
-              <NavbarLogo />
-            </div>
-            <h1 className="text-xl md:text-2xl font-display font-bold text-[var(--ink-950)]">
-              #{account.id.substring(0, 8)}
+      <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <h1 className="dash-num text-xl font-semibold tracking-tight text-ink md:text-2xl">
+              {account.id.substring(0, 8)}
             </h1>
-            <span className="text-[12px] text-[var(--ink-500)] font-medium mt-1">
-              Created {creationDate}
-            </span>
+            <span className="text-[13px] text-ink-500">Created {creationDate}</span>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            <span className={`px-3 py-1 rounded-full border text-[12px] font-bold capitalize ${
-              account.status === 'active' ? 'bg-emerald-50 border-emerald-200 text-emerald-600' :
-              account.status === 'breached' ? 'bg-rose-50 border-rose-200 text-rose-600' :
-              account.status === 'passed' ? 'bg-blue-50 border-blue-200 text-blue-600' :
-              'bg-amber-50 border-amber-200 text-amber-600'
-            }`}>
+          <div className="mt-2.5 flex flex-wrap items-center gap-2">
+            <StatusPill tone={statusTone(account.status)} className="capitalize">
               {account.status || 'Unknown'}
-            </span>
-            <span className="px-3 py-1 rounded-full bg-[var(--paper-2)] border border-[var(--border)] text-[12px] font-bold text-[var(--ink-600)]">
+            </StatusPill>
+            <span className="inline-flex items-center rounded-full border border-ink-200 bg-white px-2.5 py-0.5 text-xs font-medium text-ink-600">
               {account.label || 'Trading Account'}
             </span>
-            <span className="px-3 py-1 rounded-full bg-[var(--paper-2)] border border-[var(--border)] text-[12px] font-bold text-[var(--ink-600)] capitalize">
-              {account.phase === 'challenge' ? 'Phase 1' : account.phase === 'verification' ? 'Phase 2' : account.phase === 'phase_3' ? 'Phase 3' : account.phase === 'funded' ? 'Funded' : account.phase || 'Phase 1'}
+            <span className="inline-flex items-center rounded-full border border-ink-200 bg-white px-2.5 py-0.5 text-xs font-medium capitalize text-ink-600">
+              {phaseLabel}
             </span>
-            <span className="px-3 py-1 rounded-full bg-[var(--paper-2)] border border-[var(--border)] text-[12px] font-bold text-[var(--ink-600)]">
+            <span className="inline-flex items-center rounded-full border border-ink-200 bg-white px-2.5 py-0.5 text-xs font-medium text-ink-600">
               {account.tpp_platforms?.name || 'TPP Dashboard'}
             </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[var(--border)] bg-white text-[13px] font-medium text-[var(--ink-700)] hover:bg-[var(--paper-2)] transition-colors shadow-sm">
-            <Share2 className="w-4 h-4" />
+        <div className="flex shrink-0 items-center gap-2">
+          <button className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-[var(--dash-hairline)] bg-white px-3.5 text-[13px] font-medium text-ink-700 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink">
+            <Share2 className="h-4 w-4" aria-hidden="true" />
             Share
           </button>
-          <button className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[var(--border)] bg-white text-[13px] font-medium text-[var(--ink-700)] hover:bg-[var(--paper-2)] transition-colors shadow-sm">
-            <Key className="w-4 h-4" />
+          <button className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-[var(--dash-hairline)] bg-white px-3.5 text-[13px] font-medium text-ink-700 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink">
+            <Key className="h-4 w-4" aria-hidden="true" />
             Credentials
           </button>
         </div>

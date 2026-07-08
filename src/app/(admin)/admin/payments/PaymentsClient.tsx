@@ -36,10 +36,10 @@ interface PaymentsClientProps {
 }
 
 const statusConfig: Record<string, { label: string; icon: any; className: string }> = {
-  pending: { label: "Pending", icon: Clock, className: "bg-amber-50 text-amber-700 border-amber-200" },
-  completed: { label: "Completed", icon: CheckCircle, className: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-  failed: { label: "Failed", icon: XCircle, className: "bg-red-50 text-red-700 border-red-200" },
-  refunded: { label: "Refunded", icon: RotateCcw, className: "bg-violet-50 text-violet-700 border-violet-200" },
+  pending: { label: "Pending", icon: Clock, className: "border-[#FDE68A] bg-amber-50 text-amber-700" },
+  completed: { label: "Completed", icon: CheckCircle, className: "border-[#A7F3D0] bg-success-50 text-success-700" },
+  failed: { label: "Failed", icon: XCircle, className: "border-[#FECDD3] bg-rose-50 text-rose-700" },
+  refunded: { label: "Refunded", icon: RotateCcw, className: "border-ink-200 bg-ink-50 text-ink-700" },
   cancelled: { label: "Cancelled", icon: Ban, className: "bg-slate-100 text-slate-600 border-slate-200" },
 };
 
@@ -202,7 +202,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
           <div className="flex items-center gap-1.5">
             <button
               onClick={() => openViewModal(txn)}
-              className="p-1.5 text-[var(--ink-400)] hover:text-[var(--ink-950)] hover:bg-[var(--border)] rounded-lg transition-colors"
+              className="rounded-lg p-1.5 text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink"
               title="View Details"
             >
               <Eye className="w-4 h-4" />
@@ -212,7 +212,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
                 <button
                   onClick={() => openActionModal(txn, "verify")}
                   disabled={loading === txn.id}
-                  className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
+                  className="p-1.5 text-[var(--dash-positive)] hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
                   title="Verify"
                 >
                   <Check className="w-4 h-4" />
@@ -249,8 +249,8 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         {[
           { key: "pending", label: "Pending", icon: Clock, color: "text-amber-600", bg: "bg-amber-50" },
-          { key: "completed", label: "Completed", icon: CheckCircle, color: "text-emerald-600", bg: "bg-emerald-50" },
-          { key: "failed", label: "Failed", icon: XCircle, color: "text-red-600", bg: "bg-red-50" },
+          { key: "completed", label: "Completed", icon: CheckCircle, color: "text-[var(--dash-positive)]", bg: "bg-emerald-50" },
+          { key: "failed", label: "Failed", icon: XCircle, color: "text-[var(--dash-negative)]", bg: "bg-red-50" },
           { key: "refunded", label: "Refunded", icon: RotateCcw, color: "text-violet-600", bg: "bg-violet-50" },
           { key: "cancelled", label: "Cancelled", icon: Ban, color: "text-slate-500", bg: "bg-slate-50" },
         ].map((stat) => {
@@ -264,7 +264,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
               className={`p-4 rounded-2xl border transition-all text-left ${
                 isActive
                   ? "border-[var(--ink-950)] bg-[var(--ink-950)] text-white shadow-md"
-                  : "border-[var(--border)] bg-white hover:border-[var(--ink-300)]"
+                  : "border-[var(--dash-hairline)] bg-white hover:border-[var(--ink-300)]"
               }`}
             >
               <div className="flex items-center justify-between mb-2">
@@ -291,7 +291,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
           const Icon = g.icon;
           const amount = gatewayTotals[g.key] || 0;
           return (
-            <div key={g.key} className="p-4 rounded-2xl border border-[var(--border)] bg-white">
+            <div key={g.key} className="dash-card p-4">
               <div className="flex items-center gap-3 mb-2">
                 <div className={`p-2 rounded-lg ${g.color}`}>
                   <Icon className="w-5 h-5" />
@@ -313,7 +313,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
             placeholder="Search by name, email, or transaction ID..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 bg-white border border-[var(--border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
+            className="w-full pl-9 pr-4 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
           />
         </div>
         <div className="flex items-center gap-2">
@@ -321,7 +321,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
           <select
             value={gatewayFilter}
             onChange={(e) => setGatewayFilter(e.target.value)}
-            className="px-3 py-2.5 bg-white border border-[var(--border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10"
+            className="px-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10"
           >
             <option value="all">All Gateways</option>
             <option value="stripe">Stripe</option>
@@ -344,7 +344,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
         {selectedTxn && (
           <div className="space-y-6">
             {/* User Info */}
-            <div className="flex items-start gap-4 p-4 bg-[var(--paper-2)] rounded-xl">
+            <div className="flex items-start gap-4 rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4">
               <div className="w-10 h-10 rounded-full bg-[var(--ink-950)] flex items-center justify-center text-white font-bold">
                 {(selectedTxn.profiles?.display_name || "?").charAt(0).toUpperCase()}
               </div>
@@ -356,12 +356,12 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
 
             {/* Transaction Info */}
             <div className="grid grid-cols-2 gap-4">
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                <p className="text-xs text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Amount</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <p className="dash-overline mb-1">Amount</p>
                 <p className="font-semibold text-[var(--ink-950)] text-lg">${Number(selectedTxn.amount).toLocaleString()} {selectedTxn.currency}</p>
               </div>
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                <p className="text-xs text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Status</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <p className="dash-overline mb-1">Status</p>
                 <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium border ${
                   statusConfig[selectedTxn.status]?.className || statusConfig.pending.className
                 }`}>
@@ -372,8 +372,8 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
                   {statusConfig[selectedTxn.status]?.label || selectedTxn.status}
                 </span>
               </div>
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                <p className="text-xs text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Gateway</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <p className="dash-overline mb-1">Gateway</p>
                 <div className="flex items-center gap-1.5">
                   {(() => {
                     const config = gatewayConfig[selectedTxn.gateway] || gatewayConfig.manual;
@@ -383,25 +383,25 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
                   <span className="font-semibold text-[var(--ink-950)] capitalize">{selectedTxn.gateway}</span>
                 </div>
               </div>
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                <p className="text-xs text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Payment Method</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <p className="dash-overline mb-1">Payment Method</p>
                 <p className="font-semibold text-[var(--ink-950)] capitalize">{selectedTxn.payment_method || "—"}</p>
               </div>
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                <p className="text-xs text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Transaction ID</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <p className="dash-overline mb-1">Transaction ID</p>
                 <p className="font-semibold text-[var(--ink-950)] font-mono text-xs">{selectedTxn.transaction_id || selectedTxn.id}</p>
               </div>
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                <p className="text-xs text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Date</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <p className="dash-overline mb-1">Date</p>
                 <p className="font-semibold text-[var(--ink-950)]">{format(new Date(selectedTxn.created_at), "MMM dd, yyyy HH:mm")}</p>
               </div>
             </div>
 
             {/* Metadata */}
             {selectedTxn.metadata && Object.keys(selectedTxn.metadata).length > 0 && (
-              <div className="p-4 bg-[var(--paper-2)] rounded-xl">
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4">
                 <p className="text-xs text-[var(--ink-400)] uppercase tracking-wider font-medium mb-2">Gateway Metadata</p>
-                <pre className="text-xs text-[var(--ink-600)] overflow-auto max-h-32 bg-white p-2 rounded-lg border border-[var(--border)]">
+                <pre className="text-xs text-[var(--ink-600)] overflow-auto max-h-32 bg-white p-2 rounded-lg border border-[var(--dash-hairline)]">
                   {JSON.stringify(selectedTxn.metadata, null, 2)}
                 </pre>
               </div>
@@ -424,7 +424,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
                 href={selectedTxn.invoice_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2.5 bg-[var(--ink-950)] text-white rounded-xl font-semibold hover:bg-black transition-colors w-fit"
+                className="flex items-center gap-2 px-4 py-2.5 w-fit rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800"
               >
                 <FileText className="w-4 h-4" />
                 View Invoice
@@ -477,11 +477,11 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
           <div className="space-y-4">
             {actionType === "refund" && (
               <div>
-                <label className="block text-sm font-semibold text-[var(--ink-950)] mb-1">Refund Reason</label>
+                <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Refund Reason</label>
                 <textarea
                   value={refundReason}
                   onChange={(e) => setRefundReason(e.target.value)}
-                  className="w-full border border-[var(--border)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)] transition-colors"
+                  className="w-full border border-[var(--dash-hairline)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)] transition-colors"
                   rows={3}
                   placeholder="Reason for refund..."
                   required
@@ -499,7 +499,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
             )}
             {actionType === "verify" && (
               <div className="flex items-start gap-3 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
-                <CheckCircle className="w-5 h-5 text-emerald-600 mt-0.5" />
+                <CheckCircle className="w-5 h-5 text-[var(--dash-positive)] mt-0.5" />
                 <div>
                   <p className="text-sm font-semibold text-emerald-800">Confirm Verification</p>
                   <p className="text-sm text-emerald-700 mt-1">This will mark the transaction as completed and grant access to the purchased challenge.</p>
@@ -509,7 +509,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
             <div className="flex justify-end gap-3 pt-2">
               <button
                 onClick={() => { setIsActionModalOpen(false); setRefundReason(""); }}
-                className="px-4 py-2 font-semibold text-[var(--ink-600)] hover:bg-[var(--border)] rounded-full transition-colors"
+                className="rounded-lg px-4 py-2 text-[13px] font-medium text-ink-600 transition-colors hover:bg-ink-100 hover:text-ink"
               >
                 Cancel
               </button>

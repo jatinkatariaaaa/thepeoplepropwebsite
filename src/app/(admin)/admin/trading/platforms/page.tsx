@@ -138,14 +138,14 @@ export default function PlatformsAdminPage() {
     }
   }
 
-  if (loading && platforms.length === 0) return <div className="p-10 animate-pulse bg-[var(--paper)] rounded-xl h-40" />;
+  if (loading && platforms.length === 0) return <div className="p-10 animate-pulse bg-[var(--dash-canvas)] rounded-xl h-40" />;
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[var(--paper)] p-6 rounded-3xl border border-[var(--border)] shadow-sm">
+    <div className="max-w-5xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[var(--dash-canvas)] p-6 rounded-3xl border border-[var(--dash-hairline)] shadow-sm">
         <div>
-          <h1 className="text-2xl font-display font-bold text-[var(--ink-950)] flex items-center gap-2">
-            <Activity className="w-6 h-6 text-emerald-500" /> Terminal Connection
+          <h1 className="flex items-center gap-2 text-xl font-semibold tracking-tight text-ink sm:text-2xl">
+            <Activity className="w-6 h-6 text-[var(--dash-positive)]" /> Terminal Connection
           </h1>
           <p className="text-[var(--ink-500)] text-[14px] mt-1">
             Real-time status of your TPP Trading Terminal. 
@@ -163,7 +163,7 @@ export default function PlatformsAdminPage() {
            return (
           <div key={plat.id} className={cn(
             "bg-white rounded-3xl p-6 border shadow-xl shadow-black/5 transition-all relative overflow-hidden",
-            plat.is_active ? "border-[var(--border)]" : "border-red-100 bg-red-50/30 opacity-70"
+            plat.is_active ? "border-[var(--dash-hairline)]" : "border-red-100 bg-red-50/30 opacity-70"
           )}>
             <div className="flex items-start justify-between mb-6">
               <div className="flex items-center gap-4">
@@ -175,7 +175,7 @@ export default function PlatformsAdminPage() {
                   <div className="flex gap-2 items-center">
                     <span className={cn(
                       "inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider",
-                      plat.is_active ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-600"
+                      plat.is_active ? "bg-success-50 text-success-700" : "bg-red-50 text-[var(--dash-negative)]"
                     )}>
                       {plat.is_active ? "Active Platform" : "Disabled"}
                     </span>
@@ -186,14 +186,14 @@ export default function PlatformsAdminPage() {
               <button 
                 onClick={() => openEditModal(plat)}
                 title="Edit Configuration"
-                className="w-10 h-10 flex items-center justify-center rounded-xl bg-[var(--paper-2)] border border-[var(--border)] text-[var(--ink-500)] hover:text-[var(--ink-950)] hover:border-[var(--ink-950)] transition-all"
+                className="w-10 h-10 flex items-center justify-center rounded-xl bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] text-[var(--ink-500)] hover:text-[var(--ink-950)] hover:border-[var(--ink-950)] transition-all"
               >
                 <Edit2 className="w-4 h-4" />
               </button>
             </div>
 
             {/* Live Connection Status Board */}
-            <div className="bg-[var(--paper-2)] rounded-2xl p-4 border border-[var(--border)] mb-4">
+            <div className="bg-[var(--dash-canvas)] rounded-2xl p-4 border border-[var(--dash-hairline)] mb-4">
                <div className="flex items-center justify-between mb-2">
                   <span className="text-[12px] font-bold text-[var(--ink-500)] uppercase tracking-wider">Live System Status</span>
                   <button 
@@ -218,8 +218,8 @@ export default function PlatformsAdminPage() {
                
                {status?.status === 'ok' && (
                  <div className="flex flex-col gap-2 py-1">
-                   <div className="flex items-center gap-2 text-emerald-600 font-bold text-sm">
-                      <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                   <div className="flex items-center gap-2 text-[var(--dash-positive)] font-bold text-sm">
+                      <CheckCircle2 className="w-5 h-5 text-[var(--dash-positive)]" />
                       TERMINAL ONLINE & CONNECTED
                    </div>
                    <p className="text-[13px] text-[var(--ink-600)]">
@@ -230,11 +230,11 @@ export default function PlatformsAdminPage() {
                
                {status?.status === 'error' && (
                  <div className="flex flex-col gap-2 py-1">
-                   <div className="flex items-center gap-2 text-red-600 font-bold text-sm">
-                      <AlertCircle className="w-5 h-5 text-red-500" />
+                   <div className="flex items-center gap-2 text-[var(--dash-negative)] font-bold text-sm">
+                      <AlertCircle className="w-5 h-5 text-[var(--dash-negative)]" />
                       TERMINAL OFFLINE OR UNACHIEVABLE
                    </div>
-                   <p className="text-[13px] text-red-500/80">
+                   <p className="text-[13px] text-[var(--dash-negative)]/80">
                      {status.message}
                    </p>
                    <p className="text-[12px] text-[var(--ink-500)] mt-1">
@@ -259,7 +259,7 @@ export default function PlatformsAdminPage() {
             <div className="pt-2">
               <div className="flex items-center justify-between text-[13px]">
                 <span className="text-[var(--ink-500)] font-medium">Extra Fee Configuration</span>
-                <span className={cn("font-bold px-2 py-1 rounded-lg", plat.extra_fee_pct > 0 ? "bg-[var(--ink-950)] text-white" : "bg-emerald-100 text-emerald-700")}>
+                <span className={cn("font-bold px-2 py-1 rounded-lg", plat.extra_fee_pct > 0 ? "bg-[var(--ink-950)] text-white" : "bg-success-50 text-success-700")}>
                   {plat.extra_fee_pct > 0 ? `+${plat.extra_fee_pct}% Fee` : "Free Delivery"}
                 </span>
               </div>
@@ -268,7 +268,7 @@ export default function PlatformsAdminPage() {
         )})}
 
         {platforms.length === 0 && (
-          <div className="col-span-full py-16 text-center border-2 border-dashed border-[var(--border)] rounded-3xl bg-[var(--paper-2)]">
+          <div className="col-span-full py-16 text-center border-2 border-dashed border-[var(--dash-hairline)] rounded-3xl bg-[var(--dash-canvas)]">
             <Boxes className="w-10 h-10 text-[var(--ink-300)] mx-auto mb-4" />
             <h3 className="text-lg font-bold text-[var(--ink-950)] mb-1">No Terminal Connected</h3>
             <p className="text-[var(--ink-500)] font-medium max-w-sm mx-auto">Click "Custom Terminal" above to connect your TPP Trading Terminal.</p>
@@ -278,14 +278,14 @@ export default function PlatformsAdminPage() {
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="flex items-center justify-between p-5 border-b border-[var(--border)]">
+          <div className="flex max-h-[90vh] w-full max-w-md flex-col overflow-hidden rounded-[12px] border border-[var(--dash-hairline)] bg-white shadow-xl">
+            <div className="flex items-center justify-between p-5 border-b border-[var(--dash-hairline)]">
               <h2 className="font-bold text-[18px] text-[var(--ink-950)]">
                 {editingPlatform ? "Edit Platform" : "Add Platform"}
               </h2>
               <button 
                 onClick={() => setIsModalOpen(false)}
-                className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[var(--paper-2)] text-[var(--ink-400)] transition-colors"
+                className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[var(--dash-canvas)] text-[var(--ink-400)] transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -294,53 +294,53 @@ export default function PlatformsAdminPage() {
             <div className="p-5 overflow-y-auto">
               <form id="platform-form" onSubmit={handleSave} className="space-y-4">
                 <div>
-                  <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Platform Name</label>
+                  <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Platform Name</label>
                   <input 
                     type="text" 
                     required
                     value={formData.name}
                     onChange={e => setFormData({...formData, name: e.target.value})}
-                    className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+                    className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
                     placeholder="e.g. MetaTrader 5"
                   />
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">API URL</label>
+                    <label className="mb-1.5 block text-[13px] font-medium text-ink-700">API URL</label>
                     <input 
                       type="url" 
                       value={formData.api_url || ""}
                       onChange={e => setFormData({...formData, api_url: e.target.value})}
-                      className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+                      className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
                       placeholder="https://api.broker.com"
                     />
                   </div>
                   <div>
-                    <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Server Name</label>
+                    <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Server Name</label>
                     <input 
                       type="text" 
                       value={formData.server_name || ""}
                       onChange={e => setFormData({...formData, server_name: e.target.value})}
-                      className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+                      className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
                       placeholder="Broker-Live"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">API Key</label>
+                  <label className="mb-1.5 block text-[13px] font-medium text-ink-700">API Key</label>
                   <input 
                     type="password" 
                     value={formData.api_key || ""}
                     onChange={e => setFormData({...formData, api_key: e.target.value})}
-                    className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+                    className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
                     placeholder="Secret Key (hidden after saving)"
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Extra Fee Percentage (%)</label>
+                  <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Extra Fee Percentage (%)</label>
                   <input 
                     type="number" 
                     required
@@ -348,7 +348,7 @@ export default function PlatformsAdminPage() {
                     step="0.01"
                     value={formData.extra_fee_pct}
                     onChange={e => setFormData({...formData, extra_fee_pct: parseFloat(e.target.value) || 0})}
-                    className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+                    className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
                   />
                   <p className="text-[11px] text-[var(--ink-500)] mt-1.5">
                     Enter 0 for Free, or 10 for a +10% extra fee on checkout.
@@ -361,7 +361,7 @@ export default function PlatformsAdminPage() {
                     id="is_active"
                     checked={formData.is_active}
                     onChange={e => setFormData({...formData, is_active: e.target.checked})}
-                    className="w-4 h-4 rounded border-[var(--border)] text-[var(--accent)] focus:ring-[var(--accent)]"
+                    className="w-4 h-4 rounded border-[var(--dash-hairline)] text-[var(--accent)] focus:ring-[var(--accent)]"
                   />
                   <label htmlFor="is_active" className="text-[14px] font-medium text-[var(--ink-700)] cursor-pointer">
                     Platform is Active
@@ -370,7 +370,7 @@ export default function PlatformsAdminPage() {
               </form>
             </div>
 
-            <div className="p-5 border-t border-[var(--border)] bg-[var(--paper)] flex gap-3">
+            <div className="flex gap-3 border-t border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4">
               <Button variant="outline" className="flex-1" onClick={() => setIsModalOpen(false)}>
                 Cancel
               </Button>
