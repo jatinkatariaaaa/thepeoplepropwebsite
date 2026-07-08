@@ -73,11 +73,11 @@ export default function TemplateEditorPage({ params }: { params: Promise<{ slug:
   if (!template) return null;
 
   return (
-    <div className="max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out pb-20">
+    <div className="max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out pb-20">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
-          <Link href="/admin/email" className="p-2 bg-white border border-[var(--dash-hairline)] rounded-none hover:bg-[var(--dash-canvas)] transition-colors">
+          <Link href="/admin/email" className="p-2 bg-white border border-[var(--border)] rounded-xl hover:bg-[var(--paper-2)] transition-colors">
             <ArrowLeft className="w-5 h-5 text-[var(--ink-600)]" />
           </Link>
           <div>
@@ -98,7 +98,7 @@ export default function TemplateEditorPage({ params }: { params: Promise<{ slug:
           <button
             onClick={handleSave}
             disabled={saving}
-            className="flex items-center gap-2 px-6 py-2.5 carbon-btn-primary disabled:opacity-50"
+            className="flex items-center gap-2 px-6 py-2.5 bg-[var(--ink-950)] text-white rounded-xl font-bold hover:bg-black transition-colors disabled:opacity-50"
           >
             <Save className="w-4 h-4" /> {saving ? "Saving..." : "Save Template"}
           </button>
@@ -108,14 +108,14 @@ export default function TemplateEditorPage({ params }: { params: Promise<{ slug:
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Editor Area */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="dash-card p-5">
+          <div className="bg-white rounded-2xl border border-[var(--border)] p-6 shadow-sm">
             <div className="mb-6">
-              <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Email Subject</label>
+              <label className="block text-sm font-semibold text-[var(--ink-950)] mb-1">Email Subject</label>
               <input
                 type="text"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
-                className="w-full border border-[var(--dash-hairline)] rounded-none p-3 text-sm outline-none focus:border-[var(--ink-950)] bg-[var(--dash-canvas)] font-mono"
+                className="w-full border border-[var(--border)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)] bg-[var(--paper-2)] font-mono"
               />
             </div>
             
@@ -127,7 +127,7 @@ export default function TemplateEditorPage({ params }: { params: Promise<{ slug:
               <textarea
                 value={bodyHtml}
                 onChange={(e) => setBodyHtml(e.target.value)}
-                className="w-full border border-[var(--dash-hairline)] rounded-none p-4 text-[13px] font-mono outline-none focus:border-[var(--ink-950)] bg-[var(--ink-950)] text-emerald-400 min-h-[500px]"
+                className="w-full border border-[var(--border)] rounded-xl p-4 text-[13px] font-mono outline-none focus:border-[var(--ink-950)] bg-[var(--ink-950)] text-emerald-400 min-h-[500px]"
                 spellCheck="false"
               />
             </div>
@@ -136,7 +136,7 @@ export default function TemplateEditorPage({ params }: { params: Promise<{ slug:
 
         {/* Variables Info */}
         <div className="space-y-6">
-          <div className="dash-card p-5">
+          <div className="bg-white rounded-2xl border border-[var(--border)] p-6 shadow-sm">
             <div className="flex items-center gap-2 mb-4">
               <Variable className="w-5 h-5 text-[var(--ink-600)]" />
               <h2 className="text-lg font-bold text-[var(--ink-950)]">Variables</h2>
@@ -147,18 +147,18 @@ export default function TemplateEditorPage({ params }: { params: Promise<{ slug:
             
             <div className="space-y-3">
               {(template.variables || []).map((v: string) => (
-                <div key={v} className="p-3 bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-none">
+                <div key={v} className="p-3 bg-[var(--paper-2)] border border-[var(--border)] rounded-xl">
                   <p className="font-mono text-[13px] font-bold text-[var(--ink-950)]">{`{{${v}}}`}</p>
                 </div>
               ))}
               {(!template.variables || template.variables.length === 0) && (
-                <p className="text-sm text-center text-[var(--ink-400)] py-4 border border-dashed rounded-none border-[var(--dash-hairline)]">
+                <p className="text-sm text-center text-[var(--ink-400)] py-4 border border-dashed rounded-xl border-[var(--border)]">
                   No specific variables configured for this template.
                 </p>
               )}
             </div>
             
-            <div className="mt-6 pt-4 border-t border-[var(--dash-hairline)]">
+            <div className="mt-6 pt-4 border-t border-[var(--border)]">
               <p className="text-[12px] font-bold text-[var(--ink-400)] uppercase tracking-wider mb-2">Global Variables</p>
               <div className="space-y-2">
                 <div className="flex justify-between items-center"><code className="text-[11px] bg-gray-100 px-1 rounded">{"{{user_name}}"}</code></div>

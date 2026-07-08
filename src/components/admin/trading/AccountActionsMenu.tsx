@@ -55,20 +55,20 @@ export function AccountActionsMenu({ account, handlers }: AccountActionsMenuProp
   }
 
   const itemClass =
-    "w-full flex items-center gap-2.5 px-3 py-2 text-[13px] font-medium text-[var(--ink-700)] hover:bg-[var(--dash-canvas)] transition-colors text-left";
+    "w-full flex items-center gap-2.5 px-3 py-2 text-[13px] font-medium text-[var(--ink-700)] hover:bg-[var(--paper-2)] transition-colors text-left";
 
   return (
     <div className="relative flex justify-end" ref={ref}>
       <button
         onClick={() => setOpen((v) => !v)}
-        className="p-2 hover:bg-[var(--dash-canvas)] rounded-none text-[var(--ink-500)] transition-colors"
+        className="p-2 hover:bg-[var(--paper-2)] rounded-lg text-[var(--ink-500)] transition-colors"
         aria-label="Account actions"
       >
         <MoreHorizontal className="w-5 h-5" />
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-1 w-52 bg-white border border-[var(--dash-hairline)] rounded-none shadow-lg py-1 z-[100] overflow-hidden">
+        <div className="absolute right-0 top-full mt-1 w-52 bg-white border border-[var(--border)] rounded-xl shadow-lg py-1 z-[100] overflow-hidden">
           <Link
             href={`/admin/trading/accounts/${account.id}`}
             className={itemClass}
@@ -86,11 +86,11 @@ export function AccountActionsMenu({ account, handlers }: AccountActionsMenuProp
             <RotateCcw className="w-4 h-4 text-amber-500" /> Reset Challenge
           </button>
 
-          <div className="my-1 border-t border-[var(--dash-hairline)]" />
+          <div className="my-1 border-t border-[var(--border)]" />
 
           {isDisabled ? (
             <button className={itemClass} onClick={() => run(handlers.onEnable)}>
-              <Power className="w-4 h-4 text-[var(--dash-positive)]" /> Enable Account
+              <Power className="w-4 h-4 text-emerald-500" /> Enable Account
             </button>
           ) : (
             <button className={itemClass} onClick={() => run(handlers.onDisable)}>
@@ -99,7 +99,7 @@ export function AccountActionsMenu({ account, handlers }: AccountActionsMenuProp
           )}
 
           <button
-            className={cn(itemClass, "text-[var(--dash-negative)] hover:bg-red-50")}
+            className={cn(itemClass, "text-red-600 hover:bg-red-50")}
             onClick={() => run(handlers.onDelete)}
           >
             <Trash2 className="w-4 h-4" /> Delete Account

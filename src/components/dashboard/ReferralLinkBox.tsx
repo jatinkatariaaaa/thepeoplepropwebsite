@@ -23,7 +23,7 @@ export function ReferralLinkBox({ profile }: { profile: UserProfile | null }) {
   }
 
   return (
-    <div className="relative rounded-none border border-[var(--border)] bg-gradient-to-br from-white via-[var(--paper)] to-[var(--accent-50)] p-6 md:p-7 overflow-hidden">
+    <div className="relative rounded-2xl border border-[var(--border)] bg-gradient-to-br from-white via-[var(--paper)] to-[var(--accent-50)] p-6 md:p-7 overflow-hidden">
       <div
         aria-hidden="true"
         className="absolute -top-16 -right-12 w-72 h-72 rounded-full bg-[rgba(14,124,92,0.12)] blur-3xl pointer-events-none"
@@ -38,7 +38,7 @@ export function ReferralLinkBox({ profile }: { profile: UserProfile | null }) {
               Share. Earn <span className="word-serif">15%</span>.
             </div>
           </div>
-          <div className="grid place-items-center w-10 h-10 rounded-none bg-[var(--accent-50)] text-[var(--carbon-blue)]">
+          <div className="grid place-items-center w-10 h-10 rounded-xl bg-[var(--accent-50)] text-[var(--accent-700)]">
             <Share2 className="w-5 h-5" strokeWidth={2.2} />
           </div>
         </div>
@@ -56,8 +56,8 @@ export function ReferralLinkBox({ profile }: { profile: UserProfile | null }) {
               className={cn(
                 "shrink-0 inline-flex items-center gap-1.5 h-9 px-4 rounded-full text-xs font-medium transition-all cursor-pointer disabled:opacity-50",
                 copied
-                  ? "bg-[var(--accent-50)] text-[var(--carbon-blue)] border border-[var(--accent-200)]"
-                  : "bg-[var(--carbon-blue)] text-white hover:bg-[var(--carbon-blue-hover)]",
+                  ? "bg-[var(--accent-50)] text-[var(--accent-700)] border border-[var(--accent-200)]"
+                  : "bg-[var(--ink-950)] text-white hover:bg-[var(--ink-800)]",
               )}
             >
               {copied ? (
@@ -79,7 +79,7 @@ export function ReferralLinkBox({ profile }: { profile: UserProfile | null }) {
             type="button"
             disabled={!profile}
             onClick={() => handleCopy(code)}
-            className="font-mono tracking-wider text-[var(--carbon-blue)] hover:text-[var(--accent-800)] transition-colors border border-[var(--accent-200)] bg-[var(--accent-50)] rounded-none px-2 py-1 cursor-pointer disabled:opacity-50"
+            className="font-mono tracking-wider text-[var(--accent-700)] hover:text-[var(--accent-800)] transition-colors border border-[var(--accent-200)] bg-[var(--accent-50)] rounded-md px-2 py-1 cursor-pointer disabled:opacity-50"
           >
             {code}
           </button>

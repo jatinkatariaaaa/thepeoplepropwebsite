@@ -31,8 +31,8 @@ interface NotificationsClientProps {
 }
 
 const severityConfig: Record<string, { icon: any; className: string }> = {
-  critical: { icon: AlertOctagon, className: "bg-[#ffd7d9] text-[#a2191f]" },
-  warning: { icon: AlertTriangle, className: "bg-[#fcf4d6] text-[#8e6a00]" },
+  critical: { icon: AlertOctagon, className: "bg-red-100 text-red-800 border-red-200" },
+  warning: { icon: AlertTriangle, className: "bg-amber-100 text-amber-800 border-amber-200" },
   info: { icon: Info, className: "bg-sky-100 text-sky-800 border-sky-200" },
 };
 
@@ -137,7 +137,7 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
         const Icon = config.icon;
         const sev = severityConfig[row.original.severity] || severityConfig.info;
         return (
-          <div className={`p-2 rounded-none ${sev.className.split(" ")[0]}`}>
+          <div className={`p-2 rounded-lg ${sev.className.split(" ")[0]}`}>
             <Icon className={`w-4 h-4 ${sev.className.split(" ")[1]}`} />
           </div>
         );
@@ -204,7 +204,7 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
           <div className="flex items-center gap-1">
             <button
               onClick={() => openViewModal(n)}
-              className="rounded-none p-1.5 text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink"
+              className="p-1.5 text-[var(--ink-400)] hover:text-[var(--ink-950)] hover:bg-[var(--border)] rounded-lg transition-colors"
               title="View"
             >
               <Eye className="w-4 h-4" />
@@ -213,7 +213,7 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
               <button
                 onClick={(e) => { e.stopPropagation(); handleMarkRead(n); }}
                 disabled={loading === n.id}
-                className="p-1.5 text-[var(--dash-positive)] hover:bg-emerald-50 rounded-none transition-colors disabled:opacity-50"
+                className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
                 title="Mark as Read"
               >
                 <Check className="w-4 h-4" />
@@ -231,13 +231,13 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
           { key: "unread", label: "Unread", count: unreadCount, icon: BellDot, color: "text-sky-600", bg: "bg-sky-50" },
-          { key: "critical", label: "Critical", count: notifications.filter((n) => n.severity === "critical").length, icon: AlertOctagon, color: "text-[var(--dash-negative)]", bg: "bg-red-50" },
+          { key: "critical", label: "Critical", count: notifications.filter((n) => n.severity === "critical").length, icon: AlertOctagon, color: "text-red-600", bg: "bg-red-50" },
           { key: "warning", label: "Warnings", count: notifications.filter((n) => n.severity === "warning").length, icon: AlertTriangle, color: "text-amber-600", bg: "bg-amber-50" },
-          { key: "total", label: "Total", count: notifications.length, icon: Bell, color: "text-[var(--ink-700)]", bg: "bg-[var(--dash-canvas)]" },
+          { key: "total", label: "Total", count: notifications.length, icon: Bell, color: "text-[var(--ink-700)]", bg: "bg-[var(--paper-2)]" },
         ].map((stat) => {
           const Icon = stat.icon;
           return (
-            <div key={stat.key} className="dash-card p-4">
+            <div key={stat.key} className="p-4 rounded-2xl border border-[var(--border)] bg-white">
               <div className="flex items-center justify-between mb-2">
                 <Icon className={`w-5 h-5 ${stat.color}`} />
                 <span className="text-2xl font-bold text-[var(--ink-950)]">{stat.count}</span>
@@ -258,7 +258,7 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
               placeholder="Search notifications..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-none text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
+              className="w-full pl-9 pr-4 py-2.5 bg-white border border-[var(--border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
             />
           </div>
           <div className="flex items-center gap-2">
@@ -266,7 +266,7 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
             <select
               value={readFilter}
               onChange={(e) => setReadFilter(e.target.value)}
-              className="px-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-none text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10"
+              className="px-3 py-2.5 bg-white border border-[var(--border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10"
             >
               <option value="all">All</option>
               <option value="unread">Unread</option>
@@ -275,7 +275,7 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value)}
-              className="px-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-none text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10"
+              className="px-3 py-2.5 bg-white border border-[var(--border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10"
             >
               <option value="all">All Types</option>
               {Object.entries(typeConfig).map(([key, config]) => (
@@ -288,7 +288,7 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
           <button
             onClick={handleMarkAllRead}
             disabled={loading === "all"}
-            className="flex items-center gap-2 px-4 py-2.5 carbon-btn-primary disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2.5 bg-[var(--ink-950)] text-white rounded-xl font-semibold hover:bg-black transition-colors disabled:opacity-50 text-sm"
           >
             <Check className="w-4 h-4" />
             {loading === "all" ? "Processing..." : "Mark All Read"}
@@ -314,7 +314,7 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
                 const Icon = config.icon;
                 const sev = severityConfig[selectedNotif.severity] || severityConfig.info;
                 return (
-                  <div className={`p-3 rounded-none ${sev.className.split(" ")[0]}`}>
+                  <div className={`p-3 rounded-xl ${sev.className.split(" ")[0]}`}>
                     <Icon className={`w-6 h-6 ${sev.className.split(" ")[1]}`} />
                   </div>
                 );
@@ -329,7 +329,7 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
               </div>
             </div>
 
-            <div className="rounded-none border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4">
+            <div className="p-4 bg-[var(--paper-2)] rounded-xl">
               <p className="text-sm text-[var(--ink-800)]">{selectedNotif.message}</p>
             </div>
 

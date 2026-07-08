@@ -73,39 +73,47 @@ function StatCard({
   trendLabel?: string;
   href?: string;
 }) {
-  const className = "dash-card dash-card-hover group relative block overflow-hidden p-4 sm:p-5";
+  const className = "group relative overflow-hidden rounded-2xl border border-[var(--border)] bg-white p-6 shadow-sm transition-all hover:shadow-md";
 
   const content = (
     <>
-      <div className="mb-3 flex items-center justify-between gap-3">
-        <p className="dash-overline">{label}</p>
-        <Icon className="h-4 w-4 shrink-0 text-ink-300" aria-hidden="true" />
-      </div>
-      <p className="dash-figure text-2xl">{value}</p>
-      {trendLabel && (
-        <div className="mt-1.5 flex items-center gap-1">
-          {trend === "up" && (
-            <TrendingUp className="h-3 w-3 text-[var(--dash-positive)]" />
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-[13px] font-medium text-[var(--ink-400)]">{label}</p>
+          <p className="mt-1 text-3xl font-bold tracking-tight text-[var(--ink-950)]">
+            {value}
+          </p>
+          {trendLabel && (
+            <div className="mt-2 flex items-center gap-1">
+              {trend === "up" && (
+                <TrendingUp className="h-3.5 w-3.5 text-emerald-600" />
+              )}
+              {trend === "down" && (
+                <TrendingDown className="h-3.5 w-3.5 text-red-500" />
+              )}
+              <span
+                className={`text-[12px] font-semibold ${
+                  trend === "up"
+                    ? "text-emerald-600"
+                    : trend === "down"
+                    ? "text-red-500"
+                    : "text-[var(--ink-400)]"
+                }`}
+              >
+                {trendLabel}
+              </span>
+            </div>
           )}
-          {trend === "down" && (
-            <TrendingDown className="h-3 w-3 text-[var(--dash-negative)]" />
-          )}
-          <span
-            className={`dash-num text-[12px] font-medium ${
-              trend === "up"
-                ? "text-[var(--dash-positive)]"
-                : trend === "down"
-                ? "text-[var(--dash-negative)]"
-                : "text-ink-400"
-            }`}
-          >
-            {trendLabel}
-          </span>
         </div>
-      )}
+        <div
+          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${bg}`}
+        >
+          <Icon className={`h-6 w-6 ${color}`} />
+        </div>
+      </div>
       {href && (
-        <div className="absolute bottom-3 right-3 opacity-0 transition-opacity group-hover:opacity-100">
-          <ArrowRight className="h-3.5 w-3.5 text-ink-400" />
+        <div className="absolute bottom-0 right-0 p-3 opacity-0 transition-opacity group-hover:opacity-100">
+          <ArrowRight className="h-4 w-4 text-[var(--ink-400)]" />
         </div>
       )}
     </>
@@ -128,21 +136,21 @@ function StatCard({
 
 /* ─── Status Badge ─── */
 function StatusBadge({ status }: { status: string }) {
-  const map: Record<string, { bg: string; text: string; border: string; dot: string }> = {
-    paid: { bg: "bg-success-50", text: "text-success-700", border: "border-[#A7F3D0]", dot: "bg-[#059669]" },
-    completed: { bg: "bg-success-50", text: "text-success-700", border: "border-[#A7F3D0]", dot: "bg-[#059669]" },
-    active: { bg: "bg-ink-50", text: "text-ink-700", border: "border-ink-200", dot: "bg-ink-400" },
-    pending: { bg: "bg-amber-50", text: "text-amber-700", border: "border-[#FDE68A]", dot: "bg-[#D97706]" },
-    failed: { bg: "bg-rose-50", text: "text-rose-700", border: "border-[#FECDD3]", dot: "bg-[#E11D48]" },
-    open: { bg: "bg-ink-50", text: "text-ink-700", border: "border-ink-200", dot: "bg-ink-400" },
+  const map: Record<string, { bg: string; text: string; dot: string }> = {
+    paid: { bg: "bg-emerald-50", text: "text-emerald-700", dot: "bg-emerald-500" },
+    completed: { bg: "bg-emerald-50", text: "text-emerald-700", dot: "bg-emerald-500" },
+    active: { bg: "bg-blue-50", text: "text-blue-700", dot: "bg-blue-500" },
+    pending: { bg: "bg-amber-50", text: "text-amber-700", dot: "bg-amber-500" },
+    failed: { bg: "bg-red-50", text: "text-red-700", dot: "bg-red-500" },
+    open: { bg: "bg-blue-50", text: "text-blue-700", dot: "bg-blue-500" },
   };
-  const s = map[status] || { bg: "bg-ink-50", text: "text-ink-600", border: "border-ink-200", dot: "bg-ink-400" };
+  const s = map[status] || { bg: "bg-gray-50", text: "text-gray-700", dot: "bg-gray-500" };
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[11px] font-medium capitalize ${s.border} ${s.bg} ${s.text}`}
+      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide ${s.bg} ${s.text}`}
     >
-      <span className={`status-dot ${s.dot}`} aria-hidden="true" />
+      <span className={`h-1.5 w-1.5 rounded-full ${s.dot}`} />
       {status}
     </span>
   );
@@ -203,24 +211,23 @@ export default function AdminDashboardClient() {
   if (loading) {
     return (
       <div className="flex h-[60vh] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-ink-200 border-t-ink" role="status" aria-label="Loading dashboard" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-[var(--ink-200)] border-t-[var(--ink-950)]" />
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-7xl animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
+    <div className="mx-auto max-w-7xl animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
       {/* Header */}
-      <div className="mb-6">
-        <p className="dash-overline mb-1.5">Admin</p>
-        <h1 className="text-xl font-semibold tracking-tight text-ink sm:text-2xl">Dashboard</h1>
-        <p className="mt-1 text-sm text-ink-500">
-          Platform overview and real-time metrics.
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-[var(--ink-950)]">Dashboard</h1>
+        <p className="text-[var(--ink-500)]">
+          Platform overview and real-time metrics
         </p>
       </div>
 
       {/* Stat Cards — Row 1 */}
-      <div className="mb-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           label="Total Users"
           value={stats?.totalUsers || 0}
@@ -243,7 +250,7 @@ export default function AdminDashboardClient() {
           label="Total Revenue"
           value={`$${(stats?.totalRevenue || 0).toLocaleString()}`}
           icon={CreditCard}
-          color="text-[var(--dash-positive)]"
+          color="text-emerald-600"
           bg="bg-emerald-50"
           trend="up"
           trendLabel={`+$${(stats?.revenueToday || 0).toLocaleString()} today`}
@@ -260,12 +267,12 @@ export default function AdminDashboardClient() {
       </div>
 
       {/* Stat Cards — Row 2 */}
-      <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2">
         <StatCard
           label="Open Support Tickets"
           value={stats?.openTickets || 0}
           icon={Ticket}
-          color="text-[var(--dash-negative)]"
+          color="text-rose-600"
           bg="bg-rose-50"
           href="/admin/tickets"
         />
@@ -280,17 +287,17 @@ export default function AdminDashboardClient() {
       </div>
 
       {/* Charts Row */}
-      <div className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
+      <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Revenue Chart */}
-        <div className="dash-card p-5">
+        <div className="rounded-2xl border border-[var(--border)] bg-white p-6 shadow-sm">
           <div className="mb-4 flex items-center justify-between">
             <div>
-              <h3 className="text-[15px] font-semibold tracking-tight text-ink">
+              <h3 className="text-[15px] font-bold text-[var(--ink-950)]">
                 Revenue
               </h3>
-              <p className="text-[12px] text-ink-400">Last 30 days</p>
+              <p className="text-[12px] text-[var(--ink-400)]">Last 30 days</p>
             </div>
-            <span className="dash-num rounded-full border bg-success-50 px-2.5 py-0.5 text-[12px] font-semibold text-success-700">
+            <span className="rounded-full bg-emerald-50 px-3 py-1 text-[12px] font-bold text-emerald-700">
               ${(stats?.totalRevenue || 0).toLocaleString()}
             </span>
           </div>
@@ -298,21 +305,21 @@ export default function AdminDashboardClient() {
             data={chartData}
             dataKey="revenue"
             xKey="date"
-            color="#0F172A"
+            color="#0c0c0c"
             height={240}
           />
         </div>
 
         {/* Orders Chart */}
-        <div className="dash-card p-5">
+        <div className="rounded-2xl border border-[var(--border)] bg-white p-6 shadow-sm">
           <div className="mb-4 flex items-center justify-between">
             <div>
-              <h3 className="text-[15px] font-semibold tracking-tight text-ink">
+              <h3 className="text-[15px] font-bold text-[var(--ink-950)]">
                 Orders
               </h3>
-              <p className="text-[12px] text-ink-400">Last 30 days</p>
+              <p className="text-[12px] text-[var(--ink-400)]">Last 30 days</p>
             </div>
-            <span className="dash-num rounded-full border border-ink-200 bg-ink-50 px-2.5 py-0.5 text-[12px] font-semibold text-ink-700">
+            <span className="rounded-full bg-[#cbfb45]/20 px-3 py-1 text-[12px] font-bold text-[var(--ink-950)]">
               {chartData.reduce((s, d) => s + d.orders, 0)} total
             </span>
           </div>
@@ -320,48 +327,48 @@ export default function AdminDashboardClient() {
             data={chartData}
             dataKey="orders"
             xKey="date"
-            color="#0F172A"
+            color="#cbfb45"
             height={240}
           />
         </div>
       </div>
 
       {/* Recent Activity Row */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Recent Orders */}
-        <div className="dash-card">
-          <div className="flex items-center justify-between border-b border-[var(--dash-hairline)] px-4 py-3.5 sm:px-5">
-            <h3 className="text-[15px] font-semibold tracking-tight text-ink">
+        <div className="rounded-2xl border border-[var(--border)] bg-white shadow-sm">
+          <div className="flex items-center justify-between border-b border-[var(--border)] px-6 py-4">
+            <h3 className="text-[15px] font-bold text-[var(--ink-950)]">
               Recent Orders
             </h3>
             <Link
               href="/admin/purchases"
-              className="text-[12px] font-medium text-ink-400 transition-colors hover:text-ink"
+              className="text-[12px] font-semibold text-[var(--ink-400)] transition-colors hover:text-[var(--ink-950)]"
             >
               View all →
             </Link>
           </div>
-          <div className="divide-y divide-[var(--ink-100)]">
+          <div className="divide-y divide-[var(--border)]">
             {recentOrders.length === 0 && (
-              <div className="px-5 py-10 text-center text-[13px] text-ink-400">
+              <div className="px-6 py-8 text-center text-[13px] text-[var(--ink-400)]">
                 No orders yet
               </div>
             )}
             {recentOrders.map((order) => (
               <div
                 key={order.id}
-                className="flex items-center justify-between px-4 py-3 transition-colors hover:bg-ink-50 sm:px-5"
+                className="flex items-center justify-between px-6 py-3.5 transition-colors hover:bg-[var(--paper-2)]"
               >
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-[13px] font-medium text-ink">
+                  <p className="truncate text-[13px] font-semibold text-[var(--ink-950)]">
                     {order.email}
                   </p>
-                  <p className="text-[12px] text-ink-400">
+                  <p className="text-[12px] text-[var(--ink-400)]">
                     {order.program_key} · ${Number(order.account_size).toLocaleString()}
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="dash-num text-[13px] font-semibold text-ink">
+                  <span className="text-[14px] font-bold text-[var(--ink-950)]">
                     ${Number(order.price_amount).toLocaleString()}
                   </span>
                   <StatusBadge status={order.payment_status} />
@@ -372,43 +379,43 @@ export default function AdminDashboardClient() {
         </div>
 
         {/* Recent Registrations */}
-        <div className="dash-card">
-          <div className="flex items-center justify-between border-b border-[var(--dash-hairline)] px-4 py-3.5 sm:px-5">
-            <h3 className="text-[15px] font-semibold tracking-tight text-ink">
+        <div className="rounded-2xl border border-[var(--border)] bg-white shadow-sm">
+          <div className="flex items-center justify-between border-b border-[var(--border)] px-6 py-4">
+            <h3 className="text-[15px] font-bold text-[var(--ink-950)]">
               Recent Registrations
             </h3>
             <Link
               href="/admin/users"
-              className="text-[12px] font-medium text-ink-400 transition-colors hover:text-ink"
+              className="text-[12px] font-semibold text-[var(--ink-400)] transition-colors hover:text-[var(--ink-950)]"
             >
               View all →
             </Link>
           </div>
-          <div className="divide-y divide-[var(--ink-100)]">
+          <div className="divide-y divide-[var(--border)]">
             {recentUsers.length === 0 && (
-              <div className="px-5 py-10 text-center text-[13px] text-ink-400">
+              <div className="px-6 py-8 text-center text-[13px] text-[var(--ink-400)]">
                 No users yet
               </div>
             )}
             {recentUsers.map((user) => (
               <div
                 key={user.id}
-                className="flex items-center justify-between px-4 py-3 transition-colors hover:bg-ink-50 sm:px-5"
+                className="flex items-center justify-between px-6 py-3.5 transition-colors hover:bg-[var(--paper-2)]"
               >
                 <div className="flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-ink-950 text-[12px] font-semibold text-white">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--ink-950)] text-[13px] font-bold text-white">
                     {(user.display_name || user.email || "?")[0].toUpperCase()}
                   </div>
                   <div>
-                    <p className="text-[13px] font-medium text-ink">
+                    <p className="text-[13px] font-semibold text-[var(--ink-950)]">
                       {user.display_name || "—"}
                     </p>
-                    <p className="text-[12px] text-ink-400">
+                    <p className="text-[12px] text-[var(--ink-400)]">
                       {user.email}
                     </p>
                   </div>
                 </div>
-                <div className="dash-num flex items-center gap-1.5 text-[12px] text-ink-400">
+                <div className="flex items-center gap-1.5 text-[12px] text-[var(--ink-400)]">
                   <Clock className="h-3.5 w-3.5" />
                   {format(new Date(user.created_at), "MMM dd, HH:mm")}
                 </div>

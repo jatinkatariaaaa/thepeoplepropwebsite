@@ -128,23 +128,23 @@ export function AccountClient({ accountId }: { accountId: string }) {
 
   if (loading) {
     return (
-      <div className="flex justify-center py-20">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-ink border-t-transparent" role="status" aria-label="Loading account"></div>
+      <div className="max-w-7xl mx-auto flex justify-center py-20">
+        <div className="w-12 h-12 rounded-full border-4 border-[var(--accent)] border-t-transparent animate-spin"></div>
       </div>
     );
   }
 
   if (!account) {
     return (
-      <div className="py-20 text-center">
-        <h2 className="mb-2 text-xl font-semibold tracking-tight text-ink">Account Not Found</h2>
-        <p className="text-sm text-ink-500">The account you are looking for does not exist or you do not have permission to view it.</p>
+      <div className="max-w-7xl mx-auto py-20 text-center">
+        <h2 className="text-2xl font-bold mb-2">Account Not Found</h2>
+        <p className="text-[var(--ink-500)]">The account you are looking for does not exist or you do not have permission to view it.</p>
       </div>
     );
   }
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out pb-16">
+    <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out pb-20">
       <AccountHeader account={account} />
       <TopMetrics account={account} />
       <PerformanceCharts account={account} metrics={metrics} />

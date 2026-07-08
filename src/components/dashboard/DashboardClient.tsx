@@ -83,16 +83,7 @@ export function DashboardClient() {
   }, []);
 
   return (
-    <div className="w-full animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
-      <div className="mb-6">
-        <p className="dash-overline mb-1.5">Overview</p>
-        <h1 className="text-xl font-semibold tracking-tight text-ink sm:text-2xl">
-          Your trading desk
-        </h1>
-        <p className="mt-1 text-sm text-ink-500">
-          Track accounts, payouts and evaluation progress in one place.
-        </p>
-      </div>
+    <div className="w-full max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
       <StatCards accounts={accounts} totalPayouts={totalPayouts} />
       <ActiveAccounts accounts={accounts} loading={loading} />
     </div>

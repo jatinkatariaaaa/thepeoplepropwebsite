@@ -28,7 +28,7 @@ export function StatCard({
   return (
     <div
       className={cn(
-        "surface-card rounded-none p-5 md:p-6 transition-all",
+        "surface-card rounded-2xl p-5 md:p-6 transition-all",
         accent
           ? "border-[var(--accent-200)] shadow-[0_24px_60px_-30px_rgba(14,124,92,0.45)]"
           : "hover:border-[var(--border-strong)]",
@@ -37,9 +37,9 @@ export function StatCard({
       <div className="flex items-center justify-between mb-5">
         <div
           className={cn(
-            "grid place-items-center w-9 h-9 rounded-none",
+            "grid place-items-center w-9 h-9 rounded-lg",
             accent
-              ? "bg-[var(--accent-50)] text-[var(--carbon-blue)]"
+              ? "bg-[var(--accent-50)] text-[var(--accent-700)]"
               : "bg-[var(--paper-2)] text-[var(--ink-700)]",
           )}
         >
@@ -49,7 +49,7 @@ export function StatCard({
           <div
             className={cn(
               "inline-flex items-center gap-1 text-xs font-medium",
-              delta.positive ? "text-[var(--carbon-blue)]" : "text-red-600",
+              delta.positive ? "text-[var(--accent-700)]" : "text-red-600",
             )}
           >
             {delta.positive ? (

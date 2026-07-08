@@ -1,11 +1,7 @@
 import Link from "next/link";
-import { Trophy, Calendar, ChevronRight, LayoutGrid } from "lucide-react";
-import {
-  StatusPill,
-  EmptyState,
-  SkeletonBlock,
-  type StatusTone,
-} from "@/components/dashboard/ui/primitives";
+import { Trophy, Calendar, Eye, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/utils";
 
 type DashboardAccount = {
   id: string;
@@ -20,13 +16,6 @@ type DashboardAccount = {
   [key: string]: unknown;
 };
 
-function statusTone(status: string): StatusTone {
-  if (status === "active" || status === "funded") return "success";
-  if (status === "breached") return "danger";
-  if (status === "passed") return "info";
-  return "pending";
-}
-
 export function ActiveAccounts({ accounts = [], loading = false }: { accounts?: DashboardAccount[], loading?: boolean }) {
   const formatMoney = (value: unknown) => {
     const amount = Number(value);
@@ -40,19 +29,10 @@ export function ActiveAccounts({ accounts = [], loading = false }: { accounts?: 
 
   if (loading) {
     return (
-      <div className="space-y-4">
-        <h2 className="text-lg font-semibold tracking-tight text-ink">Accounts</h2>
-        <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-          <div className="dash-card space-y-3 p-5">
-            <SkeletonBlock className="h-5 w-40" />
-            <SkeletonBlock className="h-4 w-56" />
-            <SkeletonBlock className="h-20 w-full" />
-          </div>
-          <div className="dash-card space-y-3 p-5">
-            <SkeletonBlock className="h-5 w-40" />
-            <SkeletonBlock className="h-4 w-56" />
-            <SkeletonBlock className="h-20 w-full" />
-          </div>
+      <div className="space-y-4 sm:space-y-6">
+        <h2 className="text-xl font-display font-bold text-[var(--ink-950)]">Active Accounts</h2>
+        <div className="bg-white rounded-[20px] sm:rounded-[24px] border border-[var(--border)] p-6 sm:p-12 text-center text-[var(--ink-500)] flex justify-center">
+          <div className="w-8 h-8 rounded-full border-4 border-[var(--accent)] border-t-transparent animate-spin"></div>
         </div>
       </div>
     );
@@ -60,37 +40,30 @@ export function ActiveAccounts({ accounts = [], loading = false }: { accounts?: 
 
   if (accounts.length === 0) {
     return (
-      <div className="space-y-4">
-        <h2 className="text-lg font-semibold tracking-tight text-ink">Accounts</h2>
-        <div className="dash-card">
-          <EmptyState
-            icon={<LayoutGrid className="h-5 w-5" aria-hidden="true" />}
-            title="No active accounts"
-            description="Start an evaluation to get your first trading account."
-            action={
-              <Link
-                href="/dashboard/new-challenge"
-                className="inline-flex h-9 items-center rounded-none bg-[var(--carbon-blue)] px-4 text-[13px] font-medium text-white transition-colors hover:bg-[var(--carbon-blue-hover)]"
-              >
-                Start a New Challenge
-              </Link>
-            }
-          />
+      <div className="space-y-4 sm:space-y-6">
+        <h2 className="text-xl font-display font-bold text-[var(--ink-950)]">Active Accounts</h2>
+        <div className="bg-white rounded-[20px] sm:rounded-[24px] border border-[var(--border)] p-6 sm:p-12 text-center text-[var(--ink-500)]">
+          <p>You don&apos;t have any active accounts yet.</p>
+          <Link href="/dashboard/new-challenge">
+            <Button className="mt-4 w-full sm:w-auto bg-[var(--ink-950)] hover:bg-[var(--ink-800)] text-white">Start a New Challenge</Button>
+          </Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between gap-3">
-        <h2 className="text-lg font-semibold tracking-tight text-ink">Accounts</h2>
-        <span className="dash-num text-[13px] text-ink-400">
-          {accounts.length} {accounts.length === 1 ? "account" : "accounts"}
-        </span>
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h2 className="text-xl font-display font-bold text-[var(--ink-950)]">Active Accounts</h2>
+        <div className="flex max-w-full items-center gap-2 overflow-x-auto rounded-2xl bg-white/60 p-1 text-sm font-medium text-[var(--ink-500)] sm:bg-transparent sm:p-0">
+          <button className="px-3 py-1.5 rounded-lg hover:bg-[var(--paper)] transition-colors">All</button>
+          <button className="px-3 py-1.5 rounded-lg bg-[var(--paper)] text-[var(--ink-950)] shadow-sm">Ongoing</button>
+          <button className="px-3 py-1.5 rounded-lg hover:bg-[var(--paper)] transition-colors">Passed</button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
         {accounts.map((account) => {
           // Format date safely
           let startedDate = "Unknown";
@@ -98,84 +71,92 @@ export function ActiveAccounts({ accounts = [], loading = false }: { accounts?: 
             startedDate = new Date(account.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
           }
           const status = account.status || "active";
-
+          
           return (
-            <div key={account.id} className="dash-card dash-card-hover overflow-hidden">
-              {/* Header */}
-              <div className="flex flex-col justify-between gap-3 border-b border-[var(--dash-hairline)] p-4 sm:flex-row sm:items-start sm:p-5">
-                <div className="min-w-0">
-                  <h3 className="truncate text-[15px] font-semibold tracking-tight text-ink">
+          <div 
+            key={account.id}
+            className="bg-white rounded-[20px] sm:rounded-[24px] border border-[var(--border)] overflow-hidden shadow-sm hover:shadow-md transition-shadow group relative"
+          >
+            {/* Header */}
+            <div className="p-4 sm:p-6 border-b border-[var(--border)] flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+              <div className="min-w-0">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="shrink-0 w-8 h-8 rounded-full bg-[var(--accent-50)] flex items-center justify-center text-[var(--accent-700)]">
+                    <Trophy className="w-4 h-4" />
+                  </div>
+                  <h3 className="min-w-0 truncate font-bold text-[16px] text-[var(--ink-950)]">
                     {account.label || "Trading Account"}
                   </h3>
-                  <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-ink-500">
-                    <span className="dash-num">{account.id.substring(0, 8)}</span>
-                    <span className="h-0.5 w-0.5 rounded-full bg-ink-300" aria-hidden="true" />
-                    <span className="inline-flex items-center gap-1">
-                      <Calendar className="h-3 w-3" aria-hidden="true" />
-                      {startedDate}
-                    </span>
-                    <span className="h-0.5 w-0.5 rounded-full bg-ink-300" aria-hidden="true" />
-                    <span>{account.tpp_platforms?.name || "TPP"}</span>
-                  </div>
                 </div>
-                <StatusPill tone={statusTone(status)} className="self-start capitalize">
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] font-medium text-[var(--ink-600)]">
+                  <span>Account ID: {account.id.substring(0, 8)}...</span>
+                  <span className="w-1 h-1 rounded-full bg-[var(--ink-300)]" />
+                  <span className="flex items-center gap-1">
+                    <Calendar className="w-3.5 h-3.5" />
+                    Started: {startedDate}
+                  </span>
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 self-start sm:justify-end">
+                <span className="px-3 py-1 rounded-full bg-[var(--ink-100)] text-[12px] font-bold text-[var(--ink-700)] uppercase tracking-wider">
+                  {account.tpp_platforms?.name || "TPP"}
+                </span>
+                <span className={cn(
+                  "px-3 py-1 rounded-full text-[12px] font-bold uppercase tracking-wider flex items-center gap-1.5",
+                  status === 'active' ? "bg-emerald-50 text-emerald-600" :
+                  status === 'breached' ? "bg-red-50 text-red-600" :
+                  status === 'passed' ? "bg-blue-50 text-blue-600" :
+                  "bg-amber-50 text-amber-600"
+                )}>
+                  {status === 'active' && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />}
                   {status}
-                </StatusPill>
-              </div>
-
-              {/* Metrics */}
-              <div className="grid grid-cols-3 divide-x divide-[var(--dash-hairline)]">
-                <div className="px-4 py-3.5 sm:px-5">
-                  <p className="dash-overline">Balance</p>
-                  <p className="dash-figure mt-1 text-[15px] sm:text-base">{formatMoney(account.starting_balance)}</p>
-                </div>
-                <div className="px-4 py-3.5 sm:px-5">
-                  <p className="dash-overline">Equity</p>
-                  <p className="dash-figure mt-1 text-[15px] sm:text-base">{formatMoney(account.equity)}</p>
-                </div>
-                <div className="px-4 py-3.5 sm:px-5">
-                  <p className="dash-overline">Phase</p>
-                  <p className="mt-1 text-[15px] font-semibold capitalize tracking-tight text-ink sm:text-base">{formatPhase(account.phase)}</p>
-                </div>
-              </div>
-
-              {/* Actions */}
-              <div className="flex flex-col gap-2 border-t border-[var(--dash-hairline)] p-4 min-[420px]:flex-row min-[420px]:justify-end sm:px-5">
-                <Link
-                  className="inline-flex h-9 w-full items-center justify-center rounded-none border border-[var(--dash-hairline)] bg-white px-4 text-[13px] font-medium text-ink-700 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink min-[420px]:w-auto"
-                  href={`https://trade.thepeopleprop.live/?accountId=${account.terminal_account_id || account.id}`}
-                  target="_blank"
-                >
-                  Open Terminal
-                </Link>
-                <Link
-                  className="inline-flex h-9 w-full items-center justify-center gap-1.5 rounded-none bg-[var(--carbon-blue)] px-4 text-[13px] font-medium text-white transition-colors hover:bg-[var(--carbon-blue-hover)] min-[420px]:w-auto"
-                  href={`/dashboard/account/${account.id}`}
-                >
-                  View Metrics
-                  <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
-                </Link>
+                </span>
               </div>
             </div>
-          );
-        })}
 
-        {/* New account card */}
-        <Link
-          href="/dashboard/new-challenge"
-          className="group flex min-h-[220px] cursor-pointer flex-col items-center justify-center rounded-none border border-dashed border-ink-300 p-6 text-center transition-colors hover:border-ink-400 hover:bg-white"
-        >
-          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full border border-ink-200 bg-ink-50 text-ink-400 transition-colors group-hover:text-ink-700">
-            <Trophy className="h-4 w-4" aria-hidden="true" />
+            {/* Metrics */}
+            <div className="grid grid-cols-1 min-[520px]:grid-cols-3 p-4 sm:p-6 gap-3">
+              <div className="rounded-2xl border border-[var(--border)] bg-[var(--paper-2)]/60 p-3">
+                <p className="text-[11px] font-bold text-[var(--ink-500)] uppercase tracking-wider mb-1">Starting Balance</p>
+                <p className="text-[18px] sm:text-[20px] font-display font-bold text-[var(--ink-950)] leading-tight break-words">{formatMoney(account.starting_balance)}</p>
+              </div>
+              <div className="rounded-2xl border border-[var(--border)] bg-[var(--paper-2)]/60 p-3">
+                <p className="text-[11px] font-bold text-[var(--ink-500)] uppercase tracking-wider mb-1">Current Equity</p>
+                <p className="text-[18px] sm:text-[20px] font-display font-bold text-[var(--accent-600)] leading-tight break-words">{formatMoney(account.equity)}</p>
+              </div>
+              <div className="rounded-2xl border border-[var(--border)] bg-[var(--paper-2)]/60 p-3">
+                <p className="text-[11px] font-bold text-[var(--ink-500)] uppercase tracking-wider mb-1">Phase</p>
+                <p className="text-[18px] sm:text-[20px] font-display font-bold text-[var(--ink-950)] leading-tight capitalize break-words">{formatPhase(account.phase)}</p>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="px-4 sm:px-6 pb-4 sm:pb-6 flex flex-col min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-end gap-3">
+              <Link className="w-full min-[420px]:w-auto" href={`https://trade.thepeopleprop.live/?accountId=${account.terminal_account_id || account.id}`} target="_blank">
+                <button className="w-full px-5 py-2.5 rounded-xl font-medium text-[14px] text-[var(--ink-700)] bg-[var(--paper-2)] border border-[var(--border)] hover:bg-[var(--border)] transition-colors">
+                  Open Terminal
+                </button>
+              </Link>
+              <Link className="w-full min-[420px]:w-auto" href={`/dashboard/account/${account.id}`}>
+                <Button className="flex w-full items-center justify-center gap-2 h-10 px-5 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-700)] text-white shadow-sm text-[14px] font-medium">
+                  <Eye className="w-4 h-4" />
+                  View Metrics
+                </Button>
+              </Link>
+            </div>
           </div>
-          <h3 className="text-sm font-semibold text-ink">Ready for a new challenge?</h3>
-          <p className="mt-1 max-w-xs text-[13px] text-ink-500 text-pretty">
-            Prove your skills and get funded up to $200,000.
-          </p>
-          <span className="mt-4 inline-flex items-center text-[13px] font-medium text-ink">
-            Browse Programs
-            <ChevronRight className="ml-1 h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
-          </span>
+        )})}
+        
+        {/* Placeholder for new account card */}
+        <Link href="/dashboard/new-challenge" className="bg-transparent rounded-[20px] sm:rounded-[24px] border-2 border-dashed border-[var(--ink-200)] flex flex-col items-center justify-center p-6 sm:p-12 text-center hover:bg-[var(--paper)] hover:border-[var(--accent-300)] transition-colors cursor-pointer group min-h-[240px] sm:min-h-[260px]">
+          <div className="w-12 h-12 rounded-full bg-[var(--ink-100)] flex items-center justify-center mb-4 group-hover:bg-[var(--accent-50)] group-hover:text-[var(--accent-600)] transition-colors">
+            <Trophy className="w-6 h-6 text-[var(--ink-400)] group-hover:text-[var(--accent-600)]" />
+          </div>
+          <h3 className="font-bold text-[16px] text-[var(--ink-950)] mb-2">Ready for a new challenge?</h3>
+          <p className="text-[14px] text-[var(--ink-500)] max-w-sm">Prove your skills and get funded up to $200,000. Start your evaluation today.</p>
+          <div className="mt-6 flex items-center font-bold text-[14px] text-[var(--accent-600)]">
+            Browse Programs <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+          </div>
         </Link>
       </div>
     </div>
