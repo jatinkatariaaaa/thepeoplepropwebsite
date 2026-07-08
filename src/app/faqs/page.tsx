@@ -13,8 +13,8 @@ export default function FaqsPage() {
 
   useEffect(() => {
     const supabase = createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      (process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder.supabase.co"),
+      (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "public-anon-key-placeholder")
     );
     supabase.from("tpp_faqs").select("*").eq("is_active", true).order("sort_order")
       .then(({data}) => {
