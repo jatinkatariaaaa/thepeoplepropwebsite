@@ -120,7 +120,7 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
       {/* Header */}
       <div className="flex items-center justify-between mb-6 shrink-0">
         <div className="flex items-center gap-4">
-          <Link href="/admin/tickets" className="p-2 bg-white border border-[var(--dash-hairline)] rounded-xl hover:bg-[var(--dash-canvas)] transition-colors">
+          <Link href="/admin/tickets" className="p-2 bg-white border border-[var(--dash-hairline)] rounded-none hover:bg-[var(--dash-canvas)] transition-colors">
             <ArrowLeft className="w-5 h-5 text-[var(--ink-600)]" />
           </Link>
           <div>
@@ -144,10 +144,10 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
                 const isAdmin = msg.sender_role === "admin";
                 return (
                   <div key={idx} className={`flex ${isAdmin ? "justify-end" : "justify-start"}`}>
-                    <div className={`max-w-[80%] rounded-2xl px-5 py-3 ${
+                    <div className={`max-w-[80%] rounded-none px-5 py-3 ${
                       isAdmin 
-                        ? "bg-[var(--ink-950)] text-white rounded-tr-sm" 
-                        : "bg-[var(--dash-canvas)] text-[var(--ink-950)] border border-[var(--dash-hairline)] rounded-tl-sm"
+                        ? "bg-[var(--carbon-blue)] text-white rounded-none" 
+                        : "bg-[var(--dash-canvas)] text-[var(--ink-950)] border border-[var(--dash-hairline)] rounded-none"
                     }`}>
                       <div className="flex justify-between items-center mb-1 gap-4">
                         <span className={`text-[11px] font-bold ${isAdmin ? "text-[var(--ink-400)]" : "text-[var(--ink-500)]"}`}>
@@ -173,7 +173,7 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
                 value={replyText}
                 onChange={(e) => setReplyText(e.target.value)}
                 placeholder="Type your reply here..."
-                className="flex-1 rounded-xl border border-[var(--dash-hairline)] p-3 text-sm focus:outline-none focus:border-[var(--ink-950)] resize-none"
+                className="flex-1 rounded-none border border-[var(--dash-hairline)] p-3 text-sm focus:outline-none focus:border-[var(--ink-950)] resize-none"
                 rows={3}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
@@ -185,7 +185,7 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
               <button
                 onClick={handleSendReply}
                 disabled={!replyText.trim()}
-                className="self-end p-3 rounded-lg bg-ink text-white transition-colors hover:bg-ink-800 disabled:cursor-not-allowed disabled:opacity-50"
+                className="self-end p-3 rounded-none bg-[var(--carbon-blue)] text-white transition-colors hover:bg-[var(--carbon-blue-hover)] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Send className="w-5 h-5" />
               </button>
@@ -209,7 +209,7 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
               </div>
             </div>
             {ticket.user_id && (
-              <Link href="/admin/users" className="block text-center w-full py-2 bg-[var(--dash-canvas)] rounded-lg text-[13px] font-bold text-[var(--ink-600)] hover:text-[var(--ink-950)] transition-colors">
+              <Link href="/admin/users" className="block text-center w-full py-2 bg-[var(--dash-canvas)] rounded-none text-[13px] font-bold text-[var(--ink-600)] hover:text-[var(--ink-950)] transition-colors">
                 View Full Profile
               </Link>
             )}
@@ -225,9 +225,9 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
                 <select
                   value={ticket.status}
                   onChange={(e) => handleUpdateStatus(e.target.value)}
-                  className={`w-full rounded-lg border p-2 text-sm font-semibold outline-none ${
-                    ticket.status === 'resolved' ? 'border-[#A7F3D0] bg-success-50 text-success-700' :
-                    ticket.status === 'open' ? 'bg-ink-50 text-ink-700 border-blue-200' :
+                  className={`w-full rounded-none border p-2 text-sm font-semibold outline-none ${
+                    ticket.status === 'resolved' ? 'bg-[#a7f0ba] text-[#0e6027]' :
+                    ticket.status === 'open' ? 'bg-[#e0e0e0] text-[#393939] border-blue-200' :
                     'bg-white border-[var(--dash-hairline)] text-[var(--ink-950)]'
                   }`}
                 >
@@ -243,9 +243,9 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
                 <select
                   value={ticket.priority}
                   onChange={(e) => handleUpdatePriority(e.target.value)}
-                  className={`w-full rounded-lg border p-2 text-sm font-semibold outline-none ${
-                    ticket.priority === 'urgent' ? 'border-[#FECDD3] bg-rose-50 text-rose-700' :
-                    ticket.priority === 'high' ? 'border-[#FDE68A] bg-amber-50 text-amber-700' :
+                  className={`w-full rounded-none border p-2 text-sm font-semibold outline-none ${
+                    ticket.priority === 'urgent' ? 'bg-[#ffd7d9] text-[#a2191f]' :
+                    ticket.priority === 'high' ? 'bg-[#fcf4d6] text-[#8e6a00]' :
                     'bg-white border-[var(--dash-hairline)] text-[var(--ink-950)]'
                   }`}
                 >

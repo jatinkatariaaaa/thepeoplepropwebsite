@@ -130,26 +130,27 @@ export function StatTile({
 
 export type StatusTone = "success" | "pending" | "danger" | "neutral" | "info";
 
+/* Carbon tag colors */
 const STATUS_STYLES: Record<StatusTone, { pill: string; dot: string }> = {
   success: {
-    pill: "bg-success-50 text-success-700 border-[#A7F3D0]",
-    dot: "bg-[#059669]",
+    pill: "carbon-tag-green",
+    dot: "bg-[#24a148]",
   },
   pending: {
-    pill: "bg-amber-50 text-amber-700 border-[#FDE68A]",
-    dot: "bg-[#D97706]",
+    pill: "carbon-tag-amber",
+    dot: "bg-[#8e6a00]",
   },
   danger: {
-    pill: "bg-rose-50 text-rose-700 border-[#FECDD3]",
-    dot: "bg-[#E11D48]",
+    pill: "carbon-tag-red",
+    dot: "bg-[#da1e28]",
   },
   neutral: {
-    pill: "bg-ink-50 text-ink-600 border-ink-200",
-    dot: "bg-ink-400",
+    pill: "carbon-tag-gray",
+    dot: "bg-[#6f6f6f]",
   },
   info: {
-    pill: "bg-ink-50 text-ink-700 border-ink-200",
-    dot: "bg-ink-700",
+    pill: "carbon-tag-blue",
+    dot: "bg-[#0f62fe]",
   },
 };
 
@@ -164,9 +165,7 @@ export function StatusPill({
 }) {
   const s = STATUS_STYLES[tone];
   return (
-    <span
-      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium whitespace-nowrap ${s.pill} ${className}`}
-    >
+    <span className={`carbon-tag ${s.pill} ${className}`}>
       <span className={`status-dot ${s.dot}`} aria-hidden="true" />
       {children}
     </span>

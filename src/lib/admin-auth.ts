@@ -4,10 +4,18 @@ import { supabaseAdmin } from '@/lib/supabase';
 import { NextResponse } from 'next/server';
 
 export async function getAdminUser(request?: Request) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  // Supabase not configured (e.g. preview) — treat as unauthenticated.
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('Unauthorized');
+  }
+
   const cookieStore = await cookies();
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseUrl,
+    supabaseAnonKey,
     { cookies: { getAll() { return cookieStore.getAll(); } } }
   );
   

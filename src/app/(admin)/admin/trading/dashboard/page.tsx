@@ -89,7 +89,7 @@ export default function RiskDashboardPage() {
     setLoading(false);
   }
 
-  if (loading) return <div className="p-10 animate-pulse bg-[var(--dash-canvas)] rounded-xl h-64" />;
+  if (loading) return <div className="p-10 animate-pulse bg-[var(--dash-canvas)] rounded-none h-64" />;
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
@@ -120,10 +120,10 @@ export default function RiskDashboardPage() {
                   <div key={alert.id} className="p-4 hover:bg-[var(--dash-canvas)] transition-colors">
                     <div className="flex items-start gap-3">
                       <div className={cn(
-                        "mt-0.5 p-1.5 rounded-lg shrink-0",
-                        alert.type === 'drawdown_warning' ? "bg-amber-50 text-amber-700" :
-                        alert.type === 'rule_violation' ? "bg-rose-50 text-rose-700" :
-                        alert.type === 'passing_soon' ? "bg-success-50 text-success-700" :
+                        "mt-0.5 p-1.5 rounded-none shrink-0",
+                        alert.type === 'drawdown_warning' ? "bg-[#fcf4d6] text-[#8e6a00]" :
+                        alert.type === 'rule_violation' ? "bg-[#ffd7d9] text-[#a2191f]" :
+                        alert.type === 'passing_soon' ? "bg-[#a7f0ba] text-[#0e6027]" :
                         "bg-gray-100 text-gray-700"
                       )}>
                         <AlertTriangle className="w-4 h-4" />

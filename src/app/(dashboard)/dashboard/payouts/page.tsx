@@ -6,39 +6,44 @@ import { createServerClient } from "@supabase/ssr";
 export const revalidate = 0;
 
 export default async function PayoutsPage() {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  let accounts: Record<string, unknown>[] | null = null;
+  let payouts: Record<string, unknown>[] | null = null;
+
+  // Only query Supabase when configured; otherwise render the empty shell.
+  if (supabaseUrl && supabaseAnonKey) {
+    const cookieStore = await cookies();
+    const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
       cookies: {
         getAll() {
           return cookieStore.getAll();
         },
       },
+    });
+
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (user) {
+      // Fetch only funded accounts
+      const { data: accountsData } = await supabaseAdmin
+        .from("accounts")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("status", "funded")
+        .order("created_at", { ascending: false });
+      accounts = accountsData;
+
+      // Fetch existing payouts
+      const { data: payoutsData } = await supabaseAdmin
+        .from("payouts")
+        .select("*, accounts(balance)")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+      payouts = payoutsData;
     }
-  );
-
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (!user) {
-    return null;
   }
-
-  // Fetch only funded accounts
-  const { data: accounts } = await supabaseAdmin
-    .from("accounts")
-    .select("*")
-    .eq("user_id", user.id)
-    .eq("status", "funded")
-    .order("created_at", { ascending: false });
-
-  // Fetch existing payouts
-  const { data: payouts } = await supabaseAdmin
-    .from("payouts")
-    .select("*, accounts(balance)")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false });
 
   return (
     <div className="mx-auto max-w-4xl animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">

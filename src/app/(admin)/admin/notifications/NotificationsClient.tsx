@@ -31,8 +31,8 @@ interface NotificationsClientProps {
 }
 
 const severityConfig: Record<string, { icon: any; className: string }> = {
-  critical: { icon: AlertOctagon, className: "border-[#FECDD3] bg-rose-50 text-rose-700" },
-  warning: { icon: AlertTriangle, className: "border-[#FDE68A] bg-amber-50 text-amber-700" },
+  critical: { icon: AlertOctagon, className: "bg-[#ffd7d9] text-[#a2191f]" },
+  warning: { icon: AlertTriangle, className: "bg-[#fcf4d6] text-[#8e6a00]" },
   info: { icon: Info, className: "bg-sky-100 text-sky-800 border-sky-200" },
 };
 
@@ -137,7 +137,7 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
         const Icon = config.icon;
         const sev = severityConfig[row.original.severity] || severityConfig.info;
         return (
-          <div className={`p-2 rounded-lg ${sev.className.split(" ")[0]}`}>
+          <div className={`p-2 rounded-none ${sev.className.split(" ")[0]}`}>
             <Icon className={`w-4 h-4 ${sev.className.split(" ")[1]}`} />
           </div>
         );
@@ -204,7 +204,7 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
           <div className="flex items-center gap-1">
             <button
               onClick={() => openViewModal(n)}
-              className="rounded-lg p-1.5 text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink"
+              className="rounded-none p-1.5 text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink"
               title="View"
             >
               <Eye className="w-4 h-4" />
@@ -213,7 +213,7 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
               <button
                 onClick={(e) => { e.stopPropagation(); handleMarkRead(n); }}
                 disabled={loading === n.id}
-                className="p-1.5 text-[var(--dash-positive)] hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
+                className="p-1.5 text-[var(--dash-positive)] hover:bg-emerald-50 rounded-none transition-colors disabled:opacity-50"
                 title="Mark as Read"
               >
                 <Check className="w-4 h-4" />
@@ -258,7 +258,7 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
               placeholder="Search notifications..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
+              className="w-full pl-9 pr-4 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-none text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
             />
           </div>
           <div className="flex items-center gap-2">
@@ -266,7 +266,7 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
             <select
               value={readFilter}
               onChange={(e) => setReadFilter(e.target.value)}
-              className="px-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10"
+              className="px-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-none text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10"
             >
               <option value="all">All</option>
               <option value="unread">Unread</option>
@@ -275,7 +275,7 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value)}
-              className="px-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10"
+              className="px-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-none text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10"
             >
               <option value="all">All Types</option>
               {Object.entries(typeConfig).map(([key, config]) => (
@@ -288,7 +288,7 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
           <button
             onClick={handleMarkAllRead}
             disabled={loading === "all"}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800 disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2.5 carbon-btn-primary disabled:opacity-50"
           >
             <Check className="w-4 h-4" />
             {loading === "all" ? "Processing..." : "Mark All Read"}
@@ -314,7 +314,7 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
                 const Icon = config.icon;
                 const sev = severityConfig[selectedNotif.severity] || severityConfig.info;
                 return (
-                  <div className={`p-3 rounded-xl ${sev.className.split(" ")[0]}`}>
+                  <div className={`p-3 rounded-none ${sev.className.split(" ")[0]}`}>
                     <Icon className={`w-6 h-6 ${sev.className.split(" ")[1]}`} />
                   </div>
                 );
@@ -329,7 +329,7 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
               </div>
             </div>
 
-            <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4">
+            <div className="rounded-none border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4">
               <p className="text-sm text-[var(--ink-800)]">{selectedNotif.message}</p>
             </div>
 

@@ -264,11 +264,11 @@ export default function TradingAccountsPage() {
         const s = row.original.status;
         return (
           <span className={cn(
-            "inline-flex px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider",
-            s === "active" ? "bg-success-50 text-success-700" :
-            s === "breached" ? "bg-rose-50 text-rose-700" :
-            s === "passed" ? "bg-ink-50 text-ink-700" :
-            s === "suspended" ? "bg-amber-50 text-amber-700" :
+            "inline-flex px-2 py-1 rounded-none text-[10px] font-bold uppercase tracking-wider",
+            s === "active" ? "bg-[#a7f0ba] text-[#0e6027]" :
+            s === "breached" ? "bg-[#ffd7d9] text-[#a2191f]" :
+            s === "passed" ? "bg-[#e0e0e0] text-[#393939]" :
+            s === "suspended" ? "bg-[#fcf4d6] text-[#8e6a00]" :
             s === "disabled" ? "bg-gray-200 text-gray-700" :
             "bg-gray-100 text-gray-700"
           )}>
@@ -313,7 +313,7 @@ export default function TradingAccountsPage() {
         </Button>
       </div>
 
-      <div className="bg-white border border-[var(--dash-hairline)] rounded-2xl p-4 flex flex-col sm:flex-row gap-4 justify-between items-center">
+      <div className="bg-white border border-[var(--dash-hairline)] rounded-none p-4 flex flex-col sm:flex-row gap-4 justify-between items-center">
         <div className="relative w-full sm:w-96">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--ink-400)]" />
           <input 
@@ -321,7 +321,7 @@ export default function TradingAccountsPage() {
             placeholder="Search by account #, email, or name..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 h-10 bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+            className="w-full pl-9 pr-4 h-10 bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-none text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
           />
         </div>
         <div className="flex items-center gap-3 w-full sm:w-auto">
@@ -331,7 +331,7 @@ export default function TradingAccountsPage() {
           <select 
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="h-10 bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl px-3 text-[13px] focus:outline-none font-medium outline-none min-w-[120px]"
+            className="h-10 bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-none px-3 text-[13px] focus:outline-none font-medium outline-none min-w-[120px]"
           >
             <option value="all">All Statuses</option>
             <option value="active">Active</option>

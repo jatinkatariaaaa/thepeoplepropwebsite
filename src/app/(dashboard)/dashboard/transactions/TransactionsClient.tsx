@@ -44,10 +44,10 @@ export function TransactionsClient() {
             <input 
               type="text" 
               placeholder="Search..." 
-              className="h-9 w-full rounded-lg border border-[var(--dash-hairline)] bg-white pl-9 pr-3 text-[13px] outline-none transition-colors focus:border-ink-400 sm:w-64"
+              className="h-9 w-full rounded-none border border-[var(--dash-hairline)] bg-white pl-9 pr-3 text-[13px] outline-none transition-colors focus:border-ink-400 sm:w-64"
             />
           </div>
-          <button className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-[var(--dash-hairline)] bg-white px-3.5 text-[13px] font-medium text-ink-700 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink">
+          <button className="inline-flex h-9 items-center gap-1.5 rounded-none border border-[var(--dash-hairline)] bg-white px-3.5 text-[13px] font-medium text-ink-700 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink">
             <Download className="w-4 h-4" />
             Export
           </button>
@@ -98,7 +98,7 @@ export function TransactionsClient() {
                       </StatusPill>
                     </td>
                     <td className="whitespace-nowrap text-right">
-                      <button className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-transparent text-ink-400 opacity-0 transition-colors hover:border-[var(--dash-hairline)] hover:text-ink focus:opacity-100 group-hover:opacity-100" aria-label="Download invoice">
+                      <button className="inline-flex h-8 w-8 items-center justify-center rounded-none border border-transparent text-ink-400 opacity-0 transition-colors hover:border-[var(--dash-hairline)] hover:text-ink focus:opacity-100 group-hover:opacity-100" aria-label="Download invoice">
                         <FileText className="w-4 h-4" />
                       </button>
                     </td>

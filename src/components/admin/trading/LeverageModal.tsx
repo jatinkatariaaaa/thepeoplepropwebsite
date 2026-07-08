@@ -26,7 +26,7 @@ export function LeverageModal({
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
-      <div className="w-full max-w-sm overflow-hidden rounded-[12px] border border-[var(--dash-hairline)] bg-white shadow-xl">
+      <div className="w-full max-w-sm overflow-hidden rounded-none border border-[var(--dash-hairline)] bg-white shadow-xl">
         <div className="flex items-center justify-between p-5 border-b border-[var(--dash-hairline)]">
           <h2 className="font-bold text-[18px] text-[var(--ink-950)] flex items-center gap-2">
             <Scale className="w-5 h-5" /> Change Leverage
@@ -34,7 +34,7 @@ export function LeverageModal({
           <button
             onClick={onCancel}
             disabled={loading}
-            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[var(--dash-canvas)] text-[var(--ink-400)] transition-colors disabled:opacity-50"
+            className="w-8 h-8 flex items-center justify-center rounded-none hover:bg-[var(--dash-canvas)] text-[var(--ink-400)] transition-colors disabled:opacity-50"
           >
             <X className="w-5 h-5" />
           </button>
@@ -47,7 +47,7 @@ export function LeverageModal({
           <select
             value={leverage}
             onChange={(e) => setLeverage(parseInt(e.target.value))}
-            className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+            className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-none h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
           >
             {LEVERAGE_OPTIONS.map((lev) => (
               <option key={lev} value={lev}>

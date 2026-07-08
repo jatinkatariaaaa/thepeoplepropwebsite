@@ -85,7 +85,7 @@ export function CreateAccountModal({
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
-      <div className="flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-[12px] border border-[var(--dash-hairline)] bg-white shadow-xl">
+      <div className="flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-none border border-[var(--dash-hairline)] bg-white shadow-xl">
         <div className="flex items-center justify-between p-5 border-b border-[var(--dash-hairline)]">
           <h2 className="font-bold text-[18px] text-[var(--ink-950)] flex items-center gap-2">
             <Wallet className="w-5 h-5" /> Issue Trading Account
@@ -93,7 +93,7 @@ export function CreateAccountModal({
           <button
             onClick={onCancel}
             disabled={loading}
-            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[var(--dash-canvas)] text-[var(--ink-400)] transition-colors disabled:opacity-50"
+            className="w-8 h-8 flex items-center justify-center rounded-none hover:bg-[var(--dash-canvas)] text-[var(--ink-400)] transition-colors disabled:opacity-50"
           >
             <X className="w-5 h-5" />
           </button>
@@ -110,12 +110,12 @@ export function CreateAccountModal({
               placeholder="Search by name or email..."
               value={customerSearch}
               onChange={(e) => setCustomerSearch(e.target.value)}
-              className="w-full mb-2 bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+              className="w-full mb-2 bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-none h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
             />
             <select
               value={form.user_id}
               onChange={(e) => setForm({ ...form, user_id: e.target.value })}
-              className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+              className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-none h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
             >
               <option value="">Select a customer</option>
               {customers.map((c) => (
@@ -136,7 +136,7 @@ export function CreateAccountModal({
                 value={form.platform_id}
                 onChange={(e) => setForm({ ...form, platform_id: e.target.value })}
                 disabled={loadingLists}
-                className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+                className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-none h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
               >
                 <option value="">{loadingLists ? "Loading..." : "Select platform"}</option>
                 {platforms.map((p) => (
@@ -156,7 +156,7 @@ export function CreateAccountModal({
                 value={form.rule_id}
                 onChange={(e) => setForm({ ...form, rule_id: e.target.value })}
                 disabled={loadingLists}
-                className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+                className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-none h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
               >
                 <option value="">No template</option>
                 {rules.map((r) => (
@@ -182,7 +182,7 @@ export function CreateAccountModal({
                 onChange={(e) =>
                   setForm({ ...form, starting_balance: parseFloat(e.target.value) || 0 })
                 }
-                className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+                className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-none h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
               />
             </div>
 
@@ -194,7 +194,7 @@ export function CreateAccountModal({
               <select
                 value={form.leverage}
                 onChange={(e) => setForm({ ...form, leverage: parseInt(e.target.value) })}
-                className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+                className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-none h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
               >
                 {LEVERAGE_OPTIONS.map((lev) => (
                   <option key={lev} value={lev}>
@@ -212,7 +212,7 @@ export function CreateAccountModal({
               <select
                 value={form.phase}
                 onChange={(e) => setForm({ ...form, phase: e.target.value })}
-                className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+                className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-none h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
               >
                 <option value="challenge">Phase 1 (Challenge)</option>
                 <option value="verification">Phase 2 (Verification)</option>

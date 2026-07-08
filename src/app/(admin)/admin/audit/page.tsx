@@ -167,7 +167,7 @@ export default function AdminAuditLogsPage() {
       </div>
 
       {!isSuperAdmin ? (
-        <div className="bg-red-50 border border-red-200 text-red-800 p-6 rounded-2xl flex flex-col items-center justify-center text-center gap-3">
+        <div className="bg-red-50 border border-red-200 text-red-800 p-6 rounded-none flex flex-col items-center justify-center text-center gap-3">
           <ShieldAlert className="w-12 h-12 text-red-400" />
           <div>
             <h2 className="font-bold text-lg mb-1">Access Restricted</h2>
@@ -188,13 +188,13 @@ export default function AdminAuditLogsPage() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && fetchLogs()}
-                    className="pl-9 pr-4 py-2 border border-[var(--dash-hairline)] rounded-xl text-sm outline-none focus:ring-2 focus:ring-[var(--ink-950)] w-64"
+                    className="pl-9 pr-4 py-2 border border-[var(--dash-hairline)] rounded-none text-sm outline-none focus:ring-2 focus:ring-[var(--ink-950)] w-64"
                   />
                 </div>
                 <select
                   value={moduleFilter}
                   onChange={(e) => setModuleFilter(e.target.value as ModuleFilter)}
-                  className="px-3 py-2 border border-[var(--dash-hairline)] rounded-xl text-sm outline-none bg-white"
+                  className="px-3 py-2 border border-[var(--dash-hairline)] rounded-none text-sm outline-none bg-white"
                 >
                   <option value="all">All Modules</option>
                   <option value="users">Users</option>
@@ -213,27 +213,27 @@ export default function AdminAuditLogsPage() {
                   value={adminEmail}
                   onChange={(e) => setAdminEmail(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && fetchLogs()}
-                  className="px-3 py-2 border border-[var(--dash-hairline)] rounded-xl text-sm outline-none w-48"
+                  className="px-3 py-2 border border-[var(--dash-hairline)] rounded-none text-sm outline-none w-48"
                 />
               </div>
 
               <div className="flex items-center gap-2">
                 <button
                   onClick={clearFilters}
-                  className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-[var(--ink-500)] hover:text-[var(--ink-950)] rounded-xl hover:bg-[var(--dash-canvas)] transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-[var(--ink-500)] hover:text-[var(--ink-950)] rounded-none hover:bg-[var(--dash-canvas)] transition-colors"
                 >
                   <X className="w-3.5 h-3.5" /> Clear
                 </button>
                 <button
                   onClick={() => setShowFilters(!showFilters)}
-                  className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-[var(--ink-500)] hover:text-[var(--ink-950)] rounded-xl hover:bg-[var(--dash-canvas)] transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-[var(--ink-500)] hover:text-[var(--ink-950)] rounded-none hover:bg-[var(--dash-canvas)] transition-colors"
                 >
                   <Filter className="w-3.5 h-3.5" /> Filters
                 </button>
                 <button
                   onClick={fetchLogs}
                   disabled={loading}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800 disabled:opacity-50"
+                  className="flex items-center gap-1.5 px-4 py-2 carbon-btn-primary disabled:opacity-50"
                 >
                   <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} /> Refresh
                 </button>
@@ -248,7 +248,7 @@ export default function AdminAuditLogsPage() {
                     type="date"
                     value={fromDate}
                     onChange={(e) => setFromDate(e.target.value)}
-                    className="border border-[var(--dash-hairline)] rounded-lg px-2 py-1.5 text-sm outline-none bg-white"
+                    className="border border-[var(--dash-hairline)] rounded-none px-2 py-1.5 text-sm outline-none bg-white"
                   />
                 </div>
                 <div className="flex items-center gap-2">
@@ -257,7 +257,7 @@ export default function AdminAuditLogsPage() {
                     type="date"
                     value={toDate}
                     onChange={(e) => setToDate(e.target.value)}
-                    className="border border-[var(--dash-hairline)] rounded-lg px-2 py-1.5 text-sm outline-none bg-white"
+                    className="border border-[var(--dash-hairline)] rounded-none px-2 py-1.5 text-sm outline-none bg-white"
                   />
                 </div>
                 <input
@@ -265,7 +265,7 @@ export default function AdminAuditLogsPage() {
                   placeholder="Action name..."
                   value={actionFilter}
                   onChange={(e) => setActionFilter(e.target.value)}
-                  className="border border-[var(--dash-hairline)] rounded-lg px-2 py-1.5 text-sm outline-none w-40"
+                  className="border border-[var(--dash-hairline)] rounded-none px-2 py-1.5 text-sm outline-none w-40"
                 />
               </div>
             )}
@@ -281,7 +281,7 @@ export default function AdminAuditLogsPage() {
           >
             {selectedLog && (
               <div className="space-y-6">
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4 border border-[var(--dash-hairline)]">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 rounded-none border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4 border border-[var(--dash-hairline)]">
                   <div>
                     <p className="dash-overline mb-1 text-[10px]">Admin</p>
                     <p className="text-sm font-semibold truncate">{selectedLog.admin_email}</p>
@@ -305,7 +305,7 @@ export default function AdminAuditLogsPage() {
                     <h3 className="text-sm font-bold text-[var(--ink-950)] mb-2 flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-red-500"></span> Old Value
                     </h3>
-                    <div className="bg-red-50 border border-red-100 rounded-xl p-4 overflow-x-auto">
+                    <div className="bg-red-50 border border-red-100 rounded-none p-4 overflow-x-auto">
                       <pre className="text-[11px] font-mono text-red-900">
                         {selectedLog.old_value ? JSON.stringify(selectedLog.old_value, null, 2) : "null"}
                       </pre>
@@ -315,7 +315,7 @@ export default function AdminAuditLogsPage() {
                     <h3 className="text-sm font-bold text-[var(--ink-950)] mb-2 flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-emerald-500"></span> New Value
                     </h3>
-                    <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-4 overflow-x-auto">
+                    <div className="bg-emerald-50 border border-emerald-100 rounded-none p-4 overflow-x-auto">
                       <pre className="text-[11px] font-mono text-emerald-900">
                         {selectedLog.new_value ? JSON.stringify(selectedLog.new_value, null, 2) : "null"}
                       </pre>

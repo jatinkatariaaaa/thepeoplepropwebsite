@@ -40,14 +40,14 @@ export function CertificatesClient({ accounts }: { accounts: any[] }) {
           <button
             key={acc.id}
             onClick={() => setSelectedAccountId(acc.id)}
-            className={`w-full rounded-[10px] border p-3.5 text-left transition-all ${
+            className={`w-full rounded-none border p-3.5 text-left transition-all ${
               selectedAccountId === acc.id 
                 ? "border-ink-400 bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06)] ring-1 ring-ink-400" 
                 : "border-[var(--dash-hairline)] bg-white hover:border-[var(--dash-hairline-strong)]"
             }`}
           >
             <div className="flex items-center gap-2 text-[13px] font-semibold text-ink">
-              <Award className={`h-4 w-4 ${selectedAccountId === acc.id ? "text-lime-600" : "text-ink-400"}`} />
+              <Award className={`h-4 w-4 ${selectedAccountId === acc.id ? "text-[var(--carbon-blue)]" : "text-ink-400"}`} />
               <span className="dash-num">${acc.starting_balance.toLocaleString()}</span> Account
             </div>
             <div className="mt-1.5 flex items-center justify-between text-xs text-ink-500">
@@ -62,7 +62,7 @@ export function CertificatesClient({ accounts }: { accounts: any[] }) {
       <div className="lg:col-span-3">
         {selectedAccount && (
           <div className="dash-card overflow-hidden p-3">
-            <div className="relative aspect-[1.41] w-full overflow-hidden rounded-[8px] bg-ink-50">
+            <div className="relative aspect-[1.41] w-full overflow-hidden rounded-none bg-ink-50">
               {/* Fallback loading state while image loads */}
               <div className="absolute inset-0 flex items-center justify-center text-sm text-ink-400">
                 Loading certificate...
@@ -84,7 +84,7 @@ export function CertificatesClient({ accounts }: { accounts: any[] }) {
               <div className="flex items-center gap-3">
                 <button 
                   onClick={handleCopyLink}
-                  className="inline-flex h-10 items-center gap-2 rounded-lg border border-[var(--dash-hairline)] bg-white px-4 text-[13px] font-medium text-ink-700 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink"
+                  className="inline-flex h-10 items-center gap-2 rounded-none border border-[var(--dash-hairline)] bg-white px-4 text-[13px] font-medium text-ink-700 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink"
                 >
                   <Share2 className="w-4 h-4" />
                   Share Link
@@ -94,7 +94,7 @@ export function CertificatesClient({ accounts }: { accounts: any[] }) {
                   download={`TPP_Certificate_${selectedAccount.id.split("-")[0]}.png`}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex h-10 items-center gap-2 rounded-lg bg-ink px-4 text-[13px] font-semibold text-white transition-colors hover:bg-ink-800"
+                  className="inline-flex h-10 items-center gap-2 rounded-none bg-[var(--carbon-blue)] px-4 text-[13px] font-semibold text-white transition-colors hover:bg-[var(--carbon-blue-hover)]"
                 >
                   <Download className="w-4 h-4" />
                   Download PNG

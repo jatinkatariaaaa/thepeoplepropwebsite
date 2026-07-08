@@ -16,7 +16,7 @@ export function TierProgress({ current = 38 }: { current?: number }) {
   const remaining = Math.max(0, next.target - current);
 
   return (
-    <div className="surface-card rounded-2xl p-6 md:p-7">
+    <div className="surface-card rounded-none p-6 md:p-7">
       <div className="flex items-start justify-between mb-6">
         <div>
           <div className="text-xs uppercase tracking-[0.2em] text-[var(--ink-500)] mb-1">
@@ -47,7 +47,7 @@ export function TierProgress({ current = 38 }: { current?: number }) {
           return (
             <div
               key={t.name}
-              className={`rounded-xl border p-3.5 ${
+              className={`rounded-none border p-3.5 ${
                 reached
                   ? "border-[var(--accent-200)] bg-[var(--accent-50)]"
                   : "border-[var(--border)] bg-[var(--paper)]"
@@ -64,7 +64,7 @@ export function TierProgress({ current = 38 }: { current?: number }) {
                 {t.reward}
               </div>
               {reached && (
-                <div className="mt-2 inline-flex items-center text-[10px] text-[var(--accent-700)] uppercase tracking-wider font-medium">
+                <div className="mt-2 inline-flex items-center text-[10px] text-[var(--carbon-blue)] uppercase tracking-wider font-medium">
                   ✓ Reached
                 </div>
               )}

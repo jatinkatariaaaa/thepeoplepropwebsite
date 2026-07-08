@@ -108,8 +108,8 @@ export default function AdminSettingsPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-colors ${
-                  activeTab === tab.id ? "bg-[var(--ink-950)] text-white" : "text-[var(--ink-500)] hover:bg-[var(--dash-canvas)] hover:text-[var(--ink-950)]"
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-none font-semibold transition-colors ${
+                  activeTab === tab.id ? "bg-[var(--carbon-blue)] text-white" : "text-[var(--ink-500)] hover:bg-[var(--dash-canvas)] hover:text-[var(--ink-950)]"
                 }`}
               >
                 <Icon className="w-5 h-5" /> {tab.label}
@@ -132,7 +132,7 @@ export default function AdminSettingsPage() {
                       type="text"
                       value={formData.company_name || ""}
                       onChange={(e) => handleChange("company_name", e.target.value)}
-                      className="w-full max-w-md border border-[var(--dash-hairline)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)]"
+                      className="w-full max-w-md border border-[var(--dash-hairline)] rounded-none p-3 outline-none focus:border-[var(--ink-950)]"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-6 max-w-md">
@@ -141,7 +141,7 @@ export default function AdminSettingsPage() {
                       <select
                         value={formData.timezone || "UTC"}
                         onChange={(e) => handleChange("timezone", e.target.value)}
-                        className="w-full border border-[var(--dash-hairline)] rounded-xl p-3 outline-none bg-white"
+                        className="w-full border border-[var(--dash-hairline)] rounded-none p-3 outline-none bg-white"
                       >
                         <option value="UTC">UTC</option>
                         <option value="America/New_York">EST (New York)</option>
@@ -160,7 +160,7 @@ export default function AdminSettingsPage() {
                       <select
                         value={formData.currency || "USD"}
                         onChange={(e) => handleChange("currency", e.target.value)}
-                        className="w-full border border-[var(--dash-hairline)] rounded-xl p-3 outline-none bg-white"
+                        className="w-full border border-[var(--dash-hairline)] rounded-none p-3 outline-none bg-white"
                       >
                         <option value="USD">USD ($)</option>
                         <option value="EUR">EUR (€)</option>
@@ -171,7 +171,7 @@ export default function AdminSettingsPage() {
                       </select>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4 border border-[var(--dash-hairline)] max-w-md">
+                  <div className="flex items-center justify-between rounded-none border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4 border border-[var(--dash-hairline)] max-w-md">
                     <div>
                       <h3 className="font-bold text-[var(--ink-950)]">Maintenance Mode</h3>
                       <p className="text-sm text-[var(--ink-500)]">Disable public access to the website temporarily.</p>
@@ -188,7 +188,7 @@ export default function AdminSettingsPage() {
                 <button
                   onClick={() => handleSave("general", ["company_name", "timezone", "currency", "maintenance_mode"])}
                   disabled={saving}
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800 disabled:opacity-50"
+                  className="flex items-center gap-2 px-6 py-2.5 carbon-btn-primary disabled:opacity-50"
                 >
                   <Save className="w-4 h-4" /> Save Changes
                 </button>
@@ -207,7 +207,7 @@ export default function AdminSettingsPage() {
                       type="text"
                       value={formData.brand_name || ""}
                       onChange={(e) => handleChange("brand_name", e.target.value)}
-                      className="w-full max-w-md border border-[var(--dash-hairline)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)]"
+                      className="w-full max-w-md border border-[var(--dash-hairline)] rounded-none p-3 outline-none focus:border-[var(--ink-950)]"
                     />
                   </div>
                   <div>
@@ -217,7 +217,7 @@ export default function AdminSettingsPage() {
                       value={formData.logo_url || ""}
                       onChange={(e) => handleChange("logo_url", e.target.value)}
                       placeholder="https://..."
-                      className="w-full max-w-md border border-[var(--dash-hairline)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)]"
+                      className="w-full max-w-md border border-[var(--dash-hairline)] rounded-none p-3 outline-none focus:border-[var(--ink-950)]"
                     />
                   </div>
                   <div>
@@ -227,7 +227,7 @@ export default function AdminSettingsPage() {
                       value={formData.favicon_url || ""}
                       onChange={(e) => handleChange("favicon_url", e.target.value)}
                       placeholder="https://..."
-                      className="w-full max-w-md border border-[var(--dash-hairline)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)]"
+                      className="w-full max-w-md border border-[var(--dash-hairline)] rounded-none p-3 outline-none focus:border-[var(--ink-950)]"
                     />
                   </div>
                   <div>
@@ -237,13 +237,13 @@ export default function AdminSettingsPage() {
                         type="color"
                         value={formData.primary_color || "#cbfb45"}
                         onChange={(e) => handleChange("primary_color", e.target.value)}
-                        className="w-12 h-12 p-1 rounded-lg border border-[var(--dash-hairline)] cursor-pointer"
+                        className="w-12 h-12 p-1 rounded-none border border-[var(--dash-hairline)] cursor-pointer"
                       />
                       <input
                         type="text"
                         value={formData.primary_color || "#cbfb45"}
                         onChange={(e) => handleChange("primary_color", e.target.value)}
-                        className="flex-1 border border-[var(--dash-hairline)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)] uppercase font-mono"
+                        className="flex-1 border border-[var(--dash-hairline)] rounded-none p-3 outline-none focus:border-[var(--ink-950)] uppercase font-mono"
                       />
                     </div>
                   </div>
@@ -253,7 +253,7 @@ export default function AdminSettingsPage() {
                 <button
                   onClick={() => handleSave("branding", ["brand_name", "logo_url", "favicon_url", "primary_color"])}
                   disabled={saving}
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800 disabled:opacity-50"
+                  className="flex items-center gap-2 px-6 py-2.5 carbon-btn-primary disabled:opacity-50"
                 >
                   <Save className="w-4 h-4" /> Save Changes
                 </button>
@@ -271,7 +271,7 @@ export default function AdminSettingsPage() {
                     <select
                       value={formData.default_leverage || "100"}
                       onChange={(e) => handleChange("default_leverage", e.target.value)}
-                      className="w-full max-w-xs border border-[var(--dash-hairline)] rounded-xl p-3 outline-none bg-white"
+                      className="w-full max-w-xs border border-[var(--dash-hairline)] rounded-none p-3 outline-none bg-white"
                     >
                       <option value="10">1:10</option>
                       <option value="20">1:20</option>
@@ -287,7 +287,7 @@ export default function AdminSettingsPage() {
                       value={formData.trading_servers || "[]"}
                       onChange={(e) => handleChange("trading_servers", e.target.value)}
                       rows={4}
-                      className="w-full max-w-md border border-[var(--dash-hairline)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)] font-mono text-sm resize-none"
+                      className="w-full max-w-md border border-[var(--dash-hairline)] rounded-none p-3 outline-none focus:border-[var(--ink-950)] font-mono text-sm resize-none"
                       placeholder='[{"name":"Server 1","host":"trade.example.com","port":443}]'
                     />
                     <p className="text-[11px] text-[var(--ink-400)] mt-1">JSON array of server objects with name, host, and port.</p>
@@ -298,7 +298,7 @@ export default function AdminSettingsPage() {
                       value={formData.rule_templates || "[]"}
                       onChange={(e) => handleChange("rule_templates", e.target.value)}
                       rows={4}
-                      className="w-full max-w-md border border-[var(--dash-hairline)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)] font-mono text-sm resize-none"
+                      className="w-full max-w-md border border-[var(--dash-hairline)] rounded-none p-3 outline-none focus:border-[var(--ink-950)] font-mono text-sm resize-none"
                       placeholder='[{"name":"Standard","max_daily_drawdown":5,"max_overall_drawdown":10}]'
                     />
                     <p className="text-[11px] text-[var(--ink-400)] mt-1">JSON array of rule template objects.</p>
@@ -309,7 +309,7 @@ export default function AdminSettingsPage() {
                 <button
                   onClick={() => handleSave("trading", ["default_leverage", "trading_servers", "rule_templates"])}
                   disabled={saving}
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800 disabled:opacity-50"
+                  className="flex items-center gap-2 px-6 py-2.5 carbon-btn-primary disabled:opacity-50"
                 >
                   <Save className="w-4 h-4" /> Save Changes
                 </button>
@@ -330,7 +330,7 @@ export default function AdminSettingsPage() {
                         value={formData.smtp_host || ""}
                         onChange={(e) => handleChange("smtp_host", e.target.value)}
                         placeholder="smtp.example.com"
-                        className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2.5 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                        className="w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 py-2.5 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                       />
                     </div>
                     <div>
@@ -339,7 +339,7 @@ export default function AdminSettingsPage() {
                         type="number"
                         value={formData.smtp_port || "587"}
                         onChange={(e) => handleChange("smtp_port", e.target.value)}
-                        className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2.5 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                        className="w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 py-2.5 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                       />
                     </div>
                     <div>
@@ -348,7 +348,7 @@ export default function AdminSettingsPage() {
                         type="text"
                         value={formData.smtp_user || ""}
                         onChange={(e) => handleChange("smtp_user", e.target.value)}
-                        className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2.5 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                        className="w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 py-2.5 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                       />
                     </div>
                     <div>
@@ -358,7 +358,7 @@ export default function AdminSettingsPage() {
                           type={showSmtpPass ? "text" : "password"}
                           value={formData.smtp_pass || ""}
                           onChange={(e) => handleChange("smtp_pass", e.target.value)}
-                          className="w-full border border-[var(--dash-hairline)] rounded-xl p-3 pr-10 outline-none focus:border-[var(--ink-950)]"
+                          className="w-full border border-[var(--dash-hairline)] rounded-none p-3 pr-10 outline-none focus:border-[var(--ink-950)]"
                         />
                         <button
                           onClick={() => setShowSmtpPass(!showSmtpPass)}
@@ -369,7 +369,7 @@ export default function AdminSettingsPage() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4 border border-[var(--dash-hairline)] max-w-md">
+                  <div className="flex items-center justify-between rounded-none border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4 border border-[var(--dash-hairline)] max-w-md">
                     <div>
                       <h3 className="font-bold text-[var(--ink-950)]">Secure Connection (TLS/SSL)</h3>
                       <p className="text-sm text-[var(--ink-500)]">Use encrypted connection for SMTP.</p>
@@ -387,7 +387,7 @@ export default function AdminSettingsPage() {
                         type="text"
                         value={formData.sender_name || ""}
                         onChange={(e) => handleChange("sender_name", e.target.value)}
-                        className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2.5 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                        className="w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 py-2.5 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                       />
                     </div>
                     <div>
@@ -396,7 +396,7 @@ export default function AdminSettingsPage() {
                         type="email"
                         value={formData.sender_email || ""}
                         onChange={(e) => handleChange("sender_email", e.target.value)}
-                        className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2.5 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                        className="w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 py-2.5 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                       />
                     </div>
                   </div>
@@ -406,7 +406,7 @@ export default function AdminSettingsPage() {
                 <button
                   onClick={() => handleSave("email", ["smtp_host", "smtp_port", "smtp_user", "smtp_pass", "smtp_secure", "sender_name", "sender_email"])}
                   disabled={saving}
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800 disabled:opacity-50"
+                  className="flex items-center gap-2 px-6 py-2.5 carbon-btn-primary disabled:opacity-50"
                 >
                   <Save className="w-4 h-4" /> Save Changes
                 </button>
@@ -419,7 +419,7 @@ export default function AdminSettingsPage() {
               <div>
                 <h2 className="text-xl font-bold text-[var(--ink-950)] mb-4">Security Policies</h2>
                 <div className="space-y-5">
-                  <div className="bg-[var(--dash-canvas)] rounded-xl border border-[var(--dash-hairline)] p-5">
+                  <div className="bg-[var(--dash-canvas)] rounded-none border border-[var(--dash-hairline)] p-5">
                     <div className="flex items-center gap-2 mb-4">
                       <KeyRound className="w-5 h-5 text-[var(--ink-600)]" />
                       <h3 className="font-bold text-[var(--ink-950)]">Password Policy</h3>
@@ -433,11 +433,11 @@ export default function AdminSettingsPage() {
                           max={32}
                           value={formData.password_min_length || "8"}
                           onChange={(e) => handleChange("password_min_length", e.target.value)}
-                          className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2.5 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                          className="w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 py-2.5 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                         />
                       </div>
                       <div className="flex flex-col justify-end">
-                        <div className="flex items-center justify-between p-3 bg-white rounded-xl border border-[var(--dash-hairline)]">
+                        <div className="flex items-center justify-between p-3 bg-white rounded-none border border-[var(--dash-hairline)]">
                           <span className="text-sm font-semibold text-[var(--ink-950)]">Require Uppercase</span>
                           <button onClick={() => handleToggle("password_require_uppercase")} className="relative inline-flex items-center cursor-pointer">
                             <div className={`w-11 h-6 rounded-full transition-colors ${formData.password_require_uppercase === "true" ? "bg-emerald-500" : "bg-gray-200"}`}>
@@ -447,7 +447,7 @@ export default function AdminSettingsPage() {
                         </div>
                       </div>
                       <div className="flex flex-col justify-end">
-                        <div className="flex items-center justify-between p-3 bg-white rounded-xl border border-[var(--dash-hairline)]">
+                        <div className="flex items-center justify-between p-3 bg-white rounded-none border border-[var(--dash-hairline)]">
                           <span className="text-sm font-semibold text-[var(--ink-950)]">Require Number</span>
                           <button onClick={() => handleToggle("password_require_number")} className="relative inline-flex items-center cursor-pointer">
                             <div className={`w-11 h-6 rounded-full transition-colors ${formData.password_require_number === "true" ? "bg-emerald-500" : "bg-gray-200"}`}>
@@ -457,7 +457,7 @@ export default function AdminSettingsPage() {
                         </div>
                       </div>
                       <div className="flex flex-col justify-end">
-                        <div className="flex items-center justify-between p-3 bg-white rounded-xl border border-[var(--dash-hairline)]">
+                        <div className="flex items-center justify-between p-3 bg-white rounded-none border border-[var(--dash-hairline)]">
                           <span className="text-sm font-semibold text-[var(--ink-950)]">Require Special Character</span>
                           <button onClick={() => handleToggle("password_require_special")} className="relative inline-flex items-center cursor-pointer">
                             <div className={`w-11 h-6 rounded-full transition-colors ${formData.password_require_special === "true" ? "bg-emerald-500" : "bg-gray-200"}`}>
@@ -469,7 +469,7 @@ export default function AdminSettingsPage() {
                     </div>
                   </div>
 
-                  <div className="bg-[var(--dash-canvas)] rounded-xl border border-[var(--dash-hairline)] p-5">
+                  <div className="bg-[var(--dash-canvas)] rounded-none border border-[var(--dash-hairline)] p-5">
                     <div className="flex items-center gap-2 mb-4">
                       <Clock className="w-5 h-5 text-[var(--ink-600)]" />
                       <h3 className="font-bold text-[var(--ink-950)]">Session & Login</h3>
@@ -483,7 +483,7 @@ export default function AdminSettingsPage() {
                           max={168}
                           value={formData.session_timeout_hours || "24"}
                           onChange={(e) => handleChange("session_timeout_hours", e.target.value)}
-                          className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2.5 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                          className="w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 py-2.5 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                         />
                       </div>
                       <div>
@@ -494,7 +494,7 @@ export default function AdminSettingsPage() {
                           max={20}
                           value={formData.max_login_attempts || "5"}
                           onChange={(e) => handleChange("max_login_attempts", e.target.value)}
-                          className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2.5 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                          className="w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 py-2.5 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                         />
                       </div>
                       <div>
@@ -505,18 +505,18 @@ export default function AdminSettingsPage() {
                           max={1440}
                           value={formData.lockout_duration_minutes || "30"}
                           onChange={(e) => handleChange("lockout_duration_minutes", e.target.value)}
-                          className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2.5 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                          className="w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 py-2.5 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                         />
                       </div>
                     </div>
                   </div>
 
-                  <div className="bg-[var(--dash-canvas)] rounded-xl border border-[var(--dash-hairline)] p-5">
+                  <div className="bg-[var(--dash-canvas)] rounded-none border border-[var(--dash-hairline)] p-5">
                     <div className="flex items-center gap-2 mb-4">
                       <Shield className="w-5 h-5 text-[var(--ink-600)]" />
                       <h3 className="font-bold text-[var(--ink-950)]">Two-Factor Authentication</h3>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-white rounded-xl border border-[var(--dash-hairline)] max-w-md">
+                    <div className="flex items-center justify-between p-3 bg-white rounded-none border border-[var(--dash-hairline)] max-w-md">
                       <div>
                         <span className="text-sm font-semibold text-[var(--ink-950)]">Require 2FA for Admins</span>
                         <p className="text-xs text-[var(--ink-500)]">Force all admin accounts to use 2FA.</p>
@@ -529,7 +529,7 @@ export default function AdminSettingsPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between p-3 bg-white rounded-xl border border-[var(--dash-hairline)] max-w-md">
+                  <div className="flex items-center justify-between p-3 bg-white rounded-none border border-[var(--dash-hairline)] max-w-md">
                     <div>
                       <span className="text-sm font-semibold text-[var(--ink-950)]">Require Email Verification</span>
                       <p className="text-xs text-[var(--ink-500)]">Users must verify email before accessing features.</p>
@@ -550,7 +550,7 @@ export default function AdminSettingsPage() {
                     "two_factor_auth", "require_email_verification"
                   ])}
                   disabled={saving}
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800 disabled:opacity-50"
+                  className="flex items-center gap-2 px-6 py-2.5 carbon-btn-primary disabled:opacity-50"
                 >
                   <Save className="w-4 h-4" /> Save Changes
                 </button>

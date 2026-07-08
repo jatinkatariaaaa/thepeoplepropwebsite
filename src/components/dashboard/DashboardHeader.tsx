@@ -94,12 +94,12 @@ export function DashboardHeader() {
 
       <div className="flex shrink-0 items-center gap-2">
         <button
-          className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--dash-hairline)] bg-white text-ink-500 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink"
+          className="relative flex h-9 w-9 items-center justify-center rounded-none border border-[var(--dash-hairline)] bg-white text-ink-500 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink"
           aria-label="Notifications"
         >
           <Bell className="h-4 w-4" />
           <span
-            className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-lime-600"
+            className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-[var(--carbon-blue)]"
             aria-hidden="true"
           />
         </button>
@@ -107,7 +107,7 @@ export function DashboardHeader() {
         {!isAdmin && (
           <Link
             href="/dashboard/new-challenge"
-            className="hidden h-9 items-center gap-1.5 rounded-lg bg-ink px-3.5 text-[13px] font-medium text-white transition-colors hover:bg-[var(--accent-700)] sm:inline-flex"
+            className="hidden h-9 items-center gap-1.5 rounded-none bg-[var(--carbon-blue)] px-3.5 text-[13px] font-medium text-white transition-colors hover:bg-[var(--carbon-blue-hover)] sm:inline-flex"
           >
             <Plus className="h-4 w-4" />
             New Challenge

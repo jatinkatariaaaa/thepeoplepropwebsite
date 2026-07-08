@@ -101,11 +101,11 @@ export default function AdminEmailPage() {
           <p className="text-[var(--ink-500)] mt-1">Configure SMTP servers and customize email templates.</p>
         </div>
         {settings.is_configured ? (
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-success-50 text-success-700 rounded-full text-sm font-bold">
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-[#a7f0ba] text-[#0e6027] rounded-full text-sm font-bold">
             <CheckCircle2 className="w-4 h-4" /> SMTP Configured
           </div>
         ) : (
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-50 text-amber-700 rounded-full text-sm font-bold">
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-[#fcf4d6] text-[#8e6a00] rounded-full text-sm font-bold">
             <AlertCircle className="w-4 h-4" /> SMTP Not Configured
           </div>
         )}
@@ -138,35 +138,35 @@ export default function AdminEmailPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="mb-1.5 block text-[13px] font-medium text-ink-700">SMTP Host</label>
-                <input type="text" value={host} onChange={e => setHost(e.target.value)} placeholder="smtp.resend.com" className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400" />
+                <input type="text" value={host} onChange={e => setHost(e.target.value)} placeholder="smtp.resend.com" className="w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400" />
               </div>
               <div>
                 <label className="mb-1.5 block text-[13px] font-medium text-ink-700">SMTP Port</label>
-                <input type="number" value={port} onChange={e => setPort(e.target.value)} placeholder="587" className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400" />
+                <input type="number" value={port} onChange={e => setPort(e.target.value)} placeholder="587" className="w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400" />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="mb-1.5 block text-[13px] font-medium text-ink-700">SMTP Username</label>
-                <input type="text" value={user} onChange={e => setUser(e.target.value)} placeholder="resend" className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400" />
+                <input type="text" value={user} onChange={e => setUser(e.target.value)} placeholder="resend" className="w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400" />
               </div>
               <div>
                 <label className="mb-1.5 block text-[13px] font-medium text-ink-700">SMTP Password</label>
-                <input type="password" value={pass} onChange={e => setPass(e.target.value)} placeholder="••••••••" className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400" />
+                <input type="password" value={pass} onChange={e => setPass(e.target.value)} placeholder="••••••••" className="w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400" />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4 border-t border-[var(--dash-hairline)] pt-4 mt-2">
               <div>
                 <label className="mb-1.5 block text-[13px] font-medium text-ink-700">From Email</label>
-                <input type="email" value={fromEmail} onChange={e => setFromEmail(e.target.value)} placeholder="noreply@thepeopleprop.live" className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400" />
+                <input type="email" value={fromEmail} onChange={e => setFromEmail(e.target.value)} placeholder="noreply@thepeopleprop.live" className="w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400" />
               </div>
               <div>
                 <label className="mb-1.5 block text-[13px] font-medium text-ink-700">From Name</label>
-                <input type="text" value={fromName} onChange={e => setFromName(e.target.value)} placeholder="The People Prop" className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400" />
+                <input type="text" value={fromName} onChange={e => setFromName(e.target.value)} placeholder="The People Prop" className="w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400" />
               </div>
             </div>
             <div className="flex justify-end pt-4">
-              <button onClick={handleSaveSettings} className="px-6 py-2.5 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800">
+              <button onClick={handleSaveSettings} className="px-6 py-2.5 carbon-btn-primary">
                 Save Settings
               </button>
             </div>
@@ -187,7 +187,7 @@ export default function AdminEmailPage() {
               </div>
               <Link 
                 href={`/admin/email/templates/${t.slug}`}
-                className="block text-center w-full py-2 bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] text-[var(--ink-950)] font-semibold rounded-xl hover:bg-ink-100 transition-colors"
+                className="block text-center w-full py-2 bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] text-[var(--ink-950)] font-semibold rounded-none hover:bg-ink-100 transition-colors"
               >
                 Edit Template
               </Link>
@@ -210,11 +210,11 @@ export default function AdminEmailPage() {
               value={testEmail} 
               onChange={e => setTestEmail(e.target.value)} 
               placeholder="Enter your email address" 
-              className="flex-1 border border-[var(--dash-hairline)] rounded-xl p-3 outline-none focus:border-[var(--ink-950)]" 
+              className="flex-1 border border-[var(--dash-hairline)] rounded-none p-3 outline-none focus:border-[var(--ink-950)]" 
             />
             <button 
               onClick={handleSendTest} 
-              className="px-6 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800"
+              className="px-6 carbon-btn-primary"
             >
               Send
             </button>

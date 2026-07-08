@@ -91,7 +91,7 @@ export default function CompetitionsPage() {
                   </div>
                 </div>
                 
-                <button className="flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-ink text-[13px] font-semibold text-white transition-all hover:bg-ink-800 active:scale-[0.98]">
+                <button className="flex h-10 w-full items-center justify-center gap-2 carbon-btn-primary transition-all hover:bg-[var(--carbon-blue-hover)] active:scale-[0.98]">
                   Enter Competition <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
@@ -133,7 +133,7 @@ export default function CompetitionsPage() {
                   </div>
                 </div>
                 
-                <button className="h-10 w-full rounded-lg border border-[var(--dash-hairline)] bg-white text-[13px] font-semibold text-ink transition-colors hover:border-[var(--dash-hairline-strong)] hover:bg-ink-50">
+                <button className="h-10 w-full rounded-none border border-[var(--dash-hairline)] bg-white text-[13px] font-semibold text-ink transition-colors hover:border-[var(--dash-hairline-strong)] hover:bg-ink-50">
                   Register Early
                 </button>
               </div>

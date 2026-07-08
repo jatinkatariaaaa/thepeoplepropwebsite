@@ -135,12 +135,12 @@ export default function AdminReportsPage() {
         <div className="relative">
           <button
             onClick={() => setShowExportMenu(!showExportMenu)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] text-[var(--ink-950)] rounded-xl font-bold hover:bg-ink-100 transition-colors"
+            className="flex items-center gap-2 px-4 py-2.5 bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] text-[var(--ink-950)] rounded-none font-bold hover:bg-ink-100 transition-colors"
           >
             <Download className="w-4 h-4" /> Export <ChevronDown className="w-3 h-3" />
           </button>
           {showExportMenu && (
-            <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-[var(--dash-hairline)] rounded-xl shadow-lg z-50 overflow-hidden">
+            <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-[var(--dash-hairline)] rounded-none shadow-lg z-50 overflow-hidden">
               <button onClick={() => handleExport("csv")} className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-semibold hover:bg-[var(--dash-canvas)] transition-colors">
                 <FileText className="w-4 h-4" /> CSV
               </button>
@@ -156,12 +156,12 @@ export default function AdminReportsPage() {
       </div>
 
       <div className="dash-card p-5 mb-8 flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center">
-        <div className="flex bg-[var(--dash-canvas)] p-1 rounded-xl">
+        <div className="flex bg-[var(--dash-canvas)] p-1 rounded-none">
           {(["revenue", "users", "trading"] as ReportTab[]).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-colors ${activeTab === tab ? "bg-white text-[var(--ink-950)] shadow-sm" : "text-[var(--ink-500)] hover:text-[var(--ink-950)]"}`}
+              className={`px-4 py-1.5 rounded-none text-sm font-bold transition-colors ${activeTab === tab ? "bg-white text-[var(--ink-950)] shadow-sm" : "text-[var(--ink-500)] hover:text-[var(--ink-950)]"}`}
             >
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
             </button>
@@ -169,12 +169,12 @@ export default function AdminReportsPage() {
         </div>
 
         <div className="flex items-center gap-3 flex-wrap">
-          <div className="flex items-center gap-2 bg-[var(--dash-canvas)] p-1 rounded-xl">
+          <div className="flex items-center gap-2 bg-[var(--dash-canvas)] p-1 rounded-none">
             {periodOptions.map((p) => (
               <button
                 key={p.value}
                 onClick={() => setPeriod(p.value)}
-                className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors ${period === p.value ? "bg-white text-[var(--ink-950)] shadow-sm" : "text-[var(--ink-500)] hover:text-[var(--ink-950)]"}`}
+                className={`px-3 py-1 rounded-none text-xs font-bold transition-colors ${period === p.value ? "bg-white text-[var(--ink-950)] shadow-sm" : "text-[var(--ink-500)] hover:text-[var(--ink-950)]"}`}
               >
                 {p.label}
               </button>
@@ -186,20 +186,20 @@ export default function AdminReportsPage() {
               type="date"
               value={fromDate}
               onChange={(e) => setFromDate(e.target.value)}
-              className="border border-[var(--dash-hairline)] rounded-lg px-2 py-1.5 text-sm outline-none bg-white"
+              className="border border-[var(--dash-hairline)] rounded-none px-2 py-1.5 text-sm outline-none bg-white"
             />
             <span className="text-[var(--ink-400)] text-sm">to</span>
             <input
               type="date"
               value={toDate}
               onChange={(e) => setToDate(e.target.value)}
-              className="border border-[var(--dash-hairline)] rounded-lg px-2 py-1.5 text-sm outline-none bg-white"
+              className="border border-[var(--dash-hairline)] rounded-none px-2 py-1.5 text-sm outline-none bg-white"
             />
           </div>
           <button
             onClick={fetchReport}
             disabled={loading}
-            className="px-4 py-1.5 flex items-center gap-2 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800 disabled:opacity-50"
+            className="px-4 py-1.5 flex items-center gap-2 carbon-btn-primary disabled:opacity-50"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} /> Generate
           </button>
@@ -217,7 +217,7 @@ export default function AdminReportsPage() {
             {summaryCards.map((card, i) => (
               <div key={i} className="dash-card p-5">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className={`p-2 rounded-lg ${card.color}`}>
+                  <div className={`p-2 rounded-none ${card.color}`}>
                     <card.icon className={`w-5 h-5 ${card.color.split(" ")[0]}`} />
                   </div>
                   <h3 className="font-bold text-[var(--ink-600)]">{card.label}</h3>

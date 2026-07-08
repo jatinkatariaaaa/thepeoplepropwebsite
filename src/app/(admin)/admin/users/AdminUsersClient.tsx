@@ -77,9 +77,9 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: any[]
         const s = row.original.status || "active";
         return (
           <span className={`inline-flex px-2 py-1 rounded-full text-[11px] font-bold uppercase ${
-            s === "active" ? "bg-success-50 text-success-700" :
-            s === "suspended" ? "bg-amber-50 text-amber-700" :
-            "bg-rose-50 text-rose-700"
+            s === "active" ? "bg-[#a7f0ba] text-[#0e6027]" :
+            s === "suspended" ? "bg-[#fcf4d6] text-[#8e6a00]" :
+            "bg-[#ffd7d9] text-[#a2191f]"
           }`}>
             {s}
           </span>
@@ -91,7 +91,7 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: any[]
       header: "Role",
       cell: ({ row }) => (
         row.original.is_admin ? (
-          <span className="inline-flex items-center gap-1 bg-[var(--ink-950)] text-white px-2 py-1 rounded-full text-[11px] font-bold uppercase">
+          <span className="inline-flex items-center gap-1 bg-[var(--carbon-blue)] text-white px-2 py-1 rounded-full text-[11px] font-bold uppercase">
             <Shield className="w-3 h-3" /> Admin
           </span>
         ) : (
@@ -106,9 +106,9 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: any[]
         const kyc = row.original.kyc_status || "none";
         return (
           <span className={`inline-flex px-2 py-1 rounded-full text-[11px] font-bold uppercase ${
-            kyc === "verified" ? "bg-success-50 text-success-700" :
-            kyc === "pending" ? "bg-amber-50 text-amber-700" :
-            kyc === "rejected" ? "bg-rose-50 text-rose-700" :
+            kyc === "verified" ? "bg-[#a7f0ba] text-[#0e6027]" :
+            kyc === "pending" ? "bg-[#fcf4d6] text-[#8e6a00]" :
+            kyc === "rejected" ? "bg-[#ffd7d9] text-[#a2191f]" :
             "bg-[var(--ink-100)] text-[var(--ink-600)]"
           }`}>
             {kyc}
@@ -190,7 +190,7 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: any[]
               <textarea
                 value={actionReason}
                 onChange={(e) => setActionReason(e.target.value)}
-                className="w-full border border-[var(--dash-hairline)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)]"
+                className="w-full border border-[var(--dash-hairline)] rounded-none p-3 text-sm outline-none focus:border-[var(--ink-950)]"
                 rows={3}
                 placeholder={`Reason for this action...`}
               />
@@ -199,7 +199,7 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: any[]
           <div className="flex justify-end gap-3 mt-6">
             <button
               onClick={() => setIsActionModalOpen(false)}
-              className="rounded-lg px-4 py-2 text-[13px] font-medium text-ink-600 transition-colors hover:bg-ink-100 hover:text-ink"
+              className="rounded-none px-4 py-2 text-[13px] font-medium text-ink-600 transition-colors hover:bg-ink-100 hover:text-ink"
             >
               Cancel
             </button>
@@ -209,7 +209,7 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: any[]
                 actionType === "ban" || actionType === "reject_kyc" ? "bg-red-600 hover:bg-red-700" :
                 actionType === "suspend" ? "bg-amber-600 hover:bg-amber-700" :
                 actionType === "verify_kyc" ? "bg-emerald-600 hover:bg-emerald-700" :
-                "bg-[var(--ink-950)] hover:bg-black"
+                "bg-[var(--carbon-blue)] hover:bg-[var(--carbon-blue-hover)]"
               }`}
             >
               Confirm

@@ -38,7 +38,7 @@ export function AccountHeader({ account }: Props) {
 
       {/* Trading Disabled Alert */}
       {account.status === 'breached' && (
-        <div className="flex gap-3 rounded-[12px] border border-rose-100 bg-rose-50 p-4 text-rose-700">
+        <div className="flex gap-3 rounded-none border border-rose-100 bg-rose-50 p-4 text-rose-700">
           <Lock className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
           <div>
             <h4 className="text-sm font-semibold">Trading Disabled</h4>
@@ -74,11 +74,11 @@ export function AccountHeader({ account }: Props) {
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
-          <button className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-[var(--dash-hairline)] bg-white px-3.5 text-[13px] font-medium text-ink-700 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink">
+          <button className="inline-flex h-9 items-center gap-1.5 rounded-none border border-[var(--dash-hairline)] bg-white px-3.5 text-[13px] font-medium text-ink-700 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink">
             <Share2 className="h-4 w-4" aria-hidden="true" />
             Share
           </button>
-          <button className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-[var(--dash-hairline)] bg-white px-3.5 text-[13px] font-medium text-ink-700 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink">
+          <button className="inline-flex h-9 items-center gap-1.5 rounded-none border border-[var(--dash-hairline)] bg-white px-3.5 text-[13px] font-medium text-ink-700 transition-colors hover:border-[var(--dash-hairline-strong)] hover:text-ink">
             <Key className="h-4 w-4" aria-hidden="true" />
             Credentials
           </button>

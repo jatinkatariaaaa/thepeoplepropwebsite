@@ -126,7 +126,7 @@ export default function SettingsPage() {
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
-                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400 appearance-none"
+                className="h-10 w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400 appearance-none"
               >
                 <option value="">Select...</option>
                 <option value="Mr.">Mr.</option>
@@ -144,7 +144,7 @@ export default function SettingsPage() {
                 value={formData.firstName}
                 onChange={handleChange}
                 placeholder="Enter your first name"
-                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                className="h-10 w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
               />
             </div>
 
@@ -156,7 +156,7 @@ export default function SettingsPage() {
                 value={formData.lastName}
                 onChange={handleChange}
                 placeholder="Enter your last name"
-                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                className="h-10 w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
               />
             </div>
 
@@ -167,7 +167,7 @@ export default function SettingsPage() {
                 name="dob"
                 value={formData.dob}
                 onChange={handleChange}
-                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                className="h-10 w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
               />
             </div>
 
@@ -178,7 +178,7 @@ export default function SettingsPage() {
                 name="email"
                 value={formData.email}
                 disabled
-                className="h-10 w-full cursor-not-allowed rounded-[8px] border border-[var(--dash-hairline)] bg-ink-50 px-3 text-sm text-ink-500"
+                className="h-10 w-full cursor-not-allowed rounded-none border border-[var(--dash-hairline)] bg-ink-50 px-3 text-sm text-ink-500"
               />
             </div>
 
@@ -188,7 +188,7 @@ export default function SettingsPage() {
                 name="timezone"
                 value={formData.timezone}
                 onChange={handleChange}
-                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400 appearance-none"
+                className="h-10 w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400 appearance-none"
               >
                 <option value="">Select timezone...</option>
                 <option value="Asia/Kolkata">Asia/Kolkata (IST)</option>
@@ -220,7 +220,7 @@ export default function SettingsPage() {
                 value={formData.street}
                 onChange={handleChange}
                 placeholder="Enter your street address"
-                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                className="h-10 w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
               />
             </div>
 
@@ -232,7 +232,7 @@ export default function SettingsPage() {
                 value={formData.city}
                 onChange={handleChange}
                 placeholder="Enter your city"
-                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                className="h-10 w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
               />
             </div>
 
@@ -244,7 +244,7 @@ export default function SettingsPage() {
                 value={formData.postalCode}
                 onChange={handleChange}
                 placeholder="Enter postal code"
-                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                className="h-10 w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
               />
             </div>
 
@@ -254,7 +254,7 @@ export default function SettingsPage() {
                 name="country"
                 value={formData.country}
                 onChange={handleChange}
-                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400 appearance-none"
+                className="h-10 w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400 appearance-none"
               >
                 <option value="">Select country...</option>
                 <option value="India">India</option>
@@ -277,16 +277,16 @@ export default function SettingsPage() {
             <p className="mt-1 text-[13px] text-ink-500">Verify your identity to unlock payouts and funded accounts.</p>
           </div>
 
-          <div className="flex flex-col gap-4 rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4">
+          <div className="flex flex-col gap-4 rounded-none border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4">
             <div className="flex items-center justify-between">
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-[13px] font-semibold text-ink">Current Status:</span>
                   <span className={cn(
                     "rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.06em]",
-                    formData.kycStatus === 'verified' ? "border border-[#A7F3D0] bg-success-50 text-success-700" :
-                    formData.kycStatus === 'pending' ? "bg-amber-50 text-amber-700 border border-[#FDE68A]" :
-                    formData.kycStatus === 'rejected' ? "bg-rose-50 text-rose-700 border border-[#FECDD3]" :
+                    formData.kycStatus === 'verified' ? "border bg-[#a7f0ba] text-[#0e6027]" :
+                    formData.kycStatus === 'pending' ? "bg-[#fcf4d6] text-[#8e6a00] border border-[#FDE68A]" :
+                    formData.kycStatus === 'rejected' ? "bg-[#ffd7d9] text-[#a2191f] border border-[#FECDD3]" :
                     "border border-ink-200 bg-ink-50 text-ink-600"
                   )}>
                     {formData.kycStatus || 'unverified'}
@@ -309,7 +309,7 @@ export default function SettingsPage() {
                     <select
                       value={kycForm.documentType}
                       onChange={(e) => setKycForm({ ...kycForm, documentType: e.target.value })}
-                      className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                      className="h-10 w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                     >
                       <option value="national_id">National ID</option>
                       <option value="passport">Passport</option>
@@ -323,7 +323,7 @@ export default function SettingsPage() {
                       placeholder="Enter ID Number"
                       value={kycForm.documentNumber}
                       onChange={(e) => setKycForm({ ...kycForm, documentNumber: e.target.value })}
-                      className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                      className="h-10 w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                     />
                   </div>
                   <div>
@@ -333,7 +333,7 @@ export default function SettingsPage() {
                       placeholder="e.g. United States"
                       value={kycForm.country}
                       onChange={(e) => setKycForm({ ...kycForm, country: e.target.value })}
-                      className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                      className="h-10 w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                     />
                   </div>
                 </div>
@@ -373,7 +373,7 @@ export default function SettingsPage() {
                         }
                       }
                     }}
-                    className="inline-flex h-10 items-center whitespace-nowrap rounded-lg bg-ink px-5 text-[13px] font-semibold text-white transition-all hover:bg-ink-800 active:scale-[0.98]"
+                    className="inline-flex h-10 items-center whitespace-nowrap rounded-none bg-[var(--carbon-blue)] px-5 text-[13px] font-semibold text-white transition-all hover:bg-[var(--carbon-blue-hover)] active:scale-[0.98]"
                   >
                     Submit KYC
                   </button>
@@ -388,7 +388,7 @@ export default function SettingsPage() {
           <button 
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="inline-flex h-10 items-center rounded-lg bg-ink px-5 text-[13px] font-semibold text-white transition-all hover:bg-ink-800 active:scale-[0.98] disabled:opacity-50"
+            className="inline-flex h-10 items-center rounded-none bg-[var(--carbon-blue)] px-5 text-[13px] font-semibold text-white transition-all hover:bg-[var(--carbon-blue-hover)] active:scale-[0.98] disabled:opacity-50"
           >
             {isSubmitting ? "Saving..." : "Save Changes"}
           </button>

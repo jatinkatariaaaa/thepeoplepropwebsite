@@ -20,9 +20,9 @@ export async function LeaderboardTable() {
 
   return (
     <div className="dash-card overflow-hidden">
-      <div className="flex items-center gap-2 border-b border-[var(--dash-hairline)] px-4 py-3.5 sm:px-5">
-        <Trophy className="h-4 w-4 text-ink-400" aria-hidden="true" />
-        <h2 className="text-[15px] font-semibold tracking-tight text-ink">Global Rankings</h2>
+      <div className="flex items-center gap-2 bg-[var(--dash-card)] px-4 py-4 sm:px-5">
+        <Trophy className="h-4 w-4 text-[var(--carbon-text-secondary)]" aria-hidden="true" />
+        <h2 className="text-base font-semibold tracking-tight text-[var(--carbon-text-primary)]">Global Rankings</h2>
       </div>
       
       <div className="dash-scroll-x">
@@ -47,47 +47,37 @@ export async function LeaderboardTable() {
           <tbody>
             {leaderboardData.map((row) => (
               <tr key={row.rank} className="group">
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-2">
-                    {row.rank <= 3 ? (
-                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-ink-950">
-                        <span className="dash-num text-[10px] font-semibold text-white">{row.rank}</span>
-                      </div>
-                    ) : (
-                      <div className="flex h-6 w-6 items-center justify-center rounded-full border border-[var(--dash-hairline)] bg-ink-50">
-                        <span className="dash-num text-[10px] text-ink-500">{row.rank}</span>
-                      </div>
-                    )}
-                  </div>
+                <td>
+                  {row.rank <= 3 ? (
+                    <span className="carbon-tag carbon-tag-blue dash-num font-medium">{row.rank}</span>
+                  ) : (
+                    <span className="dash-num text-[13px] text-[var(--carbon-text-secondary)]">{row.rank}</span>
+                  )}
                 </td>
                 <td className="font-medium text-ink">{row.trader}</td>
                 <td className="text-base">{row.country}</td>
-                <td className="px-6 py-4">
-                  <span className="dash-num rounded border border-[var(--dash-hairline)] bg-ink-50 px-1.5 py-0.5 text-[11px] font-medium text-ink-700">
-                    {row.account_size}
-                  </span>
+                <td>
+                  <span className="carbon-tag carbon-tag-gray dash-num">{row.account_size}</span>
                 </td>
-                <td className="px-6 py-4">
-                  <span className="dash-num font-semibold text-[var(--dash-positive)]">
+                <td>
+                  <span className="dash-num font-medium text-[var(--dash-positive)]">
                     {row.profitStr}
                   </span>
                 </td>
-                <td className="dash-num font-medium text-[var(--dash-positive)]">{row.profitPercentStr}</td>
-                <td className="px-6 py-4">
+                <td className="dash-num text-[var(--dash-positive)]">{row.profitPercentStr}</td>
+                <td>
                   <div className="dash-num flex items-center gap-2">
-                    <div className="flex h-4 w-1 flex-col justify-end overflow-hidden rounded-full bg-ink-100">
-                      <div 
-                        className="w-full rounded-full bg-[var(--dash-positive)]" 
+                    <div className="flex h-4 w-1 flex-col justify-end overflow-hidden bg-[var(--dash-layer-accent)]">
+                      <div
+                        className="w-full bg-[var(--dash-positive)]"
                         style={{ height: row.winRatioStr }}
                       />
                     </div>
                     {row.winRatioStr}
                   </div>
                 </td>
-                <td className="px-6 py-4">
-                  <span className="dash-num rounded border border-[var(--dash-hairline)] bg-ink-50 px-1.5 py-0.5 text-[11px] font-medium text-ink-700">
-                    {row.pair}
-                  </span>
+                <td>
+                  <span className="carbon-tag carbon-tag-gray dash-num">{row.pair}</span>
                 </td>
                 <td className="dash-num text-[var(--dash-positive)]">{row.avgWinStr}</td>
                 <td className="dash-num text-[var(--dash-negative)]">{row.avgLossStr}</td>

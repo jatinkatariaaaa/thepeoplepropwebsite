@@ -279,7 +279,7 @@ export function NewChallengeForm() {
                 type="text" 
                 value={personalInfo.firstName}
                 onChange={e => setPersonalInfo({...personalInfo, firstName: e.target.value})}
-                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                className="h-10 w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                 placeholder="John"
               />
             </div>
@@ -289,7 +289,7 @@ export function NewChallengeForm() {
                 type="text" 
                 value={personalInfo.lastName}
                 onChange={e => setPersonalInfo({...personalInfo, lastName: e.target.value})}
-                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                className="h-10 w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                 placeholder="Doe"
               />
             </div>
@@ -299,7 +299,7 @@ export function NewChallengeForm() {
                 type="tel" 
                 value={personalInfo.phone}
                 onChange={e => setPersonalInfo({...personalInfo, phone: e.target.value})}
-                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                className="h-10 w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                 placeholder="+1 234 567 8900"
               />
             </div>
@@ -309,7 +309,7 @@ export function NewChallengeForm() {
                 type="text" 
                 value={personalInfo.zipCode}
                 onChange={e => setPersonalInfo({...personalInfo, zipCode: e.target.value})}
-                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                className="h-10 w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                 placeholder="10001"
               />
             </div>
@@ -319,7 +319,7 @@ export function NewChallengeForm() {
                 type="text" 
                 value={personalInfo.address}
                 onChange={e => setPersonalInfo({...personalInfo, address: e.target.value})}
-                className="h-10 w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                className="h-10 w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                 placeholder="123 Trading St, Suite 400"
               />
             </div>
@@ -335,7 +335,7 @@ export function NewChallengeForm() {
                 key={prog.key}
                 onClick={() => setProgramKey(prog.key as ProgramKey)}
                 className={cn(
-                  "flex min-h-11 items-center justify-center rounded-[10px] border px-2.5 py-2.5 text-center text-[13px] font-medium leading-tight transition-all",
+                  "flex min-h-11 items-center justify-center rounded-none border px-2.5 py-2.5 text-center text-[13px] font-medium leading-tight transition-all",
                   programKey === prog.key 
                     ? "border-ink-950 bg-white text-ink shadow-[0_1px_2px_rgba(16,24,40,0.06)] ring-1 ring-ink-950" 
                     : "border-[var(--dash-hairline)] bg-white text-ink-600 hover:border-[var(--dash-hairline-strong)]"
@@ -384,7 +384,7 @@ export function NewChallengeForm() {
                     <button
                       onClick={() => isActive && toggleAddOn(addon.key)}
                       className={cn(
-                        "flex min-h-11 items-center justify-between gap-3 rounded-[10px] border px-3.5 py-2.5 text-[13px] font-medium transition-all",
+                        "flex min-h-11 items-center justify-between gap-3 rounded-none border px-3.5 py-2.5 text-[13px] font-medium transition-all",
                         !isActive 
                           ? "border-ink-950 bg-white text-ink shadow-[0_1px_2px_rgba(16,24,40,0.06)] ring-1 ring-ink-950" 
                           : "border-[var(--dash-hairline)] bg-white text-ink-600 hover:border-[var(--dash-hairline-strong)]"
@@ -396,7 +396,7 @@ export function NewChallengeForm() {
                     <button
                       onClick={() => !isActive && toggleAddOn(addon.key)}
                       className={cn(
-                        "flex min-h-11 items-center justify-between gap-3 rounded-[10px] border px-3.5 py-2.5 text-[13px] font-medium transition-all",
+                        "flex min-h-11 items-center justify-between gap-3 rounded-none border px-3.5 py-2.5 text-[13px] font-medium transition-all",
                         isActive 
                           ? "border-ink-950 bg-white text-ink shadow-[0_1px_2px_rgba(16,24,40,0.06)] ring-1 ring-ink-950" 
                           : "border-[var(--dash-hairline)] bg-white text-ink-600 hover:border-[var(--dash-hairline-strong)]"
@@ -411,7 +411,7 @@ export function NewChallengeForm() {
             })}
             
             {addOns.filter(a => a.appliesTo.includes(programKey)).length === 0 && (
-              <div className="rounded-[10px] border border-[var(--dash-hairline)] bg-white p-4 text-[13px] text-ink-500">
+              <div className="rounded-none border border-[var(--dash-hairline)] bg-white p-4 text-[13px] text-ink-500">
                 No customisations available for this challenge type.
               </div>
             )}
@@ -433,7 +433,7 @@ export function NewChallengeForm() {
                 key={c.id}
                 onClick={() => setCurrency(c.id)}
                 className={cn(
-                  "flex min-h-10 items-center justify-center gap-2 rounded-[10px] border px-3 py-2 text-[13px] font-medium transition-all sm:px-4",
+                  "flex min-h-10 items-center justify-center gap-2 rounded-none border px-3 py-2 text-[13px] font-medium transition-all sm:px-4",
                   currency === c.id 
                     ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)]" 
                     : "bg-white border-[var(--border)] text-[var(--ink-600)] hover:border-[var(--ink-300)]"
@@ -461,7 +461,7 @@ export function NewChallengeForm() {
                     key={s}
                     onClick={() => setSize(s)}
                     className={cn(
-                      "flex min-h-[64px] flex-col items-center justify-center gap-1 overflow-hidden rounded-[10px] border px-2.5 py-3 text-center transition-all",
+                      "flex min-h-[64px] flex-col items-center justify-center gap-1 overflow-hidden rounded-none border px-2.5 py-3 text-center transition-all",
                       effectiveSize === s
                         ? "border-ink-950 bg-white text-ink shadow-[0_1px_2px_rgba(16,24,40,0.06)] ring-1 ring-ink-950" 
                         : "border-[var(--dash-hairline)] bg-white text-ink-600 hover:border-[var(--dash-hairline-strong)]"
@@ -493,7 +493,7 @@ export function NewChallengeForm() {
                     key={plat.id}
                     onClick={() => setPlatform(plat.name)}
                     className={cn(
-                      "flex min-h-11 items-center justify-between gap-3 rounded-[10px] border px-3.5 py-2.5 text-[13px] font-medium transition-all",
+                      "flex min-h-11 items-center justify-between gap-3 rounded-none border px-3.5 py-2.5 text-[13px] font-medium transition-all",
                       platform === plat.name 
                         ? "border-ink-950 bg-white text-ink shadow-[0_1px_2px_rgba(16,24,40,0.06)] ring-1 ring-ink-950" 
                         : "border-[var(--dash-hairline)] bg-white text-ink-600 hover:border-[var(--dash-hairline-strong)]"
@@ -542,11 +542,11 @@ export function NewChallengeForm() {
                       value={promoInput}
                       onChange={e => setPromoInput(e.target.value)}
                       placeholder="Enter promo code"
-                      className="h-9 min-w-0 flex-1 rounded-lg border border-[var(--dash-hairline)] bg-white px-3 text-[13px] uppercase text-ink outline-none transition-colors focus:border-ink-400"
+                      className="h-9 min-w-0 flex-1 rounded-none border border-[var(--dash-hairline)] bg-white px-3 text-[13px] uppercase text-ink outline-none transition-colors focus:border-ink-400"
                     />
                     <button 
                       onClick={handleApplyPromo}
-                      className="h-9 rounded-lg bg-ink px-4 text-[13px] font-semibold text-white transition-colors hover:bg-ink-800"
+                      className="h-9 rounded-none bg-[var(--carbon-blue)] px-4 text-[13px] font-semibold text-white transition-colors hover:bg-[var(--carbon-blue-hover)]"
                     >
                       Apply
                     </button>
@@ -628,7 +628,7 @@ export function NewChallengeForm() {
           <div className="p-4 sm:p-6">
             <h3 className="mb-3 text-[15px] font-semibold tracking-tight text-ink">Select payment method</h3>
             
-            <div className="space-y-1 rounded-[10px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-1.5">
+            <div className="space-y-1 rounded-none border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-1.5">
               {[
                 { id: "Credit / Debit Card", logo: "VISA", rightLogo: "Mastercard" },
                 { id: "Crypto", logo: "₿" },
@@ -641,7 +641,7 @@ export function NewChallengeForm() {
                 <label 
                   key={method.id}
                   className={cn(
-                    "flex cursor-pointer items-center justify-between gap-3 rounded-lg border p-2.5 transition-colors",
+                    "flex cursor-pointer items-center justify-between gap-3 rounded-none border p-2.5 transition-colors",
                     paymentMethod === method.id 
                       ? "border-ink-950 bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06)]" 
                       : "border-transparent hover:bg-white"
@@ -675,7 +675,7 @@ export function NewChallengeForm() {
             </div>
 
             {isFirstTpp && paymentMethod !== "Crypto" && (
-              <div className="mt-4 rounded-[8px] border border-[#FECDD3] bg-rose-50 p-3 text-[12px] font-medium text-rose-700">
+              <div className="mt-4 rounded-none border bg-rose-50 p-3 text-[12px] font-medium text-rose-700">
                 Promo code applied only on crypto payments
               </div>
             )}
@@ -683,7 +683,7 @@ export function NewChallengeForm() {
             <button 
               onClick={handleCheckout}
               disabled={!agreed || (isFirstTpp && paymentMethod !== "Crypto") || isCheckingOut}
-              className="mt-5 h-11 w-full rounded-lg bg-ink text-sm font-semibold text-white transition-all hover:bg-ink-800 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+              className="mt-5 h-11 w-full rounded-none bg-[var(--carbon-blue)] text-sm font-semibold text-white transition-all hover:bg-[var(--carbon-blue-hover)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isCheckingOut ? "Processing..." : "Proceed to Payment"}
             </button>

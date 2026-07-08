@@ -59,10 +59,10 @@ export default async function AdminPurchasesPage() {
                     <div className="text-[11px] uppercase tracking-wider text-[var(--ink-500)] mt-0.5">{purchase.payment_method}</div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-semibold ${
-                      purchase.payment_status === 'paid' ? 'bg-success-50 text-success-700' :
-                      purchase.payment_status === 'failed' ? 'bg-rose-50 text-rose-700' :
-                      'bg-amber-50 text-amber-700'
+                    <span className={`inline-flex items-center px-2 py-1 rounded-none text-xs font-semibold ${
+                      purchase.payment_status === 'paid' ? 'bg-[#a7f0ba] text-[#0e6027]' :
+                      purchase.payment_status === 'failed' ? 'bg-[#ffd7d9] text-[#a2191f]' :
+                      'bg-[#fcf4d6] text-[#8e6a00]'
                     }`}>
                       {purchase.payment_status || "Pending"}
                     </span>

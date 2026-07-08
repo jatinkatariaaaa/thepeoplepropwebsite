@@ -66,7 +66,7 @@ export function AdminTable<T>({
             placeholder="Search all columns..."
             value={activeGlobalFilter}
             onChange={(e) => activeSetGlobalFilter(e.target.value)}
-            className="h-9 w-full rounded-lg border border-[var(--dash-hairline)] bg-white pl-9 pr-3 text-[13px] text-ink outline-none transition-colors focus:border-ink-400"
+            className="h-9 w-full rounded-none border border-[var(--dash-hairline)] bg-white pl-9 pr-3 text-[13px] text-ink outline-none transition-colors focus:border-ink-400"
           />
         </div>
       )}
@@ -148,28 +148,28 @@ export function AdminTable<T>({
               <button
                 onClick={() => table.setPageIndex(0)}
                 disabled={!table.getCanPreviousPage()}
-                className="rounded-md p-1 text-ink-500 transition-colors hover:bg-ink-100 hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-none p-1 text-ink-500 transition-colors hover:bg-ink-100 hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <ChevronsLeft className="h-4 w-4" />
               </button>
               <button
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
-                className="rounded-md p-1 text-ink-500 transition-colors hover:bg-ink-100 hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-none p-1 text-ink-500 transition-colors hover:bg-ink-100 hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
               <button
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
-                className="rounded-md p-1 text-ink-500 transition-colors hover:bg-ink-100 hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-none p-1 text-ink-500 transition-colors hover:bg-ink-100 hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <ChevronRight className="h-4 w-4" />
               </button>
               <button
                 onClick={() => table.setPageIndex(table.getPageCount() - 1)}
                 disabled={!table.getCanNextPage()}
-                className="rounded-md p-1 text-ink-500 transition-colors hover:bg-ink-100 hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-none p-1 text-ink-500 transition-colors hover:bg-ink-100 hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <ChevronsRight className="h-4 w-4" />
               </button>

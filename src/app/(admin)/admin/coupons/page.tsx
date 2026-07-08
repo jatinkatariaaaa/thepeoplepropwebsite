@@ -145,7 +145,7 @@ export default function AdminCouponsPage() {
         const active = row.original.is_active;
         return (
           <span className={`inline-flex px-2 py-0.5 rounded-full text-[11px] font-bold uppercase ${
-            active ? "bg-success-50 text-success-700" : "bg-gray-100 text-gray-500"
+            active ? "bg-[#a7f0ba] text-[#0e6027]" : "bg-gray-100 text-gray-500"
           }`}>
             {active ? "Active" : "Disabled"}
           </span>
@@ -191,7 +191,7 @@ export default function AdminCouponsPage() {
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800"
+          className="flex items-center gap-2 px-4 py-2 carbon-btn-primary"
         >
           <Plus className="w-4 h-4" /> New Coupon
         </button>
@@ -212,7 +212,7 @@ export default function AdminCouponsPage() {
                 type="text"
                 value={code}
                 onChange={(e) => setCode(e.target.value.toUpperCase())}
-                className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400 font-mono uppercase"
+                className="w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400 font-mono uppercase"
                 placeholder="SUMMER20"
               />
             </div>
@@ -224,7 +224,7 @@ export default function AdminCouponsPage() {
                 max="100"
                 value={discountPercent}
                 onChange={(e) => setDiscountPercent(e.target.value)}
-                className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                className="w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                 placeholder="20"
               />
             </div>
@@ -237,7 +237,7 @@ export default function AdminCouponsPage() {
                 min="1"
                 value={maxUses}
                 onChange={(e) => setMaxUses(e.target.value)}
-                className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+                className="w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                 placeholder="Unlimited"
               />
             </div>
@@ -247,7 +247,7 @@ export default function AdminCouponsPage() {
                 type="date"
                 value={expiresAt}
                 onChange={(e) => setExpiresAt(e.target.value)}
-                className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400 bg-white"
+                className="w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400 bg-white"
               />
             </div>
           </div>
@@ -257,14 +257,14 @@ export default function AdminCouponsPage() {
               type="text"
               value={challengeSpecific}
               onChange={(e) => setChallengeSpecific(e.target.value)}
-              className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400"
+              className="w-full rounded-none border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400"
               placeholder="e.g. standard_100k (Leave empty for all)"
             />
             <p className="text-[11px] text-[var(--ink-500)] mt-1">If specified, coupon will only work for this specific program key.</p>
           </div>
           <div className="flex justify-end gap-3 mt-6">
             <button onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-[var(--ink-500)] font-semibold">Cancel</button>
-            <button onClick={handleCreate} className="px-4 py-2 rounded-lg bg-ink text-[13px] font-semibold text-white">Create Coupon</button>
+            <button onClick={handleCreate} className="px-4 py-2 carbon-btn-primary">Create Coupon</button>
           </div>
         </div>
       </AdminModal>

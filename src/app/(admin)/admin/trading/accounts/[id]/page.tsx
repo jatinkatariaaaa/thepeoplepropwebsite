@@ -75,7 +75,7 @@ function StatusIcon({ status }: { status: string }) {
 
 function MiniMetric({ label, value, tone = "" }: { label: string; value: string; tone?: string }) {
   return (
-    <div className="bg-white p-5 rounded-2xl border border-[var(--dash-hairline)]">
+    <div className="bg-white p-5 rounded-none border border-[var(--dash-hairline)]">
       <p className="text-[12px] font-bold text-[var(--ink-500)] uppercase tracking-wider mb-1">{label}</p>
       <p className={cn("text-xl font-bold text-[var(--ink-950)]", tone)}>{value}</p>
     </div>
@@ -179,7 +179,7 @@ export default function TradingAccountDetailsPage() {
     }
   }
 
-  if (loading) return <div className="p-10 animate-pulse bg-[var(--dash-canvas)] rounded-xl h-64" />;
+  if (loading) return <div className="p-10 animate-pulse bg-[var(--dash-canvas)] rounded-none h-64" />;
   if (!overview) return null;
 
   const { account, terminal, metrics, phaseHistory, events } = overview;
@@ -196,7 +196,7 @@ export default function TradingAccountDetailsPage() {
     <div className="max-w-7xl mx-auto space-y-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
         <div className="flex items-center gap-4">
-          <Link href="/admin/trading/accounts" className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-[var(--dash-hairline)] hover:bg-[var(--dash-canvas)] transition-colors">
+          <Link href="/admin/trading/accounts" className="w-10 h-10 flex items-center justify-center rounded-none bg-white border border-[var(--dash-hairline)] hover:bg-[var(--dash-canvas)] transition-colors">
             <ArrowLeft className="w-5 h-5 text-[var(--ink-500)]" />
           </Link>
           <div>
@@ -282,7 +282,7 @@ export default function TradingAccountDetailsPage() {
             </h3>
             <div className="space-y-3">
               {phaseHistory.map((phase) => (
-                <div key={phase.id} className="flex items-start gap-4 p-4 rounded-xl border border-[var(--dash-hairline)] bg-[var(--dash-canvas)]">
+                <div key={phase.id} className="flex items-start gap-4 p-4 rounded-none border border-[var(--dash-hairline)] bg-[var(--dash-canvas)]">
                   <div className={cn("mt-0.5 w-9 h-9 rounded-full border flex items-center justify-center", statusTone(phase.status))}>
                     <StatusIcon status={phase.status} />
                   </div>
@@ -369,7 +369,7 @@ export default function TradingAccountDetailsPage() {
             {events.length > 0 ? (
               <div className="space-y-3">
                 {events.slice(0, 8).map((event) => (
-                  <div key={event.id} className="border border-[var(--dash-hairline)] rounded-xl p-3">
+                  <div key={event.id} className="border border-[var(--dash-hairline)] rounded-none p-3">
                     <div className="flex items-center justify-between gap-3">
                       <p className="text-[12px] font-bold uppercase text-[var(--ink-950)]">{String(event.type).replace("_", " ")}</p>
                       <Clock className="w-3.5 h-3.5 text-[var(--ink-400)]" />
@@ -393,7 +393,7 @@ export default function TradingAccountDetailsPage() {
                 ["Long", metrics.longStats],
                 ["Short", metrics.shortStats],
               ].map(([label, stats]: any) => (
-                <div key={label} className="flex justify-between items-center border border-[var(--dash-hairline)] rounded-xl p-3">
+                <div key={label} className="flex justify-between items-center border border-[var(--dash-hairline)] rounded-none p-3">
                   <div>
                     <p className="text-[13px] font-bold">{label}</p>
                     <p className="text-[11px] text-[var(--ink-500)]">{stats.trades} trades · {percent(stats.winRate)}</p>
