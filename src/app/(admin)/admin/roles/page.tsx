@@ -133,10 +133,10 @@ export default function AdminRolesPage() {
   ];
 
   return (
-    <div className="max-w-6xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+    <div className="max-w-6xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[var(--ink-950)] flex items-center gap-2">
+          <h1 className="flex items-center gap-2 text-xl font-semibold tracking-tight text-ink">
             <Shield className="w-6 h-6" /> Admin Roles
           </h1>
           <p className="text-[var(--ink-500)] mt-1">Manage admin access and role-based permissions.</p>
@@ -170,22 +170,22 @@ export default function AdminRolesPage() {
       >
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold mb-1">User Email</label>
+            <label className="mb-1.5 block text-[13px] font-medium text-ink-700">User Email</label>
             <input
               type="email"
               value={newEmail}
               onChange={(e) => setNewEmail(e.target.value)}
-              className="w-full border border-[var(--border)] rounded-xl p-2.5 outline-none focus:border-[var(--ink-950)]"
+              className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400"
               placeholder="Existing user's email address"
             />
             <p className="text-[11px] text-[var(--ink-500)] mt-1">User must already have an account.</p>
           </div>
           <div>
-            <label className="block text-sm font-semibold mb-1">Role</label>
+            <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Role</label>
             <select
               value={newRole}
               onChange={(e) => setNewRole(e.target.value)}
-              className="w-full border border-[var(--border)] rounded-xl p-2.5 outline-none focus:border-[var(--ink-950)] bg-white"
+              className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400 bg-white"
             >
               <option value="super_admin">Super Admin (Full Access)</option>
               <option value="finance">Finance (Orders, Reports, Dashboards)</option>

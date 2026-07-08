@@ -181,10 +181,10 @@ export default function AdminCouponsPage() {
   ];
 
   return (
-    <div className="max-w-6xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+    <div className="max-w-6xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[var(--ink-950)] flex items-center gap-2">
+          <h1 className="flex items-center gap-2 text-xl font-semibold tracking-tight text-ink">
             <Ticket className="w-6 h-6" /> Discount Coupons
           </h1>
           <p className="text-[var(--ink-500)] mt-1">Create and manage promotional codes for challenges.</p>
@@ -207,57 +207,57 @@ export default function AdminCouponsPage() {
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold mb-1">Coupon Code</label>
+              <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Coupon Code</label>
               <input
                 type="text"
                 value={code}
                 onChange={(e) => setCode(e.target.value.toUpperCase())}
-                className="w-full border border-[var(--border)] rounded-xl p-2.5 outline-none focus:border-[var(--ink-950)] font-mono uppercase"
+                className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400 font-mono uppercase"
                 placeholder="SUMMER20"
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold mb-1">Discount %</label>
+              <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Discount %</label>
               <input
                 type="number"
                 min="1"
                 max="100"
                 value={discountPercent}
                 onChange={(e) => setDiscountPercent(e.target.value)}
-                className="w-full border border-[var(--border)] rounded-xl p-2.5 outline-none focus:border-[var(--ink-950)]"
+                className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                 placeholder="20"
               />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold mb-1">Max Uses (Optional)</label>
+              <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Max Uses (Optional)</label>
               <input
                 type="number"
                 min="1"
                 value={maxUses}
                 onChange={(e) => setMaxUses(e.target.value)}
-                className="w-full border border-[var(--border)] rounded-xl p-2.5 outline-none focus:border-[var(--ink-950)]"
+                className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                 placeholder="Unlimited"
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold mb-1">Expiry Date (Optional)</label>
+              <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Expiry Date (Optional)</label>
               <input
                 type="date"
                 value={expiresAt}
                 onChange={(e) => setExpiresAt(e.target.value)}
-                className="w-full border border-[var(--border)] rounded-xl p-2.5 outline-none focus:border-[var(--ink-950)] bg-white"
+                className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400 bg-white"
               />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-semibold mb-1">Restrict to Challenge (Optional)</label>
+            <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Restrict to Challenge (Optional)</label>
             <input
               type="text"
               value={challengeSpecific}
               onChange={(e) => setChallengeSpecific(e.target.value)}
-              className="w-full border border-[var(--border)] rounded-xl p-2.5 outline-none focus:border-[var(--ink-950)]"
+              className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400"
               placeholder="e.g. standard_100k (Leave empty for all)"
             />
             <p className="text-[11px] text-[var(--ink-500)] mt-1">If specified, coupon will only work for this specific program key.</p>

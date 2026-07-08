@@ -130,7 +130,7 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: any[]
           <div className="flex items-center gap-2">
             <button
               onClick={() => { setSelectedUser(user); setIsEditModalOpen(true); }}
-              className="p-1.5 text-[var(--ink-400)] hover:text-[var(--ink-950)] hover:bg-[var(--border)] rounded"
+              className="p-1.5 text-[var(--ink-400)] hover:text-[var(--ink-950)] hover:bg-ink-100 rounded"
             >
               <Edit className="w-4 h-4" />
             </button>
@@ -162,7 +162,7 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: any[]
   ];
 
   return (
-    <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+    <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-[var(--ink-950)]">Users Management</h1>
         <p className="text-[var(--ink-500)]">Manage all registered users, suspend or ban accounts.</p>
@@ -186,11 +186,11 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: any[]
         <div className="space-y-4">
           {actionType !== "unsuspend" && actionType !== "verify_kyc" && (
             <div>
-              <label className="block text-sm font-semibold text-[var(--ink-950)] mb-1">Reason (Optional)</label>
+              <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Reason (Optional)</label>
               <textarea
                 value={actionReason}
                 onChange={(e) => setActionReason(e.target.value)}
-                className="w-full border border-[var(--border)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)]"
+                className="w-full border border-[var(--dash-hairline)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)]"
                 rows={3}
                 placeholder={`Reason for this action...`}
               />
@@ -199,7 +199,7 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: any[]
           <div className="flex justify-end gap-3 mt-6">
             <button
               onClick={() => setIsActionModalOpen(false)}
-              className="px-4 py-2 font-semibold text-[var(--ink-600)] hover:bg-[var(--border)] rounded-full transition-colors"
+              className="rounded-lg px-4 py-2 text-[13px] font-medium text-ink-600 transition-colors hover:bg-ink-100 hover:text-ink"
             >
               Cancel
             </button>

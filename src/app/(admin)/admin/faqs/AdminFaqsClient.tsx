@@ -63,7 +63,7 @@ export function AdminFaqsClient({ initialFaqs }: { initialFaqs: any[] }) {
       </div>
 
       {(isAdding || editingId) && (
-        <div className="bg-white p-6 rounded-2xl border border-[var(--border)] shadow-sm">
+        <div className="bg-white p-6 rounded-2xl border border-[var(--dash-hairline)] shadow-sm">
           <h2 className="text-lg font-semibold mb-4">{editingId ? "Edit FAQ" : "Add New FAQ"}</h2>
           <div className="space-y-4">
             <div>
@@ -72,7 +72,7 @@ export function AdminFaqsClient({ initialFaqs }: { initialFaqs: any[] }) {
                 type="text" 
                 value={form.question} 
                 onChange={(e) => setForm({...form, question: e.target.value})}
-                className="w-full border rounded-lg p-2"
+                className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400"
               />
             </div>
             <div>
@@ -80,7 +80,7 @@ export function AdminFaqsClient({ initialFaqs }: { initialFaqs: any[] }) {
               <textarea 
                 value={form.answer} 
                 onChange={(e) => setForm({...form, answer: e.target.value})}
-                className="w-full border rounded-lg p-2 h-24"
+                className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400 h-24"
               />
             </div>
             <div className="flex gap-4">
@@ -90,7 +90,7 @@ export function AdminFaqsClient({ initialFaqs }: { initialFaqs: any[] }) {
                   type="text" 
                   value={form.category} 
                   onChange={(e) => setForm({...form, category: e.target.value})}
-                  className="w-full border rounded-lg p-2"
+                  className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                 />
               </div>
               <div className="w-32">
@@ -99,7 +99,7 @@ export function AdminFaqsClient({ initialFaqs }: { initialFaqs: any[] }) {
                   type="number" 
                   value={form.sort_order} 
                   onChange={(e) => setForm({...form, sort_order: parseInt(e.target.value)})}
-                  className="w-full border rounded-lg p-2"
+                  className="w-full rounded-[8px] border border-[var(--dash-hairline)] bg-white px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink-400"
                 />
               </div>
             </div>
@@ -121,19 +121,19 @@ export function AdminFaqsClient({ initialFaqs }: { initialFaqs: any[] }) {
         </div>
       )}
 
-      <div className="bg-white rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden">
+      <div className="dash-card overflow-hidden">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-[var(--paper-2)] border-b border-[var(--border)] text-[13px] uppercase tracking-wider text-[var(--ink-500)]">
+            <tr className="bg-[var(--dash-canvas)] border-b border-[var(--dash-hairline)] text-[13px] uppercase tracking-wider text-[var(--ink-500)]">
               <th className="px-6 py-4 font-medium">Order</th>
               <th className="px-6 py-4 font-medium">Category</th>
               <th className="px-6 py-4 font-medium">Question</th>
               <th className="px-6 py-4 font-medium text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[var(--border)]">
+          <tbody className="divide-y divide-[var(--dash-hairline)]">
             {faqs.map(faq => (
-              <tr key={faq.id} className="hover:bg-[var(--paper-2)] transition-colors">
+              <tr key={faq.id} className="hover:bg-[var(--dash-canvas)] transition-colors">
                 <td className="px-6 py-4 text-sm text-gray-500">{faq.sort_order}</td>
                 <td className="px-6 py-4 text-sm font-medium">{faq.category}</td>
                 <td className="px-6 py-4 text-sm text-gray-900">{faq.question}</td>

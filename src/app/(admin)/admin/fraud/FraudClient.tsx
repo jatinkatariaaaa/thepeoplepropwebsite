@@ -210,7 +210,7 @@ export function FraudClient({ initialFlags, severityCounts, typeCounts }: FraudC
           <div className="flex items-center gap-1">
             <button
               onClick={() => openViewModal(flag)}
-              className="p-1.5 text-[var(--ink-400)] hover:text-[var(--ink-950)] hover:bg-[var(--border)] rounded-lg transition-colors"
+              className="rounded-lg p-1.5 text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink"
               title="View Details"
             >
               <Eye className="w-4 h-4" />
@@ -269,7 +269,7 @@ export function FraudClient({ initialFlags, severityCounts, typeCounts }: FraudC
               className={`p-4 rounded-2xl border transition-all text-left ${
                 isActive
                   ? "border-[var(--ink-950)] bg-[var(--ink-950)] text-white shadow-md"
-                  : "border-[var(--border)] bg-white hover:border-[var(--ink-300)]"
+                  : "border-[var(--dash-hairline)] bg-white hover:border-[var(--ink-300)]"
               }`}
             >
               <div className="flex items-center justify-between mb-2">
@@ -308,7 +308,7 @@ export function FraudClient({ initialFlags, severityCounts, typeCounts }: FraudC
             placeholder="Search by user or description..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 bg-white border border-[var(--border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
+            className="w-full pl-9 pr-4 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
           />
         </div>
         <div className="flex items-center gap-2">
@@ -316,7 +316,7 @@ export function FraudClient({ initialFlags, severityCounts, typeCounts }: FraudC
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2.5 bg-white border border-[var(--border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10"
+            className="px-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10"
           >
             <option value="all">All Status</option>
             <option value="open">Open</option>
@@ -327,7 +327,7 @@ export function FraudClient({ initialFlags, severityCounts, typeCounts }: FraudC
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="px-3 py-2.5 bg-white border border-[var(--border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10"
+            className="px-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10"
           >
             <option value="all">All Types</option>
             {Object.entries(typeConfig).map(([key, config]) => (
@@ -349,7 +349,7 @@ export function FraudClient({ initialFlags, severityCounts, typeCounts }: FraudC
       >
         {selectedFlag && (
           <div className="space-y-5">
-            <div className="flex items-start gap-4 p-4 bg-[var(--paper-2)] rounded-xl">
+            <div className="flex items-start gap-4 rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4">
               <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600 font-bold">
                 {(selectedFlag.profiles?.display_name || "?").charAt(0).toUpperCase()}
               </div>
@@ -360,8 +360,8 @@ export function FraudClient({ initialFlags, severityCounts, typeCounts }: FraudC
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Type</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <p className="dash-overline mb-1 text-[10px]">Type</p>
                 <div className="flex items-center gap-1.5">
                   {(() => {
                     const config = typeConfig[selectedFlag.flag_type] || typeConfig.suspicious_activity;
@@ -371,8 +371,8 @@ export function FraudClient({ initialFlags, severityCounts, typeCounts }: FraudC
                   <span className="font-semibold text-[var(--ink-950)]">{typeConfig[selectedFlag.flag_type]?.label || selectedFlag.flag_type}</span>
                 </div>
               </div>
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Severity</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <p className="dash-overline mb-1 text-[10px]">Severity</p>
                 <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium border ${
                   severityConfig[selectedFlag.severity]?.className || severityConfig.low.className
                 }`}>
@@ -383,40 +383,40 @@ export function FraudClient({ initialFlags, severityCounts, typeCounts }: FraudC
                   {severityConfig[selectedFlag.severity]?.label}
                 </span>
               </div>
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">IP Address</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <p className="dash-overline mb-1 text-[10px]">IP Address</p>
                 <p className="font-mono text-sm text-[var(--ink-700)]">{selectedFlag.ip_address || "—"}</p>
               </div>
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Device Fingerprint</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                <p className="dash-overline mb-1 text-[10px]">Device Fingerprint</p>
                 <p className="font-mono text-xs text-[var(--ink-700)] truncate">{selectedFlag.device_fingerprint || "—"}</p>
               </div>
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl col-span-2">
-                <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Flagged</p>
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3 col-span-2">
+                <p className="dash-overline mb-1 text-[10px]">Flagged</p>
                 <p className="font-semibold text-[var(--ink-950)]">{format(new Date(selectedFlag.created_at), "MMM dd, yyyy HH:mm")}</p>
               </div>
             </div>
 
-            <div className="p-4 bg-[var(--paper-2)] rounded-xl">
-              <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Description</p>
+            <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4">
+              <p className="dash-overline mb-1 text-[10px]">Description</p>
               <p className="text-sm text-[var(--ink-800)]">{selectedFlag.description}</p>
             </div>
 
             {selectedFlag.evidence && Object.keys(selectedFlag.evidence).length > 0 && (
-              <div className="p-4 bg-[var(--paper-2)] rounded-xl">
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4">
                 <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-2">Evidence</p>
-                <pre className="text-xs text-[var(--ink-600)] overflow-auto max-h-40 bg-white p-2 rounded-lg border border-[var(--border)]">
+                <pre className="text-xs text-[var(--ink-600)] overflow-auto max-h-40 bg-white p-2 rounded-lg border border-[var(--dash-hairline)]">
                   {JSON.stringify(selectedFlag.evidence, null, 2)}
                 </pre>
               </div>
             )}
 
             {selectedFlag.related_user_ids && selectedFlag.related_user_ids.length > 0 && (
-              <div className="p-4 bg-[var(--paper-2)] rounded-xl">
+              <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4">
                 <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-2">Related Users</p>
                 <div className="flex flex-wrap gap-2">
                   {selectedFlag.related_user_ids.map((id) => (
-                    <span key={id} className="px-2 py-1 bg-white border border-[var(--border)] rounded-lg text-xs font-mono text-[var(--ink-600)]">
+                    <span key={id} className="px-2 py-1 bg-white border border-[var(--dash-hairline)] rounded-lg text-xs font-mono text-[var(--ink-600)]">
                       {id.substring(0, 8)}...
                     </span>
                   ))}
@@ -501,11 +501,11 @@ export function FraudClient({ initialFlags, severityCounts, typeCounts }: FraudC
               </div>
             )}
             <div>
-              <label className="block text-sm font-semibold text-[var(--ink-950)] mb-1">Resolution Notes</label>
+              <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Resolution Notes</label>
               <textarea
                 value={resolution}
                 onChange={(e) => setResolution(e.target.value)}
-                className="w-full border border-[var(--border)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)] transition-colors"
+                className="w-full border border-[var(--dash-hairline)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)] transition-colors"
                 rows={3}
                 placeholder="Describe the resolution or reason for dismissal..."
               />
@@ -513,7 +513,7 @@ export function FraudClient({ initialFlags, severityCounts, typeCounts }: FraudC
             <div className="flex justify-end gap-3 pt-2">
               <button
                 onClick={() => { setIsActionModalOpen(false); setResolution(""); }}
-                className="px-4 py-2 font-semibold text-[var(--ink-600)] hover:bg-[var(--border)] rounded-full transition-colors"
+                className="rounded-lg px-4 py-2 text-[13px] font-medium text-ink-600 transition-colors hover:bg-ink-100 hover:text-ink"
               >
                 Cancel
               </button>

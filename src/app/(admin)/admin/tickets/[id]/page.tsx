@@ -116,11 +116,11 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
   if (!ticket) return null;
 
   return (
-    <div className="max-w-6xl mx-auto h-[calc(100vh-120px)] flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+    <div className="max-w-6xl mx-auto h-[calc(100vh-120px)] flex flex-col animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
       {/* Header */}
       <div className="flex items-center justify-between mb-6 shrink-0">
         <div className="flex items-center gap-4">
-          <Link href="/admin/tickets" className="p-2 bg-white border border-[var(--border)] rounded-xl hover:bg-[var(--paper-2)] transition-colors">
+          <Link href="/admin/tickets" className="p-2 bg-white border border-[var(--dash-hairline)] rounded-xl hover:bg-[var(--dash-canvas)] transition-colors">
             <ArrowLeft className="w-5 h-5 text-[var(--ink-600)]" />
           </Link>
           <div>
@@ -132,7 +132,7 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
 
       <div className="flex flex-col lg:flex-row gap-6 flex-1 min-h-0">
         {/* Chat Thread */}
-        <div className="flex-1 flex flex-col bg-white rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden">
+        <div className="flex-1 flex flex-col dash-card overflow-hidden">
           <div className="flex-1 overflow-y-auto p-6 space-y-6">
             {messages.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-[var(--ink-400)] space-y-3">
@@ -147,7 +147,7 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
                     <div className={`max-w-[80%] rounded-2xl px-5 py-3 ${
                       isAdmin 
                         ? "bg-[var(--ink-950)] text-white rounded-tr-sm" 
-                        : "bg-[var(--paper-2)] text-[var(--ink-950)] border border-[var(--border)] rounded-tl-sm"
+                        : "bg-[var(--dash-canvas)] text-[var(--ink-950)] border border-[var(--dash-hairline)] rounded-tl-sm"
                     }`}>
                       <div className="flex justify-between items-center mb-1 gap-4">
                         <span className={`text-[11px] font-bold ${isAdmin ? "text-[var(--ink-400)]" : "text-[var(--ink-500)]"}`}>
@@ -167,13 +167,13 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
           </div>
 
           {/* Reply Box */}
-          <div className="p-4 border-t border-[var(--border)] bg-[var(--paper-2)]">
+          <div className="p-4 border-t border-[var(--dash-hairline)] bg-[var(--dash-canvas)]">
             <div className="flex gap-3">
               <textarea
                 value={replyText}
                 onChange={(e) => setReplyText(e.target.value)}
                 placeholder="Type your reply here..."
-                className="flex-1 rounded-xl border border-[var(--border)] p-3 text-sm focus:outline-none focus:border-[var(--ink-950)] resize-none"
+                className="flex-1 rounded-xl border border-[var(--dash-hairline)] p-3 text-sm focus:outline-none focus:border-[var(--ink-950)] resize-none"
                 rows={3}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
@@ -197,10 +197,10 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
         {/* Right Panel - Ticket Details */}
         <div className="w-full lg:w-80 shrink-0 space-y-6 overflow-y-auto">
           {/* User Info */}
-          <div className="bg-white rounded-2xl border border-[var(--border)] p-5 shadow-sm">
+          <div className="dash-card p-5">
             <h3 className="text-[13px] font-bold text-[var(--ink-400)] uppercase tracking-wider mb-4">User Details</h3>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-[var(--paper-2)] rounded-full flex items-center justify-center border border-[var(--border)]">
+              <div className="w-10 h-10 bg-[var(--dash-canvas)] rounded-full flex items-center justify-center border border-[var(--dash-hairline)]">
                 <User className="w-5 h-5 text-[var(--ink-600)]" />
               </div>
               <div className="overflow-hidden">
@@ -209,14 +209,14 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
               </div>
             </div>
             {ticket.user_id && (
-              <Link href="/admin/users" className="block text-center w-full py-2 bg-[var(--paper-2)] rounded-lg text-[13px] font-bold text-[var(--ink-600)] hover:text-[var(--ink-950)] transition-colors">
+              <Link href="/admin/users" className="block text-center w-full py-2 bg-[var(--dash-canvas)] rounded-lg text-[13px] font-bold text-[var(--ink-600)] hover:text-[var(--ink-950)] transition-colors">
                 View Full Profile
               </Link>
             )}
           </div>
 
           {/* Ticket Settings */}
-          <div className="bg-white rounded-2xl border border-[var(--border)] p-5 shadow-sm">
+          <div className="dash-card p-5">
             <h3 className="text-[13px] font-bold text-[var(--ink-400)] uppercase tracking-wider mb-4">Ticket Settings</h3>
             
             <div className="space-y-4">
@@ -228,7 +228,7 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
                   className={`w-full rounded-lg border p-2 text-sm font-semibold outline-none ${
                     ticket.status === 'resolved' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
                     ticket.status === 'open' ? 'bg-blue-50 text-blue-700 border-blue-200' :
-                    'bg-white border-[var(--border)] text-[var(--ink-950)]'
+                    'bg-white border-[var(--dash-hairline)] text-[var(--ink-950)]'
                   }`}
                 >
                   <option value="open">Open</option>
@@ -246,7 +246,7 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
                   className={`w-full rounded-lg border p-2 text-sm font-semibold outline-none ${
                     ticket.priority === 'urgent' ? 'bg-red-50 text-red-700 border-red-200' :
                     ticket.priority === 'high' ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                    'bg-white border-[var(--border)] text-[var(--ink-950)]'
+                    'bg-white border-[var(--dash-hairline)] text-[var(--ink-950)]'
                   }`}
                 >
                   <option value="low">Low</option>
@@ -256,7 +256,7 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
                 </select>
               </div>
 
-              <div className="pt-4 border-t border-[var(--border)]">
+              <div className="pt-4 border-t border-[var(--dash-hairline)]">
                 <div className="flex items-center gap-2 text-[12px] text-[var(--ink-500)] mb-2">
                   <Clock className="w-3.5 h-3.5" />
                   <span>Created: {format(new Date(ticket.created_at), "MMM dd, yyyy")}</span>

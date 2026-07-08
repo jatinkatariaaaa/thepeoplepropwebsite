@@ -115,13 +115,13 @@ export default function RuleTemplatesPage() {
     }
   }
 
-  if (loading && rules.length === 0) return <div className="p-10 animate-pulse bg-[var(--paper)] rounded-xl h-40" />;
+  if (loading && rules.length === 0) return <div className="p-10 animate-pulse bg-[var(--dash-canvas)] rounded-xl h-40" />;
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-display font-bold text-[var(--ink-950)]">Rule Templates</h1>
+          <h1 className="text-xl font-semibold tracking-tight text-ink sm:text-2xl">Rule Templates</h1>
           <p className="text-[var(--ink-500)] text-[14px]">Manage rules and risk limits for trading challenges.</p>
         </div>
         <Button onClick={openNewModal} className="shrink-0 gap-2">
@@ -131,7 +131,7 @@ export default function RuleTemplatesPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {rules.map(rule => (
-          <div key={rule.id} className="bg-white rounded-2xl p-5 border border-[var(--border)] shadow-sm hover:shadow-md transition-all flex flex-col">
+          <div key={rule.id} className="dash-card dash-card-hover p-4 flex flex-col">
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center border border-violet-100">
@@ -144,14 +144,14 @@ export default function RuleTemplatesPage() {
               <div className="flex items-center gap-1">
                 <button 
                   onClick={() => handleDuplicate(rule)}
-                  className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[var(--paper-2)] text-[var(--ink-400)] hover:text-[var(--ink-950)] transition-colors"
+                  className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[var(--dash-canvas)] text-[var(--ink-400)] hover:text-[var(--ink-950)] transition-colors"
                   title="Duplicate"
                 >
                   <Copy className="w-4 h-4" />
                 </button>
                 <button 
                   onClick={() => openEditModal(rule)}
-                  className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[var(--paper-2)] text-[var(--ink-400)] hover:text-[var(--ink-950)] transition-colors"
+                  className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[var(--dash-canvas)] text-[var(--ink-400)] hover:text-[var(--ink-950)] transition-colors"
                   title="Edit"
                 >
                   <Edit2 className="w-4 h-4" />
@@ -162,17 +162,17 @@ export default function RuleTemplatesPage() {
             <p className="text-[13px] text-[var(--ink-500)] line-clamp-2 mb-4 h-10">{rule.description}</p>
 
             <div className="grid grid-cols-2 gap-3 mb-4 mt-auto">
-              <div className="bg-[var(--paper-2)] p-2.5 rounded-xl border border-[var(--border)]">
+              <div className="bg-[var(--dash-canvas)] p-2.5 rounded-xl border border-[var(--dash-hairline)]">
                 <p className="text-[11px] text-[var(--ink-500)] font-semibold uppercase tracking-wider mb-0.5">Target</p>
                 <p className="font-bold text-[15px]">{rule.profit_target_pct > 0 ? `${rule.profit_target_pct}%` : 'None'}</p>
               </div>
-              <div className="bg-[var(--paper-2)] p-2.5 rounded-xl border border-[var(--border)]">
+              <div className="bg-[var(--dash-canvas)] p-2.5 rounded-xl border border-[var(--dash-hairline)]">
                 <p className="text-[11px] text-[var(--ink-500)] font-semibold uppercase tracking-wider mb-0.5">Max DD</p>
                 <p className="font-bold text-[15px] text-red-600">{rule.max_overall_drawdown_pct}%</p>
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-1.5 mt-auto pt-4 border-t border-[var(--border)]">
+            <div className="flex flex-wrap gap-1.5 mt-auto pt-4 border-t border-[var(--dash-hairline)]">
               {rule.is_news_trading_allowed && <span className="px-2 py-1 bg-blue-50 text-blue-700 text-[10px] font-bold uppercase rounded-md">News OK</span>}
               {rule.is_weekend_holding_allowed && <span className="px-2 py-1 bg-purple-50 text-purple-700 text-[10px] font-bold uppercase rounded-md">Weekend OK</span>}
               {rule.is_ea_allowed && <span className="px-2 py-1 bg-indigo-50 text-indigo-700 text-[10px] font-bold uppercase rounded-md">EA OK</span>}
@@ -183,15 +183,15 @@ export default function RuleTemplatesPage() {
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="flex items-center justify-between p-5 border-b border-[var(--border)]">
+          <div className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-[12px] border border-[var(--dash-hairline)] bg-white shadow-xl">
+            <div className="flex items-center justify-between p-5 border-b border-[var(--dash-hairline)]">
               <h2 className="font-bold text-[18px] text-[var(--ink-950)] flex items-center gap-2">
                 <Scale className="w-5 h-5" />
                 {editingRule ? "Edit Rule Template" : "Create Rule Template"}
               </h2>
               <button 
                 onClick={() => setIsModalOpen(false)}
-                className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[var(--paper-2)] text-[var(--ink-400)] transition-colors"
+                className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[var(--dash-canvas)] text-[var(--ink-400)] transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -203,81 +203,81 @@ export default function RuleTemplatesPage() {
                 {/* Basic Info */}
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Template Name</label>
+                    <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Template Name</label>
                     <input 
                       type="text" 
                       required
                       value={formData.name}
                       onChange={e => setFormData({...formData, name: e.target.value})}
-                      className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+                      className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
                       placeholder="e.g. Phase 1 Evaluation"
                     />
                   </div>
                   <div>
-                    <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Description</label>
+                    <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Description</label>
                     <textarea 
                       value={formData.description}
                       onChange={e => setFormData({...formData, description: e.target.value})}
-                      className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl p-3 text-[14px] focus:outline-none focus:border-[var(--ink-400)] h-20 resize-none"
+                      className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl p-3 text-[14px] focus:outline-none focus:border-[var(--ink-400)] h-20 resize-none"
                       placeholder="Brief description of these rules..."
                     />
                   </div>
                 </div>
 
                 {/* Core Parameters */}
-                <div className="pt-4 border-t border-[var(--border)]">
+                <div className="pt-4 border-t border-[var(--dash-hairline)]">
                   <h3 className="text-[13px] font-bold text-[var(--ink-950)] mb-4 uppercase tracking-wider">Core Parameters</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Profit Target (%)</label>
+                      <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Profit Target (%)</label>
                       <input 
                         type="number" min="0" step="0.01" required
                         value={formData.profit_target_pct}
                         onChange={e => setFormData({...formData, profit_target_pct: parseFloat(e.target.value) || 0})}
-                        className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+                        className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
                       />
                     </div>
                     <div>
-                      <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Max Daily DD (%)</label>
+                      <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Max Daily DD (%)</label>
                       <input 
                         type="number" min="0" step="0.01" required
                         value={formData.max_daily_drawdown_pct}
                         onChange={e => setFormData({...formData, max_daily_drawdown_pct: parseFloat(e.target.value) || 0})}
-                        className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+                        className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
                       />
                     </div>
                     <div>
-                      <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Max Overall DD (%)</label>
+                      <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Max Overall DD (%)</label>
                       <input 
                         type="number" min="0" step="0.01" required
                         value={formData.max_overall_drawdown_pct}
                         onChange={e => setFormData({...formData, max_overall_drawdown_pct: parseFloat(e.target.value) || 0})}
-                        className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+                        className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
                       />
                     </div>
                     <div>
-                      <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Min Trading Days</label>
+                      <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Min Trading Days</label>
                       <input 
                         type="number" min="0" step="1" required
                         value={formData.min_trading_days}
                         onChange={e => setFormData({...formData, min_trading_days: parseInt(e.target.value) || 0})}
-                        className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+                        className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
                       />
                     </div>
                     <div>
-                      <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Max Trading Days (0 = ∞)</label>
+                      <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Max Trading Days (0 = ∞)</label>
                       <input 
                         type="number" min="0" step="1" required
                         value={formData.max_trading_days}
                         onChange={e => setFormData({...formData, max_trading_days: parseInt(e.target.value) || 0})}
-                        className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+                        className="w-full bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
                       />
                     </div>
                   </div>
                 </div>
 
                 {/* Risk Parameters */}
-                <div className="pt-4 border-t border-[var(--border)]">
+                <div className="pt-4 border-t border-[var(--dash-hairline)]">
                   <h3 className="text-[13px] font-bold text-[var(--ink-950)] mb-4 uppercase tracking-wider">Trading Restrictions</h3>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                     {[
@@ -295,7 +295,7 @@ export default function RuleTemplatesPage() {
                           id={param.key}
                           checked={(formData as any)[param.key]}
                           onChange={e => setFormData({...formData, [param.key]: e.target.checked})}
-                          className="w-4 h-4 rounded border-[var(--border)] text-[var(--accent)] focus:ring-[var(--accent)]"
+                          className="w-4 h-4 rounded border-[var(--dash-hairline)] text-[var(--accent)] focus:ring-[var(--accent)]"
                         />
                         <label htmlFor={param.key} className="text-[13px] font-medium text-[var(--ink-700)] cursor-pointer select-none">
                           Allow {param.label}
@@ -307,7 +307,7 @@ export default function RuleTemplatesPage() {
               </form>
             </div>
 
-            <div className="p-5 border-t border-[var(--border)] bg-[var(--paper)] flex gap-3">
+            <div className="flex gap-3 border-t border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4">
               <Button variant="outline" className="flex-1" onClick={() => setIsModalOpen(false)}>
                 Cancel
               </Button>

@@ -124,12 +124,12 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
               key={gateway.id}
               className={`rounded-2xl border transition-all overflow-hidden ${
                 gateway.is_active
-                  ? "border-[var(--border)] bg-white shadow-sm"
-                  : "border-[var(--border)] bg-[var(--paper-2)] opacity-70"
+                  ? "border-[var(--dash-hairline)] bg-white shadow-sm"
+                  : "border-[var(--dash-hairline)] bg-[var(--dash-canvas)] opacity-70"
               }`}
             >
               {/* Header */}
-              <div className="p-6 border-b border-[var(--border)]">
+              <div className="p-6 border-b border-[var(--dash-hairline)]">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
                     <div
@@ -165,32 +165,32 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
               {/* Details */}
               <div className="p-6 space-y-4">
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                    <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Fee</p>
+                  <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                    <p className="dash-overline mb-1 text-[10px]">Fee</p>
                     <p className="font-semibold text-[var(--ink-950)]">{gateway.fee_percentage}%</p>
                   </div>
-                  <div className="p-3 bg-[var(--paper-2)] rounded-xl">
-                    <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Min / Max</p>
+                  <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
+                    <p className="dash-overline mb-1 text-[10px]">Min / Max</p>
                     <p className="font-semibold text-[var(--ink-950)] text-sm">${gateway.min_amount} / ${gateway.max_amount}</p>
                   </div>
                 </div>
 
-                <div className="p-3 bg-[var(--paper-2)] rounded-xl">
+                <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
                   <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-2">Supported Currencies</p>
                   <div className="flex flex-wrap gap-1.5">
                     {(gateway.supported_currencies || []).map((c) => (
-                      <span key={c} className="px-2 py-0.5 bg-white border border-[var(--border)] rounded-full text-xs font-medium text-[var(--ink-600)]">
+                      <span key={c} className="px-2 py-0.5 bg-white border border-[var(--dash-hairline)] rounded-full text-xs font-medium text-[var(--ink-600)]">
                         {c}
                       </span>
                     ))}
                   </div>
                 </div>
 
-                <div className="p-3 bg-[var(--paper-2)] rounded-xl">
+                <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
                   <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-2">Payment Methods</p>
                   <div className="flex flex-wrap gap-1.5">
                     {(gateway.supported_methods || []).map((m) => (
-                      <span key={m} className="px-2 py-0.5 bg-white border border-[var(--border)] rounded-full text-xs font-medium text-[var(--ink-600)] capitalize">
+                      <span key={m} className="px-2 py-0.5 bg-white border border-[var(--dash-hairline)] rounded-full text-xs font-medium text-[var(--ink-600)] capitalize">
                         {m.replace("crypto_", "").replace("_", " ")}
                       </span>
                     ))}
@@ -198,7 +198,7 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
                 </div>
 
                 {/* API Key Status */}
-                <div className="flex items-center gap-2 p-3 bg-[var(--paper-2)] rounded-xl">
+                <div className="flex items-center gap-2 rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
                   <Key className={`w-4 h-4 ${gateway.api_key ? "text-emerald-500" : "text-red-400"}`} />
                   <span className={`text-xs font-medium ${gateway.api_key ? "text-emerald-600" : "text-red-500"}`}>
                     {gateway.api_key ? "API Key configured" : "API Key missing"}
@@ -206,7 +206,7 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
                 </div>
 
                 {/* Webhook Status */}
-                <div className="flex items-center gap-2 p-3 bg-[var(--paper-2)] rounded-xl">
+                <div className="flex items-center gap-2 rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
                   <Webhook className={`w-4 h-4 ${gateway.webhook_url ? "text-emerald-500" : "text-[var(--ink-400)]"}`} />
                   <span className={`text-xs font-medium ${gateway.webhook_url ? "text-emerald-600" : "text-[var(--ink-400)]"}`}>
                     {gateway.webhook_url ? "Webhook configured" : "No webhook URL"}
@@ -215,7 +215,7 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
               </div>
 
               {/* Footer */}
-              <div className="px-6 py-4 border-t border-[var(--border)] bg-[var(--paper-2)]">
+              <div className="px-6 py-4 border-t border-[var(--dash-hairline)] bg-[var(--dash-canvas)]">
                 <button
                   onClick={() => openEditModal(gateway)}
                   className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[var(--ink-950)] text-white rounded-xl font-semibold hover:bg-black transition-colors"
@@ -245,7 +245,7 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
                 className={`p-4 rounded-xl border cursor-pointer transition-all ${
                   editingGateway.is_active
                     ? "border-emerald-200 bg-emerald-50"
-                    : "border-[var(--border)] bg-[var(--paper-2)]"
+                    : "border-[var(--dash-hairline)] bg-[var(--dash-canvas)]"
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
@@ -264,7 +264,7 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
                 className={`p-4 rounded-xl border cursor-pointer transition-all ${
                   !editingGateway.is_sandbox
                     ? "border-emerald-200 bg-emerald-50"
-                    : "border-[var(--border)] bg-[var(--paper-2)]"
+                    : "border-[var(--dash-hairline)] bg-[var(--dash-canvas)]"
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
@@ -286,13 +286,13 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
               </h4>
 
               <div>
-                <label className="block text-xs font-medium text-[var(--ink-600)] mb-1">API Key (Public)</label>
+                <label className="mb-1 block text-xs font-medium text-ink-600">API Key (Public)</label>
                 <div className="relative">
                   <input
                     type={showSecrets["api_key"] ? "text" : "password"}
                     value={editingGateway.api_key || ""}
                     onChange={(e) => updateEditingField("api_key", e.target.value)}
-                    className="w-full pl-3 pr-10 py-2.5 bg-white border border-[var(--border)] rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
+                    className="w-full pl-3 pr-10 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
                     placeholder="pk_live_..."
                   />
                   <button
@@ -305,13 +305,13 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[var(--ink-600)] mb-1">Secret Key</label>
+                <label className="mb-1 block text-xs font-medium text-ink-600">Secret Key</label>
                 <div className="relative">
                   <input
                     type={showSecrets["secret_key"] ? "text" : "password"}
                     value={editingGateway.secret_key || ""}
                     onChange={(e) => updateEditingField("secret_key", e.target.value)}
-                    className="w-full pl-3 pr-10 py-2.5 bg-white border border-[var(--border)] rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
+                    className="w-full pl-3 pr-10 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
                     placeholder="sk_live_..."
                   />
                   <button
@@ -331,24 +331,24 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
               </h4>
 
               <div>
-                <label className="block text-xs font-medium text-[var(--ink-600)] mb-1">Webhook URL</label>
+                <label className="mb-1 block text-xs font-medium text-ink-600">Webhook URL</label>
                 <input
                   type="text"
                   value={editingGateway.webhook_url || ""}
                   onChange={(e) => updateEditingField("webhook_url", e.target.value)}
-                  className="w-full px-3 py-2.5 bg-white border border-[var(--border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
+                  className="w-full px-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
                   placeholder="https://your-domain.com/api/webhook/..."
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[var(--ink-600)] mb-1">Webhook Secret</label>
+                <label className="mb-1 block text-xs font-medium text-ink-600">Webhook Secret</label>
                 <div className="relative">
                   <input
                     type={showSecrets["webhook_secret"] ? "text" : "password"}
                     value={editingGateway.webhook_secret || ""}
                     onChange={(e) => updateEditingField("webhook_secret", e.target.value)}
-                    className="w-full pl-3 pr-10 py-2.5 bg-white border border-[var(--border)] rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
+                    className="w-full pl-3 pr-10 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
                     placeholder="whsec_..."
                   />
                   <button
@@ -369,7 +369,7 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-[var(--ink-600)] mb-1">Fee %</label>
+                  <label className="mb-1 block text-xs font-medium text-ink-600">Fee %</label>
                   <div className="relative">
                     <Percent className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--ink-400)]" />
                     <input
@@ -377,31 +377,31 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
                       step="0.01"
                       value={editingGateway.fee_percentage}
                       onChange={(e) => updateEditingField("fee_percentage", parseFloat(e.target.value) || 0)}
-                      className="w-full pl-9 pr-3 py-2.5 bg-white border border-[var(--border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
+                      className="w-full pl-9 pr-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[var(--ink-600)] mb-1">Min Amount</label>
+                  <label className="mb-1 block text-xs font-medium text-ink-600">Min Amount</label>
                   <div className="relative">
                     <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--ink-400)]" />
                     <input
                       type="number"
                       value={editingGateway.min_amount}
                       onChange={(e) => updateEditingField("min_amount", parseFloat(e.target.value) || 0)}
-                      className="w-full pl-9 pr-3 py-2.5 bg-white border border-[var(--border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
+                      className="w-full pl-9 pr-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[var(--ink-600)] mb-1">Max Amount</label>
+                  <label className="mb-1 block text-xs font-medium text-ink-600">Max Amount</label>
                   <div className="relative">
                     <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--ink-400)]" />
                     <input
                       type="number"
                       value={editingGateway.max_amount}
                       onChange={(e) => updateEditingField("max_amount", parseFloat(e.target.value) || 0)}
-                      className="w-full pl-9 pr-3 py-2.5 bg-white border border-[var(--border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
+                      className="w-full pl-9 pr-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
                     />
                   </div>
                 </div>
@@ -422,7 +422,7 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
                     e.target.value.split(",").map((s) => s.trim()).filter(Boolean)
                   )
                 }
-                className="w-full px-3 py-2.5 bg-white border border-[var(--border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
+                className="w-full px-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
                 placeholder="USD, EUR, GBP"
               />
             </div>
@@ -442,7 +442,7 @@ export function PaymentGatewaysClient({ initialGateways }: PaymentGatewaysClient
             <div className="flex justify-end gap-3 pt-2">
               <button
                 onClick={() => { setIsEditModalOpen(false); setEditingGateway(null); }}
-                className="px-4 py-2 font-semibold text-[var(--ink-600)] hover:bg-[var(--border)] rounded-full transition-colors"
+                className="rounded-lg px-4 py-2 text-[13px] font-medium text-ink-600 transition-colors hover:bg-ink-100 hover:text-ink"
               >
                 Cancel
               </button>

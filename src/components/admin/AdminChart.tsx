@@ -16,24 +16,21 @@ import {
 } from "recharts";
 
 const BRAND_COLORS = {
-  lime: "#cbfb45",
-  dark: "#0c0c0c",
-  muted: "#6c6a68",
-  border: "#E2E8F0",
+  dark: "#0F172A",
+  muted: "#94A3B8",
+  border: "rgba(15, 23, 42, 0.06)",
   success: "#059669",
-  danger: "#DC2626",
+  danger: "#E11D48",
   warning: "#D97706",
-  violet: "#7C3AED",
-  sky: "#0284C7",
 };
 
 const PIE_COLORS = [
-  BRAND_COLORS.dark,
-  BRAND_COLORS.lime,
-  BRAND_COLORS.success,
-  BRAND_COLORS.violet,
-  BRAND_COLORS.sky,
-  BRAND_COLORS.warning,
+  "#0F172A",
+  "#059669",
+  "#65A30D",
+  "#64748B",
+  "#D97706",
+  "#94A3B8",
 ];
 
 interface ChartProps {
@@ -62,10 +59,10 @@ interface PieChartProps extends ChartProps {
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-white px-4 py-3 shadow-lg">
-      <p className="mb-1 text-[12px] font-medium text-[var(--ink-400)]">{label}</p>
+    <div className="dash-tooltip">
+      <p className="mb-1 text-[11px] font-medium text-ink-400">{label}</p>
       {payload.map((entry: any, i: number) => (
-        <p key={i} className="text-[14px] font-bold text-[var(--ink-950)]">
+        <p key={i} className="dash-tooltip-value text-[12px]">
           {typeof entry.value === "number" && entry.name?.toLowerCase().includes("revenue")
             ? `$${entry.value.toLocaleString()}`
             : entry.value?.toLocaleString()}
@@ -90,20 +87,20 @@ export function AdminAreaChart({
         <defs>
           {gradient && (
             <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={color} stopOpacity={0.2} />
+              <stop offset="0%" stopColor={color} stopOpacity={0.1} />
               <stop offset="100%" stopColor={color} stopOpacity={0} />
             </linearGradient>
           )}
         </defs>
-        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke={BRAND_COLORS.border} vertical={false} />
         <XAxis
           dataKey={xKey}
-          tick={{ fontSize: 12, fill: BRAND_COLORS.muted }}
+          tick={{ fontSize: 11, fill: BRAND_COLORS.muted }}
           axisLine={false}
           tickLine={false}
         />
         <YAxis
-          tick={{ fontSize: 12, fill: BRAND_COLORS.muted }}
+          tick={{ fontSize: 11, fill: BRAND_COLORS.muted }}
           axisLine={false}
           tickLine={false}
           width={50}
@@ -113,10 +110,10 @@ export function AdminAreaChart({
           type="monotone"
           dataKey={dataKey}
           stroke={color}
-          strokeWidth={2.5}
+          strokeWidth={1.5}
           fill={gradient ? `url(#${gradientId})` : "transparent"}
           dot={false}
-          activeDot={{ r: 5, fill: color, stroke: "#fff", strokeWidth: 2 }}
+          activeDot={{ r: 4, fill: color, stroke: "#fff", strokeWidth: 2 }}
         />
       </AreaChart>
     </ResponsiveContainer>
@@ -133,21 +130,21 @@ export function AdminBarChart({
   return (
     <ResponsiveContainer width="100%" height={height}>
       <BarChart data={data} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke={BRAND_COLORS.border} vertical={false} />
         <XAxis
           dataKey={xKey}
-          tick={{ fontSize: 12, fill: BRAND_COLORS.muted }}
+          tick={{ fontSize: 11, fill: BRAND_COLORS.muted }}
           axisLine={false}
           tickLine={false}
         />
         <YAxis
-          tick={{ fontSize: 12, fill: BRAND_COLORS.muted }}
+          tick={{ fontSize: 11, fill: BRAND_COLORS.muted }}
           axisLine={false}
           tickLine={false}
           width={50}
         />
         <Tooltip content={<CustomTooltip />} />
-        <Bar dataKey={dataKey} fill={color} radius={[6, 6, 0, 0]} maxBarSize={40} />
+        <Bar dataKey={dataKey} fill={color} radius={[3, 3, 0, 0]} maxBarSize={28} />
       </BarChart>
     </ResponsiveContainer>
   );

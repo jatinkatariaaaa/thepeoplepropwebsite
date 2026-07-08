@@ -204,7 +204,7 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
           <div className="flex items-center gap-1">
             <button
               onClick={() => openViewModal(n)}
-              className="p-1.5 text-[var(--ink-400)] hover:text-[var(--ink-950)] hover:bg-[var(--border)] rounded-lg transition-colors"
+              className="rounded-lg p-1.5 text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink"
               title="View"
             >
               <Eye className="w-4 h-4" />
@@ -233,11 +233,11 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
           { key: "unread", label: "Unread", count: unreadCount, icon: BellDot, color: "text-sky-600", bg: "bg-sky-50" },
           { key: "critical", label: "Critical", count: notifications.filter((n) => n.severity === "critical").length, icon: AlertOctagon, color: "text-red-600", bg: "bg-red-50" },
           { key: "warning", label: "Warnings", count: notifications.filter((n) => n.severity === "warning").length, icon: AlertTriangle, color: "text-amber-600", bg: "bg-amber-50" },
-          { key: "total", label: "Total", count: notifications.length, icon: Bell, color: "text-[var(--ink-700)]", bg: "bg-[var(--paper-2)]" },
+          { key: "total", label: "Total", count: notifications.length, icon: Bell, color: "text-[var(--ink-700)]", bg: "bg-[var(--dash-canvas)]" },
         ].map((stat) => {
           const Icon = stat.icon;
           return (
-            <div key={stat.key} className="p-4 rounded-2xl border border-[var(--border)] bg-white">
+            <div key={stat.key} className="dash-card p-4">
               <div className="flex items-center justify-between mb-2">
                 <Icon className={`w-5 h-5 ${stat.color}`} />
                 <span className="text-2xl font-bold text-[var(--ink-950)]">{stat.count}</span>
@@ -258,7 +258,7 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
               placeholder="Search notifications..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2.5 bg-white border border-[var(--border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
+              className="w-full pl-9 pr-4 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
             />
           </div>
           <div className="flex items-center gap-2">
@@ -266,7 +266,7 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
             <select
               value={readFilter}
               onChange={(e) => setReadFilter(e.target.value)}
-              className="px-3 py-2.5 bg-white border border-[var(--border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10"
+              className="px-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10"
             >
               <option value="all">All</option>
               <option value="unread">Unread</option>
@@ -275,7 +275,7 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value)}
-              className="px-3 py-2.5 bg-white border border-[var(--border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10"
+              className="px-3 py-2.5 bg-white border border-[var(--dash-hairline)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10"
             >
               <option value="all">All Types</option>
               {Object.entries(typeConfig).map(([key, config]) => (
@@ -329,7 +329,7 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
               </div>
             </div>
 
-            <div className="p-4 bg-[var(--paper-2)] rounded-xl">
+            <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4">
               <p className="text-sm text-[var(--ink-800)]">{selectedNotif.message}</p>
             </div>
 

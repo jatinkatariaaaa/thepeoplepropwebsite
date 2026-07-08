@@ -37,9 +37,9 @@ export default async function AdminAffiliatesPage() {
   const totalPending = enrichedAffiliates.reduce((sum: number, a: any) => sum + Number(a.pending_payout || 0), 0);
 
   return (
-    <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+    <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
       <div className="mb-8">
-        <h1 className="text-2xl font-display font-bold text-[var(--ink-950)] mb-2">Affiliate Management</h1>
+        <h1 className="mb-1 text-xl font-semibold tracking-tight text-ink sm:text-2xl">Affiliate Management</h1>
         <p className="text-[var(--ink-500)]">Manage affiliates, track referrals, commissions, and process payouts.</p>
       </div>
 

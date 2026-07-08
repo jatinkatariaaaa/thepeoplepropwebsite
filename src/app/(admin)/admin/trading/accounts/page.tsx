@@ -305,7 +305,7 @@ export default function TradingAccountsPage() {
     <div className="max-w-7xl mx-auto space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-display font-bold text-[var(--ink-950)]">Trading Accounts</h1>
+          <h1 className="text-xl font-semibold tracking-tight text-ink sm:text-2xl">Trading Accounts</h1>
           <p className="text-[var(--ink-500)] text-[14px]">View and manage all active challenges and funded accounts.</p>
         </div>
         <Button className="shrink-0 gap-2" onClick={() => setCreateOpen(true)}>
@@ -313,7 +313,7 @@ export default function TradingAccountsPage() {
         </Button>
       </div>
 
-      <div className="bg-white border border-[var(--border)] rounded-2xl p-4 flex flex-col sm:flex-row gap-4 justify-between items-center">
+      <div className="bg-white border border-[var(--dash-hairline)] rounded-2xl p-4 flex flex-col sm:flex-row gap-4 justify-between items-center">
         <div className="relative w-full sm:w-96">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--ink-400)]" />
           <input 
@@ -321,7 +321,7 @@ export default function TradingAccountsPage() {
             placeholder="Search by account #, email, or name..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 h-10 bg-[var(--paper-2)] border border-[var(--border)] rounded-xl text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
+            className="w-full pl-9 pr-4 h-10 bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl text-[14px] focus:outline-none focus:border-[var(--ink-400)]"
           />
         </div>
         <div className="flex items-center gap-3 w-full sm:w-auto">
@@ -331,7 +331,7 @@ export default function TradingAccountsPage() {
           <select 
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="h-10 bg-[var(--paper-2)] border border-[var(--border)] rounded-xl px-3 text-[13px] focus:outline-none font-medium outline-none min-w-[120px]"
+            className="h-10 bg-[var(--dash-canvas)] border border-[var(--dash-hairline)] rounded-xl px-3 text-[13px] focus:outline-none font-medium outline-none min-w-[120px]"
           >
             <option value="all">All Statuses</option>
             <option value="active">Active</option>

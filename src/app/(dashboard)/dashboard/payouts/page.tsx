@@ -41,10 +41,11 @@ export default async function PayoutsPage() {
     .order("created_at", { ascending: false });
 
   return (
-    <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
-      <div className="mb-8">
-        <h1 className="text-2xl font-display font-bold text-[var(--ink-950)] mb-2">Payouts</h1>
-        <p className="text-[var(--ink-500)]">Request profit withdrawals from your funded accounts.</p>
+    <div className="mx-auto max-w-4xl animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out">
+      <div className="mb-6">
+        <p className="dash-overline mb-1.5">Capital</p>
+        <h1 className="text-xl font-semibold tracking-tight text-ink sm:text-2xl">Payouts</h1>
+        <p className="mt-1 text-sm text-ink-500">Request profit withdrawals from your funded accounts.</p>
       </div>
 
       <PayoutsClient 

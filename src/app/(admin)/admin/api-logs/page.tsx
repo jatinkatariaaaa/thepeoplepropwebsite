@@ -83,7 +83,7 @@ export default function AdminApiLogsPage() {
       case "PUT": return "text-amber-600 bg-amber-50";
       case "PATCH": return "text-violet-600 bg-violet-50";
       case "DELETE": return "text-red-600 bg-red-50";
-      default: return "text-[var(--ink-500)] bg-[var(--paper-2)]";
+      default: return "text-[var(--ink-500)] bg-[var(--dash-canvas)]";
     }
   };
 
@@ -92,7 +92,7 @@ export default function AdminApiLogsPage() {
     if (code >= 300 && code < 400) return "text-blue-600 bg-blue-50";
     if (code >= 400 && code < 500) return "text-amber-600 bg-amber-50";
     if (code >= 500) return "text-red-600 bg-red-50";
-    return "text-[var(--ink-500)] bg-[var(--paper-2)]";
+    return "text-[var(--ink-500)] bg-[var(--dash-canvas)]";
   };
 
   const getApiTypeIcon = (type: string) => {
@@ -173,16 +173,16 @@ export default function AdminApiLogsPage() {
   const totalPages = Math.ceil(total / limit);
 
   return (
-    <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out pb-12">
+    <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out pb-12">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-[var(--ink-950)] flex items-center gap-2">
+        <h1 className="flex items-center gap-2 text-xl font-semibold tracking-tight text-ink">
           <Activity className="w-6 h-6" /> API Logs
         </h1>
         <p className="text-[var(--ink-500)] mt-1">Monitor API requests, response times, and errors across all integrations.</p>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-2xl border border-[var(--border)] p-4 shadow-sm mb-6">
+      <div className="dash-card p-4 mb-6">
         <div className="flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center">
           <div className="flex items-center gap-3 flex-wrap">
             <div className="relative">
@@ -193,13 +193,13 @@ export default function AdminApiLogsPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && fetchLogs()}
-                className="pl-9 pr-4 py-2 border border-[var(--border)] rounded-xl text-sm outline-none focus:ring-2 focus:ring-[var(--ink-950)] w-64"
+                className="pl-9 pr-4 py-2 border border-[var(--dash-hairline)] rounded-xl text-sm outline-none focus:ring-2 focus:ring-[var(--ink-950)] w-64"
               />
             </div>
             <select
               value={apiType}
               onChange={(e) => setApiType(e.target.value as ApiType)}
-              className="px-3 py-2 border border-[var(--border)] rounded-xl text-sm outline-none bg-white"
+              className="px-3 py-2 border border-[var(--dash-hairline)] rounded-xl text-sm outline-none bg-white"
             >
               <option value="all">All APIs</option>
               <option value="payment">Payment API</option>
@@ -211,7 +211,7 @@ export default function AdminApiLogsPage() {
             <select
               value={methodFilter}
               onChange={(e) => setMethodFilter(e.target.value as MethodFilter)}
-              className="px-3 py-2 border border-[var(--border)] rounded-xl text-sm outline-none bg-white"
+              className="px-3 py-2 border border-[var(--dash-hairline)] rounded-xl text-sm outline-none bg-white"
             >
               <option value="all">All Methods</option>
               <option value="GET">GET</option>
@@ -223,7 +223,7 @@ export default function AdminApiLogsPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 border border-[var(--border)] rounded-xl text-sm outline-none bg-white"
+              className="px-3 py-2 border border-[var(--dash-hairline)] rounded-xl text-sm outline-none bg-white"
             >
               <option value="all">All Status</option>
               <option value="2xx">2xx Success</option>
@@ -236,13 +236,13 @@ export default function AdminApiLogsPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={clearFilters}
-              className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-[var(--ink-500)] hover:text-[var(--ink-950)] rounded-xl hover:bg-[var(--paper-2)] transition-colors"
+              className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-[var(--ink-500)] hover:text-[var(--ink-950)] rounded-xl hover:bg-[var(--dash-canvas)] transition-colors"
             >
               <X className="w-3.5 h-3.5" /> Clear
             </button>
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-[var(--ink-500)] hover:text-[var(--ink-950)] rounded-xl hover:bg-[var(--paper-2)] transition-colors"
+              className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-[var(--ink-500)] hover:text-[var(--ink-950)] rounded-xl hover:bg-[var(--dash-canvas)] transition-colors"
             >
               <Filter className="w-3.5 h-3.5" /> Filters
             </button>
@@ -257,14 +257,14 @@ export default function AdminApiLogsPage() {
         </div>
 
         {showFilters && (
-          <div className="mt-4 pt-4 border-t border-[var(--border)] flex items-center gap-4">
+          <div className="mt-4 pt-4 border-t border-[var(--dash-hairline)] flex items-center gap-4">
             <div className="flex items-center gap-2">
               <span className="text-sm text-[var(--ink-500)]">From:</span>
               <input
                 type="date"
                 value={fromDate}
                 onChange={(e) => setFromDate(e.target.value)}
-                className="border border-[var(--border)] rounded-lg px-2 py-1.5 text-sm outline-none bg-white"
+                className="border border-[var(--dash-hairline)] rounded-lg px-2 py-1.5 text-sm outline-none bg-white"
               />
             </div>
             <div className="flex items-center gap-2">
@@ -273,7 +273,7 @@ export default function AdminApiLogsPage() {
                 type="date"
                 value={toDate}
                 onChange={(e) => setToDate(e.target.value)}
-                className="border border-[var(--border)] rounded-lg px-2 py-1.5 text-sm outline-none bg-white"
+                className="border border-[var(--dash-hairline)] rounded-lg px-2 py-1.5 text-sm outline-none bg-white"
               />
             </div>
           </div>
@@ -288,7 +288,7 @@ export default function AdminApiLogsPage() {
           { label: "Errors", value: logs.filter(l => l.error_message).length.toLocaleString(), color: "text-red-600" },
           { label: "Success Rate", value: `${logs.length ? Math.round((logs.filter(l => l.status_code >= 200 && l.status_code < 300).length / logs.length) * 100) : 0}%`, color: "text-amber-600" },
         ].map((stat, i) => (
-          <div key={i} className="bg-white rounded-xl border border-[var(--border)] p-4 shadow-sm">
+          <div key={i} className="bg-white rounded-xl border border-[var(--dash-hairline)] p-4 shadow-sm">
             <p className="text-[11px] font-bold text-[var(--ink-400)] uppercase tracking-wider mb-1">{stat.label}</p>
             <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
           </div>
@@ -308,14 +308,14 @@ export default function AdminApiLogsPage() {
             <button
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="px-3 py-1.5 rounded-lg text-sm font-semibold text-[var(--ink-500)] hover:bg-[var(--paper-2)] disabled:opacity-50"
+              className="px-3 py-1.5 rounded-lg text-sm font-semibold text-[var(--ink-500)] hover:bg-[var(--dash-canvas)] disabled:opacity-50"
             >
               Previous
             </button>
             <button
               onClick={() => setPage(p => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="px-3 py-1.5 rounded-lg text-sm font-semibold text-[var(--ink-500)] hover:bg-[var(--paper-2)] disabled:opacity-50"
+              className="px-3 py-1.5 rounded-lg text-sm font-semibold text-[var(--ink-500)] hover:bg-[var(--dash-canvas)] disabled:opacity-50"
             >
               Next
             </button>

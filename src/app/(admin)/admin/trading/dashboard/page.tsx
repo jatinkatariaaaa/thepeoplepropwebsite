@@ -89,13 +89,13 @@ export default function RiskDashboardPage() {
     setLoading(false);
   }
 
-  if (loading) return <div className="p-10 animate-pulse bg-[var(--paper)] rounded-xl h-64" />;
+  if (loading) return <div className="p-10 animate-pulse bg-[var(--dash-canvas)] rounded-xl h-64" />;
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-display font-bold text-[var(--ink-950)] flex items-center gap-2">
+          <h1 className="flex items-center gap-2 text-xl font-semibold tracking-tight text-ink sm:text-2xl">
             <Activity className="w-6 h-6 text-indigo-600" /> Risk Dashboard
           </h1>
           <p className="text-[var(--ink-500)] text-[14px]">Monitor live trading metrics and risk warnings.</p>
@@ -106,18 +106,18 @@ export default function RiskDashboardPage() {
         
         {/* Left Col: Alerts */}
         <div className="lg:col-span-1 space-y-6">
-          <div className="bg-white rounded-2xl border border-[var(--border)] overflow-hidden">
-            <div className="p-4 border-b border-[var(--border)] bg-[var(--paper)] flex items-center justify-between">
+          <div className="dash-card overflow-hidden">
+            <div className="p-4 border-b border-[var(--dash-hairline)] bg-[var(--dash-canvas)] flex items-center justify-between">
               <h3 className="font-bold text-[14px] text-[var(--ink-950)] flex items-center gap-2">
                 <ShieldAlert className="w-4 h-4 text-amber-600" /> Recent Alerts
               </h3>
             </div>
-            <div className="divide-y divide-[var(--border)]">
+            <div className="divide-y divide-[var(--dash-hairline)]">
               {alerts.length === 0 ? (
                 <div className="p-6 text-center text-[var(--ink-500)] text-[13px]">No recent alerts.</div>
               ) : (
                 alerts.map(alert => (
-                  <div key={alert.id} className="p-4 hover:bg-[var(--paper-2)] transition-colors">
+                  <div key={alert.id} className="p-4 hover:bg-[var(--dash-canvas)] transition-colors">
                     <div className="flex items-start gap-3">
                       <div className={cn(
                         "mt-0.5 p-1.5 rounded-lg shrink-0",
@@ -152,8 +152,8 @@ export default function RiskDashboardPage() {
         <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
           
           {/* Nearing Daily Drawdown */}
-          <div className="bg-white rounded-2xl border border-[var(--border)] overflow-hidden">
-            <div className="p-4 border-b border-[var(--border)] bg-[var(--paper)]">
+          <div className="dash-card overflow-hidden">
+            <div className="p-4 border-b border-[var(--dash-hairline)] bg-[var(--dash-canvas)]">
               <h3 className="font-bold text-[14px] text-[var(--ink-950)] flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4 text-red-500" /> Nearing Daily Limit
               </h3>
@@ -162,7 +162,7 @@ export default function RiskDashboardPage() {
               {nearingDaily.length === 0 ? (
                 <div className="p-6 text-center text-[var(--ink-500)] text-[13px]">No accounts near daily limit.</div>
               ) : (
-                <div className="divide-y divide-[var(--border)]">
+                <div className="divide-y divide-[var(--dash-hairline)]">
                   {nearingDaily.map(acc => (
                     <div key={acc.id} className="p-4 flex items-center justify-between">
                       <div>
@@ -183,8 +183,8 @@ export default function RiskDashboardPage() {
           </div>
 
           {/* Nearing Max Drawdown */}
-          <div className="bg-white rounded-2xl border border-[var(--border)] overflow-hidden">
-            <div className="p-4 border-b border-[var(--border)] bg-[var(--paper)]">
+          <div className="dash-card overflow-hidden">
+            <div className="p-4 border-b border-[var(--dash-hairline)] bg-[var(--dash-canvas)]">
               <h3 className="font-bold text-[14px] text-[var(--ink-950)] flex items-center gap-2">
                 <TrendingUp className="w-4 h-4 text-red-600" /> Nearing Max Limit
               </h3>
@@ -193,7 +193,7 @@ export default function RiskDashboardPage() {
               {nearingMax.length === 0 ? (
                 <div className="p-6 text-center text-[var(--ink-500)] text-[13px]">No accounts near max limit.</div>
               ) : (
-                <div className="divide-y divide-[var(--border)]">
+                <div className="divide-y divide-[var(--dash-hairline)]">
                   {nearingMax.map(acc => (
                     <div key={acc.id} className="p-4 flex items-center justify-between">
                       <div>
@@ -214,8 +214,8 @@ export default function RiskDashboardPage() {
           </div>
 
           {/* Passing Soon */}
-          <div className="bg-white rounded-2xl border border-[var(--border)] overflow-hidden md:col-span-2">
-            <div className="p-4 border-b border-[var(--border)] bg-[var(--paper)]">
+          <div className="dash-card overflow-hidden md:col-span-2">
+            <div className="p-4 border-b border-[var(--dash-hairline)] bg-[var(--dash-canvas)]">
               <h3 className="font-bold text-[14px] text-[var(--ink-950)] flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-500" /> Passing Soon
               </h3>
@@ -224,7 +224,7 @@ export default function RiskDashboardPage() {
               {passingSoon.length === 0 ? (
                 <div className="p-6 text-center text-[var(--ink-500)] text-[13px]">No accounts close to profit target.</div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-[var(--border)]">
+                <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-[var(--dash-hairline)]">
                   {passingSoon.map(acc => (
                     <div key={acc.id} className="p-4 flex items-center justify-between">
                       <div className="flex items-center gap-3">

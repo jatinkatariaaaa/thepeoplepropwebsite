@@ -80,11 +80,11 @@ export default function CmsEditorPage({ params }: { params: Promise<{ pageKey: s
   const isAnnouncement = pageKey === "announcement";
 
   return (
-    <div className="max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out pb-20">
+    <div className="max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out pb-20">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
-          <Link href="/admin/cms" className="p-2 bg-white border border-[var(--border)] rounded-xl hover:bg-[var(--paper-2)] transition-colors">
+          <Link href="/admin/cms" className="p-2 bg-white border border-[var(--dash-hairline)] rounded-xl hover:bg-[var(--dash-canvas)] transition-colors">
             <ArrowLeft className="w-5 h-5 text-[var(--ink-600)]" />
           </Link>
           <div>
@@ -116,44 +116,44 @@ export default function CmsEditorPage({ params }: { params: Promise<{ pageKey: s
         {/* Main Content Area */}
         <div className="lg:col-span-2 space-y-6">
           {!isAnnouncement && (
-            <div className="bg-white rounded-2xl border border-[var(--border)] p-6 shadow-sm">
+            <div className="dash-card p-5">
               <h2 className="text-lg font-bold text-[var(--ink-950)] mb-4">Page Details</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-[var(--ink-950)] mb-1">Page Title (H1)</label>
+                  <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Page Title (H1)</label>
                   <input
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    className="w-full border border-[var(--border)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)] bg-[var(--paper-2)]"
+                    className="w-full border border-[var(--dash-hairline)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)] bg-[var(--dash-canvas)]"
                   />
                 </div>
               </div>
             </div>
           )}
 
-          <div className="bg-white rounded-2xl border border-[var(--border)] p-6 shadow-sm">
+          <div className="dash-card p-5">
             <h2 className="text-lg font-bold text-[var(--ink-950)] mb-4">Content Builder</h2>
             
             {isAnnouncement ? (
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-[var(--ink-950)] mb-1">Announcement Text</label>
+                  <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Announcement Text</label>
                   <input
                     type="text"
                     value={contentObj.text || ""}
                     onChange={(e) => setContentObj({ ...contentObj, text: e.target.value })}
-                    className="w-full border border-[var(--border)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)] bg-[var(--paper-2)]"
+                    className="w-full border border-[var(--dash-hairline)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)] bg-[var(--dash-canvas)]"
                     placeholder="E.g., Huge 20% OFF Sale ends Friday!"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-[var(--ink-950)] mb-1">Action Link (Optional)</label>
+                  <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Action Link (Optional)</label>
                   <input
                     type="text"
                     value={contentObj.link || ""}
                     onChange={(e) => setContentObj({ ...contentObj, link: e.target.value })}
-                    className="w-full border border-[var(--border)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)] bg-[var(--paper-2)]"
+                    className="w-full border border-[var(--dash-hairline)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)] bg-[var(--dash-canvas)]"
                     placeholder="https://..."
                   />
                 </div>
@@ -161,20 +161,20 @@ export default function CmsEditorPage({ params }: { params: Promise<{ pageKey: s
             ) : pageKey === "homepage" ? (
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-[var(--ink-950)] mb-1">Hero Title</label>
+                  <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Hero Title</label>
                   <input
                     type="text"
                     value={contentObj.hero_title || ""}
                     onChange={(e) => setContentObj({ ...contentObj, hero_title: e.target.value })}
-                    className="w-full border border-[var(--border)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)] bg-[var(--paper-2)]"
+                    className="w-full border border-[var(--dash-hairline)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)] bg-[var(--dash-canvas)]"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-[var(--ink-950)] mb-1">Hero Subtitle</label>
+                  <label className="mb-1.5 block text-[13px] font-medium text-ink-700">Hero Subtitle</label>
                   <textarea
                     value={contentObj.hero_subtitle || ""}
                     onChange={(e) => setContentObj({ ...contentObj, hero_subtitle: e.target.value })}
-                    className="w-full border border-[var(--border)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)] bg-[var(--paper-2)] min-h-[100px]"
+                    className="w-full border border-[var(--dash-hairline)] rounded-xl p-3 text-sm outline-none focus:border-[var(--ink-950)] bg-[var(--dash-canvas)] min-h-[100px]"
                   />
                 </div>
               </div>
@@ -184,7 +184,7 @@ export default function CmsEditorPage({ params }: { params: Promise<{ pageKey: s
                 <textarea
                   value={contentObj.markdown || ""}
                   onChange={(e) => setContentObj({ ...contentObj, markdown: e.target.value })}
-                  className="w-full border border-[var(--border)] rounded-xl p-4 text-sm font-mono outline-none focus:border-[var(--ink-950)] bg-[var(--paper-2)] min-h-[400px]"
+                  className="w-full border border-[var(--dash-hairline)] rounded-xl p-4 text-sm font-mono outline-none focus:border-[var(--ink-950)] bg-[var(--dash-canvas)] min-h-[400px]"
                   placeholder="# Heading 1&#10;Paragraph text here..."
                 />
               </div>
@@ -195,7 +195,7 @@ export default function CmsEditorPage({ params }: { params: Promise<{ pageKey: s
         {/* Right Sidebar - SEO */}
         {!isAnnouncement && (
           <div className="space-y-6">
-            <div className="bg-white rounded-2xl border border-[var(--border)] p-6 shadow-sm">
+            <div className="dash-card p-5">
               <div className="flex items-center gap-2 mb-4">
                 <Globe className="w-5 h-5 text-[var(--ink-600)]" />
                 <h2 className="text-lg font-bold text-[var(--ink-950)]">SEO Settings</h2>
@@ -208,7 +208,7 @@ export default function CmsEditorPage({ params }: { params: Promise<{ pageKey: s
                     type="text"
                     value={metaTitle}
                     onChange={(e) => setMetaTitle(e.target.value)}
-                    className="w-full border border-[var(--border)] rounded-xl p-2.5 text-sm outline-none focus:border-[var(--ink-950)]"
+                    className="w-full border border-[var(--dash-hairline)] rounded-xl p-2.5 text-sm outline-none focus:border-[var(--ink-950)]"
                     placeholder="Usually same as Title"
                   />
                   <p className="text-[11px] text-[var(--ink-400)] mt-1">{metaTitle.length} / 60 characters</p>
@@ -218,14 +218,14 @@ export default function CmsEditorPage({ params }: { params: Promise<{ pageKey: s
                   <textarea
                     value={metaDesc}
                     onChange={(e) => setMetaDesc(e.target.value)}
-                    className="w-full border border-[var(--border)] rounded-xl p-2.5 text-sm outline-none focus:border-[var(--ink-950)] min-h-[100px] resize-none"
+                    className="w-full border border-[var(--dash-hairline)] rounded-xl p-2.5 text-sm outline-none focus:border-[var(--ink-950)] min-h-[100px] resize-none"
                     placeholder="Brief description for search engines..."
                   />
                   <p className="text-[11px] text-[var(--ink-400)] mt-1">{metaDesc.length} / 160 characters</p>
                 </div>
               </div>
               
-              <div className="mt-6 p-4 bg-[var(--paper-2)] rounded-xl border border-[var(--border)]">
+              <div className="mt-6 rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4 border border-[var(--dash-hairline)]">
                 <p className="text-[11px] font-bold text-[var(--ink-400)] uppercase tracking-wider mb-2">Google Preview</p>
                 <p className="text-[18px] text-[#1a0dab] truncate font-sans">{metaTitle || title || "Page Title"}</p>
                 <p className="text-[13px] text-[#006621] truncate mb-1">thepeopleprop.live/{pageKey}</p>
