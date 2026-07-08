@@ -98,7 +98,7 @@ export default function TemplateEditorPage({ params }: { params: Promise<{ slug:
           <button
             onClick={handleSave}
             disabled={saving}
-            className="flex items-center gap-2 px-6 py-2.5 bg-[var(--ink-950)] text-white rounded-xl font-bold hover:bg-black transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800 disabled:opacity-50"
           >
             <Save className="w-4 h-4" /> {saving ? "Saving..." : "Save Template"}
           </button>

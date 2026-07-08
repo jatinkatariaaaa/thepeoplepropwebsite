@@ -36,10 +36,10 @@ interface PaymentsClientProps {
 }
 
 const statusConfig: Record<string, { label: string; icon: any; className: string }> = {
-  pending: { label: "Pending", icon: Clock, className: "bg-amber-50 text-amber-700 border-amber-200" },
-  completed: { label: "Completed", icon: CheckCircle, className: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-  failed: { label: "Failed", icon: XCircle, className: "bg-red-50 text-red-700 border-red-200" },
-  refunded: { label: "Refunded", icon: RotateCcw, className: "bg-violet-50 text-violet-700 border-violet-200" },
+  pending: { label: "Pending", icon: Clock, className: "border-[#FDE68A] bg-amber-50 text-amber-700" },
+  completed: { label: "Completed", icon: CheckCircle, className: "border-[#A7F3D0] bg-success-50 text-success-700" },
+  failed: { label: "Failed", icon: XCircle, className: "border-[#FECDD3] bg-rose-50 text-rose-700" },
+  refunded: { label: "Refunded", icon: RotateCcw, className: "border-ink-200 bg-ink-50 text-ink-700" },
   cancelled: { label: "Cancelled", icon: Ban, className: "bg-slate-100 text-slate-600 border-slate-200" },
 };
 
@@ -212,7 +212,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
                 <button
                   onClick={() => openActionModal(txn, "verify")}
                   disabled={loading === txn.id}
-                  className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
+                  className="p-1.5 text-[var(--dash-positive)] hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
                   title="Verify"
                 >
                   <Check className="w-4 h-4" />
@@ -249,8 +249,8 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         {[
           { key: "pending", label: "Pending", icon: Clock, color: "text-amber-600", bg: "bg-amber-50" },
-          { key: "completed", label: "Completed", icon: CheckCircle, color: "text-emerald-600", bg: "bg-emerald-50" },
-          { key: "failed", label: "Failed", icon: XCircle, color: "text-red-600", bg: "bg-red-50" },
+          { key: "completed", label: "Completed", icon: CheckCircle, color: "text-[var(--dash-positive)]", bg: "bg-emerald-50" },
+          { key: "failed", label: "Failed", icon: XCircle, color: "text-[var(--dash-negative)]", bg: "bg-red-50" },
           { key: "refunded", label: "Refunded", icon: RotateCcw, color: "text-violet-600", bg: "bg-violet-50" },
           { key: "cancelled", label: "Cancelled", icon: Ban, color: "text-slate-500", bg: "bg-slate-50" },
         ].map((stat) => {
@@ -424,7 +424,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
                 href={selectedTxn.invoice_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2.5 bg-[var(--ink-950)] text-white rounded-xl font-semibold hover:bg-black transition-colors w-fit"
+                className="flex items-center gap-2 px-4 py-2.5 w-fit rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800"
               >
                 <FileText className="w-4 h-4" />
                 View Invoice
@@ -499,7 +499,7 @@ export function PaymentsClient({ initialTransactions, statusCounts, gatewayTotal
             )}
             {actionType === "verify" && (
               <div className="flex items-start gap-3 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
-                <CheckCircle className="w-5 h-5 text-emerald-600 mt-0.5" />
+                <CheckCircle className="w-5 h-5 text-[var(--dash-positive)] mt-0.5" />
                 <div>
                   <p className="text-sm font-semibold text-emerald-800">Confirm Verification</p>
                   <p className="text-sm text-emerald-700 mt-1">This will mark the transaction as completed and grant access to the purchased challenge.</p>

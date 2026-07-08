@@ -80,7 +80,7 @@ export default function AdminReportsPage() {
 
     if (activeTab === "revenue") {
       return [
-        { icon: DollarSign, color: "text-emerald-600 bg-emerald-50", label: "Total Revenue", value: `$${(s.total_revenue || 0).toLocaleString()}` },
+        { icon: DollarSign, color: "text-[var(--dash-positive)] bg-emerald-50", label: "Total Revenue", value: `$${(s.total_revenue || 0).toLocaleString()}` },
         { icon: ShoppingCart, color: "text-blue-600 bg-blue-50", label: "Paid Orders", value: (s.total_orders || 0).toLocaleString() },
         { icon: Activity, color: "text-amber-600 bg-amber-50", label: "Avg Order Value", value: `$${s.avg_order_value?.toFixed(2) || "0.00"}` },
       ];
@@ -88,13 +88,13 @@ export default function AdminReportsPage() {
     if (activeTab === "users") {
       return [
         { icon: Users, color: "text-blue-600 bg-blue-50", label: "Total Signups", value: (s.total_users || 0).toLocaleString() },
-        { icon: Activity, color: "text-emerald-600 bg-emerald-50", label: "Active Users", value: (s.active_users || 0).toLocaleString() },
+        { icon: Activity, color: "text-[var(--dash-positive)] bg-emerald-50", label: "Active Users", value: (s.active_users || 0).toLocaleString() },
         { icon: ShoppingCart, color: "text-amber-600 bg-amber-50", label: "Challenge Purchases", value: (s.challenge_purchases || 0).toLocaleString() },
       ];
     }
     return [
-      { icon: TrendingUp, color: "text-emerald-600 bg-emerald-50", label: "Pass Rate", value: `${(s.pass_rate || 0).toFixed(1)}%` },
-      { icon: TrendingDown, color: "text-red-600 bg-red-50", label: "Fail Rate", value: `${(s.fail_rate || 0).toFixed(1)}%` },
+      { icon: TrendingUp, color: "text-[var(--dash-positive)] bg-emerald-50", label: "Pass Rate", value: `${(s.pass_rate || 0).toFixed(1)}%` },
+      { icon: TrendingDown, color: "text-[var(--dash-negative)] bg-red-50", label: "Fail Rate", value: `${(s.fail_rate || 0).toFixed(1)}%` },
       { icon: Activity, color: "text-blue-600 bg-blue-50", label: "Active Accounts", value: (s.active_accounts || 0).toLocaleString() },
     ];
   }, [reportData, activeTab]);
@@ -103,7 +103,7 @@ export default function AdminReportsPage() {
     if (activeTab === "revenue") {
       return [
         { accessorKey: "date", header: "Date", cell: ({ row }) => <span className="text-[13px] font-semibold">{row.original.date}</span> },
-        { accessorKey: "revenue", header: "Revenue", cell: ({ row }) => <span className="text-[13px] font-semibold text-emerald-600">${row.original.revenue?.toLocaleString()}</span> },
+        { accessorKey: "revenue", header: "Revenue", cell: ({ row }) => <span className="text-[13px] font-semibold text-[var(--dash-positive)]">${row.original.revenue?.toLocaleString()}</span> },
         { accessorKey: "orders", header: "Orders", cell: ({ row }) => <span className="text-[13px]">{row.original.orders}</span> },
       ];
     }
@@ -117,8 +117,8 @@ export default function AdminReportsPage() {
     }
     return [
       { accessorKey: "date", header: "Date", cell: ({ row }) => <span className="text-[13px] font-semibold">{row.original.date}</span> },
-      { accessorKey: "pass_count", header: "Passed", cell: ({ row }) => <span className="text-[13px] font-semibold text-emerald-600">{row.original.pass_count}</span> },
-      { accessorKey: "fail_count", header: "Failed", cell: ({ row }) => <span className="text-[13px] font-semibold text-red-600">{row.original.fail_count}</span> },
+      { accessorKey: "pass_count", header: "Passed", cell: ({ row }) => <span className="text-[13px] font-semibold text-[var(--dash-positive)]">{row.original.pass_count}</span> },
+      { accessorKey: "fail_count", header: "Failed", cell: ({ row }) => <span className="text-[13px] font-semibold text-[var(--dash-negative)]">{row.original.fail_count}</span> },
       { accessorKey: "active_count", header: "Active", cell: ({ row }) => <span className="text-[13px] text-blue-600">{row.original.active_count}</span> },
     ];
   }, [activeTab]);
@@ -199,7 +199,7 @@ export default function AdminReportsPage() {
           <button
             onClick={fetchReport}
             disabled={loading}
-            className="px-4 py-1.5 bg-[var(--ink-950)] text-white rounded-lg text-sm font-bold hover:bg-black disabled:opacity-50 flex items-center gap-2"
+            className="px-4 py-1.5 flex items-center gap-2 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800 disabled:opacity-50"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} /> Generate
           </button>

@@ -188,7 +188,7 @@ export default function AdminSettingsPage() {
                 <button
                   onClick={() => handleSave("general", ["company_name", "timezone", "currency", "maintenance_mode"])}
                   disabled={saving}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-[var(--ink-950)] text-white rounded-xl font-bold hover:bg-black transition-colors disabled:opacity-50"
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800 disabled:opacity-50"
                 >
                   <Save className="w-4 h-4" /> Save Changes
                 </button>
@@ -253,7 +253,7 @@ export default function AdminSettingsPage() {
                 <button
                   onClick={() => handleSave("branding", ["brand_name", "logo_url", "favicon_url", "primary_color"])}
                   disabled={saving}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-[var(--ink-950)] text-white rounded-xl font-bold hover:bg-black transition-colors disabled:opacity-50"
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800 disabled:opacity-50"
                 >
                   <Save className="w-4 h-4" /> Save Changes
                 </button>
@@ -309,7 +309,7 @@ export default function AdminSettingsPage() {
                 <button
                   onClick={() => handleSave("trading", ["default_leverage", "trading_servers", "rule_templates"])}
                   disabled={saving}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-[var(--ink-950)] text-white rounded-xl font-bold hover:bg-black transition-colors disabled:opacity-50"
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800 disabled:opacity-50"
                 >
                   <Save className="w-4 h-4" /> Save Changes
                 </button>
@@ -406,7 +406,7 @@ export default function AdminSettingsPage() {
                 <button
                   onClick={() => handleSave("email", ["smtp_host", "smtp_port", "smtp_user", "smtp_pass", "smtp_secure", "sender_name", "sender_email"])}
                   disabled={saving}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-[var(--ink-950)] text-white rounded-xl font-bold hover:bg-black transition-colors disabled:opacity-50"
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800 disabled:opacity-50"
                 >
                   <Save className="w-4 h-4" /> Save Changes
                 </button>
@@ -550,7 +550,7 @@ export default function AdminSettingsPage() {
                     "two_factor_auth", "require_email_verification"
                   ])}
                   disabled={saving}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-[var(--ink-950)] text-white rounded-xl font-bold hover:bg-black transition-colors disabled:opacity-50"
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800 disabled:opacity-50"
                 >
                   <Save className="w-4 h-4" /> Save Changes
                 </button>

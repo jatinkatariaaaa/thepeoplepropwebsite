@@ -90,7 +90,7 @@ export function AccountActionsMenu({ account, handlers }: AccountActionsMenuProp
 
           {isDisabled ? (
             <button className={itemClass} onClick={() => run(handlers.onEnable)}>
-              <Power className="w-4 h-4 text-emerald-500" /> Enable Account
+              <Power className="w-4 h-4 text-[var(--dash-positive)]" /> Enable Account
             </button>
           ) : (
             <button className={itemClass} onClick={() => run(handlers.onDisable)}>
@@ -99,7 +99,7 @@ export function AccountActionsMenu({ account, handlers }: AccountActionsMenuProp
           )}
 
           <button
-            className={cn(itemClass, "text-red-600 hover:bg-red-50")}
+            className={cn(itemClass, "text-[var(--dash-negative)] hover:bg-red-50")}
             onClick={() => run(handlers.onDelete)}
           >
             <Trash2 className="w-4 h-4" /> Delete Account

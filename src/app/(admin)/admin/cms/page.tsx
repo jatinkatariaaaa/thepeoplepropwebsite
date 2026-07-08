@@ -66,7 +66,7 @@ export default function AdminCmsPage() {
       {announcement && (
         <div className="mb-8 dash-card p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className={`p-3 rounded-xl ${announcement.is_published ? "bg-emerald-50 text-emerald-600" : "bg-gray-50 text-gray-400"}`}>
+            <div className={`p-3 rounded-xl ${announcement.is_published ? "bg-emerald-50 text-[var(--dash-positive)]" : "bg-gray-50 text-gray-400"}`}>
               {announcement.is_published ? <CheckCircle2 className="w-6 h-6" /> : <AlertCircle className="w-6 h-6" />}
             </div>
             <div>
@@ -81,8 +81,8 @@ export default function AdminCmsPage() {
               onClick={toggleAnnouncement}
               className={`px-4 py-2 font-semibold rounded-xl transition-colors ${
                 announcement.is_published 
-                  ? "bg-red-50 text-red-600 hover:bg-red-100" 
-                  : "bg-emerald-50 text-emerald-600 hover:bg-emerald-100"
+                  ? "bg-red-50 text-[var(--dash-negative)] hover:bg-red-100" 
+                  : "bg-emerald-50 text-[var(--dash-positive)] hover:bg-emerald-100"
               }`}
             >
               {announcement.is_published ? "Disable" : "Enable"}
@@ -111,7 +111,7 @@ export default function AdminCmsPage() {
                 <Globe className="w-6 h-6" />
               </div>
               <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold uppercase ${
-                page.is_published ? "bg-emerald-50 text-emerald-700" : "bg-gray-100 text-gray-500"
+                page.is_published ? "bg-success-50 text-success-700" : "bg-gray-100 text-gray-500"
               }`}>
                 {page.is_published ? "Published" : "Draft"}
               </span>

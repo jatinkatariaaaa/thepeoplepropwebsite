@@ -101,7 +101,7 @@ export default function AdminEmailPage() {
           <p className="text-[var(--ink-500)] mt-1">Configure SMTP servers and customize email templates.</p>
         </div>
         {settings.is_configured ? (
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-full text-sm font-bold">
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-success-50 text-success-700 rounded-full text-sm font-bold">
             <CheckCircle2 className="w-4 h-4" /> SMTP Configured
           </div>
         ) : (
@@ -166,7 +166,7 @@ export default function AdminEmailPage() {
               </div>
             </div>
             <div className="flex justify-end pt-4">
-              <button onClick={handleSaveSettings} className="px-6 py-2.5 bg-[var(--ink-950)] text-white rounded-xl font-bold hover:bg-black transition-colors">
+              <button onClick={handleSaveSettings} className="px-6 py-2.5 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800">
                 Save Settings
               </button>
             </div>
@@ -214,7 +214,7 @@ export default function AdminEmailPage() {
             />
             <button 
               onClick={handleSendTest} 
-              className="px-6 bg-[var(--accent)] text-[var(--ink-950)] rounded-xl font-bold hover:bg-[#bbf034] transition-colors"
+              className="px-6 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800"
             >
               Send
             </button>

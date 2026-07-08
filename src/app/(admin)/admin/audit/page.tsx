@@ -72,8 +72,8 @@ export default function AdminAuditLogsPage() {
   };
 
   const getActionColor = (action: string) => {
-    if (action.includes("create") || action.includes("assign") || action.includes("approve")) return "text-emerald-600 bg-emerald-50";
-    if (action.includes("delete") || action.includes("revoke") || action.includes("ban") || action.includes("reject")) return "text-red-600 bg-red-50";
+    if (action.includes("create") || action.includes("assign") || action.includes("approve")) return "text-[var(--dash-positive)] bg-emerald-50";
+    if (action.includes("delete") || action.includes("revoke") || action.includes("ban") || action.includes("reject")) return "text-[var(--dash-negative)] bg-red-50";
     if (action.includes("update") || action.includes("edit") || action.includes("modify")) return "text-amber-600 bg-amber-50";
     return "text-blue-600 bg-blue-50";
   };
@@ -233,7 +233,7 @@ export default function AdminAuditLogsPage() {
                 <button
                   onClick={fetchLogs}
                   disabled={loading}
-                  className="flex items-center gap-1.5 px-4 py-2 bg-[var(--ink-950)] text-white rounded-xl text-sm font-bold hover:bg-black disabled:opacity-50 transition-colors"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800 disabled:opacity-50"
                 >
                   <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} /> Refresh
                 </button>

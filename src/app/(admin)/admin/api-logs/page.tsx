@@ -79,19 +79,19 @@ export default function AdminApiLogsPage() {
   const getMethodColor = (method: string) => {
     switch (method) {
       case "GET": return "text-blue-600 bg-blue-50";
-      case "POST": return "text-emerald-600 bg-emerald-50";
+      case "POST": return "text-[var(--dash-positive)] bg-emerald-50";
       case "PUT": return "text-amber-600 bg-amber-50";
       case "PATCH": return "text-violet-600 bg-violet-50";
-      case "DELETE": return "text-red-600 bg-red-50";
+      case "DELETE": return "text-[var(--dash-negative)] bg-red-50";
       default: return "text-[var(--ink-500)] bg-[var(--dash-canvas)]";
     }
   };
 
   const getStatusColor = (code: number) => {
-    if (code >= 200 && code < 300) return "text-emerald-600 bg-emerald-50";
+    if (code >= 200 && code < 300) return "text-[var(--dash-positive)] bg-emerald-50";
     if (code >= 300 && code < 400) return "text-blue-600 bg-blue-50";
     if (code >= 400 && code < 500) return "text-amber-600 bg-amber-50";
-    if (code >= 500) return "text-red-600 bg-red-50";
+    if (code >= 500) return "text-[var(--dash-negative)] bg-red-50";
     return "text-[var(--ink-500)] bg-[var(--dash-canvas)]";
   };
 
@@ -132,7 +132,7 @@ export default function AdminApiLogsPage() {
       header: "Response Time",
       cell: ({ row }) => {
         const ms = row.original.response_time_ms;
-        const color = ms > 1000 ? "text-red-600" : ms > 500 ? "text-amber-600" : "text-emerald-600";
+        const color = ms > 1000 ? "text-[var(--dash-negative)]" : ms > 500 ? "text-amber-600" : "text-[var(--dash-positive)]";
         return <span className={`text-[13px] font-semibold ${color}`}>{ms}ms</span>;
       },
     },
@@ -163,7 +163,7 @@ export default function AdminApiLogsPage() {
       id: "error",
       header: "Error",
       cell: ({ row }) => row.original.error_message ? (
-        <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-bold text-red-600 bg-red-50">Error</span>
+        <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-bold text-[var(--dash-negative)] bg-red-50">Error</span>
       ) : (
         <span className="text-[var(--ink-300)] text-[11px]">OK</span>
       ),
@@ -249,7 +249,7 @@ export default function AdminApiLogsPage() {
             <button
               onClick={fetchLogs}
               disabled={loading}
-              className="flex items-center gap-1.5 px-4 py-2 bg-[var(--ink-950)] text-white rounded-xl text-sm font-bold hover:bg-black disabled:opacity-50 transition-colors"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800 disabled:opacity-50"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} /> Refresh
             </button>
@@ -284,8 +284,8 @@ export default function AdminApiLogsPage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         {[
           { label: "Total Requests", value: total.toLocaleString(), color: "text-blue-600" },
-          { label: "Avg Response", value: `${logs.length ? Math.round(logs.reduce((a, l) => a + l.response_time_ms, 0) / logs.length) : 0}ms`, color: "text-emerald-600" },
-          { label: "Errors", value: logs.filter(l => l.error_message).length.toLocaleString(), color: "text-red-600" },
+          { label: "Avg Response", value: `${logs.length ? Math.round(logs.reduce((a, l) => a + l.response_time_ms, 0) / logs.length) : 0}ms`, color: "text-[var(--dash-positive)]" },
+          { label: "Errors", value: logs.filter(l => l.error_message).length.toLocaleString(), color: "text-[var(--dash-negative)]" },
           { label: "Success Rate", value: `${logs.length ? Math.round((logs.filter(l => l.status_code >= 200 && l.status_code < 300).length / logs.length) * 100) : 0}%`, color: "text-amber-600" },
         ].map((stat, i) => (
           <div key={i} className="bg-white rounded-xl border border-[var(--dash-hairline)] p-4 shadow-sm">

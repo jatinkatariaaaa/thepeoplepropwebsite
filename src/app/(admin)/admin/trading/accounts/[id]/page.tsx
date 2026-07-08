@@ -223,7 +223,7 @@ export default function TradingAccountDetailsPage() {
             <RefreshCw className="w-4 h-4" /> Refresh
           </Button>
           {status !== "breached" && (
-            <Button variant="outline" className="text-red-600 border-red-200 hover:bg-red-50" onClick={() => updateStatus("breached")} disabled={updating}>
+            <Button variant="outline" className="text-[var(--dash-negative)] border-red-200 hover:bg-red-50" onClick={() => updateStatus("breached")} disabled={updating}>
               Mark Breached
             </Button>
           )}
@@ -233,7 +233,7 @@ export default function TradingAccountDetailsPage() {
             </Button>
           )}
           {status === "suspended" ? (
-            <Button variant="outline" className="text-emerald-600 border-emerald-200 hover:bg-emerald-50" onClick={() => updateStatus("active")} disabled={updating}>
+            <Button variant="outline" className="text-[var(--dash-positive)] border-emerald-200 hover:bg-emerald-50" onClick={() => updateStatus("active")} disabled={updating}>
               Enable Account
             </Button>
           ) : (
@@ -246,9 +246,9 @@ export default function TradingAccountDetailsPage() {
 
       <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
         <MiniMetric label="Live Balance" value={money(balance)} />
-        <MiniMetric label="Live Equity" value={money(equity)} tone={equity >= balance ? "text-emerald-600" : "text-red-600"} />
-        <MiniMetric label="P/L" value={`${profit >= 0 ? "+" : ""}${money(profit)}`} tone={profit >= 0 ? "text-emerald-600" : "text-red-600"} />
-        <MiniMetric label="P/L %" value={`${profitPct >= 0 ? "+" : ""}${percent(profitPct)}`} tone={profit >= 0 ? "text-emerald-600" : "text-red-600"} />
+        <MiniMetric label="Live Equity" value={money(equity)} tone={equity >= balance ? "text-[var(--dash-positive)]" : "text-[var(--dash-negative)]"} />
+        <MiniMetric label="P/L" value={`${profit >= 0 ? "+" : ""}${money(profit)}`} tone={profit >= 0 ? "text-[var(--dash-positive)]" : "text-[var(--dash-negative)]"} />
+        <MiniMetric label="P/L %" value={`${profitPct >= 0 ? "+" : ""}${percent(profitPct)}`} tone={profit >= 0 ? "text-[var(--dash-positive)]" : "text-[var(--dash-negative)]"} />
         <MiniMetric label="Win Rate" value={percent(metrics.winRate)} />
         <MiniMetric label="Trades" value={String(metrics.totalTrades)} />
       </div>
@@ -272,8 +272,8 @@ export default function TradingAccountDetailsPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <MiniMetric label="Profit Factor" value={metrics.profitFactor == null ? "No loss" : metrics.profitFactor.toFixed(2)} />
-            <MiniMetric label="Average Win" value={money(metrics.averageWin)} tone="text-emerald-600" />
-            <MiniMetric label="Average Loss" value={money(metrics.averageLoss)} tone="text-red-600" />
+            <MiniMetric label="Average Win" value={money(metrics.averageWin)} tone="text-[var(--dash-positive)]" />
+            <MiniMetric label="Average Loss" value={money(metrics.averageLoss)} tone="text-[var(--dash-negative)]" />
           </div>
 
           <div className="dash-card p-5">
@@ -398,7 +398,7 @@ export default function TradingAccountDetailsPage() {
                     <p className="text-[13px] font-bold">{label}</p>
                     <p className="text-[11px] text-[var(--ink-500)]">{stats.trades} trades · {percent(stats.winRate)}</p>
                   </div>
-                  <p className={cn("text-[13px] font-bold", stats.netPnl >= 0 ? "text-emerald-600" : "text-red-600")}>{money(stats.netPnl)}</p>
+                  <p className={cn("text-[13px] font-bold", stats.netPnl >= 0 ? "text-[var(--dash-positive)]" : "text-[var(--dash-negative)]")}>{money(stats.netPnl)}</p>
                 </div>
               ))}
             </div>

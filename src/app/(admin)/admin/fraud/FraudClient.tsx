@@ -33,16 +33,16 @@ interface FraudClientProps {
 }
 
 const severityConfig: Record<string, { label: string; icon: any; className: string }> = {
-  critical: { label: "Critical", icon: AlertOctagon, className: "bg-red-100 text-red-800 border-red-200" },
+  critical: { label: "Critical", icon: AlertOctagon, className: "border-[#FECDD3] bg-rose-50 text-rose-700" },
   high: { label: "High", icon: AlertTriangle, className: "bg-orange-100 text-orange-800 border-orange-200" },
-  medium: { label: "Medium", icon: AlertCircle, className: "bg-amber-100 text-amber-800 border-amber-200" },
+  medium: { label: "Medium", icon: AlertCircle, className: "border-[#FDE68A] bg-amber-50 text-amber-700" },
   low: { label: "Low", icon: Info, className: "bg-slate-100 text-slate-600 border-slate-200" },
 };
 
 const statusConfig: Record<string, { label: string; className: string }> = {
-  open: { label: "Open", className: "bg-red-50 text-red-700 border-red-200" },
-  reviewing: { label: "Reviewing", className: "bg-amber-50 text-amber-700 border-amber-200" },
-  resolved: { label: "Resolved", className: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+  open: { label: "Open", className: "border-[#FECDD3] bg-rose-50 text-rose-700" },
+  reviewing: { label: "Reviewing", className: "border-[#FDE68A] bg-amber-50 text-amber-700" },
+  resolved: { label: "Resolved", className: "border-[#A7F3D0] bg-success-50 text-success-700" },
   dismissed: { label: "Dismissed", className: "bg-slate-100 text-slate-600 border-slate-200" },
 };
 
@@ -220,7 +220,7 @@ export function FraudClient({ initialFlags, severityCounts, typeCounts }: FraudC
                 <button
                   onClick={() => openActionModal(flag, "resolve")}
                   disabled={loading === flag.id}
-                  className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
+                  className="p-1.5 text-[var(--dash-positive)] hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
                   title="Resolve"
                 >
                   <ShieldCheck className="w-4 h-4" />
@@ -236,7 +236,7 @@ export function FraudClient({ initialFlags, severityCounts, typeCounts }: FraudC
                 <button
                   onClick={() => openActionModal(flag, "suspend")}
                   disabled={loading === flag.id}
-                  className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                  className="p-1.5 text-[var(--dash-negative)] hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
                   title="Suspend User"
                 >
                   <UserX className="w-4 h-4" />
@@ -254,7 +254,7 @@ export function FraudClient({ initialFlags, severityCounts, typeCounts }: FraudC
       {/* Severity Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { key: "critical", label: "Critical", icon: AlertOctagon, color: "text-red-600", bg: "bg-red-50" },
+          { key: "critical", label: "Critical", icon: AlertOctagon, color: "text-[var(--dash-negative)]", bg: "bg-red-50" },
           { key: "high", label: "High", icon: AlertTriangle, color: "text-orange-600", bg: "bg-orange-50" },
           { key: "medium", label: "Medium", icon: AlertCircle, color: "text-amber-600", bg: "bg-amber-50" },
           { key: "low", label: "Low", icon: Info, color: "text-slate-500", bg: "bg-slate-50" },
@@ -289,12 +289,12 @@ export function FraudClient({ initialFlags, severityCounts, typeCounts }: FraudC
       {/* Open Alerts Banner */}
       {(severityCounts.critical > 0 || severityCounts.high > 0) && (
         <div className="flex items-start gap-3 p-4 bg-red-50 rounded-2xl border border-red-100">
-          <ShieldAlert className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+          <ShieldAlert className="w-5 h-5 text-[var(--dash-negative)] mt-0.5 flex-shrink-0" />
           <div>
             <p className="text-sm font-semibold text-red-800">
               {severityCounts.critical + severityCounts.high} high-severity alerts require attention
             </p>
-            <p className="text-xs text-red-600 mt-1">Review and resolve critical fraud flags immediately.</p>
+            <p className="text-xs text-[var(--dash-negative)] mt-1">Review and resolve critical fraud flags immediately.</p>
           </div>
         </div>
       )}
@@ -350,7 +350,7 @@ export function FraudClient({ initialFlags, severityCounts, typeCounts }: FraudC
         {selectedFlag && (
           <div className="space-y-5">
             <div className="flex items-start gap-4 rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-4">
-              <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600 font-bold">
+              <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-[var(--dash-negative)] font-bold">
                 {(selectedFlag.profiles?.display_name || "?").charAt(0).toUpperCase()}
               </div>
               <div>
@@ -426,10 +426,10 @@ export function FraudClient({ initialFlags, severityCounts, typeCounts }: FraudC
 
             {selectedFlag.resolution && (
               <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-100">
-                <p className="text-[10px] text-emerald-600 uppercase tracking-wider font-medium mb-1">Resolution</p>
+                <p className="text-[10px] text-[var(--dash-positive)] uppercase tracking-wider font-medium mb-1">Resolution</p>
                 <p className="text-sm text-emerald-800">{selectedFlag.resolution}</p>
                 {selectedFlag.reviewed_at && (
-                  <p className="text-xs text-emerald-500 mt-1">Resolved {format(new Date(selectedFlag.reviewed_at), "MMM dd, yyyy")}</p>
+                  <p className="text-xs text-[var(--dash-positive)] mt-1">Resolved {format(new Date(selectedFlag.reviewed_at), "MMM dd, yyyy")}</p>
                 )}
               </div>
             )}
@@ -475,7 +475,7 @@ export function FraudClient({ initialFlags, severityCounts, typeCounts }: FraudC
           <div className="space-y-4">
             {actionType === "suspend" && (
               <div className="flex items-start gap-3 p-4 bg-red-50 rounded-xl border border-red-100">
-                <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+                <AlertTriangle className="w-5 h-5 text-[var(--dash-negative)] mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="text-sm font-semibold text-red-800">Suspend User Account</p>
                   <p className="text-sm text-red-700 mt-1">This will suspend the user&apos;s account and resolve the fraud flag. The user will be unable to access their account until reinstated.</p>
@@ -484,7 +484,7 @@ export function FraudClient({ initialFlags, severityCounts, typeCounts }: FraudC
             )}
             {actionType === "resolve" && (
               <div className="flex items-start gap-3 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
-                <ShieldCheck className="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0" />
+                <ShieldCheck className="w-5 h-5 text-[var(--dash-positive)] mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="text-sm font-semibold text-emerald-800">Resolve Flag</p>
                   <p className="text-sm text-emerald-700 mt-1">Mark this fraud flag as resolved after investigation.</p>

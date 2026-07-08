@@ -77,9 +77,9 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: any[]
         const s = row.original.status || "active";
         return (
           <span className={`inline-flex px-2 py-1 rounded-full text-[11px] font-bold uppercase ${
-            s === "active" ? "bg-emerald-50 text-emerald-700" :
+            s === "active" ? "bg-success-50 text-success-700" :
             s === "suspended" ? "bg-amber-50 text-amber-700" :
-            "bg-red-50 text-red-700"
+            "bg-rose-50 text-rose-700"
           }`}>
             {s}
           </span>
@@ -106,9 +106,9 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: any[]
         const kyc = row.original.kyc_status || "none";
         return (
           <span className={`inline-flex px-2 py-1 rounded-full text-[11px] font-bold uppercase ${
-            kyc === "verified" ? "bg-emerald-50 text-emerald-700" :
+            kyc === "verified" ? "bg-success-50 text-success-700" :
             kyc === "pending" ? "bg-amber-50 text-amber-700" :
-            kyc === "rejected" ? "bg-red-50 text-red-700" :
+            kyc === "rejected" ? "bg-rose-50 text-rose-700" :
             "bg-[var(--ink-100)] text-[var(--ink-600)]"
           }`}>
             {kyc}
@@ -144,14 +144,14 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: any[]
             ) : (
               <button
                 onClick={() => { setSelectedUser(user); setActionType("unsuspend"); setIsActionModalOpen(true); }}
-                className="p-1.5 text-[var(--ink-400)] hover:text-emerald-600 hover:bg-emerald-50 rounded"
+                className="p-1.5 text-[var(--ink-400)] hover:text-[var(--dash-positive)] hover:bg-emerald-50 rounded"
               >
                 <PlayCircle className="w-4 h-4" />
               </button>
             )}
             <button
               onClick={() => { setSelectedUser(user); setActionType("ban"); setIsActionModalOpen(true); }}
-              className="p-1.5 text-[var(--ink-400)] hover:text-red-600 hover:bg-red-50 rounded"
+              className="p-1.5 text-[var(--ink-400)] hover:text-[var(--dash-negative)] hover:bg-red-50 rounded"
             >
               <Ban className="w-4 h-4" />
             </button>

@@ -145,7 +145,7 @@ export default function PlatformsAdminPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[var(--dash-canvas)] p-6 rounded-3xl border border-[var(--dash-hairline)] shadow-sm">
         <div>
           <h1 className="flex items-center gap-2 text-xl font-semibold tracking-tight text-ink sm:text-2xl">
-            <Activity className="w-6 h-6 text-emerald-500" /> Terminal Connection
+            <Activity className="w-6 h-6 text-[var(--dash-positive)]" /> Terminal Connection
           </h1>
           <p className="text-[var(--ink-500)] text-[14px] mt-1">
             Real-time status of your TPP Trading Terminal. 
@@ -175,7 +175,7 @@ export default function PlatformsAdminPage() {
                   <div className="flex gap-2 items-center">
                     <span className={cn(
                       "inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider",
-                      plat.is_active ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-600"
+                      plat.is_active ? "bg-success-50 text-success-700" : "bg-red-50 text-[var(--dash-negative)]"
                     )}>
                       {plat.is_active ? "Active Platform" : "Disabled"}
                     </span>
@@ -218,8 +218,8 @@ export default function PlatformsAdminPage() {
                
                {status?.status === 'ok' && (
                  <div className="flex flex-col gap-2 py-1">
-                   <div className="flex items-center gap-2 text-emerald-600 font-bold text-sm">
-                      <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                   <div className="flex items-center gap-2 text-[var(--dash-positive)] font-bold text-sm">
+                      <CheckCircle2 className="w-5 h-5 text-[var(--dash-positive)]" />
                       TERMINAL ONLINE & CONNECTED
                    </div>
                    <p className="text-[13px] text-[var(--ink-600)]">
@@ -230,11 +230,11 @@ export default function PlatformsAdminPage() {
                
                {status?.status === 'error' && (
                  <div className="flex flex-col gap-2 py-1">
-                   <div className="flex items-center gap-2 text-red-600 font-bold text-sm">
-                      <AlertCircle className="w-5 h-5 text-red-500" />
+                   <div className="flex items-center gap-2 text-[var(--dash-negative)] font-bold text-sm">
+                      <AlertCircle className="w-5 h-5 text-[var(--dash-negative)]" />
                       TERMINAL OFFLINE OR UNACHIEVABLE
                    </div>
-                   <p className="text-[13px] text-red-500/80">
+                   <p className="text-[13px] text-[var(--dash-negative)]/80">
                      {status.message}
                    </p>
                    <p className="text-[12px] text-[var(--ink-500)] mt-1">
@@ -259,7 +259,7 @@ export default function PlatformsAdminPage() {
             <div className="pt-2">
               <div className="flex items-center justify-between text-[13px]">
                 <span className="text-[var(--ink-500)] font-medium">Extra Fee Configuration</span>
-                <span className={cn("font-bold px-2 py-1 rounded-lg", plat.extra_fee_pct > 0 ? "bg-[var(--ink-950)] text-white" : "bg-emerald-100 text-emerald-700")}>
+                <span className={cn("font-bold px-2 py-1 rounded-lg", plat.extra_fee_pct > 0 ? "bg-[var(--ink-950)] text-white" : "bg-success-50 text-success-700")}>
                   {plat.extra_fee_pct > 0 ? `+${plat.extra_fee_pct}% Fee` : "Free Delivery"}
                 </span>
               </div>

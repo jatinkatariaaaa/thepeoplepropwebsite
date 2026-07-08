@@ -145,7 +145,7 @@ export function AdminFaqsClient({ initialFaqs }: { initialFaqs: any[] }) {
                   }} className="text-gray-500 hover:text-black">
                     <Edit2 className="w-4 h-4" />
                   </button>
-                  <button onClick={() => handleDelete(faq.id)} className="text-red-400 hover:text-red-600">
+                  <button onClick={() => handleDelete(faq.id)} className="text-red-400 hover:text-[var(--dash-negative)]">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </td>

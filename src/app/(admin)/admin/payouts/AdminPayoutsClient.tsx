@@ -34,9 +34,9 @@ interface AdminPayoutsClientProps {
 }
 
 const statusConfig: Record<string, { label: string; className: string }> = {
-  pending: { label: "Pending", className: "bg-amber-50 text-amber-700 border-amber-200" },
-  paid: { label: "Paid", className: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-  rejected: { label: "Rejected", className: "bg-red-50 text-red-700 border-red-200" },
+  pending: { label: "Pending", className: "border-[#FDE68A] bg-amber-50 text-amber-700" },
+  paid: { label: "Paid", className: "border-[#A7F3D0] bg-success-50 text-success-700" },
+  rejected: { label: "Rejected", className: "border-[#FECDD3] bg-rose-50 text-rose-700" },
 };
 
 export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingAmount, totalPaidAmount }: AdminPayoutsClientProps) {
@@ -207,7 +207,7 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
                 <button
                   onClick={() => openActionModal(p, "approve")}
                   disabled={loading === p.id}
-                  className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
+                  className="p-1.5 text-[var(--dash-positive)] hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
                   title="Approve & Pay"
                 >
                   <CheckCircle className="w-4 h-4" />
@@ -215,7 +215,7 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
                 <button
                   onClick={() => openActionModal(p, "reject")}
                   disabled={loading === p.id}
-                  className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                  className="p-1.5 text-[var(--dash-negative)] hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
                   title="Reject"
                 >
                   <XCircle className="w-4 h-4" />
@@ -239,8 +239,8 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
           { key: "pending", label: "Pending", count: statusCounts.pending, icon: Clock, color: "text-amber-600", bg: "bg-amber-50", amount: totalPendingAmount },
-          { key: "paid", label: "Paid", count: statusCounts.paid, icon: CheckCircle, color: "text-emerald-600", bg: "bg-emerald-50", amount: totalPaidAmount },
-          { key: "rejected", label: "Rejected", count: statusCounts.rejected, icon: XCircle, color: "text-red-600", bg: "bg-red-50", amount: 0 },
+          { key: "paid", label: "Paid", count: statusCounts.paid, icon: CheckCircle, color: "text-[var(--dash-positive)]", bg: "bg-emerald-50", amount: totalPaidAmount },
+          { key: "rejected", label: "Rejected", count: statusCounts.rejected, icon: XCircle, color: "text-[var(--dash-negative)]", bg: "bg-red-50", amount: 0 },
           { key: "total", label: "Total Volume", count: payouts.length, icon: TrendingUp, color: "text-[var(--ink-700)]", bg: "bg-[var(--dash-canvas)]", amount: totalPaidAmount + totalPendingAmount },
         ].map((stat) => {
           const Icon = stat.icon;
@@ -410,7 +410,7 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
           <div className="space-y-4">
             {actionType === "approve" ? (
               <div className="flex items-start gap-3 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
-                <CheckCircle className="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0" />
+                <CheckCircle className="w-5 h-5 text-[var(--dash-positive)] mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="text-sm font-semibold text-emerald-800">Confirm Approval</p>
                   <p className="text-sm text-emerald-700 mt-1">This will mark the payout as paid. Ensure the crypto transfer has been completed before confirming.</p>
@@ -418,7 +418,7 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
               </div>
             ) : (
               <div className="flex items-start gap-3 p-4 bg-red-50 rounded-xl border border-red-100">
-                <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+                <AlertTriangle className="w-5 h-5 text-[var(--dash-negative)] mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="text-sm font-semibold text-red-800">Confirm Rejection</p>
                   <p className="text-sm text-red-700 mt-1">This will reject the payout and refund the amount back to the trader&apos;s account balance.</p>

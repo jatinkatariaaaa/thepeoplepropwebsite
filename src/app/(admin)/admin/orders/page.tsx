@@ -101,8 +101,8 @@ export default function AdminOrdersPage() {
         const s = row.original.payment_status;
         return (
           <span className={`inline-flex px-2 py-0.5 rounded-full text-[11px] font-bold uppercase ${
-            s === "paid" ? "bg-emerald-50 text-emerald-700" :
-            s === "refunded" ? "bg-red-50 text-red-700" :
+            s === "paid" ? "bg-success-50 text-success-700" :
+            s === "refunded" ? "bg-rose-50 text-rose-700" :
             s === "failed" ? "bg-rose-50 text-rose-700" :
             "bg-amber-50 text-amber-700"
           }`}>
@@ -173,8 +173,8 @@ export default function AdminOrdersPage() {
                 <p className="text-sm font-mono text-[var(--ink-500)]">{selectedOrder.order_id}</p>
               </div>
               <span className={`inline-flex px-3 py-1 rounded-full text-xs font-bold uppercase ${
-                selectedOrder.payment_status === "paid" ? "bg-emerald-50 text-emerald-700" :
-                selectedOrder.payment_status === "refunded" ? "bg-red-50 text-red-700" :
+                selectedOrder.payment_status === "paid" ? "bg-success-50 text-success-700" :
+                selectedOrder.payment_status === "refunded" ? "bg-rose-50 text-rose-700" :
                 "bg-amber-50 text-amber-700"
               }`}>
                 {selectedOrder.payment_status}
@@ -213,7 +213,7 @@ export default function AdminOrdersPage() {
               {selectedOrder.payment_status === "paid" && (
                 <button
                   onClick={() => setIsRefundModalOpen(true)}
-                  className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-xl font-bold hover:bg-red-100 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 bg-red-50 text-[var(--dash-negative)] rounded-xl font-bold hover:bg-red-100 transition-colors"
                 >
                   <RefreshCw className="w-4 h-4" /> Mark Refunded
                 </button>

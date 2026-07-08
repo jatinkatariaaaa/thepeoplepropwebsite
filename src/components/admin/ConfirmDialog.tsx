@@ -41,7 +41,7 @@ export function ConfirmDialog({
             <AlertTriangle
               className={cn(
                 "w-5 h-5",
-                destructive ? "text-red-600" : "text-amber-500"
+                destructive ? "text-[var(--dash-negative)]" : "text-amber-500"
               )}
             />
             {title}

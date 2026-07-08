@@ -31,8 +31,8 @@ interface NotificationsClientProps {
 }
 
 const severityConfig: Record<string, { icon: any; className: string }> = {
-  critical: { icon: AlertOctagon, className: "bg-red-100 text-red-800 border-red-200" },
-  warning: { icon: AlertTriangle, className: "bg-amber-100 text-amber-800 border-amber-200" },
+  critical: { icon: AlertOctagon, className: "border-[#FECDD3] bg-rose-50 text-rose-700" },
+  warning: { icon: AlertTriangle, className: "border-[#FDE68A] bg-amber-50 text-amber-700" },
   info: { icon: Info, className: "bg-sky-100 text-sky-800 border-sky-200" },
 };
 
@@ -213,7 +213,7 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
               <button
                 onClick={(e) => { e.stopPropagation(); handleMarkRead(n); }}
                 disabled={loading === n.id}
-                className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
+                className="p-1.5 text-[var(--dash-positive)] hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
                 title="Mark as Read"
               >
                 <Check className="w-4 h-4" />
@@ -231,7 +231,7 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
           { key: "unread", label: "Unread", count: unreadCount, icon: BellDot, color: "text-sky-600", bg: "bg-sky-50" },
-          { key: "critical", label: "Critical", count: notifications.filter((n) => n.severity === "critical").length, icon: AlertOctagon, color: "text-red-600", bg: "bg-red-50" },
+          { key: "critical", label: "Critical", count: notifications.filter((n) => n.severity === "critical").length, icon: AlertOctagon, color: "text-[var(--dash-negative)]", bg: "bg-red-50" },
           { key: "warning", label: "Warnings", count: notifications.filter((n) => n.severity === "warning").length, icon: AlertTriangle, color: "text-amber-600", bg: "bg-amber-50" },
           { key: "total", label: "Total", count: notifications.length, icon: Bell, color: "text-[var(--ink-700)]", bg: "bg-[var(--dash-canvas)]" },
         ].map((stat) => {
@@ -288,7 +288,7 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
           <button
             onClick={handleMarkAllRead}
             disabled={loading === "all"}
-            className="flex items-center gap-2 px-4 py-2.5 bg-[var(--ink-950)] text-white rounded-xl font-semibold hover:bg-black transition-colors disabled:opacity-50 text-sm"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800 disabled:opacity-50"
           >
             <Check className="w-4 h-4" />
             {loading === "all" ? "Processing..." : "Mark All Read"}

@@ -438,7 +438,7 @@ export default function ChallengesAdminPage() {
                           const newFees = formFees.filter((_, idx) => idx !== selectedFeeIndex);
                           setFormFees(newFees);
                           setSelectedFeeIndex(newFees.length > 0 ? 0 : null);
-                        }} className="mb-0.5 p-2 text-red-500 hover:bg-red-50 rounded-lg">
+                        }} className="mb-0.5 p-2 text-[var(--dash-negative)] hover:bg-red-50 rounded-lg">
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>

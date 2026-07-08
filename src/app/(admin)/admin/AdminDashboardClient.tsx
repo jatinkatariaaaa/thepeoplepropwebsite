@@ -243,7 +243,7 @@ export default function AdminDashboardClient() {
           label="Total Revenue"
           value={`$${(stats?.totalRevenue || 0).toLocaleString()}`}
           icon={CreditCard}
-          color="text-emerald-600"
+          color="text-[var(--dash-positive)]"
           bg="bg-emerald-50"
           trend="up"
           trendLabel={`+$${(stats?.revenueToday || 0).toLocaleString()} today`}
@@ -265,7 +265,7 @@ export default function AdminDashboardClient() {
           label="Open Support Tickets"
           value={stats?.openTickets || 0}
           icon={Ticket}
-          color="text-rose-600"
+          color="text-[var(--dash-negative)]"
           bg="bg-rose-50"
           href="/admin/tickets"
         />

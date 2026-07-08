@@ -107,7 +107,7 @@ export default function AdminCouponsPage() {
     {
       accessorKey: "discount_percentage",
       header: "Discount",
-      cell: ({ row }) => <span className="font-bold text-emerald-600">{row.original.discount_percentage}% OFF</span>,
+      cell: ({ row }) => <span className="font-bold text-[var(--dash-positive)]">{row.original.discount_percentage}% OFF</span>,
     },
     {
       accessorKey: "uses",
@@ -132,7 +132,7 @@ export default function AdminCouponsPage() {
         
         const isExpired = new Date(exp) < new Date();
         return (
-          <span className={`text-[12px] font-semibold ${isExpired ? "text-red-600" : "text-[var(--ink-600)]"}`}>
+          <span className={`text-[12px] font-semibold ${isExpired ? "text-[var(--dash-negative)]" : "text-[var(--ink-600)]"}`}>
             {format(new Date(exp), "MMM dd, yyyy")} {isExpired && "(Expired)"}
           </span>
         );
@@ -145,7 +145,7 @@ export default function AdminCouponsPage() {
         const active = row.original.is_active;
         return (
           <span className={`inline-flex px-2 py-0.5 rounded-full text-[11px] font-bold uppercase ${
-            active ? "bg-emerald-50 text-emerald-700" : "bg-gray-100 text-gray-500"
+            active ? "bg-success-50 text-success-700" : "bg-gray-100 text-gray-500"
           }`}>
             {active ? "Active" : "Disabled"}
           </span>
@@ -162,7 +162,7 @@ export default function AdminCouponsPage() {
             className={`p-1.5 rounded transition-colors ${
               row.original.is_active 
                 ? "text-[var(--ink-400)] hover:text-amber-600 hover:bg-amber-50" 
-                : "text-[var(--ink-400)] hover:text-emerald-600 hover:bg-emerald-50"
+                : "text-[var(--ink-400)] hover:text-[var(--dash-positive)] hover:bg-emerald-50"
             }`}
             title={row.original.is_active ? "Deactivate" : "Activate"}
           >
@@ -170,7 +170,7 @@ export default function AdminCouponsPage() {
           </button>
           <button
             onClick={() => handleDelete(row.original.id)}
-            className="p-1.5 text-[var(--ink-400)] hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+            className="p-1.5 text-[var(--ink-400)] hover:text-[var(--dash-negative)] hover:bg-red-50 rounded transition-colors"
             title="Delete"
           >
             <Trash2 className="w-4 h-4" />
@@ -191,7 +191,7 @@ export default function AdminCouponsPage() {
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-[var(--ink-950)] text-white rounded-xl font-bold hover:bg-black transition-colors"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800"
         >
           <Plus className="w-4 h-4" /> New Coupon
         </button>
@@ -264,7 +264,7 @@ export default function AdminCouponsPage() {
           </div>
           <div className="flex justify-end gap-3 mt-6">
             <button onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-[var(--ink-500)] font-semibold">Cancel</button>
-            <button onClick={handleCreate} className="px-4 py-2 bg-[var(--ink-950)] text-white rounded-xl font-bold">Create Coupon</button>
+            <button onClick={handleCreate} className="px-4 py-2 rounded-lg bg-ink text-[13px] font-semibold text-white">Create Coupon</button>
           </div>
         </div>
       </AdminModal>

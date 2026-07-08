@@ -121,9 +121,9 @@ export default function RiskDashboardPage() {
                     <div className="flex items-start gap-3">
                       <div className={cn(
                         "mt-0.5 p-1.5 rounded-lg shrink-0",
-                        alert.type === 'drawdown_warning' ? "bg-amber-100 text-amber-700" :
-                        alert.type === 'rule_violation' ? "bg-red-100 text-red-700" :
-                        alert.type === 'passing_soon' ? "bg-emerald-100 text-emerald-700" :
+                        alert.type === 'drawdown_warning' ? "bg-amber-50 text-amber-700" :
+                        alert.type === 'rule_violation' ? "bg-rose-50 text-rose-700" :
+                        alert.type === 'passing_soon' ? "bg-success-50 text-success-700" :
                         "bg-gray-100 text-gray-700"
                       )}>
                         <AlertTriangle className="w-4 h-4" />
@@ -155,7 +155,7 @@ export default function RiskDashboardPage() {
           <div className="dash-card overflow-hidden">
             <div className="p-4 border-b border-[var(--dash-hairline)] bg-[var(--dash-canvas)]">
               <h3 className="font-bold text-[14px] text-[var(--ink-950)] flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-red-500" /> Nearing Daily Limit
+                <AlertTriangle className="w-4 h-4 text-[var(--dash-negative)]" /> Nearing Daily Limit
               </h3>
             </div>
             <div className="p-0">
@@ -172,7 +172,7 @@ export default function RiskDashboardPage() {
                         <p className="text-[11px] text-[var(--ink-500)]">{acc.profiles?.display_name}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-[13px] font-bold text-red-600">{acc.riskPct.toFixed(1)}%</p>
+                        <p className="text-[13px] font-bold text-[var(--dash-negative)]">{acc.riskPct.toFixed(1)}%</p>
                         <p className="text-[10px] text-[var(--ink-500)] uppercase font-semibold">of Limit</p>
                       </div>
                     </div>
@@ -186,7 +186,7 @@ export default function RiskDashboardPage() {
           <div className="dash-card overflow-hidden">
             <div className="p-4 border-b border-[var(--dash-hairline)] bg-[var(--dash-canvas)]">
               <h3 className="font-bold text-[14px] text-[var(--ink-950)] flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-red-600" /> Nearing Max Limit
+                <TrendingUp className="w-4 h-4 text-[var(--dash-negative)]" /> Nearing Max Limit
               </h3>
             </div>
             <div className="p-0">
@@ -203,7 +203,7 @@ export default function RiskDashboardPage() {
                         <p className="text-[11px] text-[var(--ink-500)]">{acc.profiles?.display_name}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-[13px] font-bold text-red-600">{acc.riskPct.toFixed(1)}%</p>
+                        <p className="text-[13px] font-bold text-[var(--dash-negative)]">{acc.riskPct.toFixed(1)}%</p>
                         <p className="text-[10px] text-[var(--ink-500)] uppercase font-semibold">of Limit</p>
                       </div>
                     </div>
@@ -217,7 +217,7 @@ export default function RiskDashboardPage() {
           <div className="dash-card overflow-hidden md:col-span-2">
             <div className="p-4 border-b border-[var(--dash-hairline)] bg-[var(--dash-canvas)]">
               <h3 className="font-bold text-[14px] text-[var(--ink-950)] flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500" /> Passing Soon
+                <CheckCircle2 className="w-4 h-4 text-[var(--dash-positive)]" /> Passing Soon
               </h3>
             </div>
             <div className="p-0">
@@ -229,17 +229,17 @@ export default function RiskDashboardPage() {
                     <div key={acc.id} className="p-4 flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center border border-emerald-100">
-                          <Wallet className="w-4 h-4 text-emerald-600" />
+                          <Wallet className="w-4 h-4 text-[var(--dash-positive)]" />
                         </div>
                         <div>
-                          <Link href={`/admin/trading/accounts/${acc.id}`} className="font-bold text-[13px] text-[var(--ink-950)] hover:text-emerald-600">
+                          <Link href={`/admin/trading/accounts/${acc.id}`} className="font-bold text-[13px] text-[var(--ink-950)] hover:text-[var(--dash-positive)]">
                             {acc.account_number}
                           </Link>
                           <p className="text-[11px] text-[var(--ink-500)]">{acc.profiles?.display_name}</p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-[13px] font-bold text-emerald-600">{acc.progressPct.toFixed(1)}%</p>
+                        <p className="text-[13px] font-bold text-[var(--dash-positive)]">{acc.progressPct.toFixed(1)}%</p>
                         <p className="text-[10px] text-[var(--ink-500)] uppercase font-semibold">to Target</p>
                       </div>
                     </div>

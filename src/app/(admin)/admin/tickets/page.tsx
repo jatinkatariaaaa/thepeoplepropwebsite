@@ -84,9 +84,9 @@ export default function AdminTicketsPage() {
         const p = row.original.priority;
         return (
           <span className={`inline-flex px-2 py-0.5 rounded text-[11px] font-bold uppercase ${
-            p === "urgent" ? "bg-red-100 text-red-700" :
-            p === "high" ? "bg-amber-100 text-amber-700" :
-            p === "medium" ? "bg-blue-100 text-blue-700" :
+            p === "urgent" ? "bg-rose-50 text-rose-700" :
+            p === "high" ? "bg-amber-50 text-amber-700" :
+            p === "medium" ? "bg-ink-50 text-ink-700" :
             "bg-gray-100 text-gray-700"
           }`}>
             {p}
@@ -101,9 +101,9 @@ export default function AdminTicketsPage() {
         const s = row.original.status;
         return (
           <span className={`inline-flex px-2 py-0.5 rounded-full text-[11px] font-bold uppercase ${
-            s === "open" ? "bg-blue-50 text-blue-700" :
+            s === "open" ? "bg-ink-50 text-ink-700" :
             s === "in_progress" ? "bg-amber-50 text-amber-700" :
-            s === "resolved" ? "bg-emerald-50 text-emerald-700" :
+            s === "resolved" ? "bg-success-50 text-success-700" :
             "bg-gray-100 text-gray-600"
           }`}>
             {s.replace("_", " ")}
@@ -141,7 +141,7 @@ export default function AdminTicketsPage() {
         </div>
         <button
           onClick={() => setIsNewTicketModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-[var(--ink-950)] text-white rounded-xl font-bold hover:bg-black transition-colors"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800"
         >
           <Plus className="w-4 h-4" /> New Ticket
         </button>
@@ -206,7 +206,7 @@ export default function AdminTicketsPage() {
           </div>
           <div className="flex justify-end gap-3 mt-6">
             <button onClick={() => setIsNewTicketModalOpen(false)} className="px-4 py-2 text-[var(--ink-500)] font-semibold">Cancel</button>
-            <button onClick={handleCreateTicket} className="px-4 py-2 bg-[var(--ink-950)] text-white rounded-xl font-bold">Create Ticket</button>
+            <button onClick={handleCreateTicket} className="px-4 py-2 rounded-lg bg-ink text-[13px] font-semibold text-white">Create Ticket</button>
           </div>
         </div>
       </AdminModal>

@@ -34,9 +34,9 @@ interface KycClientProps {
 }
 
 const statusConfig: Record<string, { label: string; icon: any; className: string }> = {
-  pending: { label: "Pending", icon: Clock, className: "bg-amber-50 text-amber-700 border-amber-200" },
-  approved: { label: "Approved", icon: CheckCircle, className: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-  rejected: { label: "Rejected", icon: XCircle, className: "bg-red-50 text-red-700 border-red-200" },
+  pending: { label: "Pending", icon: Clock, className: "border-[#FDE68A] bg-amber-50 text-amber-700" },
+  approved: { label: "Approved", icon: CheckCircle, className: "border-[#A7F3D0] bg-success-50 text-success-700" },
+  rejected: { label: "Rejected", icon: XCircle, className: "border-[#FECDD3] bg-rose-50 text-rose-700" },
   expired: { label: "Expired", icon: AlertCircle, className: "bg-slate-100 text-slate-600 border-slate-200" },
   reupload_requested: { label: "Re-upload", icon: RefreshCw, className: "bg-sky-50 text-sky-700 border-sky-200" },
 };
@@ -215,7 +215,7 @@ export function KycClient({ initialDocuments, statusCounts }: KycClientProps) {
                 <button
                   onClick={() => openActionModal(doc, "approve")}
                   disabled={loading === doc.id}
-                  className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
+                  className="p-1.5 text-[var(--dash-positive)] hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
                   title="Approve"
                 >
                   <Check className="w-4 h-4" />
@@ -223,7 +223,7 @@ export function KycClient({ initialDocuments, statusCounts }: KycClientProps) {
                 <button
                   onClick={() => openActionModal(doc, "reject")}
                   disabled={loading === doc.id}
-                  className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                  className="p-1.5 text-[var(--dash-negative)] hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
                   title="Reject"
                 >
                   <X className="w-4 h-4" />
@@ -250,8 +250,8 @@ export function KycClient({ initialDocuments, statusCounts }: KycClientProps) {
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         {[
           { key: "pending", label: "Pending", icon: Clock, color: "text-amber-600", bg: "bg-amber-50" },
-          { key: "approved", label: "Approved", icon: CheckCircle, color: "text-emerald-600", bg: "bg-emerald-50" },
-          { key: "rejected", label: "Rejected", icon: XCircle, color: "text-red-600", bg: "bg-red-50" },
+          { key: "approved", label: "Approved", icon: CheckCircle, color: "text-[var(--dash-positive)]", bg: "bg-emerald-50" },
+          { key: "rejected", label: "Rejected", icon: XCircle, color: "text-[var(--dash-negative)]", bg: "bg-red-50" },
           { key: "expired", label: "Expired", icon: AlertCircle, color: "text-slate-500", bg: "bg-slate-50" },
           { key: "reupload_requested", label: "Re-upload", icon: RefreshCw, color: "text-sky-600", bg: "bg-sky-50" },
         ].map((stat) => {
@@ -384,7 +384,7 @@ export function KycClient({ initialDocuments, statusCounts }: KycClientProps) {
             {/* Rejection Reason */}
             {selectedDoc.rejection_reason && (
               <div className="p-4 bg-red-50 rounded-xl border border-red-100">
-                <p className="text-xs text-red-600 uppercase tracking-wider font-medium mb-1">Rejection Reason</p>
+                <p className="text-xs text-[var(--dash-negative)] uppercase tracking-wider font-medium mb-1">Rejection Reason</p>
                 <p className="text-sm text-red-700">{selectedDoc.rejection_reason}</p>
               </div>
             )}

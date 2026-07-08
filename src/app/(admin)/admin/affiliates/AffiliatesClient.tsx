@@ -53,9 +53,9 @@ interface AffiliatesClientProps {
 }
 
 const statusConfig: Record<string, { label: string; className: string }> = {
-  active: { label: "Active", className: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-  pending: { label: "Pending", className: "bg-amber-50 text-amber-700 border-amber-200" },
-  suspended: { label: "Suspended", className: "bg-red-50 text-red-700 border-red-200" },
+  active: { label: "Active", className: "border-[#A7F3D0] bg-success-50 text-success-700" },
+  pending: { label: "Pending", className: "border-[#FDE68A] bg-amber-50 text-amber-700" },
+  suspended: { label: "Suspended", className: "border-[#FECDD3] bg-rose-50 text-rose-700" },
 };
 
 export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarnings, totalPending }: AffiliatesClientProps) {
@@ -227,8 +227,8 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
       header: "Earnings",
       cell: ({ row }) => (
         <div className="flex items-center gap-1">
-          <TrendingUp className="w-3.5 h-3.5 text-emerald-500" />
-          <span className="font-semibold text-emerald-600">${Number(row.original.total_earnings).toLocaleString()}</span>
+          <TrendingUp className="w-3.5 h-3.5 text-[var(--dash-positive)]" />
+          <span className="font-semibold text-[var(--dash-positive)]">${Number(row.original.total_earnings).toLocaleString()}</span>
         </div>
       ),
     },
@@ -294,7 +294,7 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
               <button
                 onClick={() => handleStatusChange(aff, "active")}
                 disabled={loading === aff.user_id}
-                className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
+                className="p-1.5 text-[var(--dash-positive)] hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
                 title="Approve"
               >
                 <Check className="w-4 h-4" />
@@ -304,7 +304,7 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
               <button
                 onClick={() => handleStatusChange(aff, "suspended")}
                 disabled={loading === aff.user_id}
-                className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                className="p-1.5 text-[var(--dash-negative)] hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
                 title="Suspend"
               >
                 <Ban className="w-4 h-4" />
@@ -331,9 +331,9 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { key: "active", label: "Active", count: statusCounts.active, icon: CheckCircle, color: "text-emerald-600", bg: "bg-emerald-50" },
+          { key: "active", label: "Active", count: statusCounts.active, icon: CheckCircle, color: "text-[var(--dash-positive)]", bg: "bg-emerald-50" },
           { key: "pending", label: "Pending", count: statusCounts.pending, icon: Clock, color: "text-amber-600", bg: "bg-amber-50" },
-          { key: "suspended", label: "Suspended", count: statusCounts.suspended, icon: AlertCircle, color: "text-red-600", bg: "bg-red-50" },
+          { key: "suspended", label: "Suspended", count: statusCounts.suspended, icon: AlertCircle, color: "text-[var(--dash-negative)]", bg: "bg-red-50" },
           { key: "earnings", label: "Total Earnings", count: affiliates.length, icon: TrendingUp, color: "text-[var(--ink-700)]", bg: "bg-[var(--dash-canvas)]", amount: totalEarnings },
         ].map((stat) => {
           const Icon = stat.icon;
@@ -428,7 +428,7 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
               </div>
               <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
                 <p className="dash-overline mb-1 text-[10px]">Total Earnings</p>
-                <p className="font-semibold text-emerald-600">${Number(selectedAffiliate.total_earnings).toLocaleString()}</p>
+                <p className="font-semibold text-[var(--dash-positive)]">${Number(selectedAffiliate.total_earnings).toLocaleString()}</p>
               </div>
               <div className="rounded-[8px] border border-[var(--dash-hairline)] bg-[var(--dash-canvas)] p-3">
                 <p className="dash-overline mb-1 text-[10px]">Pending Payout</p>
@@ -456,7 +456,7 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
                         <p className="text-xs text-[var(--ink-400)]">{format(new Date(ref.created_at), "MMM dd, yyyy")}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-semibold text-emerald-600">${Number(ref.commission_earned || 0).toLocaleString()}</p>
+                        <p className="text-sm font-semibold text-[var(--dash-positive)]">${Number(ref.commission_earned || 0).toLocaleString()}</p>
                         <p className="text-xs text-[var(--ink-400)]">{ref.status}</p>
                       </div>
                     </div>
@@ -511,7 +511,7 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
               <button
                 onClick={handleCommissionUpdate}
                 disabled={loading === selectedAffiliate.user_id}
-                className="px-4 py-2 font-bold text-white bg-[var(--ink-950)] rounded-full hover:bg-black transition-colors disabled:opacity-50"
+                className="px-4 py-2 font-bold text-white rounded-lg bg-ink transition-colors hover:bg-ink-800 disabled:opacity-50"
               >
                 {loading === selectedAffiliate.user_id ? "Saving..." : "Save"}
               </button>

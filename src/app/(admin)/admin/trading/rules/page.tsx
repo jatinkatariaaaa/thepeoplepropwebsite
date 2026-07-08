@@ -168,12 +168,12 @@ export default function RuleTemplatesPage() {
               </div>
               <div className="bg-[var(--dash-canvas)] p-2.5 rounded-xl border border-[var(--dash-hairline)]">
                 <p className="text-[11px] text-[var(--ink-500)] font-semibold uppercase tracking-wider mb-0.5">Max DD</p>
-                <p className="font-bold text-[15px] text-red-600">{rule.max_overall_drawdown_pct}%</p>
+                <p className="font-bold text-[15px] text-[var(--dash-negative)]">{rule.max_overall_drawdown_pct}%</p>
               </div>
             </div>
 
             <div className="flex flex-wrap gap-1.5 mt-auto pt-4 border-t border-[var(--dash-hairline)]">
-              {rule.is_news_trading_allowed && <span className="px-2 py-1 bg-blue-50 text-blue-700 text-[10px] font-bold uppercase rounded-md">News OK</span>}
+              {rule.is_news_trading_allowed && <span className="px-2 py-1 bg-ink-50 text-ink-700 text-[10px] font-bold uppercase rounded-md">News OK</span>}
               {rule.is_weekend_holding_allowed && <span className="px-2 py-1 bg-purple-50 text-purple-700 text-[10px] font-bold uppercase rounded-md">Weekend OK</span>}
               {rule.is_ea_allowed && <span className="px-2 py-1 bg-indigo-50 text-indigo-700 text-[10px] font-bold uppercase rounded-md">EA OK</span>}
             </div>

@@ -241,7 +241,7 @@ export default function TradingAccountsPage() {
         return (
           <div>
             <p className="font-bold text-[13px]">${bal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
-            <p className={cn("text-[11px] font-medium", isUp ? "text-emerald-600" : "text-red-600")}>
+            <p className={cn("text-[11px] font-medium", isUp ? "text-[var(--dash-positive)]" : "text-[var(--dash-negative)]")}>
               ${eq.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
             </p>
           </div>
@@ -265,9 +265,9 @@ export default function TradingAccountsPage() {
         return (
           <span className={cn(
             "inline-flex px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider",
-            s === "active" ? "bg-emerald-50 text-emerald-700" :
-            s === "breached" ? "bg-red-50 text-red-700" :
-            s === "passed" ? "bg-blue-50 text-blue-700" :
+            s === "active" ? "bg-success-50 text-success-700" :
+            s === "breached" ? "bg-rose-50 text-rose-700" :
+            s === "passed" ? "bg-ink-50 text-ink-700" :
             s === "suspended" ? "bg-amber-50 text-amber-700" :
             s === "disabled" ? "bg-gray-200 text-gray-700" :
             "bg-gray-100 text-gray-700"

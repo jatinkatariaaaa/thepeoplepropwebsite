@@ -95,14 +95,14 @@ export default function AdminRolesPage() {
             <span className={`inline-flex px-2.5 py-1 rounded-full text-[11px] font-bold uppercase ${
               r === "super_admin" ? "bg-[var(--ink-950)] text-white" :
               r === "finance" ? "bg-violet-100 text-violet-700" :
-              r === "support" ? "bg-blue-100 text-blue-700" :
-              r === "marketing" ? "bg-amber-100 text-amber-700" :
+              r === "support" ? "bg-ink-50 text-ink-700" :
+              r === "marketing" ? "bg-amber-50 text-amber-700" :
               "bg-gray-100 text-gray-700"
             }`}>
               {r.replace("_", " ")}
             </span>
             {row.original.is_legacy && (
-              <span className="text-[10px] bg-red-50 text-red-600 px-1.5 py-0.5 rounded font-bold" title="Needs migration to admin_roles table">Legacy</span>
+              <span className="text-[10px] bg-red-50 text-[var(--dash-negative)] px-1.5 py-0.5 rounded font-bold" title="Needs migration to admin_roles table">Legacy</span>
             )}
           </div>
         );
@@ -120,7 +120,7 @@ export default function AdminRolesPage() {
         isSuperAdmin ? (
           <button
             onClick={() => handleRevoke(row.original.user_id)}
-            className="p-1.5 text-[var(--ink-400)] hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+            className="p-1.5 text-[var(--ink-400)] hover:text-[var(--dash-negative)] hover:bg-red-50 rounded transition-colors"
             title="Revoke Access"
           >
             <Trash2 className="w-4 h-4" />
@@ -144,7 +144,7 @@ export default function AdminRolesPage() {
         {isSuperAdmin && (
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-[var(--ink-950)] text-white rounded-xl font-bold hover:bg-black transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-ink text-[13px] font-semibold text-white transition-colors hover:bg-ink-800"
           >
             <Plus className="w-4 h-4" /> Add Admin
           </button>
@@ -195,7 +195,7 @@ export default function AdminRolesPage() {
           </div>
           <div className="flex justify-end gap-3 mt-6">
             <button onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-[var(--ink-500)] font-semibold">Cancel</button>
-            <button onClick={handleAssignRole} className="px-4 py-2 bg-[var(--ink-950)] text-white rounded-xl font-bold">Assign Role</button>
+            <button onClick={handleAssignRole} className="px-4 py-2 rounded-lg bg-ink text-[13px] font-semibold text-white">Assign Role</button>
           </div>
         </div>
       </AdminModal>

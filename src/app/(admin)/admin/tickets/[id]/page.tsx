@@ -185,7 +185,7 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
               <button
                 onClick={handleSendReply}
                 disabled={!replyText.trim()}
-                className="self-end p-3 bg-[var(--accent)] text-[var(--ink-950)] rounded-xl hover:bg-[#bbf034] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="self-end p-3 rounded-lg bg-ink text-white transition-colors hover:bg-ink-800 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Send className="w-5 h-5" />
               </button>
@@ -226,8 +226,8 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
                   value={ticket.status}
                   onChange={(e) => handleUpdateStatus(e.target.value)}
                   className={`w-full rounded-lg border p-2 text-sm font-semibold outline-none ${
-                    ticket.status === 'resolved' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                    ticket.status === 'open' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                    ticket.status === 'resolved' ? 'border-[#A7F3D0] bg-success-50 text-success-700' :
+                    ticket.status === 'open' ? 'bg-ink-50 text-ink-700 border-blue-200' :
                     'bg-white border-[var(--dash-hairline)] text-[var(--ink-950)]'
                   }`}
                 >
@@ -244,8 +244,8 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
                   value={ticket.priority}
                   onChange={(e) => handleUpdatePriority(e.target.value)}
                   className={`w-full rounded-lg border p-2 text-sm font-semibold outline-none ${
-                    ticket.priority === 'urgent' ? 'bg-red-50 text-red-700 border-red-200' :
-                    ticket.priority === 'high' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                    ticket.priority === 'urgent' ? 'border-[#FECDD3] bg-rose-50 text-rose-700' :
+                    ticket.priority === 'high' ? 'border-[#FDE68A] bg-amber-50 text-amber-700' :
                     'bg-white border-[var(--dash-hairline)] text-[var(--ink-950)]'
                   }`}
                 >
