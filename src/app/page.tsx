@@ -414,14 +414,13 @@ function CustomCursor() {
    grid and the desktop pinned horizontal-scroll rail.
    ───────────────────────────────────────────────────────────── */
 type StepBullet = { icon: typeof Target; t: string; s: string };
-type Step = { badge: string; title: string; dark: boolean; img: string; bullets: StepBullet[] };
+type Step = { badge: string; title: string; dark: boolean; bullets: StepBullet[] };
 
 const STEPS: Step[] = [
   {
     badge: "Step 01",
     title: "Pass the evaluation",
     dark: false,
-    img: "/brand/step-evaluation-target.png",
     bullets: [
       { icon: Target, t: "Hit a 10% profit target", s: "Reach and maintain a 10% profit target." },
       { icon: Shield, t: "Respect 4% daily / 8% max drawdown", s: "Stay within 4% daily and 8% overall limits." },
@@ -432,7 +431,6 @@ const STEPS: Step[] = [
     badge: "Step 02",
     title: "Unlock funded account",
     dark: true,
-    img: "/brand/capital-vault.png",
     bullets: [
       { icon: KeyRound, t: "Account credentials", s: "Delivered in under 24 hours." },
       { icon: DollarSign, t: "Up to $200,000", s: "In scaled capital." },
@@ -443,7 +441,6 @@ const STEPS: Step[] = [
     badge: "Step 03",
     title: "Trade & get paid",
     dark: false,
-    img: "/brand/payout-coins.png",
     bullets: [
       { icon: CalendarCheck, t: "First payout 14 days", s: "Receive your first payout 14 days after your first trade." },
       { icon: Percent, t: "Up to 90% profit split", s: "Keep up to 90% of profits. Paid bi-weekly." },
@@ -564,9 +561,6 @@ function PinnedSteps() {
                   step.dark ? "bg-[#0c0c0c]" : "border border-[#0c0c0c]/10 bg-white/50 md:backdrop-blur-sm"
                 )}
               >
-                <div className="-mx-9 -mt-9 mb-6 aspect-[16/9] overflow-hidden rounded-t-[2rem]">
-                  <img src={step.img} alt="" aria-hidden className="h-full w-full object-cover" loading="lazy" />
-                </div>
                 <span
                   className={cn(
                     "mb-5 inline-flex w-fit items-center rounded-full px-3 py-1 text-[12px] font-semibold uppercase tracking-wider",
@@ -696,7 +690,7 @@ export default function HomePage() {
         >
           {/* Middle Layer: X-Ray Reveal Image */}
           <motion.div
-            className="hidden md:block absolute inset-0 z-0 bg-[url('/brand/hero-banner.png')] bg-cover bg-center bg-no-repeat opacity-80 pointer-events-none"
+            className="hidden md:block absolute inset-0 z-0 bg-[url('/images/hero-bg.webp')] bg-cover bg-center bg-no-repeat opacity-80 pointer-events-none"
             style={{
               maskImage: useMotionTemplate`radial-gradient(450px circle at ${smoothMouseX}px ${smoothMouseY}px, black 0%, transparent 100%)`,
               WebkitMaskImage: useMotionTemplate`radial-gradient(450px circle at ${smoothMouseX}px ${smoothMouseY}px, black 0%, transparent 100%)`,
@@ -854,13 +848,16 @@ export default function HomePage() {
               </div>
             </div>
 
+            {/* Right card hidden - image will be added later */}
+            {/*
             <Reveal delay={0.2} className="hidden items-end md:col-span-3 md:flex lg:col-span-2">
               <Floating amplitude={12} duration={8} delay={0.5} className="-translate-y-full w-full">
                 <div className="aspect-[9/10] w-full overflow-hidden rounded-2xl bg-[#e5ddd0] lg:rounded-3xl">
-                  <img src="/brand/about-trader.png" alt="Trader looking at a rising chart above the clouds" className="h-full w-full object-cover" loading="lazy" />
+                  <img src="/images/features/1.webp" alt="Feature" className="h-full w-full object-cover" loading="lazy" />
                 </div>
               </Floating>
             </Reveal>
+            */}
           </div>
         </div>
       </section>
@@ -869,28 +866,17 @@ export default function HomePage() {
       <section className="w-full pb-16 lg:pb-24">
         <div className="w-full px-5 lg:px-10">
           
-          <div className="grid items-center gap-12 lg:grid-cols-[1.5fr_1fr] lg:gap-16">
-            <div className="flex flex-col gap-12 text-center md:flex-row md:flex-wrap md:text-left xl:flex-nowrap xl:gap-16">
-              {dbStats.map((s, i) => (
-                <Reveal key={s.label || s.key_name} delay={i * 0.1} className={cn("flex-1 min-w-[200px]", s.mt)}>
-                  <div className="flex flex-col items-center gap-2 md:items-start lg:gap-3">
-                    <div className="text-5xl font-medium leading-tight tracking-tight text-[#0c0c0c] sm:text-6xl lg:text-7xl xl:text-[5.5rem]">
-                      {s.value}
-                    </div>
-                    <span className="text-base font-medium text-[#6c6a68] lg:text-lg">{s.label}</span>
+          <div className="flex flex-col gap-12 text-center md:flex-row md:flex-wrap md:text-left xl:flex-nowrap xl:gap-16">
+            {dbStats.map((s, i) => (
+              <Reveal key={s.label || s.key_name} delay={i * 0.1} className={cn("flex-1 min-w-[200px]", s.mt)}>
+                <div className="flex flex-col items-center gap-2 md:items-start lg:gap-3">
+                  <div className="text-5xl font-medium leading-tight tracking-tight text-[#0c0c0c] sm:text-6xl lg:text-7xl xl:text-[5.5rem]">
+                    {s.value}
                   </div>
-                </Reveal>
-              ))}
-            </div>
-            <Reveal delay={0.2} className="hidden lg:block">
-              <Floating amplitude={10} duration={8}>
-                <TiltCard intensity={6}>
-                  <div className="aspect-square w-full overflow-hidden rounded-3xl shadow-xl">
-                    <img src="/brand/global-community.png" alt="Glass globe with trading connections across 150+ countries" className="h-full w-full object-cover" loading="lazy" />
-                  </div>
-                </TiltCard>
-              </Floating>
-            </Reveal>
+                  <span className="text-base font-medium text-[#6c6a68] lg:text-lg">{s.label}</span>
+                </div>
+              </Reveal>
+            ))}
           </div>
 
         </div>
@@ -938,17 +924,7 @@ export default function HomePage() {
                             : "border-white/[0.06] bg-[#1A2326] hover:border-white/[0.12]"
                         )}
                       >
-                        {item.fullWidth && (
-                          <img
-                            src="/brand/platforms-terminal.png"
-                            alt=""
-                            aria-hidden
-                            className="pointer-events-none absolute inset-y-0 right-0 hidden h-full w-1/2 object-cover opacity-90 md:block"
-                            style={{ maskImage: "linear-gradient(to right, transparent, black 45%)", WebkitMaskImage: "linear-gradient(to right, transparent, black 45%)" }}
-                            loading="lazy"
-                          />
-                        )}
-                        <div className="relative flex items-start justify-between gap-4">
+                        <div className="flex items-start justify-between gap-4">
                           <div className="min-w-0 flex-1">
                             <div className="mb-3 flex items-baseline gap-2">
                               <span className={cn("font-black leading-none tracking-[-0.04em]", item.accent ? "text-[#0c0c0c]" : "text-white", item.fullWidth ? "text-4xl md:text-5xl" : "text-4xl md:text-[56px]")}>
@@ -1020,9 +996,6 @@ export default function HomePage() {
             <Reveal>
               <TiltCard intensity={5} glare={false} className="h-full">
                 <div className="flex h-full flex-col rounded-3xl border border-[#0c0c0c]/10 bg-white/40 p-7 md:backdrop-blur-sm">
-                  <div className="-mx-7 -mt-7 mb-5 aspect-[16/9] overflow-hidden rounded-t-3xl">
-                    <img src="/brand/step-evaluation-target.png" alt="" aria-hidden className="h-full w-full object-cover" loading="lazy" />
-                  </div>
                   <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#cbfb45]">Step 01</span>
                   <h3 className="mb-4 text-xl font-bold tracking-tight text-[#0c0c0c]">Pass the evaluation</h3>
                   <div className="flex flex-col gap-4">
@@ -1050,9 +1023,6 @@ export default function HomePage() {
             <Reveal delay={0.1}>
               <TiltCard intensity={5} className="h-full">
                 <div className="flex h-full flex-col rounded-3xl bg-[#0c0c0c] p-7">
-                  <div className="-mx-7 -mt-7 mb-5 aspect-[16/9] overflow-hidden rounded-t-3xl">
-                    <img src="/brand/capital-vault.png" alt="" aria-hidden className="h-full w-full object-cover" loading="lazy" />
-                  </div>
                   <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#cbfb45] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#0c0c0c]">Step 02</span>
                   <h3 className="mb-6 text-xl font-bold tracking-tight text-white">Unlock funded account</h3>
                   <div className="flex flex-col gap-4">
@@ -1078,9 +1048,6 @@ export default function HomePage() {
             <Reveal delay={0.2}>
               <TiltCard intensity={5} glare={false} className="h-full">
                 <div className="flex h-full flex-col rounded-3xl border border-[#0c0c0c]/10 bg-white/40 p-7 md:backdrop-blur-sm">
-                  <div className="-mx-7 -mt-7 mb-5 aspect-[16/9] overflow-hidden rounded-t-3xl">
-                    <img src="/brand/payout-coins.png" alt="" aria-hidden className="h-full w-full object-cover" loading="lazy" />
-                  </div>
                   <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#cbfb45]">Step 03</span>
                   <h3 className="mb-4 text-xl font-bold tracking-tight text-[#0c0c0c]">Trade &amp; get paid</h3>
                   <div className="flex flex-col gap-4">
@@ -1125,15 +1092,12 @@ export default function HomePage() {
             <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 lg:flex-row lg:gap-0">
               <div className="flex w-full flex-col gap-5 lg:w-[28%]">
                 {[
-                  { icon: TrendingUp, title: "Tier-1 Liquidity", desc: "Raw spreads, no re-quotes. Your strategy deserves real market conditions.", img: "/brand/cta-candlesticks.png" },
-                  { icon: Shield, title: "Transparent Rules", desc: "4% daily drawdown, 8% max. No hidden gotchas. What you see is what you get.", img: "/brand/transparent-rules-shield.png" },
+                  { icon: TrendingUp, title: "Tier-1 Liquidity", desc: "Raw spreads, no re-quotes. Your strategy deserves real market conditions." },
+                  { icon: Shield, title: "Transparent Rules", desc: "4% daily drawdown, 8% max. No hidden gotchas. What you see is what you get." },
                 ].map((f, i) => (
                   <Reveal key={f.title} delay={i * 0.08}>
                     <TiltCard>
                       <div className="flex min-h-[200px] flex-col overflow-hidden rounded-3xl border border-white/[0.05] bg-[#0c0c0c] p-7">
-                        <div className="-mx-7 -mt-7 mb-5 h-36 overflow-hidden">
-                          <img src={f.img} alt="" aria-hidden className="h-full w-full object-cover" loading="lazy" />
-                        </div>
                         <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06]">
                           <f.icon className="h-5 w-5 text-[#cbfb45]" strokeWidth={2} />
                         </div>
@@ -1178,15 +1142,12 @@ export default function HomePage() {
 
               <div className="flex w-full flex-col gap-5 lg:w-[28%]">
                 {[
-                  { icon: Clock, title: "No Time Limit", desc: "Trade at your own pace. Pass the evaluation whenever you're ready.", img: "/brand/fast-payouts-hourglass.png" },
-                  { icon: Award, title: "Auto-Scaling", desc: "Hit targets and grow automatically. $25K → $50K → $100K → $200K.", img: "/brand/scaling-staircase.png" },
+                  { icon: Clock, title: "No Time Limit", desc: "Trade at your own pace. Pass the evaluation whenever you're ready." },
+                  { icon: Award, title: "Auto-Scaling", desc: "Hit targets and grow automatically. $25K → $50K → $100K → $200K." },
                 ].map((f, i) => (
                   <Reveal key={f.title} delay={i * 0.08}>
                     <TiltCard>
                       <div className="flex min-h-[200px] flex-col overflow-hidden rounded-3xl border border-white/[0.05] bg-[#0c0c0c] p-7">
-                        <div className="-mx-7 -mt-7 mb-5 h-36 overflow-hidden">
-                          <img src={f.img} alt="" aria-hidden className="h-full w-full object-cover" loading="lazy" />
-                        </div>
                         <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06]">
                           <f.icon className="h-5 w-5 text-[#cbfb45]" strokeWidth={2} />
                         </div>
@@ -1290,9 +1251,6 @@ export default function HomePage() {
                   <p className="mt-4 max-w-sm text-[15px] leading-relaxed text-white/50">
                     Everything you need to know before getting started. For the full list, see the rules page.
                   </p>
-                  <div className="mt-8 hidden max-w-sm overflow-hidden rounded-2xl lg:block">
-                    <img src="/brand/transparent-rules-shield.png" alt="Glass shield representing transparent trading rules" className="aspect-[4/3] w-full object-cover" loading="lazy" />
-                  </div>
                   <Magnetic className="mt-8 hidden lg:inline-block">
                     <Link href="/rules" className="inline-flex h-11 items-center gap-2 rounded-full border border-white/20 px-5 text-[15px] font-medium text-white transition-all duration-300 hover:rounded-lg hover:border-[#cbfb45] hover:text-[#cbfb45]">
                       See all questions
@@ -1322,11 +1280,7 @@ export default function HomePage() {
       <section className="w-full py-16 lg:py-24">
         <div className="w-full px-5 lg:px-10">
           <Reveal>
-            <div className="mx-auto grid max-w-5xl items-stretch overflow-hidden rounded-[2rem] border border-[#0c0c0c]/10 bg-white/40 shadow-xl lg:grid-cols-2">
-              <div className="hidden lg:block">
-                <img src="/brand/instant-funding-rocket.png" alt="Glass rocket launching through clouds" className="h-full w-full object-cover" loading="lazy" />
-              </div>
-            <div className="mx-auto flex max-w-2xl flex-col justify-center px-6 py-14 text-center lg:px-12">
+            <div className="mx-auto max-w-2xl text-center">
               <GsapWords
                 text="Ready to get funded?"
                 highlight={["funded?"]}
@@ -1351,7 +1305,6 @@ export default function HomePage() {
                   </Link>
                 </Magnetic>
               </div>
-            </div>
             </div>
           </Reveal>
         </div>
