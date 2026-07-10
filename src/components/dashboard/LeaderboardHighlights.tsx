@@ -1,13 +1,9 @@
 import { Trophy, CalendarDays, Coins, Crown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { supabaseAdmin } from "@/lib/supabase";
+import { getDailyLeaderboard } from "@/lib/daily-leaderboard";
 
 export async function LeaderboardHighlights() {
-  const { data: traders } = await supabaseAdmin
-    .from("leaderboard")
-    .select("*")
-    .order("profit", { ascending: false })
-    .limit(4);
+  const traders = getDailyLeaderboard(20).slice(0, 4);
 
   // Map our top 4 database traders to the highlight metric cards for demo purposes
   const highlights = [
