@@ -84,10 +84,11 @@ export function ClientSidebar() {
         </div>
 
         {/* New Challenge Button */}
-        <div className="px-6 pt-6 pb-2">
+        <div className="px-4 pt-6 pb-2">
           <Link href="/dashboard/new-challenge" onClick={() => setIsOpen(false)}>
-            <div className="w-12 h-12 rounded-full bg-[var(--ink-950)] text-white flex items-center justify-center hover:bg-[var(--accent)] hover:scale-105 transition-all shadow-md cursor-pointer group">
-              <Plus className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" />
+            <div className="w-full h-12 rounded-xl bg-[var(--teal-900)] text-white flex items-center gap-3 px-4 hover:bg-[var(--teal-800)] transition-all shadow-md cursor-pointer group">
+              <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
+              <span className="text-[14px] font-semibold">New Challenge</span>
             </div>
           </Link>
         </div>
@@ -103,12 +104,15 @@ export function ClientSidebar() {
                 key={item.href} 
                 href={item.href}
                 onClick={() => setIsOpen(false)}
-                className="relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group outline-none"
+                className={cn(
+                  "relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group outline-none",
+                  !isActive && "hover:bg-[var(--teal-50)]"
+                )}
               >
                 {isActive && (
                   <motion.div
                     layoutId="sidebar-active"
-                    className="absolute inset-0 bg-[var(--accent-50)] rounded-xl"
+                    className="absolute inset-0 bg-[var(--teal-900)] rounded-xl shadow-md"
                     initial={false}
                     transition={{ type: "spring", stiffness: 350, damping: 30 }}
                   />
@@ -116,11 +120,11 @@ export function ClientSidebar() {
                 
                 <Icon className={cn(
                   "w-5 h-5 relative z-10 transition-colors",
-                  isActive ? "text-[var(--accent-700)]" : "text-[var(--ink-500)] group-hover:text-[var(--ink-900)]"
+                  isActive ? "text-white" : "text-[var(--ink-500)] group-hover:text-[var(--teal-900)]"
                 )} />
                 <span className={cn(
                   "text-[14px] font-medium relative z-10 transition-colors",
-                  isActive ? "text-[var(--accent-700)]" : "text-[var(--ink-700)] group-hover:text-[var(--ink-950)]"
+                  isActive ? "text-white font-semibold" : "text-[var(--ink-700)] group-hover:text-[var(--teal-900)]"
                 )}>
                   {item.label}
                 </span>

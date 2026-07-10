@@ -46,6 +46,14 @@
   --accent-100: #EEFFC4;
   --accent-50:  #F5FFDD;
 
+  /* ── Dashboard Teal (deep pine — sidebar/actions) ── */
+  --teal-950: #122B28;
+  --teal-900: #16332F;
+  --teal-800: #1D3B36;
+  --teal-700: #2A4C46;
+  --teal-100: #DCE8E4;
+  --teal-50:  #EDF4F1;
+
   /* ── Success — Emerald Green ── */
   --success: #059669;
   --success-700: #047857;
