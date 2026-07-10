@@ -24,9 +24,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { accountId, amount, cryptoAddress } = await request.json();
+    const { accountId, amount, paymentMethod, paymentDetails, cryptoAddress } = await request.json();
 
-    if (!accountId || !amount || !cryptoAddress) {
+    // Support both old (cryptoAddress) and new (paymentMethod + paymentDetails) formats
+    const resolvedMethod = paymentMethod || "usdt_trc20";
+    const resolvedDetails = paymentDetails || cryptoAddress || "";
+
+    if (!accountId || !amount || !resolvedDetails) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
@@ -72,14 +76,15 @@ export async function POST(request: Request) {
         user_id: user.id,
         account_id: account.id,
         amount,
-        crypto_address: cryptoAddress,
+        crypto_address: resolvedDetails,
+        payment_method: resolvedMethod,
+        payment_details: resolvedDetails,
         status: "pending"
       })
       .select()
       .single();
 
     if (insertError) {
-      // Rollback not supported easily without RPC, but this is a rare case
       throw insertError;
     }
 
