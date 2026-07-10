@@ -81,7 +81,7 @@ export function ActiveAccounts({ accounts = [], loading = false }: { accounts?: 
             <div className="p-4 sm:p-6 border-b border-[var(--border)] flex flex-col sm:flex-row sm:items-start justify-between gap-4">
               <div className="min-w-0">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="shrink-0 w-8 h-8 rounded-full bg-[var(--accent-50)] flex items-center justify-center text-[var(--accent-700)]">
+                  <div className="shrink-0 w-8 h-8 rounded-full bg-[var(--teal-50)] flex items-center justify-center text-[var(--teal-800)]">
                     <Trophy className="w-4 h-4" />
                   </div>
                   <h3 className="min-w-0 truncate font-bold text-[16px] text-[var(--ink-950)]">
@@ -122,7 +122,7 @@ export function ActiveAccounts({ accounts = [], loading = false }: { accounts?: 
               </div>
               <div className="rounded-2xl border border-[var(--border)] bg-[var(--paper-2)]/60 p-3">
                 <p className="text-[11px] font-bold text-[var(--ink-500)] uppercase tracking-wider mb-1">Current Equity</p>
-                <p className="text-[18px] sm:text-[20px] font-display font-bold text-[var(--accent-600)] leading-tight break-words">{formatMoney(account.equity)}</p>
+                <p className="text-[18px] sm:text-[20px] font-display font-bold text-[var(--teal-800)] leading-tight break-words">{formatMoney(account.equity)}</p>
               </div>
               <div className="rounded-2xl border border-[var(--border)] bg-[var(--paper-2)]/60 p-3">
                 <p className="text-[11px] font-bold text-[var(--ink-500)] uppercase tracking-wider mb-1">Phase</p>
@@ -138,7 +138,7 @@ export function ActiveAccounts({ accounts = [], loading = false }: { accounts?: 
                 </button>
               </Link>
               <Link className="w-full min-[420px]:w-auto" href={`/dashboard/account/${account.id}`}>
-                <Button className="flex w-full items-center justify-center gap-2 h-10 px-5 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-700)] text-white shadow-sm text-[14px] font-medium">
+                <Button className="flex w-full items-center justify-center gap-2 h-10 px-5 rounded-xl bg-[var(--teal-900)] hover:bg-[var(--teal-800)] text-white shadow-sm text-[14px] font-semibold">
                   <Eye className="w-4 h-4" />
                   View Metrics
                 </Button>
@@ -148,13 +148,13 @@ export function ActiveAccounts({ accounts = [], loading = false }: { accounts?: 
         )})}
         
         {/* Placeholder for new account card */}
-        <Link href="/dashboard/new-challenge" className="bg-transparent rounded-[20px] sm:rounded-[24px] border-2 border-dashed border-[var(--ink-200)] flex flex-col items-center justify-center p-6 sm:p-12 text-center hover:bg-[var(--paper)] hover:border-[var(--accent-300)] transition-colors cursor-pointer group min-h-[240px] sm:min-h-[260px]">
-          <div className="w-12 h-12 rounded-full bg-[var(--ink-100)] flex items-center justify-center mb-4 group-hover:bg-[var(--accent-50)] group-hover:text-[var(--accent-600)] transition-colors">
-            <Trophy className="w-6 h-6 text-[var(--ink-400)] group-hover:text-[var(--accent-600)]" />
+        <Link href="/dashboard/new-challenge" className="bg-transparent rounded-2xl border-2 border-dashed border-[var(--ink-200)] flex flex-col items-center justify-center p-6 sm:p-12 text-center hover:bg-[var(--teal-50)]/40 hover:border-[var(--teal-700)] transition-colors cursor-pointer group min-h-[240px] sm:min-h-[260px]">
+          <div className="w-12 h-12 rounded-full bg-[var(--ink-100)] flex items-center justify-center mb-4 group-hover:bg-[var(--teal-100)] transition-colors">
+            <Trophy className="w-6 h-6 text-[var(--ink-400)] group-hover:text-[var(--teal-800)]" />
           </div>
           <h3 className="font-bold text-[16px] text-[var(--ink-950)] mb-2">Ready for a new challenge?</h3>
           <p className="text-[14px] text-[var(--ink-500)] max-w-sm">Prove your skills and get funded up to $200,000. Start your evaluation today.</p>
-          <div className="mt-6 flex items-center font-bold text-[14px] text-[var(--accent-600)]">
+          <div className="mt-6 flex items-center font-bold text-[14px] text-[var(--teal-800)]">
             Browse Programs <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
           </div>
         </Link>
