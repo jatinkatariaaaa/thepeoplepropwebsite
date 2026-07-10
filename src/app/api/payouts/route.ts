@@ -43,7 +43,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid account or not funded" }, { status: 400 });
     }
 
-    const maxProfit = Math.max(0, account.balance - account.size);
+    const maxProfit = Math.max(0, account.balance - account.starting_balance);
     if (amount > maxProfit) {
       return NextResponse.json({ error: "Requested amount exceeds maximum withdrawable profit" }, { status: 400 });
     }

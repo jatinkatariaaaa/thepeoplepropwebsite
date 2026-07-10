@@ -16,7 +16,7 @@ export function PayoutsClient({ fundedAccounts, initialPayouts }: { fundedAccoun
 
   const selectedAccount = fundedAccounts.find(a => a.id === selectedAccountId);
   // Calculate max withdrawable profit (balance - original size)
-  const maxProfit = selectedAccount ? Math.max(0, selectedAccount.balance - selectedAccount.size) : 0;
+  const maxProfit = selectedAccount ? Math.max(0, selectedAccount.balance - selectedAccount.starting_balance) : 0;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,7 +84,7 @@ export function PayoutsClient({ fundedAccounts, initialPayouts }: { fundedAccoun
                 <option value="">-- Choose Account --</option>
                 {fundedAccounts.map(acc => (
                   <option key={acc.id} value={acc.id}>
-                    ${acc.size.toLocaleString()} Funded ({acc.id.substring(0,8)}) - Profit: ${Math.max(0, acc.balance - acc.size).toLocaleString()}
+                    ${Number(acc.starting_balance).toLocaleString()} Funded ({acc.id.substring(0,8)}) - Profit: ${Math.max(0, acc.balance - acc.starting_balance).toLocaleString()}
                   </option>
                 ))}
               </select>
