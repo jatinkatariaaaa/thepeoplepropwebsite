@@ -8,6 +8,11 @@ export async function middleware(request: NextRequest) {
     },
   });
 
+  // Skip auth checks gracefully when Supabase env vars are not configured (e.g. local preview)
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return supabaseResponse;
+  }
+
   const cookieDomain = process.env.NEXT_PUBLIC_COOKIE_DOMAIN;
   const cookieOptions = cookieDomain ? { domain: cookieDomain } : undefined;
 
