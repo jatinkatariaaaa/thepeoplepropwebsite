@@ -6,7 +6,7 @@ import { AdminTable } from "@/components/admin/AdminTable";
 import { AdminModal } from "@/components/admin/AdminModal";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { Clock, CircleCheck as CheckCircle, Circle as XCircle, DollarSign, Wallet, Eye, FileText, TriangleAlert as AlertTriangle, Shield, Search, ListFilter as Filter, TrendingUp, Ban, StickyNote, User, CreditCard, ArrowRight } from "lucide-react";
+import { Clock, CircleCheck as CheckCircle, Circle as XCircle, DollarSign, Wallet, Eye, TriangleAlert as AlertTriangle, Search, TrendingUp, StickyNote, CreditCard, Building2, Banknote } from "lucide-react";
 import { toast } from "sonner";
 
 interface Payout {
@@ -20,6 +20,8 @@ interface Payout {
   profit: number;
   profit_split: number;
   notes: string | null;
+  payment_method: string;
+  payment_details: string | null;
   processed_at: string | null;
   processed_by: string | null;
   profiles: { id: string; email: string; display_name: string } | null;
@@ -60,7 +62,8 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
         const name = (p.profiles?.display_name || "").toLowerCase();
         const email = (p.profiles?.email || "").toLowerCase();
         const addr = (p.crypto_address || "").toLowerCase();
-        return name.includes(s) || email.includes(s) || addr.includes(s);
+        const details = (p.payment_details || "").toLowerCase();
+        return name.includes(s) || email.includes(s) || addr.includes(s) || details.includes(s);
       }
       return true;
     });
@@ -153,16 +156,26 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
       ),
     },
     {
-      accessorKey: "crypto_address",
-      header: "Wallet",
-      cell: ({ row }) => (
-        <div className="flex items-center gap-1.5">
-          <Wallet className="w-3.5 h-3.5 text-[var(--ink-400)]" />
-          <span className="font-mono text-xs truncate max-w-[120px]" title={row.original.crypto_address}>
-            {row.original.crypto_address}
-          </span>
-        </div>
-      ),
+      accessorKey: "payment_method",
+      header: "Payment",
+      cell: ({ row }) => {
+        const p = row.original;
+        const method = p.payment_method || "crypto";
+        const display = p.payment_details || p.crypto_address || "—";
+        const Icon = method === "bank" ? Building2 : method === "wise" ? Banknote : Wallet;
+        const methodLabel = method === "bank" ? "Bank" : method === "wise" ? "Wise" : "Crypto";
+        return (
+          <div>
+            <div className="flex items-center gap-1 mb-0.5">
+              <Icon className="w-3 h-3 text-[var(--ink-400)]" />
+              <span className="text-[10px] font-medium text-[var(--ink-500)] uppercase tracking-wider">{methodLabel}</span>
+            </div>
+            <span className="font-mono text-xs truncate max-w-[130px] block" title={display}>
+              {display}
+            </span>
+          </div>
+        );
+      },
     },
     {
       accessorKey: "status",
@@ -333,10 +346,20 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
                 <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Profit Split</p>
                 <p className="font-semibold text-[var(--ink-950)]">{selectedPayout.profit_split}%</p>
               </div>
-              <div className="p-3 bg-[var(--paper-2)] rounded-xl col-span-2">
-                <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Wallet Address</p>
-                <p className="font-mono text-sm text-[var(--ink-700)] break-all">{selectedPayout.crypto_address}</p>
+              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
+                <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Payment Method</p>
+                <p className="font-semibold text-[var(--ink-950)] capitalize">{selectedPayout.payment_method || "crypto"}</p>
               </div>
+              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
+                <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Crypto Address</p>
+                <p className="font-mono text-xs text-[var(--ink-700)] break-all">{selectedPayout.crypto_address || "—"}</p>
+              </div>
+              {selectedPayout.payment_details && (
+                <div className="p-3 bg-[var(--paper-2)] rounded-xl col-span-2">
+                  <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Payment Details</p>
+                  <p className="text-sm text-[var(--ink-700)] break-all whitespace-pre-wrap">{selectedPayout.payment_details}</p>
+                </div>
+              )}
               <div className="p-3 bg-[var(--paper-2)] rounded-xl">
                 <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Requested</p>
                 <p className="font-semibold text-[var(--ink-950)]">{format(new Date(selectedPayout.created_at), "MMM dd, yyyy HH:mm")}</p>
@@ -404,7 +427,7 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
         isOpen={isActionModalOpen}
         onClose={() => { setIsActionModalOpen(false); setAdminNotes(""); }}
         title={actionType === "approve" ? "Approve Payout" : "Reject Payout"}
-        description={selectedPayout ? `$${Number(selectedPayout.amount).toLocaleString()} to ${selectedPayout.crypto_address.substring(0, 20)}...` : ""}
+        description={selectedPayout ? `${Number(selectedPayout.amount).toLocaleString()} via ${selectedPayout.payment_method || "crypto"}${selectedPayout.payment_details ? " — " + selectedPayout.payment_details.substring(0, 30) + "..." : selectedPayout.crypto_address ? " — " + selectedPayout.crypto_address.substring(0, 20) + "..." : ""}` : ""}
       >
         {selectedPayout && (
           <div className="space-y-4">
