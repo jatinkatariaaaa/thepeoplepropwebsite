@@ -414,13 +414,15 @@ function CustomCursor() {
    grid and the desktop pinned horizontal-scroll rail.
    ───────────────────────────────────────────────────────────── */
 type StepBullet = { icon: typeof Target; t: string; s: string };
-type Step = { badge: string; title: string; dark: boolean; bullets: StepBullet[] };
+type Step = { badge: string; title: string; dark: boolean; bullets: StepBullet[]; image: string; imageAlt: string };
 
 const STEPS: Step[] = [
   {
     badge: "Step 01",
     title: "Pass the evaluation",
     dark: false,
+    image: "/images/3d/tpp-growth-chart-transparent.png",
+    imageAlt: "3D growth chart with rising bars",
     bullets: [
       { icon: Target, t: "Hit a 10% profit target", s: "Reach and maintain a 10% profit target." },
       { icon: Shield, t: "Respect 4% daily / 8% max drawdown", s: "Stay within 4% daily and 8% overall limits." },
@@ -431,6 +433,8 @@ const STEPS: Step[] = [
     badge: "Step 02",
     title: "Unlock funded account",
     dark: true,
+    image: "/images/3d/tpp-trading-dashboard-transparent.png",
+    imageAlt: "Funded trading dashboard on tablet",
     bullets: [
       { icon: KeyRound, t: "Account credentials", s: "Delivered in under 24 hours." },
       { icon: DollarSign, t: "Up to $200,000", s: "In scaled capital." },
@@ -441,6 +445,8 @@ const STEPS: Step[] = [
     badge: "Step 03",
     title: "Trade & get paid",
     dark: false,
+    image: "/images/3d/tpp-payout-phone-transparent.png",
+    imageAlt: "Payout sent confirmation on phone with card",
     bullets: [
       { icon: CalendarCheck, t: "First payout 14 days", s: "Receive your first payout 14 days after your first trade." },
       { icon: Percent, t: "Up to 90% profit split", s: "Keep up to 90% of profits. Paid bi-weekly." },
@@ -548,11 +554,21 @@ function PinnedSteps() {
         {STEPS.map((step, i) => (
           <div key={step.badge} className="flex h-full w-screen shrink-0 items-center px-10 xl:px-20">
             <div className="grid w-full max-w-6xl grid-cols-[auto_1fr] items-center gap-10 xl:gap-16">
-              <div
-                className="select-none font-black leading-none tracking-[-0.05em] text-[#0c0c0c]/[0.08]"
-                style={{ fontSize: "clamp(8rem, 20vw, 22rem)" }}
-              >
-                {String(i + 1).padStart(2, "0")}
+              <div className="relative flex items-center justify-center">
+                <div
+                  className="select-none font-black leading-none tracking-[-0.05em] text-[#0c0c0c]/[0.08]"
+                  style={{ fontSize: "clamp(8rem, 20vw, 22rem)" }}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </div>
+                <Floating amplitude={14} duration={7} className="absolute inset-0 flex items-center justify-center">
+                  <img
+                    src={step.image || "/placeholder.svg"}
+                    alt={step.imageAlt}
+                    className="h-[75%] w-auto max-w-none object-contain drop-shadow-[0_30px_60px_rgba(12,12,12,0.25)]"
+                    loading="lazy"
+                  />
+                </Floating>
               </div>
               <div
                 data-cursor="hover"
@@ -629,11 +645,12 @@ export default function HomePage() {
 
   const skipHeroAnim = reduced || isMobile;
 
-  /* Spotlight X-Ray Mouse Tracking */
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const smoothMouseX = useSpring(mouseX, { stiffness: 50, damping: 20 });
-  const smoothMouseY = useSpring(mouseY, { stiffness: 50, damping: 20 });
+  /* Spotlight X-Ray Mouse Tracking (Lando Norris style reveal) */
+  const [xrayActive, setXrayActive] = useState(false);
+  const mouseX = useMotionValue(-1000);
+  const mouseY = useMotionValue(-1000);
+  const smoothMouseX = useSpring(mouseX, { stiffness: 400, damping: 40, mass: 0.6 });
+  const smoothMouseY = useSpring(mouseY, { stiffness: 400, damping: 40, mass: 0.6 });
 
   /* Hero parallax */
   const heroRef = useRef<HTMLDivElement>(null);
@@ -685,15 +702,25 @@ export default function HomePage() {
             const { left, top } = heroRef.current.getBoundingClientRect();
             mouseX.set(e.clientX - left);
             mouseY.set(e.clientY - top);
+            if (!xrayActive) setXrayActive(true);
           }}
+          onPointerLeave={() => setXrayActive(false)}
           className="relative flex h-full flex-col items-center justify-center overflow-hidden rounded-xl bg-[#0a0a0a] px-6 py-20 lg:rounded-2xl lg:px-10"
         >
-          {/* Middle Layer: X-Ray Reveal Image */}
+          {/* Base Layer: ghosted version of the image, always faintly visible */}
+          <div
+            aria-hidden
+            className="hidden md:block absolute inset-0 z-0 bg-[url('/images/hero-bg.webp')] bg-cover bg-center bg-no-repeat opacity-[0.07] grayscale pointer-events-none"
+          />
+          {/* Middle Layer: X-Ray spotlight reveal (full color, follows cursor) */}
           <motion.div
-            className="hidden md:block absolute inset-0 z-0 bg-[url('/images/hero-bg.webp')] bg-cover bg-center bg-no-repeat opacity-80 pointer-events-none"
+            aria-hidden
+            className="hidden md:block absolute inset-0 z-0 bg-[url('/images/hero-bg.webp')] bg-cover bg-center bg-no-repeat pointer-events-none"
+            animate={{ opacity: xrayActive ? 1 : 0 }}
+            transition={{ duration: 0.35, ease: "easeOut" }}
             style={{
-              maskImage: useMotionTemplate`radial-gradient(450px circle at ${smoothMouseX}px ${smoothMouseY}px, black 0%, transparent 100%)`,
-              WebkitMaskImage: useMotionTemplate`radial-gradient(450px circle at ${smoothMouseX}px ${smoothMouseY}px, black 0%, transparent 100%)`,
+              maskImage: useMotionTemplate`radial-gradient(320px circle at ${smoothMouseX}px ${smoothMouseY}px, black 30%, rgba(0,0,0,0.4) 65%, transparent 100%)`,
+              WebkitMaskImage: useMotionTemplate`radial-gradient(320px circle at ${smoothMouseX}px ${smoothMouseY}px, black 30%, rgba(0,0,0,0.4) 65%, transparent 100%)`,
             }}
           />
           {/* Ambient parallax orbs - hidden on mobile to fix GPU lag */}
@@ -848,16 +875,13 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Right card hidden - image will be added later */}
-            {/*
             <Reveal delay={0.2} className="hidden items-end md:col-span-3 md:flex lg:col-span-2">
               <Floating amplitude={12} duration={8} delay={0.5} className="-translate-y-full w-full">
-                <div className="aspect-[9/10] w-full overflow-hidden rounded-2xl bg-[#e5ddd0] lg:rounded-3xl">
-                  <img src="/images/features/1.webp" alt="Feature" className="h-full w-full object-cover" loading="lazy" />
+                <div className="flex aspect-[9/10] w-full items-center justify-center overflow-hidden rounded-2xl bg-[#0c0c0c] lg:rounded-3xl">
+                  <img src="/images/3d/tpp-payout-phone-transparent.png" alt="Payout sent notification on phone" className="h-[85%] w-[85%] object-contain" loading="lazy" />
                 </div>
               </Floating>
             </Reveal>
-            */}
           </div>
         </div>
       </section>
@@ -866,7 +890,7 @@ export default function HomePage() {
       <section className="w-full pb-16 lg:pb-24">
         <div className="w-full px-5 lg:px-10">
           
-          <div className="flex flex-col gap-12 text-center md:flex-row md:flex-wrap md:text-left xl:flex-nowrap xl:gap-16">
+          <div className="flex flex-col items-center gap-12 text-center md:flex-row md:flex-wrap md:text-left xl:flex-nowrap xl:gap-16">
             {dbStats.map((s, i) => (
               <Reveal key={s.label || s.key_name} delay={i * 0.1} className={cn("flex-1 min-w-[200px]", s.mt)}>
                 <div className="flex flex-col items-center gap-2 md:items-start lg:gap-3">
@@ -877,6 +901,16 @@ export default function HomePage() {
                 </div>
               </Reveal>
             ))}
+            <Reveal delay={0.3} className="hidden shrink-0 lg:block">
+              <Floating amplitude={10} duration={6}>
+                <img
+                  src="/images/3d/tpp-coin-stack-transparent.png"
+                  alt="Stack of coins with dollar signs"
+                  className="h-44 w-44 object-contain drop-shadow-[0_24px_40px_rgba(12,12,12,0.2)] xl:h-52 xl:w-52"
+                  loading="lazy"
+                />
+              </Floating>
+            </Reveal>
           </div>
 
         </div>
@@ -1092,17 +1126,18 @@ export default function HomePage() {
             <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 lg:flex-row lg:gap-0">
               <div className="flex w-full flex-col gap-5 lg:w-[28%]">
                 {[
-                  { icon: TrendingUp, title: "Tier-1 Liquidity", desc: "Raw spreads, no re-quotes. Your strategy deserves real market conditions." },
-                  { icon: Shield, title: "Transparent Rules", desc: "4% daily drawdown, 8% max. No hidden gotchas. What you see is what you get." },
+                  { icon: TrendingUp, title: "Tier-1 Liquidity", desc: "Raw spreads, no re-quotes. Your strategy deserves real market conditions.", image: "/images/3d/tpp-growth-chart-transparent.png" },
+                  { icon: Shield, title: "Transparent Rules", desc: "4% daily drawdown, 8% max. No hidden gotchas. What you see is what you get.", image: "/images/3d/tpp-shield-trust-transparent.png" },
                 ].map((f, i) => (
                   <Reveal key={f.title} delay={i * 0.08}>
                     <TiltCard>
-                      <div className="flex min-h-[200px] flex-col overflow-hidden rounded-3xl border border-white/[0.05] bg-[#0c0c0c] p-7">
+                      <div className="relative flex min-h-[200px] flex-col overflow-hidden rounded-3xl border border-white/[0.05] bg-[#0c0c0c] p-7">
+                        <img src={f.image || "/placeholder.svg"} alt="" aria-hidden className="pointer-events-none absolute -bottom-6 -right-6 h-36 w-36 object-contain opacity-90" loading="lazy" />
                         <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06]">
                           <f.icon className="h-5 w-5 text-[#cbfb45]" strokeWidth={2} />
                         </div>
                         <h3 className="mb-1.5 text-lg font-bold tracking-tight text-white">{f.title}</h3>
-                        <p className="text-[13px] leading-relaxed text-white/50">{f.desc}</p>
+                        <p className="max-w-[70%] text-[13px] leading-relaxed text-white/50">{f.desc}</p>
                       </div>
                     </TiltCard>
                   </Reveal>
@@ -1142,17 +1177,18 @@ export default function HomePage() {
 
               <div className="flex w-full flex-col gap-5 lg:w-[28%]">
                 {[
-                  { icon: Clock, title: "No Time Limit", desc: "Trade at your own pace. Pass the evaluation whenever you're ready." },
-                  { icon: Award, title: "Auto-Scaling", desc: "Hit targets and grow automatically. $25K → $50K → $100K → $200K." },
+                  { icon: Clock, title: "No Time Limit", desc: "Trade at your own pace. Pass the evaluation whenever you're ready.", image: "/images/3d/tpp-lightning-fast-transparent.png" },
+                  { icon: Award, title: "Auto-Scaling", desc: "Hit targets and grow automatically. $25K → $50K → $100K → $200K.", image: "/images/3d/tpp-rocket-transparent.png" },
                 ].map((f, i) => (
                   <Reveal key={f.title} delay={i * 0.08}>
                     <TiltCard>
-                      <div className="flex min-h-[200px] flex-col overflow-hidden rounded-3xl border border-white/[0.05] bg-[#0c0c0c] p-7">
+                      <div className="relative flex min-h-[200px] flex-col overflow-hidden rounded-3xl border border-white/[0.05] bg-[#0c0c0c] p-7">
+                        <img src={f.image || "/placeholder.svg"} alt="" aria-hidden className="pointer-events-none absolute -bottom-6 -right-6 h-36 w-36 object-contain opacity-90" loading="lazy" />
                         <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06]">
                           <f.icon className="h-5 w-5 text-[#cbfb45]" strokeWidth={2} />
                         </div>
                         <h3 className="mb-1.5 text-lg font-bold tracking-tight text-white">{f.title}</h3>
-                        <p className="text-[13px] leading-relaxed text-white/50">{f.desc}</p>
+                        <p className="max-w-[70%] text-[13px] leading-relaxed text-white/50">{f.desc}</p>
                       </div>
                     </TiltCard>
                   </Reveal>
@@ -1257,6 +1293,14 @@ export default function HomePage() {
                       <ArrowRight className="h-4 w-4" />
                     </Link>
                   </Magnetic>
+                  <Floating amplitude={10} duration={6} className="mt-10 hidden lg:block">
+                    <img
+                      src="/images/3d/tpp-contest-trophy-transparent.png"
+                      alt="Trading champion trophy"
+                      className="h-52 w-52 object-contain"
+                      loading="lazy"
+                    />
+                  </Floating>
                 </div>
               </Reveal>
 
@@ -1280,7 +1324,16 @@ export default function HomePage() {
       <section className="w-full py-16 lg:py-24">
         <div className="w-full px-5 lg:px-10">
           <Reveal>
-            <div className="mx-auto max-w-2xl text-center">
+            <div className="relative mx-auto max-w-2xl text-center">
+              <Floating amplitude={12} duration={7} className="pointer-events-none absolute -top-16 right-0 hidden lg:block xl:-right-40">
+                <img
+                  src="/images/3d/tpp-rocket-transparent.png"
+                  alt=""
+                  aria-hidden
+                  className="h-40 w-40 object-contain xl:h-52 xl:w-52"
+                  loading="lazy"
+                />
+              </Floating>
               <GsapWords
                 text="Ready to get funded?"
                 highlight={["funded?"]}
