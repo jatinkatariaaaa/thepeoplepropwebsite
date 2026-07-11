@@ -31,6 +31,7 @@ import {
   Landmark,
   ShieldAlert,
   Bell,
+  Trophy,
   type LucideIcon,
 } from "lucide-react";
 import { useState, useMemo } from "react";
@@ -89,6 +90,7 @@ const sections: NavSection[] = [
     items: [
       { icon: Target, label: "Challenges", href: "/admin/challenges" },
       { icon: Ticket, label: "Coupons", href: "/admin/coupons" },
+      { icon: Trophy, label: "Contest Referrals", href: "/admin/contest" },
     ],
   },
   {
