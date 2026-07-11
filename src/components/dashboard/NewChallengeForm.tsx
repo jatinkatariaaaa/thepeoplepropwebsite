@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { ChevronDown, Check } from "lucide-react";
+import { Check, CreditCard } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import {
   ALL_SIZES,
@@ -22,6 +22,44 @@ type PlatformOption = {
   extra_fee_pct?: number | null;
 };
 
+/* ── Shared UI atoms ─────────────────────────────── */
+
+function RadioCircle({ selected }: { selected: boolean }) {
+  return (
+    <span
+      aria-hidden
+      className={cn(
+        "shrink-0 flex items-center justify-center w-[18px] h-[18px] rounded-full border-2 transition-all",
+        selected ? "border-[var(--teal-900)] bg-white" : "border-[var(--ink-300)] bg-white"
+      )}
+    >
+      <span
+        className={cn(
+          "w-2 h-2 rounded-full bg-[var(--teal-900)] transition-transform",
+          selected ? "scale-100" : "scale-0"
+        )}
+      />
+    </span>
+  );
+}
+
+function SectionHeading({ title, subtitle }: { title: string; subtitle?: string }) {
+  return (
+    <div className="mb-4">
+      <h3 className="font-display font-bold text-[18px] text-[var(--ink-950)] tracking-tight">{title}</h3>
+      {subtitle && <p className="text-[13px] text-[var(--ink-500)] mt-0.5">{subtitle}</p>}
+    </div>
+  );
+}
+
+const selectableCard = (selected: boolean) =>
+  cn(
+    "rounded-2xl border transition-all text-left cursor-pointer",
+    selected
+      ? "bg-[var(--lime-tint)] border-[var(--teal-800)] shadow-[0_2px_12px_-4px_rgba(18,43,40,0.18)]"
+      : "bg-white border-[var(--border)] hover:border-[var(--ink-300)] shadow-sm"
+  );
+
 export function NewChallengeForm() {
   const router = useRouter();
   const [programKey, setProgramKey] = useState<ProgramKey>(programs[0].key);
@@ -31,12 +69,11 @@ export function NewChallengeForm() {
   const [platform, setPlatform] = useState("TPP Dashboard");
   const [paymentMethod, setPaymentMethod] = useState("Credit / Debit Card");
   const [agreed, setAgreed] = useState(false);
-  
+
   // Promo State
   const [promoInput, setPromoInput] = useState("");
   const [appliedPromo, setAppliedPromo] = useState("");
   const [promoError, setPromoError] = useState("");
-  const [isPromoOpen, setIsPromoOpen] = useState(false);
   const [appliedDiscountPct, setAppliedDiscountPct] = useState(0);
 
   // Personal Info State
@@ -48,7 +85,7 @@ export function NewChallengeForm() {
     city: "",
     zipCode: ""
   });
-  
+
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [checkoutMessage, setCheckoutMessage] = useState("");
 
@@ -133,7 +170,7 @@ export function NewChallengeForm() {
   }
 
   const total = prePlatformTotal ? prePlatformTotal + platformExtras - promoDiscountAmt - freeRetryAdjustment : 0;
-  
+
   // Payment gateway fees
   let paymentFeePct = 0;
   if (paymentMethod === "Neteller" || paymentMethod === "Skrill") {
@@ -216,7 +253,7 @@ export function NewChallengeForm() {
   };
 
   const toggleAddOn = (key: AddOnKey) => {
-    setSelectedAddOns(prev => 
+    setSelectedAddOns(prev =>
       prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key]
     );
   };
@@ -226,10 +263,10 @@ export function NewChallengeForm() {
     setCheckoutMessage("");
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      
+
       const res = await fetch("/api/checkout", {
         method: "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
           ...(session?.access_token && { "Authorization": `Bearer ${session.access_token}` })
         },
@@ -261,103 +298,96 @@ export function NewChallengeForm() {
     setIsCheckingOut(false);
   };
 
-  return (
-    <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_minmax(360px,420px)] gap-5 sm:gap-6 lg:gap-8 pb-16 sm:pb-20">
-      
-      {/* Left Column: Configuration */}
-      <div className="min-w-0 space-y-6 sm:space-y-8">
-        
-        {/* Personal Information */}
-        <div className="bg-white rounded-[20px] border border-[var(--border)] p-4 sm:p-6 shadow-sm">
-          <h3 className="font-bold text-[16px] text-[var(--ink-950)] mb-1">Personal Information</h3>
-          <p className="text-[13px] text-[var(--ink-500)] mb-6">Please enter your billing and contact details</p>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">First Name</label>
-              <input 
-                type="text" 
-                value={personalInfo.firstName}
-                onChange={e => setPersonalInfo({...personalInfo, firstName: e.target.value})}
-                className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)] transition-colors"
-                placeholder="John"
-              />
-            </div>
-            <div>
-              <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Last Name</label>
-              <input 
-                type="text" 
-                value={personalInfo.lastName}
-                onChange={e => setPersonalInfo({...personalInfo, lastName: e.target.value})}
-                className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)] transition-colors"
-                placeholder="Doe"
-              />
-            </div>
-            <div>
-              <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Phone Number</label>
-              <input 
-                type="tel" 
-                value={personalInfo.phone}
-                onChange={e => setPersonalInfo({...personalInfo, phone: e.target.value})}
-                className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)] transition-colors"
-                placeholder="+1 234 567 8900"
-              />
-            </div>
-            <div>
-              <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Zip/Postal Code</label>
-              <input 
-                type="text" 
-                value={personalInfo.zipCode}
-                onChange={e => setPersonalInfo({...personalInfo, zipCode: e.target.value})}
-                className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)] transition-colors"
-                placeholder="10001"
-              />
-            </div>
-            <div className="sm:col-span-2">
-              <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Billing Address</label>
-              <input 
-                type="text" 
-                value={personalInfo.address}
-                onChange={e => setPersonalInfo({...personalInfo, address: e.target.value})}
-                className="w-full bg-[var(--paper-2)] border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--ink-400)] transition-colors"
-                placeholder="123 Trading St, Suite 400"
-              />
-            </div>
-          </div>
-        </div>
+  const inputClasses = "w-full bg-white border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--teal-800)] focus:ring-2 focus:ring-[var(--teal-800)]/10 transition-all";
 
-        {/* Challenge Type */}
-        <div>
-          <h3 className="font-bold text-[15px] text-[var(--ink-950)] mb-3">Challenge Type</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-            {livePrograms.map(prog => (
-              <button
-                key={prog.key}
-                onClick={() => setProgramKey(prog.key as ProgramKey)}
-                className={cn(
-                  "min-h-12 px-2.5 py-3 rounded-xl text-[13px] leading-tight font-bold border transition-all text-center flex items-center justify-center",
-                  programKey === prog.key 
-                    ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)] shadow-sm" 
-                    : "bg-white border-[var(--border)] text-[var(--ink-600)] hover:border-[var(--ink-300)]"
-                )}
-              >
-                {prog.shortLabel}
-              </button>
-            ))}
-          </div>
-        </div>
+  return (
+    <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_minmax(360px,420px)] gap-6 lg:gap-10 pb-16 sm:pb-20">
+
+      {/* Left Column: Configuration */}
+      <div className="min-w-0 space-y-9 sm:space-y-10">
+
+        {/* Challenge Type — model-style radio cards */}
+        <section>
+          <SectionHeading title="Challenge Type" subtitle="Choose the type of challenge you want to take" />
+          {isLoadingPrograms ? (
+            <div className="animate-pulse bg-white h-20 rounded-2xl border border-[var(--border)] w-full" />
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {livePrograms.map(prog => {
+                const selected = programKey === prog.key;
+                return (
+                  <button
+                    key={prog.key}
+                    onClick={() => setProgramKey(prog.key as ProgramKey)}
+                    className={cn(selectableCard(selected), "flex items-start gap-3 p-4 min-h-[72px]")}
+                  >
+                    <span className="mt-0.5"><RadioCircle selected={selected} /></span>
+                    <span className="min-w-0">
+                      <span className={cn(
+                        "block text-[14px] font-bold leading-tight",
+                        selected ? "text-[var(--teal-900)]" : "text-[var(--ink-950)]"
+                      )}>
+                        {prog.shortLabel}
+                      </span>
+                      <span className="block text-[12px] text-[var(--ink-500)] mt-1 leading-snug line-clamp-2">
+                        {prog.tagline}
+                      </span>
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </section>
+
+        {/* Account Size */}
+        <section>
+          <SectionHeading title="Account Size" subtitle="Choose your preferred account size" />
+          {isLoadingPrograms ? (
+            <div className="animate-pulse bg-white h-24 rounded-2xl border border-[var(--border)] w-full" />
+          ) : (
+            <div className="grid grid-cols-1 min-[420px]:grid-cols-2 md:grid-cols-3 gap-3">
+              {Object.keys(program.fees)
+                .map((s) => Number(s) as AccountSize)
+                .sort((a, b) => a - b)
+                .map((s) => {
+                  const selected = effectiveSize === s;
+                  const fee = program.fees[s] ?? 0;
+                  return (
+                    <button
+                      key={s}
+                      onClick={() => setSize(s)}
+                      className={cn(selectableCard(selected), "flex items-center gap-3 px-4 py-3.5")}
+                    >
+                      <RadioCircle selected={selected} />
+                      <span className="min-w-0">
+                        <span className={cn(
+                          "block text-[15px] font-display font-bold tabular-nums leading-tight",
+                          selected ? "text-[var(--teal-900)]" : "text-[var(--ink-950)]"
+                        )}>
+                          {formatAccSize(s)}
+                        </span>
+                        <span className="block text-[12px] text-[var(--ink-500)] mt-0.5 tabular-nums">
+                          {formatCurrency(fee)}
+                        </span>
+                      </span>
+                    </button>
+                  );
+                })}
+            </div>
+          )}
+        </section>
 
         {/* Customise Trading Rules (Add-ons) */}
-        <div>
-          <h3 className="font-bold text-[15px] text-[var(--ink-950)]">Customise Trading Rules</h3>
-          <p className="text-[13px] text-[var(--ink-500)] mb-4">Adjust your challenge parameters to match your trading style</p>
-          
-          <div className="space-y-4">
+        <section>
+          <SectionHeading title="Customise Trading Rules" subtitle="Adjust your challenge parameters to match your trading style" />
+
+          <div className="space-y-5">
             {addOns.filter(a => a.appliesTo.includes(programKey)).map(addon => {
               const isActive = selectedAddOns.includes(addon.key);
               let extraCost = (base ?? 0) * (addon.feePct / 100);
               if (isFirstTpp && addon.key === "free-retry") extraCost = 0;
-              
+
               let noLabel = "No";
               let noSub = "Default";
               let yesLabel = "Yes";
@@ -378,129 +408,97 @@ export function NewChallengeForm() {
 
               return (
                 <div key={addon.key}>
-                  <div className="text-[14px] font-bold text-[var(--ink-700)] mb-1">{addon.label}</div>
-                  <p className="text-[12px] text-[var(--ink-500)] mb-2">{addon.description}</p>
-                  <div className="grid grid-cols-1 min-[420px]:grid-cols-2 gap-2">
+                  <div className="text-[14px] font-bold text-[var(--ink-950)]">{addon.label}</div>
+                  <p className="text-[12px] text-[var(--ink-500)] mt-0.5 mb-2.5">{addon.description}</p>
+                  <div className="grid grid-cols-1 min-[420px]:grid-cols-2 gap-3">
                     <button
                       onClick={() => isActive && toggleAddOn(addon.key)}
-                      className={cn(
-                        "flex min-h-12 items-center justify-between gap-3 py-3 px-4 rounded-xl text-[13px] font-medium border transition-all",
-                        !isActive 
-                          ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)]" 
-                          : "bg-white border-[var(--border)] text-[var(--ink-600)]"
-                      )}
+                      className={cn(selectableCard(!isActive), "flex items-center justify-between gap-3 px-4 py-3.5 min-h-[52px]")}
                     >
-                      <span className="font-bold">{noLabel}</span>
-                      <span className="text-[var(--ink-400)] text-[12px]">{noSub}</span>
+                      <span className="flex items-center gap-3 min-w-0">
+                        <RadioCircle selected={!isActive} />
+                        <span className={cn("text-[13px] font-bold truncate", !isActive ? "text-[var(--teal-900)]" : "text-[var(--ink-950)]")}>
+                          {noLabel}
+                        </span>
+                      </span>
+                      <span className="shrink-0 text-[var(--ink-400)] text-[12px]">{noSub}</span>
                     </button>
                     <button
                       onClick={() => !isActive && toggleAddOn(addon.key)}
-                      className={cn(
-                        "flex min-h-12 items-center justify-between gap-3 py-3 px-4 rounded-xl text-[13px] font-medium border transition-all",
-                        isActive 
-                          ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)]" 
-                          : "bg-white border-[var(--border)] text-[var(--ink-600)]"
-                      )}
+                      className={cn(selectableCard(isActive), "flex items-center justify-between gap-3 px-4 py-3.5 min-h-[52px]")}
                     >
-                      <span className="font-bold">{yesLabel}</span>
-                      <span className="text-emerald-600 font-bold text-[12px]">{extraCost === 0 ? "Free" : `+${formatCurrency(extraCost)}`}</span>
+                      <span className="flex items-center gap-3 min-w-0">
+                        <RadioCircle selected={isActive} />
+                        <span className={cn("text-[13px] font-bold truncate", isActive ? "text-[var(--teal-900)]" : "text-[var(--ink-950)]")}>
+                          {yesLabel}
+                        </span>
+                      </span>
+                      <span className="shrink-0 text-emerald-600 font-bold text-[12px]">{extraCost === 0 ? "Free" : `+${formatCurrency(extraCost)}`}</span>
                     </button>
                   </div>
                 </div>
               );
             })}
-            
+
             {addOns.filter(a => a.appliesTo.includes(programKey)).length === 0 && (
-              <div className="text-[13px] text-[var(--ink-500)] p-4 border border-[var(--border)] rounded-xl bg-[var(--paper)]">
+              <div className="text-[13px] text-[var(--ink-500)] p-4 border border-[var(--border)] rounded-2xl bg-white">
                 No customisations available for this challenge type.
               </div>
             )}
           </div>
-        </div>
+        </section>
 
         {/* Currency */}
-        <div>
-          <h3 className="font-bold text-[15px] text-[var(--ink-950)] mb-3">Currency</h3>
-          <div className="grid grid-cols-2 min-[420px]:grid-cols-3 sm:flex sm:flex-wrap gap-2">
+        <section>
+          <SectionHeading title="Currency" subtitle="Select your billing currency" />
+          <div className="grid grid-cols-2 min-[420px]:grid-cols-3 sm:flex sm:flex-wrap gap-3">
             {[
               { id: "USD", flag: "🇺🇸" },
               { id: "CHF", flag: "🇨🇭" },
               { id: "EUR", flag: "🇪🇺" },
               { id: "GBP", flag: "🇬🇧" },
               { id: "INR", flag: "🇮🇳" }
-            ].map(c => (
-              <button
-                key={c.id}
-                onClick={() => setCurrency(c.id)}
-                className={cn(
-                  "flex min-h-10 items-center justify-center gap-2 py-2 px-3 sm:px-4 rounded-xl text-[13px] font-bold border transition-all",
-                  currency === c.id 
-                    ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)]" 
-                    : "bg-white border-[var(--border)] text-[var(--ink-600)] hover:border-[var(--ink-300)]"
-                )}
-              >
-                <span>{c.flag}</span>
-                {c.id}
-              </button>
-            ))}
+            ].map(c => {
+              const selected = currency === c.id;
+              return (
+                <button
+                  key={c.id}
+                  onClick={() => setCurrency(c.id)}
+                  className={cn(selectableCard(selected), "flex items-center justify-center gap-2.5 min-h-11 py-2.5 px-4 sm:px-5")}
+                >
+                  <RadioCircle selected={selected} />
+                  <span className={cn("text-[13px] font-bold", selected ? "text-[var(--teal-900)]" : "text-[var(--ink-950)]")}>
+                    <span className="mr-1.5">{c.flag}</span>{c.id}
+                  </span>
+                </button>
+              );
+            })}
           </div>
-        </div>
-
-        {/* Account Size */}
-        <div>
-          <h3 className="font-bold text-[15px] text-[var(--ink-950)] mb-3 mt-8">Account Size</h3>
-          {isLoadingPrograms ? (
-            <div className="animate-pulse bg-[var(--paper-2)] h-24 rounded-xl border border-[var(--border)] w-full"></div>
-          ) : (
-            <div className="grid grid-cols-2 min-[430px]:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-2.5">
-              {Object.keys(program.fees)
-                .map((s) => Number(s) as AccountSize)
-                .sort((a, b) => a - b)
-                .map((s) => (
-                  <button
-                    key={s}
-                    onClick={() => setSize(s)}
-                    className={cn(
-                      "min-h-[68px] px-2.5 py-3 rounded-xl border transition-all text-center flex flex-col items-center justify-center gap-1 overflow-hidden",
-                      effectiveSize === s
-                        ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)] shadow-sm" 
-                        : "bg-white border-[var(--border)] text-[var(--ink-600)] hover:border-[var(--ink-300)]"
-                    )}
-                  >
-                    <span className="block max-w-full whitespace-nowrap text-[14px] sm:text-[15px] leading-none font-display font-bold tabular-nums">
-                      {formatAccSize(s)}
-                    </span>
-                    <span className="text-[10px] uppercase tracking-wide text-[var(--ink-400)] font-bold leading-none">
-                      Account
-                    </span>
-                  </button>
-                ))}
-            </div>
-          )}
-        </div>
+        </section>
 
         {/* Trading Platform */}
-        <div>
-          <h3 className="font-bold text-[15px] text-[var(--ink-950)] mb-3">Trading Platform</h3>
+        <section>
+          <SectionHeading title="Trading Platform" subtitle="Choose your preferred trading platform" />
           {isLoadingPrograms ? (
-            <div className="animate-pulse bg-[var(--paper-2)] h-14 rounded-xl border border-[var(--border)] w-full"></div>
+            <div className="animate-pulse bg-white h-14 rounded-2xl border border-[var(--border)] w-full" />
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {livePlatforms.map(plat => {
                 const extraCost = (base ?? 0) * (Number(plat.extra_fee_pct ?? 0) / 100);
+                const selected = platform === plat.name;
                 return (
                   <button
                     key={plat.id}
                     onClick={() => setPlatform(plat.name)}
-                    className={cn(
-                      "flex min-h-12 items-center justify-between gap-3 py-3 px-4 rounded-xl text-[13px] font-medium border transition-all",
-                      platform === plat.name 
-                        ? "bg-[var(--paper-2)] border-[var(--ink-400)] text-[var(--ink-950)] shadow-sm" 
-                        : "bg-white border-[var(--border)] text-[var(--ink-600)] hover:border-[var(--ink-300)]"
-                    )}
+                    className={cn(selectableCard(selected), "flex items-center justify-between gap-3 px-4 py-3.5 min-h-[52px]")}
                   >
-                    <span className="font-bold">{plat.name}</span>
-                    <span className={extraCost === 0 ? "text-emerald-600 font-bold text-[12px]" : "text-[var(--ink-400)] text-[12px]"}>
+                    <span className="flex items-center gap-3 min-w-0">
+                      <RadioCircle selected={selected} />
+                      <span className={cn("text-[13px] font-bold truncate", selected ? "text-[var(--teal-900)]" : "text-[var(--ink-950)]")}>
+                        {plat.name}
+                      </span>
+                    </span>
+                    <span className={cn("shrink-0 text-[12px]", extraCost === 0 ? "text-emerald-600 font-bold" : "text-[var(--ink-400)]")}>
                       {extraCost === 0 ? "Free" : `+${formatCurrency(extraCost)}`}
                     </span>
                   </button>
@@ -508,192 +506,247 @@ export function NewChallengeForm() {
               })}
             </div>
           )}
-        </div>
+        </section>
 
-      </div>
-
-
-      {/* Right Column: Billing */}
-      <div className="w-full min-w-0">
-        <div className="bg-white rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden xl:sticky xl:top-24">
-          
-          <div className="p-4 sm:p-6 border-b border-[var(--border)]">
-            <div className="flex items-center justify-between mb-1 cursor-pointer">
-              <h3 className="font-bold text-[16px] text-[var(--ink-950)]">Billing Details</h3>
-              <ChevronDown className="w-4 h-4 text-[var(--ink-500)]" />
-            </div>
-            <p className="text-[13px] text-[var(--ink-500)]">Enter your billing information for the challenge purchase</p>
-          </div>
-
-          <div className="p-4 sm:p-6 border-b border-[var(--border)] bg-[var(--paper)]">
-            <div className="mb-6">
-              <button 
-                onClick={() => setIsPromoOpen(!isPromoOpen)}
-                className="flex items-center gap-2 text-[13px] font-bold text-[var(--ink-700)] hover:text-[var(--ink-950)] transition-colors"
-              >
-                Have a promo code? <ChevronDown className={cn("w-4 h-4 transition-transform", isPromoOpen && "rotate-180")} />
-              </button>
-              
-              {isPromoOpen && (
-                <div className="mt-3 flex flex-col gap-2">
-                  <div className="flex flex-col min-[420px]:flex-row gap-2">
-                    <input 
-                      type="text"
-                      value={promoInput}
-                      onChange={e => setPromoInput(e.target.value)}
-                      placeholder="Enter promo code"
-                      className="min-w-0 flex-1 bg-white border border-[var(--border)] rounded-xl h-10 px-3 text-[13px] uppercase focus:outline-none focus:border-[var(--ink-400)] transition-colors"
-                    />
-                    <button 
-                      onClick={handleApplyPromo}
-                      className="h-10 px-4 bg-[var(--ink-950)] hover:bg-[var(--ink-800)] text-white text-[13px] font-bold rounded-xl transition-all"
-                    >
-                      Apply
-                    </button>
-                  </div>
-                  {promoError && <p className="text-red-500 text-[12px] font-medium px-1">{promoError}</p>}
-                  {appliedPromo && <p className="text-emerald-600 text-[12px] font-medium px-1">Promo applied successfully!</p>}
-                </div>
-              )}
-            </div>
-
-            <div className="space-y-3 mb-6">
-              <div className="flex justify-between items-start gap-4 text-[13px] font-medium text-[var(--ink-700)]">
-                <span className="min-w-0 break-words">{formatAccSize(effectiveSize)} • {program.shortLabel}</span>
-                <span className="shrink-0 font-bold text-[var(--ink-950)]">{formatCurrency(base ?? 0)}</span>
-              </div>
-              <div className="flex justify-between items-start gap-4 text-[13px] font-medium text-[var(--ink-500)]">
-                <span className="min-w-0 break-words">Platform: {platform}</span>
-                {platformExtras > 0 ? (
-                  <span className="shrink-0">+{formatCurrency(platformExtras)}</span>
-                ) : (
-                  <span className="shrink-0 text-emerald-600 font-bold">Free</span>
-                )}
-              </div>
-              
-              {selectedAddOns.map(key => {
-                const addOnDef = addOns.find(a => a.key === key);
-                if (!addOnDef) return null;
-                let cost = (base ?? 0) * (addOnDef.feePct / 100);
-                if (isFirstTpp && key === "free-retry") cost = 0;
-                return (
-                  <div key={key} className="flex justify-between items-start gap-4 text-[13px] font-medium text-[var(--ink-500)]">
-                    <span className="min-w-0 break-words">{addOnDef.label}</span>
-                    <span className={cn("shrink-0", cost === 0 ? "text-emerald-600 font-bold" : "")}>
-                      {cost === 0 ? "Free" : `+${formatCurrency(cost)}`}
-                    </span>
-                  </div>
-                );
-              })}
-
-              {promoDiscountAmt > 0 && (
-                <div className="flex justify-between items-center text-[13px] font-bold text-emerald-600 pt-2 border-t border-[var(--border)]">
-                  <span>Promo ({appliedPromo.toUpperCase()})</span>
-                  <span>-{formatCurrency(promoDiscountAmt)}</span>
-                </div>
-              )}
-
-              {paymentFeePct > 0 && (
-                 <div className="flex justify-between items-center text-[13px] font-medium text-amber-600">
-                  <span>Payment Gateway Fee</span>
-                  <span>+{paymentFeePct}%</span>
-                </div>
-              )}
-            </div>
-
-            <div className="flex justify-between items-end gap-4 border-t border-[var(--border)] pt-4">
-              <span className="font-bold text-[15px] text-[var(--ink-950)]">Total</span>
-              <span className="min-w-0 text-right text-[24px] sm:text-[28px] font-display font-bold text-[var(--ink-950)] leading-none break-words">{formatCurrency(finalTotal)}</span>
-            </div>
-          </div>
-
-          <div className="p-4 sm:p-6 border-b border-[var(--border)]">
-            <label className="flex items-start gap-3 cursor-pointer group">
-              <div className="relative flex items-center justify-center mt-0.5">
-                <input 
-                  type="checkbox" 
-                  checked={agreed}
-                  onChange={(e) => setAgreed(e.target.checked)}
-                  className="peer sr-only" 
+        {/* Personal Information */}
+        <section>
+          <SectionHeading title="Personal Information" subtitle="Please enter your billing and contact details" />
+          <div className="bg-white rounded-2xl border border-[var(--border)] p-4 sm:p-6 shadow-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">First Name</label>
+                <input
+                  type="text"
+                  value={personalInfo.firstName}
+                  onChange={e => setPersonalInfo({...personalInfo, firstName: e.target.value})}
+                  className={inputClasses}
+                  placeholder="John"
                 />
-                <div className="w-4 h-4 rounded border border-[var(--ink-300)] bg-white peer-checked:bg-[var(--accent)] peer-checked:border-[var(--accent)] transition-colors" />
-                <Check className="w-3 h-3 text-white absolute opacity-0 peer-checked:opacity-100 transition-opacity" />
               </div>
-              <div className="text-[12px] text-[var(--ink-500)] leading-relaxed flex-1 select-none">
-                I have read and agreed to the <span className="text-[var(--ink-950)] font-medium underline underline-offset-2">Trading Objectives</span> and <span className="text-[var(--ink-950)] font-medium underline underline-offset-2">Terms & Conditions</span>. All information provided is correct and matches government-issued ID. I confirm that I am not a U.S. citizen or resident.
+              <div>
+                <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Last Name</label>
+                <input
+                  type="text"
+                  value={personalInfo.lastName}
+                  onChange={e => setPersonalInfo({...personalInfo, lastName: e.target.value})}
+                  className={inputClasses}
+                  placeholder="Doe"
+                />
               </div>
-            </label>
+              <div>
+                <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Phone Number</label>
+                <input
+                  type="tel"
+                  value={personalInfo.phone}
+                  onChange={e => setPersonalInfo({...personalInfo, phone: e.target.value})}
+                  className={inputClasses}
+                  placeholder="+1 234 567 8900"
+                />
+              </div>
+              <div>
+                <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Zip/Postal Code</label>
+                <input
+                  type="text"
+                  value={personalInfo.zipCode}
+                  onChange={e => setPersonalInfo({...personalInfo, zipCode: e.target.value})}
+                  className={inputClasses}
+                  placeholder="10001"
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Billing Address</label>
+                <input
+                  type="text"
+                  value={personalInfo.address}
+                  onChange={e => setPersonalInfo({...personalInfo, address: e.target.value})}
+                  className={inputClasses}
+                  placeholder="123 Trading St, Suite 400"
+                />
+              </div>
+            </div>
           </div>
+        </section>
 
-          <div className="p-4 sm:p-6">
-            <h3 className="font-bold text-[15px] text-[var(--ink-950)] mb-4">Select payment method</h3>
-            
-            <div className="space-y-2 border border-[var(--border)] rounded-2xl p-2 bg-[var(--paper-2)]/30">
-              {[
-                { id: "Credit / Debit Card", logo: "VISA", rightLogo: "Mastercard" },
-                { id: "Crypto", logo: "₿" },
-                { id: "AstroPay", logo: "AstroPay" },
-                { id: "PayPal", logo: "PayPal" },
-                { id: "Neteller", logo: "NETELLER", fee: "+4%" },
-                { id: "Paysafecard", logo: "paysafecard", fee: "+10%" },
-                { id: "Skrill", logo: "Skrill", fee: "+4%" },
-              ].map(method => (
-                <label 
+        {/* Payment Gateway */}
+        <section>
+          <SectionHeading title="Payment Gateway" subtitle="Choose your preferred payment method" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {[
+              { id: "Credit / Debit Card", logo: "VISA", rightLogo: "Mastercard" },
+              { id: "Crypto", logo: "₿" },
+              { id: "AstroPay", logo: "AstroPay" },
+              { id: "PayPal", logo: "PayPal" },
+              { id: "Neteller", logo: "NETELLER", fee: "+4%" },
+              { id: "Paysafecard", logo: "paysafecard", fee: "+10%" },
+              { id: "Skrill", logo: "Skrill", fee: "+4%" },
+            ].map(method => {
+              const selected = paymentMethod === method.id;
+              return (
+                <label
                   key={method.id}
-                  className={cn(
-                    "flex items-center justify-between gap-3 p-3 rounded-xl border cursor-pointer transition-colors",
-                    paymentMethod === method.id 
-                      ? "bg-white border-[var(--accent)] shadow-sm" 
-                      : "border-transparent hover:bg-[var(--paper-2)]"
-                  )}
+                  className={cn(selectableCard(selected), "flex items-center justify-between gap-3 px-4 py-3.5 min-h-[52px]")}
                 >
                   <div className="min-w-0 flex items-center gap-3">
-                    <div className="relative flex items-center justify-center">
-                      <input 
-                        type="radio" 
-                        name="paymentMethod"
-                        value={method.id}
-                        checked={paymentMethod === method.id}
-                        onChange={(e) => {
-                          if (isFirstTpp && method.id !== "Crypto") return;
-                          setPaymentMethod(e.target.value);
-                        }}
-                        className="peer sr-only" 
-                      />
-                      <div className="w-4 h-4 rounded-full border border-[var(--ink-300)] bg-white peer-checked:border-[var(--accent)] peer-checked:border-[5px] transition-all" />
-                    </div>
-                    <span className="min-w-0 text-[13px] font-bold text-[var(--ink-950)] flex items-center gap-2 truncate">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value={method.id}
+                      checked={selected}
+                      onChange={(e) => {
+                        if (isFirstTpp && method.id !== "Crypto") return;
+                        setPaymentMethod(e.target.value);
+                      }}
+                      className="sr-only"
+                    />
+                    <RadioCircle selected={selected} />
+                    <span className={cn("min-w-0 text-[13px] font-bold flex items-center gap-2 truncate", selected ? "text-[var(--teal-900)]" : "text-[var(--ink-950)]")}>
                       {method.id}
                       {method.fee && <span className="text-[11px] font-medium text-[var(--ink-400)]">{method.fee}</span>}
                     </span>
                   </div>
-                  <div className="shrink-0 text-right text-[12px] sm:text-[14px] font-bold text-[var(--ink-900)] opacity-70">
+                  <div className="shrink-0 text-right text-[11px] sm:text-[12px] font-bold text-[var(--ink-900)] opacity-60">
                     {method.logo} {method.rightLogo && <span>{method.rightLogo}</span>}
                   </div>
                 </label>
-              ))}
-            </div>
-
-            {isFirstTpp && paymentMethod !== "Crypto" && (
-              <div className="mt-4 p-3 bg-red-50 border-l-4 border-red-500 rounded-r-xl text-[12px] font-bold text-red-700 shadow-sm">
-                Promo code applied only on crypto payments
-              </div>
-            )}
-
-            <button 
-              onClick={handleCheckout}
-              disabled={!agreed || (isFirstTpp && paymentMethod !== "Crypto") || isCheckingOut}
-              className="w-full mt-6 h-12 bg-[var(--ink-950)] hover:bg-[var(--ink-800)] text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md active:scale-[0.98]"
-            >
-              {isCheckingOut ? "Processing..." : "Proceed to Payment"}
-            </button>
-            {checkoutMessage && (
-              <div className="mt-4 text-center text-[13px] font-bold text-emerald-600">
-                {checkoutMessage}
-              </div>
-            )}
+              );
+            })}
           </div>
 
+          {isFirstTpp && paymentMethod !== "Crypto" && (
+            <div className="mt-4 p-3 bg-red-50 border-l-4 border-red-500 rounded-r-xl text-[12px] font-bold text-red-700 shadow-sm">
+              Promo code applied only on crypto payments
+            </div>
+          )}
+        </section>
+
+      </div>
+
+
+      {/* Right Column: Coupon + Order Summary */}
+      <div className="w-full min-w-0">
+        <div className="xl:sticky xl:top-24 space-y-6">
+
+          {/* Coupon Code */}
+          <section>
+            <SectionHeading title="Coupon Code" subtitle="Enter a coupon to get a discount" />
+            <div className="flex flex-col min-[420px]:flex-row gap-2.5">
+              <input
+                type="text"
+                value={promoInput}
+                onChange={e => setPromoInput(e.target.value)}
+                placeholder="ENTER COUPON CODE"
+                className="min-w-0 flex-1 bg-white border border-[var(--border)] rounded-xl h-12 px-4 text-[13px] font-medium uppercase tracking-wide placeholder:text-[var(--ink-400)] focus:outline-none focus:border-[var(--teal-800)] focus:ring-2 focus:ring-[var(--teal-800)]/10 transition-all shadow-sm"
+              />
+              <button
+                onClick={handleApplyPromo}
+                className="h-12 px-6 bg-[var(--teal-900)] hover:bg-[var(--teal-800)] text-white text-[13px] font-bold rounded-xl transition-all shadow-sm"
+              >
+                Apply
+              </button>
+            </div>
+            {promoError && <p className="text-red-500 text-[12px] font-medium mt-2 px-1">{promoError}</p>}
+            {appliedPromo && <p className="text-emerald-600 text-[12px] font-bold mt-2 px-1">Coupon &quot;{appliedPromo}&quot; applied successfully!</p>}
+          </section>
+
+          {/* Order Summary Card */}
+          <div className="bg-white rounded-2xl border border-[var(--border)] shadow-md overflow-hidden">
+
+            <div className="p-5 sm:p-6 border-b border-[var(--border)]">
+              <h3 className="font-display font-bold text-[18px] text-[var(--ink-950)] tracking-tight">Order Summary</h3>
+            </div>
+
+            <div className="p-5 sm:p-6 border-b border-[var(--border)]">
+              <div className="space-y-3">
+                <div className="flex justify-between items-start gap-4 text-[13px] font-medium text-[var(--ink-700)]">
+                  <span className="min-w-0 break-words">{formatAccSize(effectiveSize)} — {program.shortLabel}</span>
+                  <span className="shrink-0 font-bold text-[var(--ink-950)] tabular-nums">{formatCurrency(base ?? 0)}</span>
+                </div>
+                <div className="flex justify-between items-start gap-4 text-[13px] font-medium text-[var(--ink-500)]">
+                  <span className="min-w-0 break-words">Platform: {platform}</span>
+                  {platformExtras > 0 ? (
+                    <span className="shrink-0 tabular-nums">+{formatCurrency(platformExtras)}</span>
+                  ) : (
+                    <span className="shrink-0 text-emerald-600 font-bold">Free</span>
+                  )}
+                </div>
+
+                {selectedAddOns.map(key => {
+                  const addOnDef = addOns.find(a => a.key === key);
+                  if (!addOnDef) return null;
+                  let cost = (base ?? 0) * (addOnDef.feePct / 100);
+                  if (isFirstTpp && key === "free-retry") cost = 0;
+                  return (
+                    <div key={key} className="flex justify-between items-start gap-4 text-[13px] font-medium text-[var(--ink-500)]">
+                      <span className="min-w-0 break-words">{addOnDef.label}</span>
+                      <span className={cn("shrink-0 tabular-nums", cost === 0 ? "text-emerald-600 font-bold" : "")}>
+                        {cost === 0 ? "Free" : `+${formatCurrency(cost)}`}
+                      </span>
+                    </div>
+                  );
+                })}
+
+                {promoDiscountAmt > 0 && (
+                  <div className="flex justify-between items-center text-[13px] font-bold text-emerald-600 pt-2 border-t border-[var(--border)]">
+                    <span>Coupon ({appliedPromo.toUpperCase()})</span>
+                    <span className="tabular-nums">-{formatCurrency(promoDiscountAmt)}</span>
+                  </div>
+                )}
+
+                {paymentFeePct > 0 && (
+                  <div className="flex justify-between items-center text-[13px] font-medium text-amber-600">
+                    <span>Payment Gateway Fee</span>
+                    <span>+{paymentFeePct}%</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex justify-between items-end gap-4 mt-5 pt-4 border-t border-[var(--border)]">
+                <span className="font-bold text-[15px] text-[var(--ink-950)]">Total</span>
+                <span className="min-w-0 text-right">
+                  <span className="block text-[28px] sm:text-[32px] font-display font-bold text-[var(--ink-950)] leading-none break-words tabular-nums">{formatCurrency(finalTotal)}</span>
+                  <span className="block text-[11px] font-bold uppercase tracking-wider text-[var(--ink-400)] mt-1">{currency}</span>
+                </span>
+              </div>
+            </div>
+
+            <div className="p-5 sm:p-6">
+              <label className="flex items-start gap-3 cursor-pointer group">
+                <div className="relative flex items-center justify-center mt-0.5">
+                  <input
+                    type="checkbox"
+                    checked={agreed}
+                    onChange={(e) => setAgreed(e.target.checked)}
+                    className="peer sr-only"
+                  />
+                  <div className="w-4 h-4 rounded border border-[var(--ink-300)] bg-white peer-checked:bg-[var(--teal-900)] peer-checked:border-[var(--teal-900)] transition-colors" />
+                  <Check className="w-3 h-3 text-white absolute opacity-0 peer-checked:opacity-100 transition-opacity" />
+                </div>
+                <div className="text-[12px] text-[var(--ink-600)] leading-relaxed flex-1 select-none">
+                  <span className="block font-bold text-[var(--ink-950)] mb-1.5">I agree with all the following terms:</span>
+                  <ul className="list-disc pl-4 space-y-1">
+                    <li>I have read and agreed to the <span className="text-[var(--ink-950)] font-medium underline underline-offset-2">Trading Objectives</span> and <span className="text-[var(--ink-950)] font-medium underline underline-offset-2">Terms &amp; Conditions</span>.</li>
+                    <li>All information provided is correct and matches government-issued ID.</li>
+                    <li>I confirm that I am not a U.S. citizen or resident.</li>
+                  </ul>
+                </div>
+              </label>
+
+              <button
+                onClick={handleCheckout}
+                disabled={!agreed || (isFirstTpp && paymentMethod !== "Crypto") || isCheckingOut}
+                className="w-full mt-6 h-13 min-h-12 flex items-center justify-center gap-2.5 bg-[var(--teal-900)] hover:bg-[var(--teal-800)] text-white font-bold rounded-xl disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-[0_10px_26px_-10px_rgba(18,43,40,0.55)] active:scale-[0.98]"
+              >
+                <CreditCard className="w-4.5 h-4.5" />
+                {isCheckingOut ? "Processing..." : "Proceed to Payment"}
+              </button>
+              {checkoutMessage && (
+                <div className="mt-4 text-center text-[13px] font-bold text-emerald-600">
+                  {checkoutMessage}
+                </div>
+              )}
+            </div>
+
+          </div>
         </div>
       </div>
 
