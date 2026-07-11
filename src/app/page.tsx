@@ -885,6 +885,110 @@ export default function HomePage() {
       {/* ═══════════════ SECTION 4 — CALCULATOR ═══════════════ */}
       <ChallengeCalculator />
 
+      {/* ═══════════════ SECTION 4.5 — GET THE APP ═══════════════ */}
+      <section className="w-full py-16 lg:py-24">
+        <div className="mx-auto grid w-full max-w-[1200px] items-center gap-12 px-6 lg:grid-cols-2 lg:gap-8 lg:px-8">
+          {/* Left: headline + store badges */}
+          <div className="order-2 text-center lg:order-1 lg:text-left">
+            <Reveal>
+              <GsapWords
+                text="Be great and get the app"
+                highlight={["app"]}
+                className="font-black uppercase leading-[0.95] tracking-[-0.03em] text-[#0c0c0c]"
+                style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)" }}
+              />
+            </Reveal>
+            <Reveal delay={0.1}>
+              <p className="mx-auto mt-6 max-w-md text-base leading-relaxed text-[#0c0c0c]/60 lg:mx-0 lg:text-lg">
+                Track your challenge, watch payouts clear, and manage every
+                account from your pocket. Real-time alerts the moment you get
+                paid.
+              </p>
+            </Reveal>
+            <Reveal delay={0.2}>
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-4 lg:justify-start">
+                <a
+                  href="#"
+                  aria-label="Get it on Google Play"
+                  className="group flex items-center gap-3 rounded-xl border border-[#0c0c0c]/10 bg-[#0c0c0c] px-5 py-3 transition-transform duration-200 hover:-translate-y-0.5"
+                >
+                  <svg viewBox="0 0 24 24" className="h-7 w-7 shrink-0" aria-hidden="true">
+                    <path fill="#00E3A4" d="M3.6 1.9 13.7 12 3.6 22.1c-.4-.2-.6-.7-.6-1.2V3.1c0-.5.2-1 .6-1.2Z" />
+                    <path fill="#cbfb45" d="m17.4 8.3-3.7 3.7L3.6 1.9c.2-.1.5-.2.7-.2.3 0 .5.1.8.2l12.3 6.4Z" />
+                    <path fill="#FFD400" d="m21.2 10.3-3.8 2-4-.3 4-3.7 3.8 2Z" opacity="0" />
+                    <path fill="#FFC107" d="M17.4 8.3 21 10.2c.5.3.8.8.8 1.3s-.3 1-.8 1.3l-3.6 1.9-4-2.7 4-3.7Z" />
+                    <path fill="#F44336" d="m17.4 15.7-12.3 6.4c-.3.1-.5.2-.8.2-.2 0-.5-.1-.7-.2L13.7 12l3.7 3.7Z" />
+                  </svg>
+                  <span className="text-left leading-tight">
+                    <span className="block text-[10px] font-medium uppercase tracking-wide text-white/60">Get it on</span>
+                    <span className="block text-lg font-bold text-white">Google Play</span>
+                  </span>
+                </a>
+                <a
+                  href="#"
+                  aria-label="Download on the App Store"
+                  className="group flex items-center gap-3 rounded-xl border border-[#0c0c0c]/10 bg-[#0c0c0c] px-5 py-3 transition-transform duration-200 hover:-translate-y-0.5"
+                >
+                  <svg viewBox="0 0 24 24" className="h-7 w-7 shrink-0 fill-white" aria-hidden="true">
+                    <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8.94-.19 1.84-.74 2.84-.87 1.2-.16 2.35.24 3.15 1.02-2.62 1.57-2.2 5.02.28 6.02-.55 1.44-1.26 2.87-2.35 4Zm-5.03-13.1C11.85 5.17 13.5 3.5 15.36 3.5c.25 2.13-1.94 4.3-3.34 3.68Z" />
+                  </svg>
+                  <span className="text-left leading-tight">
+                    <span className="block text-[10px] font-medium uppercase tracking-wide text-white/60">Download on the</span>
+                    <span className="block text-lg font-bold text-white">App Store</span>
+                  </span>
+                </a>
+              </div>
+            </Reveal>
+          </div>
+
+          {/* Right: iPhone mockup */}
+          <Reveal delay={0.15} className="order-1 lg:order-2">
+            <div className="relative mx-auto w-[280px] sm:w-[310px]">
+              {/* Soft glow behind phone */}
+              <div className="absolute left-1/2 top-1/2 -z-10 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#cbfb45]/25 blur-[100px]" aria-hidden="true" />
+
+              {/* Phone frame */}
+              <div className="relative overflow-hidden rounded-[46px] border-[10px] border-[#0c0c0c] bg-[#0c0c0c] shadow-[0_30px_80px_-20px_rgba(12,12,12,0.45)]">
+                {/* Dynamic island */}
+                <div className="absolute left-1/2 top-2.5 z-10 h-[26px] w-[92px] -translate-x-1/2 rounded-full bg-[#0c0c0c]" aria-hidden="true" />
+                <img
+                  src="/images/app-screen.png"
+                  alt="The People Prop mobile app showing account balance, equity chart, and payout controls"
+                  className="aspect-[9/19] w-full object-cover"
+                />
+              </div>
+
+              {/* Floating payout notification */}
+              <div className="absolute -left-16 bottom-24 hidden w-[250px] items-start gap-3 rounded-2xl border border-[#0c0c0c]/[0.06] bg-white/95 p-3.5 shadow-[0_16px_40px_-12px_rgba(12,12,12,0.25)] backdrop-blur-sm sm:flex">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#0c0c0c]">
+                  <span className="text-[10px] font-black text-[#cbfb45]">TPP</span>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <p className="truncate text-[13px] font-bold text-[#0c0c0c]">Payout processed</p>
+                    <span className="shrink-0 text-[10px] text-[#0c0c0c]/40">now</span>
+                  </div>
+                  <p className="text-[12px] leading-snug text-[#0c0c0c]/60">$6,590 sent straight to your wallet.</p>
+                </div>
+              </div>
+
+              {/* Floating scaling notification */}
+              <div className="absolute -right-12 top-24 hidden w-[230px] items-start gap-3 rounded-2xl border border-[#0c0c0c]/[0.06] bg-white/95 p-3.5 shadow-[0_16px_40px_-12px_rgba(12,12,12,0.25)] backdrop-blur-sm sm:flex">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#cbfb45]">
+                  <TrendingUp className="h-4 w-4 text-[#0c0c0c]" strokeWidth={2.5} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <p className="truncate text-[13px] font-bold text-[#0c0c0c]">Account scaled</p>
+                    <span className="shrink-0 text-[10px] text-[#0c0c0c]/40">9:41</span>
+                  </div>
+                  <p className="text-[12px] leading-snug text-[#0c0c0c]/60">You just unlocked $100K. Keep going.</p>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
 
       {/* ═══════════════ SECTION 5 — WHY TPP (feature rail) ═══════════════ */}
       <section className="w-full pb-16 lg:pb-24">
