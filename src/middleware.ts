@@ -8,6 +8,18 @@ export async function middleware(request: NextRequest) {
     },
   });
 
+  // If Supabase isn't configured (e.g. preview without env vars), skip auth
+  // but still protect the private areas by redirecting to login.
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    if (request.nextUrl.pathname.startsWith('/dashboard') || request.nextUrl.pathname.startsWith('/admin')) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/login';
+      url.searchParams.set('redirect', request.nextUrl.pathname);
+      return NextResponse.redirect(url);
+    }
+    return supabaseResponse;
+  }
+
   const cookieDomain = process.env.NEXT_PUBLIC_COOKIE_DOMAIN;
   const cookieOptions = cookieDomain ? { domain: cookieDomain } : undefined;
 
