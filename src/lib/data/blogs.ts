@@ -14,6 +14,7 @@ export interface BlogPost {
   author: string;
   readTime: string;
   category: string;
+  image: string;
   heroExcerpt: string;
   sections: BlogSection[];
 }
@@ -45,6 +46,7 @@ export const blogs: BlogPost[] = [
     author: 'TPP Trading Desk',
     readTime: '12 min read',
     category: 'Strategy',
+    image: '/images/blog/pass-prop-firm-challenge.png',
     heroExcerpt:
       'Passing a prop firm challenge is the gateway to trading with serious capital — without risking your own money. This comprehensive 2026 guide breaks down every strategy, rule, and mindset shift you need to clear your evaluation on the first attempt.',
     sections: [
@@ -193,6 +195,7 @@ export const blogs: BlogPost[] = [
     author: 'TPP Trading Desk',
     readTime: '11 min read',
     category: 'Risk Management',
+    image: '/images/blog/risk-management-rules.png',
     heroExcerpt:
       'Risk management is the single most important skill that separates funded traders who build lasting careers from those who lose their accounts in weeks. This guide covers every rule, formula, and mindset principle you need to protect your capital and grow your payouts consistently.',
     sections: [
@@ -350,6 +353,7 @@ export const blogs: BlogPost[] = [
     author: 'TPP Trading Desk',
     readTime: '10 min read',
     category: 'Tools',
+    image: '/images/blog/mt5-vs-tradingview.png',
     heroExcerpt:
       'Choosing the right trading platform is a critical decision for any prop firm trader. This in-depth comparison of MetaTrader 5 and TradingView covers charting, execution, automation, mobile experience, and prop firm compatibility to help you pick the best tool for your funded trading career.',
     sections: [
@@ -490,6 +494,7 @@ export const blogs: BlogPost[] = [
     author: 'TPP Trading Desk',
     readTime: '9 min read',
     category: 'Evaluation',
+    image: '/images/blog/one-step-vs-two-step.png',
     heroExcerpt:
       'One-step or two-step? It is the most common question new prop firm traders ask. This guide breaks down both challenge models — their rules, costs, psychological demands, and pass rates — so you can make an informed decision that matches your skill level and trading personality.',
     sections: [
@@ -621,6 +626,7 @@ export const blogs: BlogPost[] = [
     author: 'TPP Trading Desk',
     readTime: '10 min read',
     category: 'Payouts',
+    image: '/images/blog/prop-firm-payouts.png',
     heroExcerpt:
       'Getting funded is only half the journey — understanding how payouts work is what turns prop firm trading into a genuine income stream. This guide covers profit splits, payout cycles, withdrawal methods, scaling plans, and tax considerations so you know exactly what to expect when the profits start flowing.',
     sections: [
@@ -759,6 +765,7 @@ export const blogs: BlogPost[] = [
     author: 'TPP Trading Desk',
     readTime: '11 min read',
     category: 'Regional',
+    image: '/images/blog/best-prop-firm-india.png',
     heroExcerpt:
       'India\'s prop trading community is booming in 2026, and Indian traders are earning funded accounts in record numbers. This guide explores the prop firm landscape for Indian traders, the unique challenges they face, and why The People Prop has become the platform of choice for thousands of traders across the subcontinent.',
     sections: [
@@ -861,6 +868,520 @@ export const blogs: BlogPost[] = [
           'Step 7: Once funded, trade conservatively and withdraw consistently',
         ],
         tip: 'Your first prop firm challenge is not just an evaluation — it is a masterclass in trading psychology. Even if you fail, the lessons learned are worth far more than the challenge fee. Approach it with a growth mindset and the results will follow.',
+      },
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // BLOG 7 — What Is a Prop Firm? Beginner's Guide
+  // ─────────────────────────────────────────────────────────────────────────────
+  {
+    slug: 'what-is-a-prop-firm-beginners-guide',
+    title: "What Is a Prop Firm? The Complete Beginner's Guide for 2026",
+    metaDescription:
+      'What is a prop firm and how does prop trading work? Learn how proprietary trading firms fund traders, how challenges and payouts work, and how to get funded in 2026.',
+    metaKeywords: [
+      'what is a prop firm',
+      'prop firm explained',
+      'proprietary trading firm',
+      'how do prop firms work',
+      'prop trading for beginners',
+      'funded trading account',
+      'prop firm meaning',
+      'how to get funded trading',
+      'prop firm challenge explained',
+      'best prop firm for beginners 2026',
+      'prop firm vs broker',
+      'funded trader program',
+    ],
+    date: '2026-06-20',
+    author: 'TPP Trading Desk',
+    readTime: '10 min read',
+    category: 'Education',
+    image: '/images/blog/what-is-a-prop-firm.png',
+    heroExcerpt:
+      'A prop firm gives skilled traders access to large trading capital in exchange for a share of the profits — no personal savings at risk. This beginner-friendly guide explains exactly how prop firms work, how evaluations and payouts function, and how you can get funded in 2026.',
+    sections: [
+      {
+        heading: 'The Simple Definition of a Prop Firm',
+        paragraphs: [
+          'A proprietary trading firm — commonly shortened to "prop firm" — is a company that allocates its own capital to traders and shares the profits those traders generate. Instead of you funding a brokerage account with your own savings, the firm provides the account, and you provide the skill. When you make money, you keep a large share of it — at The People Prop, up to 90%.',
+          'The modern retail prop firm model works through evaluations. You pay a one-time fee to take a trading challenge with defined rules: hit a profit target, stay within drawdown limits, and demonstrate consistency. Pass the evaluation and you receive a funded account — with balances typically ranging from $10,000 to $200,000 — where your profits become real payouts.',
+          'This model has fundamentally changed who can access serious trading capital. A talented trader in Mumbai, Lagos, Manila, or São Paulo no longer needs a wealthy family or institutional connections. They need skill, discipline, and a challenge fee that often costs less than a dinner for two.',
+        ],
+      },
+      {
+        heading: 'How Prop Firms Make Money (And Why the Model Works)',
+        paragraphs: [
+          'Understanding the business model builds trust. Prop firms earn revenue from two primary sources: evaluation fees from traders attempting challenges, and a share of profits generated by funded traders. The evaluation fee filters for serious participants, and the firm keeps a percentage (typically 10–20%) of funded trader profits.',
+          'This alignment matters. A well-run prop firm wants you to succeed, because consistently profitable funded traders generate long-term revenue far exceeding a one-time challenge fee. That is why reputable firms like The People Prop design rules that are strict but fair — filtering for discipline rather than setting traps.',
+          'Be cautious of firms whose rules seem engineered to make traders fail: hidden consistency clauses, sudden rule changes, or payout denials on technicalities. Always read reviews, check payout proof, and read the full terms before purchasing any challenge.',
+        ],
+        tip: 'Before joining any prop firm, search for verified payout proofs and community reviews on Trustpilot and Discord. A firm that pays reliably will have a visible, active community of funded traders.',
+      },
+      {
+        heading: 'The Evaluation Process: From Challenge to Funded',
+        paragraphs: [
+          'Most prop firms offer one-step or two-step evaluations. A one-step challenge requires you to hit a single profit target (typically 10%) while respecting drawdown limits. A two-step challenge splits the process into two phases with lower targets (usually 8% then 5%), giving you more time to demonstrate consistency at a lower initial difficulty.',
+          'Once you pass, the firm verifies your trading, confirms rule compliance, and issues your funded account credentials. From that point, every profit cycle makes you eligible for payouts. At The People Prop, payouts are processed bi-weekly, and traders keep up to 90% of what they earn.',
+          'Failure is part of the journey — most funded traders did not pass their first attempt. What separates eventual successes from permanent failures is journaling, reviewing, and adjusting between attempts rather than repeating the same mistakes with more frustration.',
+        ],
+        list: [
+          'Choose an account size that matches your experience level',
+          'Pass the evaluation by hitting the profit target within drawdown rules',
+          'Receive funded account credentials after verification',
+          'Trade the funded account under the same risk rules',
+          'Request payouts on the firm\'s schedule — bi-weekly at TPP',
+          'Scale to larger accounts as you build a consistent track record',
+        ],
+      },
+      {
+        heading: 'Prop Firm vs Trading Your Own Money',
+        paragraphs: [
+          'The math strongly favors the prop model for most retail traders. Suppose you have ₹50,000 in savings. Trading it yourself with excellent 5% monthly returns yields ₹2,500 per month — before taxes and platform costs. Use a fraction of that capital as a challenge fee instead, pass a $50,000 evaluation, and the same 5% monthly performance generates $2,500 — with 90% of it yours.',
+          'Beyond the capital leverage, prop firms provide structure that personal accounts lack. Drawdown limits force disciplined risk management. Profit targets encourage planning. The evaluation format itself trains habits that make you a better trader — many funded traders say the challenge process improved their trading more than years of unstructured personal trading.',
+          'The trade-off is that you operate under rules and share a percentage of profits. For traders with genuine skill but limited capital, that trade-off is overwhelmingly worth it.',
+        ],
+      },
+      {
+        heading: 'What Can You Trade With a Prop Firm?',
+        paragraphs: [
+          'Modern prop firms offer a wide instrument range. At The People Prop, funded traders can trade forex majors and minors, indices like US30, NAS100, and S&P 500, commodities including gold and oil, and cryptocurrency pairs. This variety lets you trade the markets where your edge actually exists.',
+          'Platform-wise, TPP supports MetaTrader 5 with TradingView-compatible charting workflows, so you can analyse where you are comfortable and execute with institutional-grade infrastructure.',
+          'The key for beginners: pick one or two instruments and master them. Traders who specialise in gold or a single index pair dramatically outperform those who jump between fifteen markets chasing volatility.',
+        ],
+        tip: 'Start with one instrument you already understand — most Indian traders begin with gold (XAUUSD) or US30. Depth of knowledge beats breadth every time in prop trading.',
+      },
+      {
+        heading: 'Is Prop Trading Right for You?',
+        paragraphs: [
+          'Prop trading rewards a specific profile: traders who are patient, process-driven, and emotionally stable under pressure. If you have at least a few months of consistent demo or live trading results, understand risk management fundamentals, and can follow rules without impulsive deviation, you are ready to attempt an evaluation.',
+          'If you are brand new to trading, do not start with a challenge. Spend 2–3 months on a demo account first, learning structure, risk, and your own psychology. The challenge fee is modest, but paying it before you have an edge is donating money.',
+          'When you are ready, The People Prop offers challenges starting from just $59, one-step and two-step formats, free retries on select plans, and bi-weekly payouts with up to 90% profit splits. Thousands of traders have already made the leap — the model works for those who respect it.',
+        ],
+      },
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // BLOG 8 — What Is FOMO in Trading?
+  // ─────────────────────────────────────────────────────────────────────────────
+  {
+    slug: 'what-is-fomo-in-trading',
+    title: 'What Is FOMO in Trading? 10 Proven Strategies to Overcome the Fear of Missing Out',
+    metaDescription:
+      'FOMO destroys more trading accounts than bad strategies. Learn what FOMO in trading is, why it happens, and 10 proven psychological strategies to overcome it in 2026.',
+    metaKeywords: [
+      'FOMO in trading',
+      'fear of missing out trading',
+      'trading psychology',
+      'how to stop FOMO trading',
+      'emotional trading mistakes',
+      'revenge trading',
+      'trading discipline tips',
+      'overtrading psychology',
+      'prop firm psychology',
+      'how to control emotions trading',
+      'impulsive trading fix',
+      'trading mindset 2026',
+    ],
+    date: '2026-06-24',
+    author: 'TPP Trading Desk',
+    readTime: '9 min read',
+    category: 'Psychology',
+    image: '/images/blog/fomo-in-trading.png',
+    heroExcerpt:
+      'FOMO — the fear of missing out — is responsible for more blown accounts than any bad strategy. It pushes traders into late entries, oversized positions, and revenge trades. Here are 10 proven, practical strategies to recognise and eliminate FOMO from your trading forever.',
+    sections: [
+      {
+        heading: 'What FOMO Actually Is (And Why Your Brain Creates It)',
+        paragraphs: [
+          'FOMO in trading is the anxious impulse to enter a trade because price is moving without you. You see a candle exploding upward, your feed is full of profit screenshots, and a voice in your head screams "get in now before it\'s too late." That voice is not analysis — it is a primal loss-aversion mechanism misfiring in a financial context.',
+          'Neurologically, watching a move happen without you activates the same circuits as physical loss. Your brain treats the unrealised gain of others as your personal loss, generating urgency that overrides your trading plan. This is why even experienced traders feel FOMO — it is biology, not weakness.',
+          'The market exploits this ruthlessly. The moment a move looks "obvious" and safe to chase is statistically the moment it is most likely to reverse. FOMO entries are systematically the worst-priced entries available, which is why chronic FOMO traders lose even when their directional bias is correct.',
+        ],
+      },
+      {
+        heading: 'How FOMO Destroys Prop Firm Accounts Specifically',
+        paragraphs: [
+          'In a prop firm environment, FOMO is uniquely dangerous because of drawdown limits. A personal account can survive a reckless chase and recover over months. A funded account with a 5% daily drawdown limit cannot — one FOMO-driven oversized entry during a news spike can end the account in minutes.',
+          'FOMO also compounds. A missed move creates frustration; frustration creates a chase; the chase creates a loss; the loss creates revenge trading. This cascade — from a single skipped setup to a breached account — routinely happens within a single session. Recognising the cascade early is the skill that saves accounts.',
+          'The evaluation clock intensifies everything. Traders behind on their profit target with days remaining feel institutional-grade FOMO on every candle. This is precisely when the ten strategies below matter most.',
+        ],
+      },
+      {
+        heading: 'Strategies 1–5: Structural Defenses Against FOMO',
+        paragraphs: [
+          'The most reliable FOMO defenses are structural — rules and systems that remove the decision from your emotional brain entirely.',
+        ],
+        list: [
+          '1. Trade from a pre-written watchlist only: if the instrument was not on your morning list, you cannot trade it today — no exceptions',
+          '2. Use limit orders instead of market orders: define your entry level in advance and let price come to you; if it never comes, there was no trade',
+          '3. Cap your daily trade count at 2–3: scarcity forces selectivity, and selectivity kills chasing',
+          '4. Set a "candle close" rule: you may only enter after a full candle closes confirming your setup — never mid-candle on impulse',
+          '5. Remove profit-porn from your feeds: mute the screenshot accounts; their wins are marketing, and they are triggering your losses',
+        ],
+        tip: 'Write your watchlist and entry levels BEFORE the session opens, when you are calm. Your pre-market self is a better trader than your mid-session self will ever be.',
+      },
+      {
+        heading: 'Strategies 6–10: Psychological Rewiring',
+        paragraphs: [
+          'Structure handles most FOMO, but lasting freedom requires rewiring how you relate to missed moves.',
+        ],
+        list: [
+          '6. Reframe missed moves as data, not loss: a move you missed cost you nothing — log it, study it, and note whether your system would have caught it',
+          '7. Keep a "FOMO journal": every time you feel the urge to chase, write it down instead of acting; review weekly and watch how often chasing would have lost',
+          '8. Adopt the "infinite trades" mindset: the market produces thousands of setups per year; missing one is missing 0.03% of your opportunities',
+          '9. Practice the 15-minute pause: when urgency spikes, walk away from the screen for 15 minutes — if the setup is real, it will still be valid',
+          '10. Measure yourself on process, not profit: grade each day on rule adherence; a red day with perfect discipline is a win, a green day of chasing is a loss',
+        ],
+      },
+      {
+        heading: 'The FOMO-Proof Trading Routine',
+        paragraphs: [
+          'Combine the strategies above into a daily routine: pre-market planning (watchlist, levels, news check), a defined trading window (for Indian traders, the London–New York overlap from 1:30 PM to 7:30 PM IST offers the best liquidity), limit-order execution, and a post-session journal review.',
+          'Traders who follow this routine report that FOMO does not disappear — it becomes irrelevant. The feeling still arises, but there is no decision left for it to hijack, because every decision was made before the emotion existed.',
+          'This is exactly the psychological profile prop firms fund. At The People Prop, the traders earning consistent bi-weekly payouts are not the most brilliant analysts — they are the most structurally disciplined. Build the routine, and the payouts follow.',
+        ],
+        tip: 'For your next 20 trading sessions, grade yourself daily from A to F purely on rule adherence. Traders who sustain an A average for a month almost never fail evaluations.',
+      },
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // BLOG 9 — Best Forex Trading Sessions
+  // ─────────────────────────────────────────────────────────────────────────────
+  {
+    slug: 'best-forex-trading-sessions-explained',
+    title: 'Best Forex Trading Sessions Explained: When to Trade for Maximum Profit',
+    metaDescription:
+      'Learn the best forex trading sessions in 2026 — London, New York, Tokyo, and Sydney — with exact IST timings, volatility patterns, and the best pairs for each session.',
+    metaKeywords: [
+      'best forex trading sessions',
+      'forex market hours',
+      'london session trading',
+      'new york session forex',
+      'forex session times IST',
+      'best time to trade forex in India',
+      'london new york overlap',
+      'forex volatility by session',
+      'when to trade gold',
+      'asian session trading strategy',
+      'forex market open times 2026',
+      'session-based trading strategy',
+    ],
+    date: '2026-06-22',
+    author: 'TPP Trading Desk',
+    readTime: '10 min read',
+    category: 'Education',
+    image: '/images/blog/forex-trading-sessions.png',
+    heroExcerpt:
+      'When you trade matters as much as what you trade. Each forex session — Sydney, Tokyo, London, and New York — has its own volatility signature, liquidity profile, and best-performing pairs. Master the clock and you master half the game.',
+    sections: [
+      {
+        heading: 'The Four Sessions That Drive the Forex Market',
+        paragraphs: [
+          'The forex market runs 24 hours a day, five days a week, but it is not uniformly active. Trading flows through four major sessions as financial centers open around the globe: Sydney, Tokyo, London, and New York. Each session has a distinct personality shaped by the institutions active during those hours.',
+          'For Indian traders, the session times in IST are: Sydney (3:30 AM – 12:30 PM), Tokyo (5:30 AM – 2:30 PM), London (1:30 PM – 10:30 PM), and New York (6:30 PM – 3:30 AM). Notice the critical detail — London and New York overlap from 6:30 PM to 10:30 PM IST, creating the most liquid four hours in global markets.',
+          'Roughly 70% of all forex volume flows through the London and New York sessions. If you only remember one fact from this article, remember this: the majority of clean, tradeable moves happen during these windows, and the majority of choppy, stop-hunting noise happens outside them.',
+        ],
+      },
+      {
+        heading: 'The London Session: The Volatility Engine',
+        paragraphs: [
+          'London is the largest forex trading center in the world, handling over 35% of global volume. When London opens at 1:30 PM IST, volatility expands dramatically — daily ranges are set, Asian-session consolidations break out, and institutional order flow enters the market in size.',
+          'The first two hours of London (1:30 – 3:30 PM IST) are famous for the "London breakout" — a strong directional move that often establishes the day\'s trend. Many professional strategies are built entirely around this window: mark the Asian session range, wait for London to break it, and trade the continuation or the fakeout reversal.',
+          'Best pairs for London: EUR/USD, GBP/USD, EUR/GBP, and gold (XAUUSD). Gold in particular respects London timing beautifully, frequently making its daily high or low within the first 90 minutes of the session.',
+        ],
+        list: [
+          'London open: 1:30 PM IST — volatility expansion begins',
+          'Prime window: first 2 hours after the open',
+          'Best instruments: GBP/USD, EUR/USD, XAUUSD, FTSE, DAX',
+          'Classic strategy: Asian range breakout with confirmation',
+          'Watch for: fakeouts in the first 15 minutes before the real move',
+        ],
+      },
+      {
+        heading: 'The New York Session and the Golden Overlap',
+        paragraphs: [
+          'New York opens at 6:30 PM IST and brings US institutional flow, US economic data releases, and the second volatility wave of the day. The 6:30 – 10:30 PM IST window, when both London and New York are active, is the single best time to trade forex — spreads are tightest, liquidity is deepest, and moves are most sustained.',
+          'Major US data — NFP, CPI, FOMC decisions — releases during this window (typically 6:00 or 7:00 PM IST). These events create explosive moves that can be goldmines or landmines. For prop firm traders, the safe default is to flatten positions 15 minutes before red-folder news and re-engage after the initial spike settles.',
+          'For Indian traders with day jobs, this session is a gift: it aligns perfectly with evenings. You can work a full day and still trade the world\'s most liquid four hours after dinner — one reason prop trading has exploded across India.',
+        ],
+        tip: 'The London–New York overlap (6:30–10:30 PM IST) is the highest-probability window for trend-following strategies. If you can only trade 2 hours a day, make it these.',
+      },
+      {
+        heading: 'Tokyo and Sydney: The Quiet Sessions',
+        paragraphs: [
+          'The Asian sessions are calmer, with tighter ranges and mean-reverting behavior. JPY pairs (USD/JPY, GBP/JPY) and AUD/NZD pairs see their best liquidity here, and range-trading strategies perform well while breakout strategies suffer.',
+          'Many professional traders use the Asian session not for trading but for preparation: marking the developing range, identifying key levels, and planning London entries. The Asian range itself becomes the primary reference structure for the London breakout.',
+          'A warning for prop traders: low liquidity means wider spreads and more erratic spikes on some instruments. If your evaluation has tight drawdown limits, avoid holding oversized positions through the dead zone between New York close and Tokyo open (3:30 – 5:30 AM IST), where thin liquidity can cause unpredictable wicks.',
+        ],
+      },
+      {
+        heading: 'Building a Session-Based Trading Plan',
+        paragraphs: [
+          'The most practical upgrade you can make to your trading is aligning your strategy with the right session. Breakout and momentum strategies belong in London and the NY overlap. Range and reversion strategies belong in Asia. News straddles belong around US data. Mismatching strategy and session is a silent edge-killer that most losing traders never diagnose.',
+          'Define your personal trading window and protect it. Trading all sessions leads to fatigue, overtrading, and rule violations. The best funded traders at The People Prop typically trade one focused 2–4 hour window per day and are completely flat the rest of the time.',
+          'Combine session awareness with the risk rules from your prop firm challenge — 1% risk per trade, 2–3 trades per session, hard stops always — and you have the skeleton of a professional operation. The market rewards traders who show up at the right time with a plan, and punishes those who show up all the time without one.',
+        ],
+        tip: 'Backtest your strategy separately for each session. Most traders discover their "inconsistent" strategy is actually highly consistent in one session and terrible in another.',
+      },
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // BLOG 10 — How to Scale a Funded Account to $200K
+  // ─────────────────────────────────────────────────────────────────────────────
+  {
+    slug: 'how-to-scale-funded-account-to-200k',
+    title: 'How to Scale a Funded Account to $200K: The Complete Roadmap',
+    metaDescription:
+      'Learn how to scale a funded prop firm account from $10K to $200K in 2026. Proven scaling strategies, payout reinvestment plans, and consistency rules from funded traders.',
+    metaKeywords: [
+      'scale funded account',
+      'prop firm scaling plan',
+      '200k funded account',
+      'how to grow prop firm account',
+      'funded trader scaling strategy',
+      'prop firm account upgrade',
+      'trading capital scaling',
+      'consistent funded trader',
+      'prop firm payout reinvestment',
+      'multiple funded accounts strategy',
+      'prop trading career path',
+      'max allocation prop firm',
+    ],
+    date: '2026-06-18',
+    author: 'TPP Trading Desk',
+    readTime: '11 min read',
+    category: 'Growth',
+    image: '/images/blog/scale-funded-account.png',
+    heroExcerpt:
+      'Getting funded is step one. Building from a $10K account to $200K in managed capital is the real career. This roadmap covers scaling mechanics, payout reinvestment mathematics, and the consistency habits that separate career funded traders from one-payout wonders.',
+    sections: [
+      {
+        heading: 'The Scaling Mindset: Capital Is Earned, Not Given',
+        paragraphs: [
+          'Scaling a funded account is fundamentally different from passing a challenge. The challenge tests whether you can perform for 30 days; scaling tests whether you can perform for years. The firms allocating $200K in capital are looking for one thing above all: boring, repeatable consistency.',
+          'The paradox of scaling is that traders who chase it aggressively almost never achieve it, while traders who focus purely on process reach maximum allocation almost automatically. Every scaling milestone at a prop firm is a byproduct of the same three inputs: positive months, controlled drawdowns, and zero rule violations.',
+          'At The People Prop, auto-scaling is built into every account — hit the performance milestones and your allocation grows from $25K to $50K, $100K, and up to $200K without renegotiation or additional fees. The path is mechanical. Your only job is to stay on it.',
+        ],
+      },
+      {
+        heading: 'The Mathematics of Scaling: Why Small Percentages Win',
+        paragraphs: [
+          'Here is the math that most traders get backwards. A trader making a wild 15% monthly on a $10K account earns $1,350 per month at a 90% split. A trader making a conservative 4% monthly on a $200K account earns $7,200. The conservative trader earns five times more — with a fraction of the blow-up risk.',
+          'This means your target as a scaling trader is not maximizing monthly returns; it is maximizing the capital that trusts you. Every percentage point of extra risk you take to boost returns directly threatens the drawdown limits that gate your scaling milestones. Risk 3% per trade and one bad week ends your progression; risk 0.5–1% and no realistic losing streak can touch you.',
+          'Run the numbers on your own trading: at 90% profit split, what does your realistic monthly average produce at $50K, $100K, and $200K allocations? For most consistent traders, the answer is life-changing income from returns they would consider "boring" — and boring is precisely what scales.',
+        ],
+        list: [
+          '2% monthly on $200K at 90% split = $3,600/month',
+          '4% monthly on $200K at 90% split = $7,200/month',
+          '6% monthly on $200K at 90% split = $10,800/month',
+          'Compare: 10% monthly on $10K = just $900/month with far higher risk',
+          'Conclusion: allocation size beats return percentage every time',
+        ],
+      },
+      {
+        heading: 'The Three Phases of the Scaling Journey',
+        paragraphs: [
+          'Phase 1 — Stabilization (months 1–3): your only goal after getting funded is surviving with positive expectancy. Trade at 50–75% of your challenge position sizes, bank your first two or three payouts, and prove to yourself the system works. Most funded account failures happen in this phase, caused by treating funded capital as "free money."',
+          'Phase 2 — Consistency (months 3–9): with survival proven, focus on smoothing your equity curve. Target similar profits each month rather than one huge month followed by two flat ones. This is the phase where scaling milestones trigger — firms upgrade allocations for traders whose monthly results look like copies of each other.',
+          'Phase 3 — Expansion (months 9+): with a $100K–$200K allocation and a proven process, expansion means optimizing rather than changing. Some traders add a second funded account for strategy diversification; others simply compound their routine. The rule of Phase 3: never let increased capital change the trading that earned it.',
+        ],
+        tip: 'Write down your average risk per trade during the challenge you passed. That number — not a bigger one — is your maximum for the entire scaling journey. Capital grows; risk percentage never does.',
+      },
+      {
+        heading: 'Payout Strategy: Reinvest or Withdraw?',
+        paragraphs: [
+          'A common scaling question: should you withdraw every payout or reinvest in more evaluations? The professional answer is a fixed split, decided in advance. A popular structure is 60/30/10 — 60% withdrawn to personal savings, 30% reserved for additional evaluations or retry fees, and 10% for trading education and tools.',
+          'The withdrawal component is psychologically critical. Traders who never withdraw treat the account as a video game score and take video game risks. Traders who regularly convert profits into real money in their bank account develop a professional relationship with their trading — it becomes income, and income is protected.',
+          'The reserve component removes fear. When you know a failed account can be replaced without touching personal savings, you trade with the calm that consistency requires. Fear of losing the account causes hesitation and missed setups; a funded reserve eliminates that fear structurally.',
+        ],
+      },
+      {
+        heading: 'The Habits of $200K Traders',
+        paragraphs: [
+          'Study the traders at maximum allocation across any prop firm and the same habits appear: they trade fixed sessions, journal every trade, take 2–3 positions per day maximum, review weekly, and are entirely indifferent to any single trade\'s outcome. Nothing about their daily process would look impressive on social media — and that is exactly the point.',
+          'They also protect their psychology like professionals. Sleep, exercise, and screen-time limits appear constantly in interviews with top funded traders. Decision quality degrades with fatigue, and at $200K allocation, a single fatigued decision has a four-figure price tag.',
+          'The People Prop\'s scaling infrastructure — auto-scaling milestones, bi-weekly payouts, up to 90% splits, and a 100% split add-on — is designed to make this career path as frictionless as possible. The roadmap is public, the math is transparent, and the only variable is your consistency. Start smaller than you think you should, and let the system scale you.',
+        ],
+        tip: 'Create a one-page "scaling dashboard": current allocation, months of consistency, next milestone requirement, and payout history. Reviewing it weekly keeps you focused on the career, not the trade.',
+      },
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // BLOG 11 — Top 10 Mistakes That Blow Funded Accounts
+  // ─────────────────────────────────────────────────────────────────────────────
+  {
+    slug: 'top-10-mistakes-that-blow-funded-accounts',
+    title: 'Top 10 Mistakes That Blow Funded Accounts (And How to Avoid Every One)',
+    metaDescription:
+      'Discover the 10 most common mistakes that cause funded traders to lose their prop firm accounts in 2026 — and the exact habits and rules that prevent each one.',
+    metaKeywords: [
+      'funded account mistakes',
+      'why traders fail prop firms',
+      'blown funded account',
+      'prop firm rule violations',
+      'overtrading funded account',
+      'daily drawdown breach',
+      'funded trader tips',
+      'prop firm account loss',
+      'trading mistakes to avoid',
+      'how to keep funded account',
+      'prop firm consistency rules',
+      'news trading prop firm',
+    ],
+    date: '2026-06-15',
+    author: 'TPP Trading Desk',
+    readTime: '10 min read',
+    category: 'Education',
+    image: '/images/blog/trading-mistakes.png',
+    heroExcerpt:
+      'Most funded accounts are not lost to bad strategies — they are lost to a short list of preventable mistakes that repeat across thousands of traders. Here are the ten account-killers, ranked, explained, and paired with the exact fix for each.',
+    sections: [
+      {
+        heading: 'Mistakes 1–3: The Sizing Killers',
+        paragraphs: [
+          'Mistake #1: Oversizing after a win. The most common blown-account pattern starts with success — a big winning day creates confidence, confidence creates larger positions, and larger positions meet the inevitable losing streak with catastrophic force. The fix: fixed fractional risk (1% per trade) that never changes based on recent results, up or down.',
+          'Mistake #2: Doubling down on losers. Averaging into a losing position converts a controlled 1% loss into an uncontrolled account-threatening one. In a personal account this is bad; under a 5% daily drawdown rule it is fatal. The fix: one entry, one hard stop, no additions to losing positions ever.',
+          'Mistake #3: Ignoring correlated exposure. Opening EUR/USD, GBP/USD, and gold longs simultaneously feels like three trades, but they frequently move together — meaning you are actually risking 3% on a single dollar-weakness thesis. The fix: treat correlated positions as one trade and size the group at your single-trade risk limit.',
+        ],
+        tip: 'Before every entry, ask one question: "If every open position hit its stop right now, what percentage do I lose?" If the answer exceeds 2%, close something before opening anything.',
+      },
+      {
+        heading: 'Mistakes 4–6: The Rule Breakers',
+        paragraphs: [
+          'Mistake #4: Forgetting the daily drawdown resets. The daily limit is calculated from each day\'s starting equity or peak — not from your original balance. Traders track their overall cushion while sleepwalking into daily breaches. The fix: calculate your exact daily loss limit in dollars every single morning and write it on a sticky note before your first trade.',
+          'Mistake #5: Holding through high-impact news. NFP, CPI, and central bank decisions can gap price straight through your stop-loss, turning a 1% risk into a 4% realised loss plus a possible rule violation. The fix: check the economic calendar every morning; flatten or drastically reduce positions 15 minutes before red-folder events.',
+          'Mistake #6: Violating consistency or lot-size rules. Many firms have fine-print rules — maximum lot sizes, consistency requirements, restricted strategies like tick scalping or gap trading. Traders lose payouts and accounts to rules they never read. The fix: re-read your firm\'s full terms once a month; rules can be updated and ignorance is never accepted as an appeal.',
+        ],
+      },
+      {
+        heading: 'Mistakes 7–8: The Psychological Traps',
+        paragraphs: [
+          'Mistake #7: Revenge trading after a loss. The urge to "make it back" immediately is the single most destructive impulse in trading. Revenge trades are unplanned, oversized, and emotionally executed — a perfect storm. The fix: a mandatory 15-minute screen break after any loss, plus a hard rule of stopping for the day after two consecutive losses.',
+          'Mistake #8: Treating funded capital as free money. Traders who were disciplined during the challenge often flip a mental switch once funded — "it\'s the firm\'s money now" — and take risks they never would have taken during evaluation. The account dies within weeks. The fix: trade the funded account with the identical plan, size, and rules that passed the challenge. Nothing changed except the payout eligibility.',
+          'Both traps share a root cause: emotional state overriding process. The traders who survive years in prop trading are not emotionless — they simply have structural rules that make emotions irrelevant to execution.',
+        ],
+        tip: 'Set a hard equity stop for each day: if you are down 2% (well inside a typical 5% daily limit), your platform gets closed and you are done. The gap between your personal limit and the firm\'s limit is your survival margin.',
+      },
+      {
+        heading: 'Mistakes 9–10: The Career Enders',
+        paragraphs: [
+          'Mistake #9: Overtrading out of boredom. Professional trading is mostly waiting, and unprepared traders fill the waiting with low-quality trades. Each mediocre trade is a small tax on your account and a large tax on your discipline. The fix: a maximum trade count per day (2–3), a written watchlist, and the identity shift from "trader who trades a lot" to "sniper who waits."',
+          'Mistake #10: Trading without a journal. Traders who do not journal repeat the same mistakes indefinitely because they literally cannot see their own patterns. Every blown account contains a lesson that was available weeks earlier in the trade history. The fix: log every trade — setup, size, outcome, emotional state, rule adherence — and review weekly. Fifteen minutes of review per week prevents most items on this list.',
+          'Notice what this list does not contain: bad strategies, wrong indicators, or insufficient market knowledge. Funded traders almost never lose accounts because their analysis was wrong. They lose accounts because their behavior deviated from their own plan. Fix the behavior, and the account survives long enough for your edge to compound.',
+        ],
+        list: [
+          'Fixed 1% risk — never adjusted by emotion or recent results',
+          'One entry per idea, hard stop always, no averaging down',
+          'Daily loss limit calculated and written down every morning',
+          'Flat before red-folder news, always',
+          'Two consecutive losses = done for the day',
+          'Identical rules on funded account as during the challenge',
+          'Maximum 2–3 trades per day from a pre-written watchlist',
+          'Weekly journal review, non-negotiable',
+        ],
+      },
+      {
+        heading: 'The Recovery Protocol: If You Do Blow an Account',
+        paragraphs: [
+          'If you have already lost a funded account, the worst response is immediately purchasing a new challenge in an emotional state — that fee is usually donated to the same mistakes. The professional response is a structured post-mortem: export your trade history, identify which of the ten mistakes above killed the account, and write the specific rule that would have prevented it.',
+          'Then rebuild in stages: two weeks of demo trading executing your corrected plan flawlessly, then a new evaluation at the same or smaller account size. Traders who follow this protocol pass their next challenge at dramatically higher rates than those who instantly re-buy.',
+          'At The People Prop, free retries are included on select plans precisely because we know failure is part of the development curve. The traders earning consistent payouts today are almost all traders who blew an account, diagnosed it honestly, and came back with better rules. The account is replaceable — the lesson is the asset.',
+        ],
+      },
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // BLOG 12 — Prop Firm vs Personal Trading Account
+  // ─────────────────────────────────────────────────────────────────────────────
+  {
+    slug: 'prop-firm-vs-personal-trading-account',
+    title: 'Prop Firm vs Personal Trading Account: Which Is Better in 2026?',
+    metaDescription:
+      'Prop firm or personal trading account? Compare capital, risk, costs, taxes, and profit potential in 2026 to decide which path fits your trading goals and budget.',
+    metaKeywords: [
+      'prop firm vs personal account',
+      'prop firm vs own capital',
+      'is prop trading worth it',
+      'funded account vs live account',
+      'prop firm pros and cons',
+      'trading with own money vs prop firm',
+      'prop firm capital comparison',
+      'retail trading vs prop trading',
+      'best way to start trading 2026',
+      'prop firm profit split comparison',
+      'trading account comparison',
+      'low capital trading options',
+    ],
+    date: '2026-06-11',
+    author: 'TPP Trading Desk',
+    readTime: '9 min read',
+    category: 'Comparison',
+    image: '/images/blog/prop-firm-vs-personal.png',
+    heroExcerpt:
+      'Should you trade your own savings or a prop firm\'s capital? The answer depends on your capital, skill level, and goals — but the math tells a compelling story. Here is a complete, honest comparison of both paths in 2026.',
+    sections: [
+      {
+        heading: 'The Capital Question: The Decisive Factor',
+        paragraphs: [
+          'The single biggest difference between the two paths is starting capital. A realistic personal trading account for a middle-class Indian trader might be ₹50,000 to ₹2,00,000 ($600–$2,400). A prop firm evaluation costing $59–$500 provides access to $10,000–$200,000 in trading capital. The leverage on skill is simply incomparable.',
+          'Run the honest math on personal capital: a genuinely excellent 5% monthly return on a ₹1,00,000 account is ₹5,000 per month — meaningful, but not life-changing, and it requires years of compounding before position sizes matter. The same 5% on a $100K funded account at a 90% split is $4,500 per month.',
+          'This is not an argument that prop trading is easy — the same skill is required in both cases. It is an argument that if you possess the skill, the prop model pays you dramatically more for it, dramatically sooner.',
+        ],
+      },
+      {
+        heading: 'Where Personal Accounts Win',
+        paragraphs: [
+          'A fair comparison requires honesty about where personal accounts are genuinely better. First: total freedom. No drawdown limits, no profit targets, no restricted news trading, no consistency rules. You can hold positions for months, average into trades, and take strategies prop firms prohibit.',
+          'Second: permanence. A personal account cannot be "lost" to a rule violation — a 20% drawdown is painful but survivable, and you can always recover with time. A funded account with the same drawdown is terminated. Traders whose strategies involve deep drawdowns genuinely fit personal accounts better.',
+          'Third: 100% of profits are yours, and there is no evaluation to pass. For traders with substantial existing capital — say $50,000+ of genuinely risk-appropriate savings — the case for prop firms weakens considerably. The model exists primarily to solve a capital problem; if you do not have that problem, the constraints may not be worth it.',
+        ],
+        list: [
+          'Personal account advantages: complete strategy freedom, no rules or targets',
+          'No account termination risk — drawdowns are recoverable',
+          '100% profit retention with no splits',
+          'No evaluation fees or challenge pressure',
+          'Better for long-hold, high-drawdown, or unconventional strategies',
+        ],
+      },
+      {
+        heading: 'Where Prop Firms Win',
+        paragraphs: [
+          'Capital access is the headline, but the second advantage is underrated: enforced discipline. The drawdown rules that feel restrictive are, in practice, the risk management structure most retail traders desperately need and never self-impose. Thousands of traders are consistently profitable inside prop rules who lost money for years without them — the constraints are a feature.',
+          'Third: defined, capped risk. Your maximum possible loss in the prop model is the challenge fee. Compare a trader who deposits ₹2,00,000 into a personal account and loses 60% of it in year one (a statistically common outcome) with a trader who spends ₹10,000 on evaluations, fails twice, passes the third, and earns payouts. The prop trader risked 5% as much money for a larger income stream.',
+          'Fourth: psychological separation. Trading firm capital removes the "this is my rent money" fear that causes hesitation, early exits, and revenge cycles on personal accounts. Most traders report executing noticeably better on funded accounts once the personal-savings anxiety is removed.',
+        ],
+        list: [
+          'Prop firm advantages: $10K–$200K capital access from a small fee',
+          'Maximum loss capped at the evaluation cost',
+          'Enforced risk discipline via drawdown rules',
+          'Up to 90% profit splits with bi-weekly payouts at TPP',
+          'Scaling path to $200K+ without personal capital growth',
+          'Psychological freedom from trading personal savings',
+        ],
+        tip: 'The hybrid approach is popular for good reason: trade a funded account as your income engine, and reinvest a portion of payouts into a personal account with full freedom. Over time you get both capital scale and strategic independence.',
+      },
+      {
+        heading: 'The Cost Comparison Nobody Calculates',
+        paragraphs: [
+          'Traders comparing costs usually look only at the challenge fee versus "free" personal trading. This misses the real cost structure. Personal accounts carry the invisible cost of capital risk — the money you can genuinely lose. A prop trader\'s worst case is measured in hundreds; a personal trader\'s worst case is measured in their savings.',
+          'The realistic prop trading budget for a developing trader is 2–4 evaluation attempts before a sustainable pass — perhaps $150–$600 total with a firm like The People Prop, where challenges start at $59 and select plans include free retries. Set against the statistical outcomes of first-year personal trading accounts, this is one of the cheapest educations in finance.',
+          'Time costs also differ. The prop path forces you to become rule-compliant and consistent quickly, compressing the discipline-learning curve that takes personal traders years of expensive lessons. Many traders say the challenge format taught them more in 60 days than three years of unstructured trading.',
+        ],
+      },
+      {
+        heading: 'The Verdict: Match the Path to Your Situation',
+        paragraphs: [
+          'Choose a personal account if: you already have substantial risk-appropriate capital, your strategy requires deep drawdowns or months-long holds, or you fundamentally cannot operate within external rules. This is a legitimate profile — some excellent traders belong here.',
+          'Choose a prop firm if: your skill exceeds your capital, you want defined maximum risk while building income, you benefit from structural discipline, or you want a realistic path to trading $100K+ within a year rather than a decade. This describes the overwhelming majority of skilled retail traders in 2026.',
+          'For most traders reading this, the practical answer is to start with an affordable evaluation and let results decide. The People Prop offers one-step and two-step challenges from $59, up to $200K in funding, bi-weekly payouts at up to 90% split, and auto-scaling built into every account. Prove your edge on our capital — and keep your savings in your bank where they belong.',
+        ],
       },
     ],
   },

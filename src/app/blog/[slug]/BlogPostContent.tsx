@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   ArrowLeft,
   ArrowRight,
@@ -100,6 +101,20 @@ export default function BlogPostContent({ blog }: BlogPostContentProps) {
             <p className="mb-8 max-w-2xl text-[17px] leading-relaxed text-[#f1eade]/60">
               {blog.heroExcerpt}
             </p>
+          </Reveal>
+
+          {/* Featured image */}
+          <Reveal delay={0.22}>
+            <div className="mb-8 overflow-hidden rounded-2xl border border-[#f1eade]/10">
+              <Image
+                src={blog.image || '/placeholder.svg'}
+                alt={blog.title}
+                width={1200}
+                height={675}
+                priority
+                className="aspect-video w-full object-cover"
+              />
+            </div>
           </Reveal>
 
           {/* Meta row */}
@@ -203,7 +218,18 @@ export default function BlogPostContent({ blog }: BlogPostContentProps) {
                     href={`/blog/${post.slug}`}
                     className="group block h-full"
                   >
-                    <article className="flex h-full flex-col rounded-2xl border border-[#0c0c0c]/10 bg-white/50 p-6 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
+                    <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-[#0c0c0c]/10 bg-white/50 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
+                      {/* Thumbnail */}
+                      <div className="overflow-hidden">
+                        <Image
+                          src={post.image || '/placeholder.svg'}
+                          alt={post.title}
+                          width={600}
+                          height={338}
+                          className="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.05]"
+                        />
+                      </div>
+                      <div className="flex flex-1 flex-col p-6">
                       {/* Category */}
                       <div className="mb-4">
                         <span className="rounded-full bg-[#0c0c0c] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#cbfb45]">
@@ -232,6 +258,7 @@ export default function BlogPostContent({ blog }: BlogPostContentProps) {
                       <div className="flex items-center gap-1.5 font-sans text-[13px] font-semibold text-[#0c0c0c] transition-colors duration-200 group-hover:text-[#cbfb45]">
                         Read Article
                         <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-1" />
+                      </div>
                       </div>
                     </article>
                   </Link>
