@@ -25,8 +25,8 @@ export function StatCards({ accounts = [], totalPayouts = 0 }: { accounts?: Acco
       label: "Number of Accounts",
       value: activeCount.toString(),
       icon: LayoutList,
-      color: "text-[var(--accent-700)]",
-      bgColor: "bg-[var(--accent-50)]",
+      color: "text-[var(--teal-800)]",
+      bgColor: "bg-[var(--teal-50)]",
     },
     {
       label: "Accounts Passed",
@@ -51,7 +51,7 @@ export function StatCards({ accounts = [], totalPayouts = 0 }: { accounts?: Acco
         return (
           <div 
             key={stat.label} 
-            className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-5 lg:p-6 shadow-sm border border-[var(--border)] relative overflow-hidden group hover:shadow-md transition-shadow"
+            className="bg-white rounded-2xl p-4 sm:p-5 lg:p-6 shadow-sm border border-[var(--border)] relative overflow-hidden group hover:shadow-md hover:border-[var(--teal-100)] transition-all"
           >
             <div className="flex items-start justify-between gap-3 mb-4">
               <span className="min-w-0 text-[12px] sm:text-[13px] font-semibold text-[var(--ink-500)] tracking-wide leading-tight">
@@ -61,12 +61,12 @@ export function StatCards({ accounts = [], totalPayouts = 0 }: { accounts?: Acco
                 <Icon className={cn("w-5 h-5", stat.color)} />
               </div>
             </div>
-            <div className="text-[26px] sm:text-[30px] lg:text-[32px] font-display font-bold text-[var(--ink-950)] tracking-tight leading-none break-words">
+            <div className="text-[26px] sm:text-[30px] lg:text-[32px] font-display font-bold text-[var(--teal-950)] tracking-tight leading-none break-words">
               {stat.value}
             </div>
             
             {/* Subtle bottom accent line that glows on hover */}
-            <div className="absolute bottom-0 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-[var(--border)] to-transparent opacity-50 group-hover:via-[var(--accent)] transition-all duration-500" />
+            <div className="absolute bottom-0 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-[var(--border)] to-transparent opacity-50 group-hover:via-[var(--teal-800)] transition-all duration-500" />
           </div>
         );
       })}

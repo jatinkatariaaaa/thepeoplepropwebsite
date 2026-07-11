@@ -1,16 +1,12 @@
 import { Trophy } from "lucide-react";
-import { supabaseAdmin } from "@/lib/supabase";
+import { getDailyLeaderboard } from "@/lib/daily-leaderboard";
 
 export async function LeaderboardTable() {
-  const { data: rawLeaderboardData, error } = await supabaseAdmin
-    .from("leaderboard")
-    .select("*")
-    .order("profit", { ascending: false });
+  const rawLeaderboardData = getDailyLeaderboard(20);
 
   // Map to format that matches the existing UI structure
-  const leaderboardData = (rawLeaderboardData || []).map((row, idx) => ({
+  const leaderboardData = rawLeaderboardData.map((row) => ({
     ...row,
-    rank: idx + 1,
     profitStr: `+$${Number(row.profit).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`,
     profitPercentStr: `+${Number(row.profit_percent).toFixed(2)}%`,
     winRatioStr: `${Number(row.win_ratio).toFixed(1)}%`,
