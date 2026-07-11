@@ -885,113 +885,177 @@ export default function HomePage() {
       {/* ═══════════════ SECTION 4 — CALCULATOR ═══════════════ */}
       <ChallengeCalculator />
 
-      {/* ═══════════════ SECTION 4.5 — DASHBOARD ANYWHERE ═══════════════ */}
-      <section className="w-full py-16 lg:py-24">
-        <div className="mx-auto grid w-full max-w-[1200px] items-center gap-12 px-6 lg:grid-cols-2 lg:gap-8 lg:px-8">
-          {/* Left: headline + CTAs */}
-          <div className="order-2 text-center lg:order-1 lg:text-left">
-            <Reveal>
-              <span className="mb-4 inline-block rounded-full border border-[#0c0c0c]/10 bg-[#0c0c0c]/[0.03] px-4 py-1.5 font-sans text-[11px] font-bold uppercase tracking-[0.15em] text-[#0c0c0c]/50">
-                Your command center
-              </span>
-            </Reveal>
-            <Reveal delay={0.05}>
-              <GsapWords
-                text="Every payout. Every account. One dashboard."
-                highlight={["dashboard."]}
-                className="font-black uppercase leading-[0.95] tracking-[-0.03em] text-[#0c0c0c]"
-                style={{ fontSize: "clamp(2.25rem, 5.5vw, 4rem)" }}
-              />
-            </Reveal>
-            <Reveal delay={0.1}>
-              <p className="mx-auto mt-6 max-w-md text-base leading-relaxed text-[#0c0c0c]/60 lg:mx-0 lg:text-lg">
-                No downloads, no installs. The TPP dashboard runs in your
-                browser on any device — track live drawdown, watch equity move
-                in real time, and request payouts from wherever you trade.
-              </p>
-            </Reveal>
-            <Reveal delay={0.15}>
-              <ul className="mx-auto mt-6 flex max-w-md flex-col gap-2.5 text-left lg:mx-0">
-                {[
-                  "Live equity, drawdown and target tracking",
-                  "One-tap payout requests, cleared in under 24h",
-                  "Instant alerts when you scale or get paid",
-                ].map((item) => (
-                  <li key={item} className="flex items-start gap-3">
-                    <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#cbfb45]">
-                      <svg viewBox="0 0 12 12" className="h-2.5 w-2.5" aria-hidden="true">
-                        <path d="M2.5 6.5 5 9l4.5-6" fill="none" stroke="#0c0c0c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
+      {/* ═══════════════ SECTION 4.5 — DASHBOARD COMMAND CENTER ═══════════════ */}
+      <section className="w-full py-8 lg:py-12">
+        <style>{`
+          @keyframes tpp-float-a { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+          @keyframes tpp-float-b { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+          @keyframes tpp-ping-dot { 0% { transform: scale(1); opacity: .7; } 100% { transform: scale(2.4); opacity: 0; } }
+          @keyframes tpp-ticker-bar { 0% { transform: scaleY(.4); } 50% { transform: scaleY(1); } 100% { transform: scaleY(.4); } }
+        `}</style>
+        <div className="px-[5px]">
+          <div className="relative overflow-hidden rounded-2xl bg-[#0c0c0c] px-6 py-16 lg:px-12 lg:py-24">
+            {/* Background: radial lime glow + dot grid */}
+            <div
+              className="pointer-events-none absolute inset-0"
+              aria-hidden="true"
+              style={{
+                backgroundImage: "radial-gradient(rgba(255,255,255,0.055) 1px, transparent 1px)",
+                backgroundSize: "28px 28px",
+              }}
+            />
+            <div className="pointer-events-none absolute -right-40 top-1/2 h-[700px] w-[700px] -translate-y-1/2 rounded-full bg-[#cbfb45]/[0.07] blur-[120px]" aria-hidden="true" />
+            <div className="pointer-events-none absolute -left-52 -top-52 h-[500px] w-[500px] rounded-full bg-[#cbfb45]/[0.04] blur-[100px]" aria-hidden="true" />
+
+            <div className="relative mx-auto grid w-full max-w-[1200px] items-center gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8">
+              {/* Left: content */}
+              <div className="text-center lg:text-left">
+                <Reveal>
+                  <span className="inline-flex items-center gap-2.5 rounded-full border border-[#cbfb45]/25 bg-[#cbfb45]/[0.08] px-4 py-1.5 font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-[#cbfb45]">
+                    <span className="relative flex h-2 w-2">
+                      <span className="absolute inline-flex h-full w-full rounded-full bg-[#cbfb45]" style={{ animation: "tpp-ping-dot 1.6s cubic-bezier(0,0,.2,1) infinite" }} />
+                      <span className="relative inline-flex h-2 w-2 rounded-full bg-[#cbfb45]" />
                     </span>
-                    <span className="text-[15px] leading-relaxed text-[#0c0c0c]/70">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
-            <Reveal delay={0.2}>
-              <div className="mt-8 flex flex-wrap items-center justify-center gap-4 lg:justify-start">
-                <Link
-                  href="/dashboard"
-                  className="rounded-full bg-[#0c0c0c] px-8 py-4 font-sans text-[15px] font-bold text-white transition-transform duration-200 hover:-translate-y-0.5"
-                >
-                  Open Dashboard
-                </Link>
-                <Link
-                  href="/challenges"
-                  className="rounded-full border-2 border-[#0c0c0c]/15 px-8 py-4 font-sans text-[15px] font-bold text-[#0c0c0c] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#0c0c0c]/40"
-                >
-                  Start a Challenge
-                </Link>
-              </div>
-            </Reveal>
-          </div>
-
-          {/* Right: iPhone mockup */}
-          <Reveal delay={0.15} className="order-1 lg:order-2">
-            <div className="relative mx-auto w-[280px] sm:w-[310px]">
-              {/* Soft glow behind phone */}
-              <div className="absolute left-1/2 top-1/2 -z-10 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#cbfb45]/25 blur-[100px]" aria-hidden="true" />
-
-              {/* Phone frame */}
-              <div className="relative overflow-hidden rounded-[46px] border-[10px] border-[#0c0c0c] bg-[#0c0c0c] shadow-[0_30px_80px_-20px_rgba(12,12,12,0.45)]">
-                {/* Dynamic island */}
-                <div className="absolute left-1/2 top-2.5 z-10 h-[26px] w-[92px] -translate-x-1/2 rounded-full bg-[#0c0c0c]" aria-hidden="true" />
-                <img
-                  src="/images/app-screen.png"
-                  alt="The People Prop web dashboard on a phone showing account balance, equity chart, and payout controls"
-                  className="aspect-[9/19] w-full object-cover"
-                />
-              </div>
-
-              {/* Floating payout notification */}
-              <div className="absolute -left-16 bottom-24 hidden w-[250px] items-start gap-3 rounded-2xl border border-[#0c0c0c]/[0.06] bg-white/95 p-3.5 shadow-[0_16px_40px_-12px_rgba(12,12,12,0.25)] backdrop-blur-sm sm:flex">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#0c0c0c]">
-                  <span className="text-[10px] font-black text-[#cbfb45]">TPP</span>
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-baseline justify-between gap-2">
-                    <p className="truncate text-[13px] font-bold text-[#0c0c0c]">Payout processed</p>
-                    <span className="shrink-0 text-[10px] text-[#0c0c0c]/40">now</span>
+                    Live command center
+                  </span>
+                </Reveal>
+                <Reveal delay={0.05}>
+                  <div className="mt-6">
+                    <GsapWords
+                      text="Your entire trading business. One screen."
+                      highlight={["One", "screen."]}
+                      className="font-black uppercase leading-[0.95] tracking-[-0.03em] text-white"
+                      style={{ fontSize: "clamp(2.25rem, 5.5vw, 4rem)" }}
+                    />
                   </div>
-                  <p className="text-[12px] leading-snug text-[#0c0c0c]/60">$6,590 sent straight to your wallet.</p>
-                </div>
+                </Reveal>
+                <Reveal delay={0.1}>
+                  <p className="mx-auto mt-6 max-w-md text-base leading-relaxed text-white/50 lg:mx-0 lg:text-lg">
+                    No downloads. No installs. The TPP dashboard runs in any
+                    browser on any device — equity, drawdown, targets and
+                    payouts, streaming in real time.
+                  </p>
+                </Reveal>
+
+                {/* Live metric chips */}
+                <Reveal delay={0.15}>
+                  <div className="mx-auto mt-8 grid max-w-md grid-cols-3 gap-3 lg:mx-0">
+                    {[
+                      { icon: Clock, value: "<24h", label: "Payout speed" },
+                      { icon: Percent, value: "90%", label: "Profit split" },
+                      { icon: TrendingUp, value: "$200K", label: "Max account" },
+                    ].map(({ icon: Icon, value, label }) => (
+                      <div
+                        key={label}
+                        className="group rounded-2xl border border-white/[0.08] bg-white/[0.04] p-4 text-left backdrop-blur-sm transition-colors duration-300 hover:border-[#cbfb45]/30 hover:bg-[#cbfb45]/[0.06]"
+                      >
+                        <Icon className="h-4 w-4 text-[#cbfb45]" strokeWidth={2.25} />
+                        <div className="mt-2.5 font-sans text-xl font-black tracking-tight text-white">{value}</div>
+                        <div className="mt-0.5 font-sans text-[11px] font-medium uppercase tracking-wide text-white/40">{label}</div>
+                      </div>
+                    ))}
+                  </div>
+                </Reveal>
+
+                <Reveal delay={0.2}>
+                  <div className="mt-9 flex flex-wrap items-center justify-center gap-4 lg:justify-start">
+                    <Link
+                      href="/dashboard"
+                      className="group inline-flex items-center gap-2 rounded-full bg-[#cbfb45] px-8 py-4 font-sans text-[15px] font-bold text-[#0c0c0c] transition-transform duration-200 hover:-translate-y-0.5"
+                    >
+                      Open Dashboard
+                      <ArrowUpRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={2.5} />
+                    </Link>
+                    <Link
+                      href="/challenges"
+                      className="rounded-full border border-white/15 px-8 py-4 font-sans text-[15px] font-bold text-white transition-all duration-200 hover:-translate-y-0.5 hover:border-[#cbfb45]/50 hover:text-[#cbfb45]"
+                    >
+                      Start a Challenge
+                    </Link>
+                  </div>
+                </Reveal>
               </div>
 
-              {/* Floating scaling notification */}
-              <div className="absolute -right-12 top-24 hidden w-[230px] items-start gap-3 rounded-2xl border border-[#0c0c0c]/[0.06] bg-white/95 p-3.5 shadow-[0_16px_40px_-12px_rgba(12,12,12,0.25)] backdrop-blur-sm sm:flex">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#cbfb45]">
-                  <TrendingUp className="h-4 w-4 text-[#0c0c0c]" strokeWidth={2.5} />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-baseline justify-between gap-2">
-                    <p className="truncate text-[13px] font-bold text-[#0c0c0c]">Account scaled</p>
-                    <span className="shrink-0 text-[10px] text-[#0c0c0c]/40">9:41</span>
+              {/* Right: phone + floating UI */}
+              <Reveal delay={0.15}>
+                <div className="relative mx-auto w-[270px] sm:w-[300px] [perspective:1200px]">
+                  {/* Glow ring behind phone */}
+                  <div className="absolute left-1/2 top-1/2 -z-10 h-[460px] w-[460px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#cbfb45]/10" aria-hidden="true" />
+                  <div className="absolute left-1/2 top-1/2 -z-10 h-[560px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.05]" aria-hidden="true" />
+                  <div className="absolute left-1/2 top-1/2 -z-10 h-[380px] w-[380px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#cbfb45]/15 blur-[90px]" aria-hidden="true" />
+
+                  {/* Phone frame with subtle 3D tilt */}
+                  <div className="relative overflow-hidden rounded-[46px] border-[10px] border-[#1a1a1a] bg-[#1a1a1a] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8),0_0_0_1px_rgba(255,255,255,0.06)] transition-transform duration-500 hover:scale-[1.02] [transform:rotateY(-6deg)_rotateX(2deg)]">
+                    <div className="absolute left-1/2 top-2.5 z-10 h-[26px] w-[92px] -translate-x-1/2 rounded-full bg-black" aria-hidden="true" />
+                    <img
+                      src="/images/app-screen.png"
+                      alt="The People Prop web dashboard showing account balance, live equity chart, and payout controls"
+                      className="aspect-[9/19] w-full object-cover"
+                    />
+                    {/* Screen glass reflection */}
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/[0.08] via-transparent to-transparent" aria-hidden="true" />
                   </div>
-                  <p className="text-[12px] leading-snug text-[#0c0c0c]/60">You just unlocked $100K. Keep going.</p>
+
+                  {/* Floating: payout cleared */}
+                  <div
+                    className="absolute -left-20 bottom-28 hidden w-[250px] items-start gap-3 rounded-2xl border border-white/10 bg-[#161616]/95 p-3.5 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.7)] backdrop-blur-md sm:flex"
+                    style={{ animation: "tpp-float-a 5s ease-in-out infinite" }}
+                  >
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#cbfb45]">
+                      <BadgeDollarSign className="h-4.5 w-4.5 text-[#0c0c0c]" strokeWidth={2.25} />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-baseline justify-between gap-2">
+                        <p className="truncate text-[13px] font-bold text-white">Payout cleared</p>
+                        <span className="shrink-0 text-[10px] text-white/35">now</span>
+                      </div>
+                      <p className="text-[12px] leading-snug text-white/50">
+                        <span className="font-bold text-[#cbfb45]">+$6,590</span> sent to your wallet.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Floating: live equity ticker */}
+                  <div
+                    className="absolute -right-16 top-16 hidden w-[210px] rounded-2xl border border-white/10 bg-[#161616]/95 p-3.5 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.7)] backdrop-blur-md sm:block"
+                    style={{ animation: "tpp-float-b 6s ease-in-out infinite" }}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-white/40">Live equity</span>
+                      <span className="flex items-center gap-1 rounded-full bg-[#cbfb45]/15 px-2 py-0.5 text-[10px] font-bold text-[#cbfb45]">
+                        <TrendingUp className="h-2.5 w-2.5" strokeWidth={3} /> +8.2%
+                      </span>
+                    </div>
+                    <div className="mt-1.5 font-sans text-lg font-black tracking-tight text-white">$127,450</div>
+                    {/* Animated mini bars */}
+                    <div className="mt-2 flex h-8 items-end gap-1" aria-hidden="true">
+                      {[0.5, 0.7, 0.45, 0.85, 0.6, 0.95, 0.75, 1, 0.65, 0.9].map((h, i) => (
+                        <span
+                          key={i}
+                          className="w-full origin-bottom rounded-sm bg-[#cbfb45]/70"
+                          style={{ height: `${h * 100}%`, animation: `tpp-ticker-bar ${2 + (i % 4) * 0.5}s ease-in-out ${i * 0.15}s infinite` }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Floating: account scaled */}
+                  <div
+                    className="absolute -right-10 bottom-6 hidden w-[190px] items-center gap-3 rounded-2xl border border-[#cbfb45]/25 bg-[#cbfb45] p-3.5 shadow-[0_20px_50px_-12px_rgba(203,251,69,0.25)] sm:flex"
+                    style={{ animation: "tpp-float-a 5.5s ease-in-out 0.8s infinite" }}
+                  >
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#0c0c0c]">
+                      <Award className="h-4.5 w-4.5 text-[#cbfb45]" strokeWidth={2.25} />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[13px] font-black leading-tight text-[#0c0c0c]">Scaled to $100K</p>
+                      <p className="text-[11px] font-medium leading-snug text-[#0c0c0c]/60">Milestone unlocked</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              </Reveal>
             </div>
-          </Reveal>
+          </div>
         </div>
       </section>
 
