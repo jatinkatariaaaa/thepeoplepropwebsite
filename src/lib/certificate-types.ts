@@ -33,7 +33,7 @@ export const CERT_TYPES: Record<string, CertTypeConfig> = {
     eyebrow: "Certificate of Achievement",
     title: "Phase One Cleared",
     bg: "bg-phase1.png",
-    accent: "#c9f24b",
+    accent: "#5a8a00",
     fields: [
       { id: "account", label: "Account Size", default: "$100,000" },
       { id: "target", label: "Profit Target Hit", default: "8%" },
@@ -47,7 +47,7 @@ export const CERT_TYPES: Record<string, CertTypeConfig> = {
     eyebrow: "Certificate of Verification",
     title: "Phase Two Cleared",
     bg: "bg-phase2.png",
-    accent: "#c9f24b",
+    accent: "#5a8a00",
     fields: [
       { id: "account", label: "Account Size", default: "$100,000" },
       { id: "target", label: "Profit Target Hit", default: "5%" },
@@ -61,7 +61,7 @@ export const CERT_TYPES: Record<string, CertTypeConfig> = {
     eyebrow: "Certificate of Funding",
     title: "Funded Trader",
     bg: "bg-funded.png",
-    accent: "#c9f24b",
+    accent: "#5a8a00",
     fields: [
       { id: "account", label: "Funded Capital", default: "$100,000" },
       { id: "split", label: "Profit Split", default: "90%" },
@@ -75,7 +75,7 @@ export const CERT_TYPES: Record<string, CertTypeConfig> = {
     eyebrow: "Certificate of Disbursement",
     title: "Payout Confirmed",
     bg: "bg-payout.png",
-    accent: "#c9f24b",
+    accent: "#5a8a00",
     amountLabel: "Total Payout",
     defaultAmount: "$14,850.00",
     fields: [
@@ -91,7 +91,7 @@ export const CERT_TYPES: Record<string, CertTypeConfig> = {
     eyebrow: "Weekly Leaderboard Award",
     title: "Trader of the Week",
     bg: "bg-weekly.png",
-    accent: "#e8c65a",
+    accent: "#a17c1a",
     amountLabel: "Weekly Reward",
     defaultAmount: "$2,500.00",
     fields: [
@@ -107,7 +107,7 @@ export const CERT_TYPES: Record<string, CertTypeConfig> = {
     eyebrow: "Elite Milestone",
     title: "Lifetime Payout Milestone",
     bg: "bg-milestone.png",
-    accent: "#c9f24b",
+    accent: "#5a8a00",
     amountLabel: "Total Withdrawn",
     defaultAmount: "$50,000.00",
     fields: [

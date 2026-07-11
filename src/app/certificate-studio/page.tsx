@@ -9,20 +9,25 @@ export const metadata: Metadata = {
 
 export default function CertificateStudioPage() {
   return (
-    <main className="min-h-screen bg-[#06080c] text-white">
-      <div className="mx-auto max-w-7xl px-6 pt-28 pb-16">
+    <main className="min-h-screen bg-[#f4f6f8] text-[#12151a]">
+      <div className="mx-auto max-w-7xl px-6 py-12">
         <header className="mb-10">
-          <p className="text-xs font-semibold uppercase tracking-[0.4em] text-[#c9f24b]">
-            The People Prop
-          </p>
-          <h1 className="mt-3 text-3xl md:text-4xl font-extrabold tracking-tight text-balance">
+          <div className="flex items-center gap-3">
+            <span className="inline-flex items-center rounded-lg bg-[#12151a] px-3 py-1.5 text-sm font-extrabold tracking-tight text-[#c9f24b]">
+              TPP
+            </span>
+            <p className="text-xs font-semibold uppercase tracking-[0.4em] text-[#5a8a00]">
+              The People Prop
+            </p>
+          </div>
+          <h1 className="mt-4 text-3xl md:text-4xl font-extrabold tracking-tight text-balance">
             Certificate Studio
           </h1>
-          <p className="mt-3 max-w-2xl text-[#8a93a6] leading-relaxed">
-            Six official certificate designs with AI-generated artwork — phase
-            passes, funding, payouts, weekly awards and lifetime milestones. Each
-            one is rendered on demand from a single API, so it can be allotted to
-            any trader through code.
+          <p className="mt-3 max-w-2xl text-[#7b8494] leading-relaxed">
+            Six official certificate designs rendered in the TPP brand world —
+            phase passes, funding, payouts, weekly awards and lifetime
+            milestones. Each one is generated on demand from a single API, so it
+            can be allotted to any trader through code.
           </p>
         </header>
 

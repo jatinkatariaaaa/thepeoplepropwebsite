@@ -8,8 +8,9 @@ export const runtime = "nodejs";
 const W = 1600;
 const H = 900;
 
-const MUTED = "#8a93a6";
-const SOFT = "#c7cedb";
+const INK = "#12151a";
+const MUTED = "#7b8494";
+const SOFT = "#3c4350";
 
 async function loadAsset(rel: string) {
   return readFile(path.join(process.cwd(), "public", rel));
@@ -63,8 +64,8 @@ export async function GET(request: Request) {
             height: "100%",
             position: "relative",
             fontFamily: "Inter",
-            color: "#ffffff",
-            backgroundColor: "#06080c",
+            color: INK,
+            backgroundColor: "#f4f6f8",
           }}
         >
           {/* AI generated background */}
@@ -91,7 +92,7 @@ export async function GET(request: Request) {
               width: "62%",
               height: "100%",
               background:
-                "linear-gradient(90deg, rgba(6,8,12,0) 0%, rgba(6,8,12,0.72) 22%, rgba(6,8,12,0.86) 55%, rgba(6,8,12,0.9) 100%)",
+                "linear-gradient(90deg, rgba(248,250,251,0) 0%, rgba(248,250,251,0.78) 22%, rgba(248,250,251,0.9) 55%, rgba(248,250,251,0.94) 100%)",
             }}
           />
 
@@ -111,7 +112,7 @@ export async function GET(request: Request) {
                 fontSize: 15,
                 fontWeight: 600,
                 letterSpacing: 5,
-                color: "#ffffff",
+                color: INK,
               }}
             >
               THE PEOPLE
@@ -212,7 +213,7 @@ export async function GET(request: Request) {
                     fontWeight: 700,
                     fontSize: 64,
                     letterSpacing: -1,
-                    color: "#ffffff",
+                    color: INK,
                   }}
                 >
                   {amount}
