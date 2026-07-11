@@ -31,7 +31,6 @@ import {
   Landmark,
   ShieldAlert,
   Bell,
-  Sparkles,
   type LucideIcon,
 } from "lucide-react";
 import { useState, useMemo } from "react";
@@ -194,9 +193,13 @@ export function AdminSidebar({ role = "super_admin" }: AdminSidebarProps) {
       {/* Mobile Toggle */}
       <div className="lg:hidden fixed top-0 left-0 w-full h-16 bg-[#0c0c0c] z-40 flex items-center justify-between px-4">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#cbfb45]">
-            <Sparkles className="h-4 w-4 text-[#0c0c0c]" />
-          </div>
+          <img
+            src="/images/logo.webp"
+            alt="The People Prop Logo"
+            width={32}
+            height={32}
+            className="h-8 w-8 shrink-0 rounded-lg object-contain"
+          />
           <span className="text-[15px] font-bold text-white tracking-tight">
             Admin
           </span>
@@ -229,9 +232,13 @@ export function AdminSidebar({ role = "super_admin" }: AdminSidebarProps) {
         {/* Logo Section */}
         <div className="px-5 pt-7 pb-5">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#cbfb45]">
-              <Sparkles className="h-5 w-5 text-[#0c0c0c]" />
-            </div>
+            <img
+              src="/images/logo.webp"
+              alt="The People Prop Logo"
+              width={40}
+              height={40}
+              className="h-10 w-10 shrink-0 rounded-xl object-contain"
+            />
             <div className="min-w-0">
               <p className="truncate text-[15px] font-bold text-white tracking-tight leading-tight">
                 The People Prop
