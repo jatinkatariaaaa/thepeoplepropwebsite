@@ -545,7 +545,7 @@ export const blogs: BlogPost[] = [
           'Consider the total cost of funding, not just the challenge fee. If a one-step challenge costs $400 and a two-step costs $350, but you need two attempts at the two-step (because Phase 2 is an additional hurdle), your actual cost for the two-step is $700. The one-step, at $400 for a single attempt, is the better value in that scenario.',
           'At The People Prop, challenge fees are competitive across both models, and the firm occasionally offers promotions that reduce the entry cost. TPP also provides free retries under certain conditions — check the current offers page for the latest details.',
         ],
-        tip: 'Calculate your expected total cost by multiplying the challenge fee by the number of attempts you expect to need. If your historical pass rate on similar challenges is 50%, your expected cost is 2× the single fee.',
+        tip: 'Calculate your expected total cost by multiplying the challenge fee by the number of attempts you expect to need. If your historical pass rate on similar challenges is 50%, your expected cost is 2�� the single fee.',
       },
       {
         heading: 'Pass Rates: What the Data Shows',
@@ -1382,6 +1382,496 @@ export const blogs: BlogPost[] = [
           'Choose a prop firm if: your skill exceeds your capital, you want defined maximum risk while building income, you benefit from structural discipline, or you want a realistic path to trading $100K+ within a year rather than a decade. This describes the overwhelming majority of skilled retail traders in 2026.',
           'For most traders reading this, the practical answer is to start with an affordable evaluation and let results decide. The People Prop offers one-step and two-step challenges from $59, up to $200K in funding, bi-weekly payouts at up to 90% split, and auto-scaling built into every account. Prove your edge on our capital — and keep your savings in your bank where they belong.',
         ],
+      },
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // BLOG 13 — Gold (XAUUSD) Trading Strategies
+  // ─────────────────────────────────────────────────────────────────────────────
+  {
+    slug: 'gold-xauusd-trading-strategies-prop-firm',
+    title: 'Gold (XAUUSD) Trading Strategies That Work for Prop Firm Traders in 2026',
+    metaDescription:
+      'Master gold trading in 2026 with proven XAUUSD strategies for prop firm accounts — London breakout setups, session timing, risk sizing, and the mistakes that blow gold traders.',
+    metaKeywords: [
+      'gold trading strategy',
+      'XAUUSD trading strategy',
+      'how to trade gold',
+      'gold trading for prop firms',
+      'XAUUSD london breakout',
+      'best time to trade gold',
+      'gold trading tips 2026',
+      'gold scalping strategy',
+      'XAUUSD session timing',
+      'gold risk management',
+      'trade gold funded account',
+      'gold trading India IST',
+    ],
+    date: '2026-07-02',
+    author: 'TPP Trading Desk',
+    readTime: '11 min read',
+    category: 'Strategy',
+    image: '/images/blog/gold-trading-strategies.png',
+    heroExcerpt:
+      'Gold is the most traded instrument among funded traders — and the most account-destroying when handled carelessly. This guide covers the XAUUSD strategies that actually survive prop firm rules: session-based breakouts, precise risk sizing, and the discipline gold demands.',
+    sections: [
+      {
+        heading: 'Why Gold Dominates Prop Firm Trading',
+        paragraphs: [
+          'Walk through any prop firm community and you will find one instrument dominating the conversation: gold. XAUUSD combines deep liquidity, generous daily ranges (often 200–400 pips), and highly respected technical levels — a combination that makes it the fastest route to a profit target for skilled traders.',
+          'But the same volatility that passes challenges also breaches them. Gold can move $10 in minutes on a headline, turning a comfortable position into a daily drawdown violation before your stop even fills. More funded accounts are lost on gold than any other instrument — not because gold is untradeable, but because traders size it like a forex pair.',
+          'The core adjustment: gold requires roughly half the position size you would use on EUR/USD for the same dollar risk. Get the sizing right, and gold becomes the most rewarding instrument on your watchlist. Get it wrong, and no strategy can save you.',
+        ],
+      },
+      {
+        heading: 'The London Breakout: Gold\'s Highest-Probability Setup',
+        paragraphs: [
+          'Gold\'s most reliable pattern is the London session breakout. During Asian hours, XAUUSD typically consolidates in a tight range of $5–$15. When London opens at 1:30 PM IST, institutional flow enters and gold breaks the range — often trending in that direction for hours.',
+          'The setup is mechanical: mark the Asian session high and low (roughly 5:30 AM – 1:00 PM IST), wait for London to break one side with a strong candle close, and enter on the retest of the broken level. Your stop goes on the other side of the retest structure; your target is 1.5–2x the Asian range projected from the breakout point.',
+          'The trap to avoid: the first breakout is sometimes a liquidity grab that reverses violently. Waiting for a candle close beyond the range — rather than entering on the initial spike — filters most fakeouts. Patience costs a few pips of entry; impatience costs the trade.',
+        ],
+        list: [
+          'Mark the Asian range: 5:30 AM – 1:00 PM IST high and low',
+          'Wait for a 15-minute candle CLOSE outside the range after London opens',
+          'Enter on the retest of the broken level, not the initial spike',
+          'Stop-loss beyond the opposite side of the retest structure',
+          'Target 1.5–2x the Asian range, or trail behind 15-minute swings',
+          'Skip the setup entirely on red-folder news days',
+        ],
+        tip: 'Backtest the London breakout on the last 60 trading days of XAUUSD before trading it live. Most traders find a 55–65% win rate with proper candle-close confirmation — enough for strong expectancy at 1.5R targets.',
+      },
+      {
+        heading: 'Session Timing: When Gold Moves (IST Guide)',
+        paragraphs: [
+          'Gold has a precise daily rhythm. The Asian session (5:30 AM – 1:00 PM IST) is typically quiet consolidation — good for marking levels, bad for breakout entries. London open (1:30 – 3:30 PM IST) delivers the first expansion. The New York overlap (6:30 – 10:30 PM IST) brings the largest moves, especially around US data releases at 6:00 PM IST.',
+          'US economic data is gold\'s primary fuel. CPI, NFP, and FOMC decisions routinely move gold $20–$40 within minutes, because gold prices are inversely sensitive to real yields and dollar strength. For prop traders, these are flat-or-tiny-size events — the spread widens, slippage explodes, and stops become suggestions rather than guarantees.',
+          'The practical schedule for an Indian gold trader: prepare levels in the morning, trade the London breakout window after lunch, and either trade the NY overlap in the evening or stand aside if major data is due. Two focused windows beat twelve hours of screen-watching every time.',
+        ],
+      },
+      {
+        heading: 'Risk Sizing for Gold: The Half-Size Rule',
+        paragraphs: [
+          'Here is the math that saves accounts. On a $100K account risking 1% ($1,000) with a 30-pip stop on EUR/USD, you trade roughly 3.3 lots. On gold, a "normal" stop is $3–$5 (300–500 points), and gold\'s per-point value means the equivalent risk requires dramatically smaller size — typically 0.2–0.35 lots for the same $1,000 risk.',
+          'Traders who carry forex sizing habits into gold are unknowingly risking 3–5% per trade. Two losses at that size and a daily drawdown limit is gone. Before every gold trade, calculate: (account risk in dollars) ÷ (stop distance in dollars per lot) = position size. Never approximate this on gold.',
+          'Also respect gold\'s spread behavior. XAUUSD spreads widen significantly during news, at session opens, and during the dead zone (3:30 – 5:30 AM IST). A scalping strategy that works with a $0.20 spread dies with a $0.80 spread — check the live spread before every entry, not just the chart.',
+        ],
+        tip: 'Write your gold position size formula on a sticky note: Risk $ ÷ (Stop in $ × 100) = lots. A $1,000 risk with a $4.00 stop = 2.5 mini lots (0.25 standard). Calculate it every single trade.',
+      },
+      {
+        heading: 'A Complete Gold Trading Plan for Funded Accounts',
+        paragraphs: [
+          'Putting it together, here is a complete framework used by consistently paid-out gold traders: trade only the London breakout and NY overlap continuation setups; risk 0.5–1% per trade with the half-size rule; maximum two gold trades per day; flat 15 minutes before US data; and a hard stop to the day after two consecutive losses.',
+          'Add a weekly review layer: log every gold trade with the session, setup type, spread at entry, and outcome. Within a month, your journal will reveal your personal edge — most traders discover they are strongly profitable in one window and consistently bleed in the other. Cut the bleeding window entirely.',
+          'Gold rewards specialists. At The People Prop, many of the largest payouts come from traders who trade XAUUSD exclusively — one instrument, two setups, executed with machine-like repetition on accounts up to $200K. Master this one market properly and you never need another.',
+        ],
+      },
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // BLOG 14 — Drawdown Explained
+  // ─────────────────────────────────────────────────────────────────────────────
+  {
+    slug: 'drawdown-explained-daily-vs-max-drawdown',
+    title: 'Drawdown Explained: Daily vs Max Drawdown Rules Every Funded Trader Must Know',
+    metaDescription:
+      'What is drawdown in prop trading? Learn the difference between daily drawdown, max drawdown, static and trailing limits — with examples and strategies to never breach them.',
+    metaKeywords: [
+      'what is drawdown in trading',
+      'daily drawdown explained',
+      'max drawdown prop firm',
+      'trailing drawdown vs static',
+      'prop firm drawdown rules',
+      'how to avoid drawdown breach',
+      'drawdown calculation example',
+      'funded account drawdown limit',
+      'equity vs balance drawdown',
+      'prop firm rules explained',
+      'drawdown management strategy',
+      'trading drawdown recovery',
+    ],
+    date: '2026-06-30',
+    author: 'TPP Trading Desk',
+    readTime: '9 min read',
+    category: 'Education',
+    image: '/images/blog/drawdown-explained.png',
+    heroExcerpt:
+      'Drawdown rules end more funded accounts than losing strategies do — usually because traders never fully understood how the limits are calculated. Here is a complete, example-driven breakdown of daily drawdown, max drawdown, and the habits that keep you permanently clear of both.',
+    sections: [
+      {
+        heading: 'What Drawdown Actually Means',
+        paragraphs: [
+          'Drawdown is the decline in your account from a reference point — but in prop trading, everything depends on which reference point and which account figure (balance or equity) the rule uses. Misunderstanding either detail is how disciplined traders breach limits they thought they were respecting.',
+          'Balance is your account value counting only closed trades. Equity is balance plus the floating profit or loss of open positions. Most prop firm drawdown rules are calculated on equity — meaning a trade that goes deeply negative before recovering can breach your limit even if it eventually closes green. The breach happens the moment equity touches the line, not at trade close.',
+          'This single fact should reshape how you trade: wide stops that "usually work out" are equity time-bombs under prop rules. Your real risk per trade is not where your stop is — it is the deepest floating loss your position might reach.',
+        ],
+      },
+      {
+        heading: 'Daily Drawdown: The Account Killer',
+        paragraphs: [
+          'The daily drawdown limit (typically 4–5%) is the rule that ends the most accounts. It defines the maximum you can lose in a single trading day, and it resets each day based on your starting balance or equity — whichever the firm specifies.',
+          'Worked example: on a $100,000 account with a 5% daily limit, you start Tuesday with a balance of $103,000 after a good run. Your daily floor for Tuesday is $103,000 − $5,150 = $97,850. If your equity touches $97,850 at any moment — including floating losses on open trades — the account is breached, regardless of your overall profit.',
+          'The critical habit: calculate your exact daily floor in dollars every morning before your first trade, and set a personal soft limit at roughly half of it. If you are down 2.5% on the day, stop trading. The gap between your personal stop and the firm\'s limit is your survival margin — the buffer that absorbs slippage, spread spikes, and one bad decision.',
+        ],
+        list: [
+          'Calculate your daily floor in exact dollars every morning',
+          'Set a personal soft stop at 50% of the daily limit',
+          'Remember: floating losses count — equity, not just closed trades',
+          'Size positions so 2 consecutive stop-outs stay under your soft limit',
+          'Never add to a loser — averaging down is the #1 daily breach cause',
+        ],
+        tip: 'Put your daily floor number on a sticky note on your monitor each morning. Traders who physically write this number breach daily limits at a fraction of the rate of those who "keep it in their head."',
+      },
+      {
+        heading: 'Max Drawdown: Static vs Trailing',
+        paragraphs: [
+          'The maximum (overall) drawdown limit — typically 8–12% — defines the lowest your account can ever go. The crucial distinction is whether it is static or trailing, because the two create completely different games.',
+          'A static max drawdown is fixed from your starting balance. On a $100K account with a 10% static limit, your floor is $90,000 forever. Every dollar of profit adds cushion — after growing to $110K, you have $20K of room. Static limits reward steady growth and make the account safer over time.',
+          'A trailing max drawdown moves up with your equity peaks. With a 6% trailing limit, growing to $110K moves your floor to $103,400 — your cushion stays at 6% no matter how well you trade (until it typically locks at your starting balance). Trailing limits punish give-back: making 8% then losing 7% breaches an account that never went below its starting balance. Know which type your account has before your first trade — the correct strategy for one is dangerous for the other.',
+        ],
+      },
+      {
+        heading: 'The Mathematics of Staying Safe',
+        paragraphs: [
+          'Drawdown safety is a sizing equation, not a willpower question. If your daily limit is 5% and you risk 1% per trade, you need five consecutive full losses in one day to breach — a virtual impossibility for anyone following a two-loss daily stop rule. Risk 2.5% per trade and just two ordinary losses end the account.',
+          'The same logic protects the max limit. At 1% risk, a 10% max drawdown absorbs a 10-trade losing streak — statistically rare even for mediocre strategies. At 3% risk, it absorbs three losses, which any trader hits in a normal month. The traders who never worry about drawdown are simply the ones whose sizing makes a breach mathematically remote.',
+          'Also account for correlation: three 1% positions on EUR/USD, GBP/USD, and gold longs are effectively one 3% dollar-direction bet. Correlated stop-outs arriving together are the hidden cause behind many "impossible" drawdown breaches. Group correlated trades and size the group as a single position.',
+        ],
+        tip: 'The 1% rule makes drawdown breaches nearly impossible: 5 full losses needed for a daily breach, 10 for a max breach. Discipline you systematize is discipline you keep under pressure.',
+      },
+      {
+        heading: 'Recovering From Drawdown Without Blowing Up',
+        paragraphs: [
+          'Every trader visits drawdown; professionals are defined by how they leave it. The instinct — increasing size to "make it back faster" — is precisely backwards, because it converts a routine drawdown into a terminal one. The professional protocol is the opposite: cut size in half until you are back to breakeven.',
+          'Half-size recovery works psychologically as much as mathematically. Smaller positions lower emotional temperature, restore process focus, and let winners rebuild confidence before capital. The recovery is slower on paper and dramatically faster in practice, because it prevents the revenge-trading spiral that turns a 4% drawdown into a breach.',
+          'At The People Prop, accounts come with clear, transparent drawdown rules published before you pay — daily and maximum limits you can build a sizing plan around from day one. Understand the limits, respect the equation, and drawdown becomes a managed variable rather than a lurking threat. That is the entire skill.',
+        ],
+      },
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // BLOG 15 — Smart Money Concepts
+  // ─────────────────────────────────────────────────────────────────────────────
+  {
+    slug: 'smart-money-concepts-explained',
+    title: 'Smart Money Concepts (SMC) Explained: A Practical Guide for Funded Traders',
+    metaDescription:
+      'Smart Money Concepts explained simply — order blocks, liquidity sweeps, fair value gaps, and market structure. A practical SMC guide for passing prop firm challenges in 2026.',
+    metaKeywords: [
+      'smart money concepts',
+      'SMC trading explained',
+      'order blocks trading',
+      'liquidity sweep strategy',
+      'fair value gap FVG',
+      'market structure trading',
+      'ICT trading concepts',
+      'SMC for prop firms',
+      'break of structure BOS',
+      'change of character CHoCH',
+      'institutional trading concepts',
+      'SMC strategy 2026',
+    ],
+    date: '2026-06-28',
+    author: 'TPP Trading Desk',
+    readTime: '12 min read',
+    category: 'Strategy',
+    image: '/images/blog/smart-money-concepts.png',
+    heroExcerpt:
+      'Smart Money Concepts has become the dominant framework among funded traders — but most explanations bury simple ideas under jargon. This guide strips SMC to its practical core: market structure, liquidity, order blocks, and fair value gaps, applied with prop-firm-grade risk control.',
+    sections: [
+      {
+        heading: 'What SMC Actually Claims (Minus the Mystique)',
+        paragraphs: [
+          'Smart Money Concepts is a framework built on one core observation: large institutions cannot enter positions the way retail traders do. Moving billions requires liquidity — resting orders to trade against — and the market\'s structure reveals where that liquidity sits and when it gets consumed.',
+          'Strip away the terminology and SMC makes three practical claims. First, price moves from liquidity pool to liquidity pool — clusters of stop-losses above highs and below lows act as magnets. Second, strong institutional moves leave footprints (order blocks, imbalances) that price frequently revisits. Third, trend changes follow a readable sequence in market structure rather than happening randomly.',
+          'You do not need to believe in a literal "smart money" puppet-master for the framework to be useful. The patterns describe real market mechanics — stop clusters exist, imbalances exist, structure exists — and they give you a repeatable way to frame entries, stops, and targets. That repeatability is what prop trading rewards.',
+        ],
+      },
+      {
+        heading: 'Market Structure: BOS and CHoCH',
+        paragraphs: [
+          'Everything in SMC starts with market structure. An uptrend is a series of higher highs and higher lows; a downtrend is the mirror image. Two events matter: a Break of Structure (BOS) — price breaking a recent high in an uptrend, confirming continuation — and a Change of Character (CHoCH) — price breaking the most recent higher low, providing the first evidence the trend may be reversing.',
+          'The practical discipline: only trade in the direction of the current structure until a CHoCH appears, and treat a CHoCH as a warning rather than an instant reversal signal. Most losing SMC traders lose by counter-trend guessing — calling reversals at every pullback instead of waiting for structure to actually shift.',
+          'Use two timeframes: define structure on the 1-hour or 4-hour chart, then execute entries on the 5- or 15-minute chart in that direction. This top-down alignment alone eliminates the majority of low-quality trades and fits neatly within prop firm daily trade limits.',
+        ],
+        list: [
+          'BOS (Break of Structure): trend continuation signal — trade with it',
+          'CHoCH (Change of Character): first reversal warning — reduce, don\'t flip',
+          'Define structure on H1/H4, execute on M5/M15',
+          'No counter-trend entries until structure confirms the shift',
+          'One clean structure story beats five conflicting timeframes',
+        ],
+      },
+      {
+        heading: 'Liquidity: Where Stops Live and Why Price Hunts Them',
+        paragraphs: [
+          'Liquidity is SMC\'s most valuable idea for prop traders. Equal highs, equal lows, session highs and lows, and obvious support/resistance levels all accumulate clusters of stop orders. Price is routinely drawn to these pools, consumes them in a fast sweep, and then reverses — the infamous "stop hunt" that fills institutional orders at favorable prices.',
+          'The practical application flips retail instinct on its head. Where a retail trader buys the breakout of equal highs, an SMC trader expects that breakout to be a liquidity grab and prepares for the reversal — entering after the sweep, with a stop just beyond the sweep\'s extreme, targeting the liquidity pool on the opposite side of the range.',
+          'This is also a defensive tool: stop placement. Never park your stop-loss at the obvious level with everyone else\'s — that cluster is the target. Place stops beyond the level where the sweep would invalidate your idea structurally, and size the position for that wider distance. Losing less to stop hunts is an immediate, measurable edge.',
+        ],
+        tip: 'Before every trade, ask: "Where is the nearest liquidity pool, and is my entry taking liquidity or providing it?" If your stop sits inside an obvious pool, widen it beyond the sweep zone and reduce size accordingly.',
+      },
+      {
+        heading: 'Order Blocks and Fair Value Gaps',
+        paragraphs: [
+          'An order block is the last opposing candle before a strong impulsive move — the final down-candle before a rally, or the final up-candle before a dump. The theory: institutions initiated positions in that zone, and unfilled orders remain there, making it a high-probability reaction area when price returns.',
+          'A Fair Value Gap (FVG) is a three-candle imbalance — a gap between candle one\'s high and candle three\'s low left by an explosive middle candle. Price shows a persistent tendency to return and "fill" these inefficiencies before continuing. FVGs inside order blocks, aligned with structure direction, form the classic SMC entry stack.',
+          'The full entry model reads like this: identify H1 structure direction → wait for a liquidity sweep against that direction → watch for a CHoCH on M5 confirming the sweep failed → enter at the M5 order block or FVG left by the confirming move → stop beyond the sweep, target the opposite liquidity pool. Every element is definable in advance, which is exactly what a journalable, prop-compliant strategy requires.',
+        ],
+      },
+      {
+        heading: 'Making SMC Work Under Prop Firm Rules',
+        paragraphs: [
+          'SMC\'s strength for funded traders is precision: entries at order blocks with stops beyond sweeps produce tight, structurally-defined risk — routinely 3R+ reward-to-risk trades. Two winners a week at 3R with 1% risk builds 6% monthly while barely touching drawdown limits. The math fits evaluation constraints beautifully.',
+          'Its danger is over-complication. SMC\'s vocabulary can metastasize into analysis paralysis — twenty concepts, every candle "meaning" something, no two trades alike. Cap your model: one structure timeframe, one entry timeframe, one setup (sweep → CHoCH → order block entry), traded only during London and New York sessions. Master a single repeatable sequence before adding anything.',
+          'Validate before you pay for an evaluation: 50 backtested setups minimum, then two weeks of demo execution. If the win rate and R-multiples hold, take it to a challenge. The People Prop\'s one-step and two-step evaluations — from $59, with up to 90% profit splits and bi-weekly payouts — are built for exactly this kind of systematic, structure-driven trading. Bring a defined edge, and the framework does the rest.',
+        ],
+        tip: 'Limit yourself to ONE SMC setup for 50 trades: liquidity sweep → CHoCH → order block entry. Traders who master one sequence outperform those juggling every concept in the vocabulary — measurably and permanently.',
+      },
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // BLOG 16 — How to Build a Trading Plan
+  // ─────────────────────────────────────────────────────────────────────────────
+  {
+    slug: 'how-to-build-a-trading-plan',
+    title: 'How to Build a Trading Plan: The Step-by-Step Blueprint Funded Traders Use',
+    metaDescription:
+      'Build a professional trading plan in 2026 — step-by-step. Define your edge, risk rules, sessions, and review process with the exact template funded prop traders use.',
+    metaKeywords: [
+      'how to build a trading plan',
+      'trading plan template',
+      'trading plan for prop firm',
+      'trading plan example',
+      'day trading plan steps',
+      'trading rules checklist',
+      'trading edge definition',
+      'trading journal setup',
+      'risk management plan trading',
+      'funded trader routine',
+      'trading business plan',
+      'trading plan 2026',
+    ],
+    date: '2026-06-26',
+    author: 'TPP Trading Desk',
+    readTime: '10 min read',
+    category: 'Education',
+    image: '/images/blog/trading-plan.png',
+    heroExcerpt:
+      'Ask any consistently funded trader for their secret and you will hear the same unglamorous answer: a written plan, followed daily. Here is the complete blueprint — edge definition, risk rules, session structure, and the review loop — with a template you can fill in today.',
+    sections: [
+      {
+        heading: 'Why a Written Plan Beats a Mental One',
+        paragraphs: [
+          'Every trader believes they have a plan. Most have a vague mental sketch that reshapes itself conveniently in the heat of a live trade — expanding to permit the impulsive entry, shrinking to excuse the skipped stop-loss. A plan that exists only in your head is negotiable, and markets are ruthless negotiators.',
+          'A written plan works because it separates decision-making from execution. Every meaningful choice — what to trade, when, how much to risk, when to stop — gets made in a calm state, before the session. During the session, you are no longer deciding; you are executing decisions already made. This is the single biggest psychological upgrade available to any trader.',
+          'For prop firm traders the stakes are higher: the drawdown rules that govern funded accounts punish improvisation within days. It is no coincidence that when firms study their consistently paid-out traders, a written, followed plan is the near-universal common denominator.',
+        ],
+      },
+      {
+        heading: 'Step 1–2: Define Your Edge and Your Market',
+        paragraphs: [
+          'Your plan starts with one sentence: "I trade [setup] on [instrument] during [session] because [reason it works]." If you cannot complete that sentence specifically, you do not yet have an edge — you have a hobby. An example of a real edge statement: "I trade Asian-range breakouts on XAUUSD during the first two hours of London, because institutional flow expands the range in a measurable, repeatable way."',
+          'Then narrow your market list brutally. One or two instruments, maximum three. Every instrument has its own personality — gold\'s violence, EUR/USD\'s grind, indices\' gap behavior — and depth of familiarity with one market beats shallow coverage of ten. Your journal will later prove this: almost every trader discovers their profits concentrate in one instrument while the others quietly bleed.',
+          'Finally, validate the edge with data before trusting it with money: a minimum of 50 backtested occurrences, recording win rate, average R-multiple, and maximum consecutive losses. These three numbers become the foundation for every risk decision in the next step.',
+        ],
+        list: [
+          'Write your one-sentence edge statement — specific setup, instrument, session, reason',
+          'Choose 1–3 instruments maximum and commit for at least a quarter',
+          'Backtest 50+ occurrences: win rate, average R, max losing streak',
+          'If you cannot define it, you cannot repeat it — and consistency IS the job',
+        ],
+      },
+      {
+        heading: 'Step 3–4: Risk Rules and Session Structure',
+        paragraphs: [
+          'Risk rules are the load-bearing wall of the plan. Fix them as numbers, not intentions: risk per trade (0.5–1% for funded accounts), maximum daily loss (half your firm\'s daily drawdown limit), maximum trades per day (2–3), and a two-consecutive-loss stop rule. Each number should be derived from your backtest — if your worst streak was six losses, your sizing must survive ten.',
+          'Then structure your time. Define your exact trading window and your pre-market routine. For Indian traders, a realistic professional structure: 30 minutes of preparation (mark levels, check the economic calendar, write the watchlist) before the London open at 1:30 PM IST or the New York overlap at 6:30 PM IST, trade only within the chosen window, then close the platform.',
+          'Include explicit no-trade conditions — these prevent more losses than any entry filter: no trading during red-folder news, no trading after the daily soft-stop is hit, no trading when sick or sleep-deprived, no trading outside the defined window. A plan that only says when to trade is half a plan; the professional half says when not to.',
+        ],
+        tip: 'Derive every risk number from your backtest, then halve it for your first month on a funded account. You can always scale up from safety; you cannot scale up from a breached account.',
+      },
+      {
+        heading: 'Step 5: The Review Loop That Compounds Skill',
+        paragraphs: [
+          'Execution generates data; review converts data into skill. Without the review loop, a trader repeats the same year of mistakes ten times and calls it experience. The loop has three layers: a per-trade journal entry (setup, size, outcome, emotional state, rule adherence — two minutes), a weekly review (30 minutes examining the week\'s trades against the plan), and a monthly audit (win rate, average R, and rule-violation count versus the backtest baseline).',
+          'The single most valuable journal field is rule adherence — a simple A-to-F grade per day. Profitability follows adherence with astonishing reliability: traders grading A-average months are almost always profitable, while violation-heavy months lose money even when the market "should" have suited the strategy. Grade the process and the profits take care of themselves.',
+          'The monthly audit also answers the scaling question objectively. Three consecutive months of positive results with A-grade adherence is the evidence-based green light to increase size or pursue a larger allocation — not a good week, not a feeling. Let the data promote you.',
+        ],
+      },
+      {
+        heading: 'The One-Page Template (Fill This In Today)',
+        paragraphs: [
+          'Condense everything onto a single page you can read in 60 seconds before every session. The template: EDGE — one-sentence statement. MARKETS — your 1–3 instruments. SESSION — exact window in IST. SETUP — entry conditions, checklist form. RISK — % per trade, daily stop, max trades, loss-streak rule. NO-TRADE — your explicit skip conditions. REVIEW — journal, weekly, monthly commitments.',
+          'Print it. A plan living in a forgotten Notion page is decoration; a plan taped beside your monitor is infrastructure. Several of the most consistent funded traders read their plan aloud before the session — a 30-second ritual that measurably reduces impulsive deviation by making the rules cognitively fresh.',
+          'A complete plan on one page, followed for 90 days, will do more for your trading than any indicator, course, or signal group ever will. And when it does, The People Prop\'s evaluations — from $59, up to $200K in funding, bi-weekly payouts at up to 90% split — are exactly where a written plan converts into a funded career. The plan is the product; the payout is the receipt.',
+        ],
+        tip: 'Schedule your weekly review as a recurring 30-minute calendar event every Sunday. Traders who calendar the review actually do it; traders who intend to review, don\'t.',
+      },
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // BLOG 17 — Scalping vs Swing Trading
+  // ─────────────────────────────────────────────────────────────────────────────
+  {
+    slug: 'scalping-vs-swing-trading-prop-firm',
+    title: 'Scalping vs Swing Trading: Which Style Passes Prop Firm Challenges Faster?',
+    metaDescription:
+      'Scalping vs swing trading for prop firm challenges — compare win rates, drawdown risk, time commitment, and rule compatibility to pick the right style in 2026.',
+    metaKeywords: [
+      'scalping vs swing trading',
+      'best trading style prop firm',
+      'scalping prop firm challenge',
+      'swing trading funded account',
+      'day trading vs swing trading',
+      'which trading style is best',
+      'scalping strategy prop firm rules',
+      'swing trading overnight rules',
+      'trading styles compared',
+      'intraday vs swing trading',
+      'prop firm trading style 2026',
+      'best strategy to pass challenge',
+    ],
+    date: '2026-06-25',
+    author: 'TPP Trading Desk',
+    readTime: '10 min read',
+    category: 'Comparison',
+    image: '/images/blog/scalping-vs-swing.png',
+    heroExcerpt:
+      'Scalpers grind dozens of small wins; swing traders wait days for a few big ones. Both styles pass prop firm challenges — but they interact with drawdown rules, time limits, and your psychology in completely different ways. Here is the honest comparison.',
+    sections: [
+      {
+        heading: 'The Two Styles, Defined Honestly',
+        paragraphs: [
+          'Scalping means holding trades for seconds to minutes, targeting 5–15 pips per trade across many trades per session. It demands fast execution, tight spreads, intense focus, and a strategy with a genuinely high win rate — because small targets leave no room for slippage and spread costs to erode the edge.',
+          'Swing trading means holding positions for hours to days, targeting 100–300+ pips per trade from a handful of monthly setups. It demands patience, wider stops, comfort with overnight exposure, and the psychological ability to watch open profit fluctuate without interfering.',
+          'Between them sits intraday trading — the 30-minute-to-several-hours hold that captures a single session\'s move. Worth naming because, as we will see, it is where most successful prop firm traders actually end up, borrowing the best properties of both extremes.',
+        ],
+      },
+      {
+        heading: 'How Each Style Interacts With Prop Firm Rules',
+        paragraphs: [
+          'Prop firm rules are not style-neutral, and this is where the comparison gets practical. Scalping\'s friction points: some firms restrict trades held under 30 seconds or ban tick-scalping outright; spread widening at news and session opens hits small targets disproportionately; and high trade frequency multiplies exposure to commission costs and execution slippage. Check the firm\'s minimum hold time rules before ever scalping an evaluation.',
+          'Swing trading\'s friction points are different: overnight and weekend holding rules (some accounts restrict them, and gaps through stops are real), and — critically — the daily drawdown limit. A swing trade with a 150-pip stop must still be sized so its full floating loss fits within the daily limit, which forces smaller size than the setup might "deserve." Equity-based drawdown counts your open loss in real time.',
+          'At The People Prop, both styles are permitted — no minimum hold times, news trading allowed on funded accounts, and overnight holding supported — which is precisely why choosing between styles becomes a question of your edge and psychology rather than rule navigation.',
+        ],
+        list: [
+          'Scalping: check minimum hold-time rules, spread behavior, commission drag',
+          'Swing: check overnight/weekend rules, size for full stop within daily drawdown',
+          'Both: correlated positions count as one big trade — size accordingly',
+          'Evaluation time limits favor styles that generate enough trades to hit targets',
+        ],
+      },
+      {
+        heading: 'The Math: Win Rate, R-Multiples, and Time to Target',
+        paragraphs: [
+          'Run the numbers on a 10% profit target. A scalper risking 0.5% per trade at a 1:1 reward with a 65% win rate nets roughly 0.15% per trade — needing about 65–70 trades, or 3–4 weeks at 4 trades per day. A swing trader risking 1% at 3R with a 45% win rate nets roughly 0.8% per trade — needing about 12–13 trades, which at 3 setups per week is also 4 weeks. Different paths, similar destinations.',
+          'The difference is in the failure modes. The scalper\'s risk is death by a thousand cuts: costs, slippage, and one undisciplined session of overtrading can erase a week. The swing trader\'s risk is concentration: each trade matters enormously, a two-trade losing streak stings 2%+, and there are fewer opportunities to recover within an evaluation window.',
+          'Variance also behaves differently. High trade frequency smooths the equity curve (good for consistency rules) but amplifies the impact of any cost or execution disadvantage. Low frequency produces lumpy equity — flat weeks punctuated by jumps — which tests patience but keeps costs negligible. Neither is free; you are choosing which bill to pay.',
+        ],
+      },
+      {
+        heading: 'The Psychological Fit Test',
+        paragraphs: [
+          'Style-strategy mismatch is a silent account killer, and it is usually a personality mismatch. Scalping suits traders who thrive under rapid decision pressure, can accept being wrong instantly and often, and can walk away after a defined session without "one more trade." If losses trigger revenge impulses in you, scalping hands you thirty opportunities per day to act on them.',
+          'Swing trading suits traders who can do nothing for days without manufacturing trades from boredom, hold winners through pullbacks without panic-closing, and sleep with open positions. If watching an open trade retrace 40% of its profit makes you close early every time, your 3R setups will keep becoming 0.8R realities — destroying the math the style depends on.',
+          'The honest self-test: review your last 30 trades. If your losers were held too long and winners cut short, you are trading swing setups with scalper nerves. If your costs and overtrading days dominate the losses, you are scalping with insufficient structure. Your journal already knows your style; read it.',
+        ],
+        tip: 'Take your last 30 trades and compute average hold time for winners vs losers. Winners held shorter than losers is the classic signature of a style-psychology mismatch — and it is fixable by switching timeframes, not strategies.',
+      },
+      {
+        heading: 'The Verdict: Start Intraday, Then Specialize',
+        paragraphs: [
+          'For most traders attempting prop challenges, the evidence points to a middle path: intraday session trading — 1 to 3 trades per day, held 30 minutes to a few hours, capturing London or New York session moves with 1.5–3R targets. It generates enough frequency to hit targets within evaluation windows, avoids overnight gap risk, keeps costs manageable, and matches the 2–3 trades-per-day discipline that protects drawdown limits.',
+          'From that base, let your journal push you toward specialization. Traders whose intraday winners cluster in the first hour of London often evolve into structured scalpers of that single window. Traders whose best trades were the ones they held longest often graduate into swing trading once funded, when time pressure disappears and patience becomes affordable.',
+          'Whichever direction you specialize, the rule is the same: one style, mastered, beats two styles sampled. The People Prop supports scalpers, intraday traders, and swing traders alike — one-step and two-step evaluations from $59, up to $200K funding, bi-weekly payouts at up to 90% split. Pick the style that fits your psychology, prove it in your journal, and bring it to a challenge built to fund it.',
+        ],
+      },
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // BLOG 18 — How to Trade News Events
+  // ─────────────────────────────────────────────────────────────────────────────
+  {
+    slug: 'how-to-trade-news-events-nfp-cpi-fomc',
+    title: 'How to Trade News Events: NFP, CPI, and FOMC Survival Guide for Funded Traders',
+    metaDescription:
+      'Learn how to trade (and survive) NFP, CPI, and FOMC news events in 2026 — IST timings, volatility patterns, prop firm news rules, and safe strategies for funded accounts.',
+    metaKeywords: [
+      'how to trade news events',
+      'NFP trading strategy',
+      'CPI trading forex',
+      'FOMC trading strategy',
+      'news trading prop firm',
+      'red folder news forex',
+      'economic calendar trading',
+      'high impact news events',
+      'news trading rules funded account',
+      'NFP time IST',
+      'trading during news volatility',
+      'news spike trading 2026',
+    ],
+    date: '2026-06-23',
+    author: 'TPP Trading Desk',
+    readTime: '10 min read',
+    category: 'Strategy',
+    image: '/images/blog/news-trading-guide.png',
+    heroExcerpt:
+      'NFP, CPI, and FOMC are the three events that move markets hardest — and end funded accounts fastest. This guide covers exactly what each release does, when it hits in IST, what prop firm rules say, and the strategies that let you profit from news without being its victim.',
+    sections: [
+      {
+        heading: 'The Big Three: What Moves and When (IST Timings)',
+        paragraphs: [
+          'Three US releases dominate the forex volatility calendar. Non-Farm Payrolls (NFP) — the monthly US jobs report — lands the first Friday of each month at 7:00 PM IST (6:00 PM during US daylight saving). The Consumer Price Index (CPI) — the inflation print that steers Federal Reserve policy — arrives mid-month at the same evening hour. FOMC rate decisions come eight times per year at 12:30 AM IST, followed by a press conference that often moves markets more than the decision itself.',
+          'Typical impact: EUR/USD and GBP/USD can move 50–100 pips within minutes; gold routinely swings $20–$40; indices gap violently in both directions. The first move is frequently a fake — an initial spike that reverses completely once algorithms finish repricing and human interpretation takes over, often within 15–30 minutes.',
+          'Beyond the big three, watch red-folder events on any economic calendar: central bank speeches (especially the Fed chair), PMI releases, and employment data from the UK and Eurozone for their respective pairs. Five minutes of morning calendar-checking prevents the majority of "the market suddenly went crazy" losses.',
+        ],
+      },
+      {
+        heading: 'Why News Kills Funded Accounts',
+        paragraphs: [
+          'News events attack funded accounts through mechanics, not just direction. Spreads widen 5–10x in the seconds around a release — a 1-pip EUR/USD spread becoming 10–15 pips — which alone can trigger stops that price never actually traded through. Slippage compounds it: stop-losses fill wherever liquidity exists, sometimes 20+ pips beyond the requested level.',
+          'That combination breaks the risk math that protects drawdown limits. A trade carefully sized to risk 1% can realize a 2–3% loss through gap-and-slippage, and two such events in a day breach a 5% daily limit that "correct" position sizing should have made untouchable. The trader followed their rules; the market conditions invalidated the rules\' assumptions.',
+          'This is why many firms restrict news trading during evaluations — commonly a no-new-positions window from 2–5 minutes before to 2–5 minutes after red-folder releases. Know your firm\'s exact policy before challenge day. At The People Prop, news trading is unrestricted on funded accounts, but the physics of spreads and slippage still apply — permission is not protection.',
+        ],
+        list: [
+          'Spreads widen 5–10x around releases — stops trigger without price trading there',
+          'Slippage: stop orders fill 10–20+ pips beyond requested levels in fast markets',
+          'A 1%-sized trade can realize 2–3% loss through gap mechanics',
+          'Check your firm\'s news window rules — violation can void a passed challenge',
+          'Mark every red-folder event on your chart BEFORE the session starts',
+        ],
+      },
+      {
+        heading: 'Strategy 1: The Flat-and-Wait (What Most Funded Traders Do)',
+        paragraphs: [
+          'The highest-expectancy news strategy for most traders is not trading the news at all — it is being systematically flat before it. The protocol: check the calendar every morning, close or reduce all positions 15 minutes before red-folder releases, and wait for the post-news structure to form before re-engaging.',
+          'The re-entry is where the actual edge lives. After the initial spike and its frequent reversal, the market picks a genuine direction within 15–45 minutes — and that move tends to be cleaner and better-structured than the spike itself. Wait for a 15-minute candle close after the release, identify which side of the pre-news range survived, and trade the continuation with normal size and normal rules.',
+          'This approach converts news from a threat into a scheduler: it tells you when volatility will arrive so you can be positioned to exploit its aftermath rather than gamble on its direction. Most consistently paid-out traders treat every NFP and CPI this way for their entire careers.',
+        ],
+        tip: 'Set a recurring phone alarm 20 minutes before every red-folder event on your instruments. The two minutes it takes to flatten positions is the cheapest insurance in trading.',
+      },
+      {
+        heading: 'Strategy 2: Trading the Aftermath (For the Experienced)',
+        paragraphs: [
+          'For experienced traders who want to trade news actively, the post-spike fade and the post-spike continuation are the two professional patterns. The fade: when the initial spike immediately stalls at a major higher-timeframe level and reverses hard within the first five minutes, the move was a liquidity grab — enter the reversal with a stop beyond the spike extreme, targeting the pre-news price. High reward, demands fast, calm execution.',
+          'The continuation: when the release genuinely surprises (a big miss or beat versus forecast) and price breaks cleanly through the pre-news range with sustained momentum, the move often runs for hours. Enter on the first pullback to the broken range edge after a 15-minute close confirms, with a stop inside the old range. This is the trade that captures the 100-pip post-CPI trends.',
+          'Non-negotiable rules for either pattern: half your normal size (spreads and slippage still elevated), never straddle the release itself with pending orders (both sides can fill and slip), and a strict one-attempt limit — if the first post-news trade loses, the event is over for you. News aftermath rewards precision and punishes persistence.',
+        ],
+      },
+      {
+        heading: 'Your News Trading Playbook',
+        paragraphs: [
+          'Assemble the pieces into a permanent routine. Morning: check the economic calendar and mark red-folder times on your charts in IST. Fifteen minutes before each event: flatten or reduce to token size. During the release: hands off — watch, never chase the spike. Fifteen to forty-five minutes after: evaluate the structure and trade the aftermath pattern if (and only if) it presents cleanly.',
+          'Journal news days separately from normal days. Within a quarter you will have hard data on whether news aftermath trading adds to your bottom line or subtracts from it — and either answer is profitable knowledge. Traders who discover they lose on news days simply extend the flat window and keep their edge where it lives.',
+          'News events are the market\'s scheduled earthquakes: destructive to the unprepared, energizing to the ready. The People Prop gives funded traders full freedom on news — no restrictions, bi-weekly payouts, up to 90% splits on accounts up to $200K — because we fund traders who treat volatility as a professional tool. Build the playbook, respect the mechanics, and NFP Friday becomes just another line in your journal.',
+        ],
+        tip: 'Keep a separate journal tag for news-day trades. After 3 months, compare expectancy: news-aftermath trades vs normal trades. Let the data — not the adrenaline — decide whether you trade news at all.',
       },
     ],
   },
