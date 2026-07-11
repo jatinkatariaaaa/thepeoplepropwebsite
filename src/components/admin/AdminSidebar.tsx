@@ -31,11 +31,11 @@ import {
   Landmark,
   ShieldAlert,
   Bell,
+  Sparkles,
   type LucideIcon,
 } from "lucide-react";
 import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
-import { NavbarLogo } from "@/components/ui/resizable-navbar";
 import type { AdminRole } from "@/lib/admin-context";
 
 /* ------------------------------------------------------------------ */
@@ -192,11 +192,19 @@ export function AdminSidebar({ role = "super_admin" }: AdminSidebarProps) {
   return (
     <>
       {/* Mobile Toggle */}
-      <div className="lg:hidden fixed top-0 left-0 w-full h-16 bg-white/80 backdrop-blur-md z-40 border-b border-[var(--border)] flex items-center justify-between px-4">
-        <NavbarLogo />
+      <div className="lg:hidden fixed top-0 left-0 w-full h-16 bg-[#0c0c0c] z-40 flex items-center justify-between px-4">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#cbfb45]">
+            <Sparkles className="h-4 w-4 text-[#0c0c0c]" />
+          </div>
+          <span className="text-[15px] font-bold text-white tracking-tight">
+            Admin
+          </span>
+        </div>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="p-2 text-[var(--ink-700)] hover:text-[var(--ink-950)]"
+          aria-label={isOpen ? "Close menu" : "Open menu"}
+          className="p-2 text-white/70 hover:text-white"
         >
           {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
@@ -205,45 +213,59 @@ export function AdminSidebar({ role = "super_admin" }: AdminSidebarProps) {
       {/* Overlay for mobile */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 lg:hidden"
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 lg:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
 
-      {/* Sidebar Content */}
+      {/* Sidebar Content — dark floating panel */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-[260px] bg-[var(--paper)] border-r border-[var(--border)] transform transition-transform duration-300 ease-in-out lg:translate-x-0 flex flex-col",
+          "fixed z-50 flex flex-col bg-[#0c0c0c] transform transition-transform duration-300 ease-in-out",
+          "inset-y-0 left-0 w-[260px] lg:inset-y-3 lg:left-3 lg:w-[248px] lg:rounded-[28px] lg:translate-x-0",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         {/* Logo Section */}
-        <div className="pt-8 pb-4 flex flex-col items-start px-6 border-b border-[var(--border)]">
-          <NavbarLogo />
+        <div className="px-5 pt-7 pb-5">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#cbfb45]">
+              <Sparkles className="h-5 w-5 text-[#0c0c0c]" />
+            </div>
+            <div className="min-w-0">
+              <p className="truncate text-[15px] font-bold text-white tracking-tight leading-tight">
+                The People Prop
+              </p>
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-white/40">
+                Admin Panel
+              </p>
+            </div>
+          </div>
+
           <Link
             href="/dashboard"
-            className="mt-4 flex items-center gap-1.5 text-[12px] font-bold text-[var(--ink-500)] hover:text-[var(--accent)] transition-colors uppercase tracking-wider bg-[var(--paper-2)] px-3 py-1.5 rounded-full border border-[var(--border)]"
+            className="mt-4 flex w-fit items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-white/60 transition-colors hover:bg-[#cbfb45] hover:text-[#0c0c0c] hover:border-transparent"
           >
             User Dashboard <ArrowUpRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-4 py-4 overflow-y-auto">
+        <nav className="flex-1 px-3 pb-5 overflow-y-auto [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.15)_transparent]">
           {visibleSections.map((section, sIdx) => (
             <div key={section.title}>
               {/* Section header */}
               <p
                 className={cn(
-                  "text-[11px] font-semibold uppercase tracking-wider text-[var(--ink-400)] px-3 mb-2",
-                  sIdx === 0 ? "mt-2" : "mt-6"
+                  "text-[10px] font-bold uppercase tracking-[0.14em] text-white/30 px-3 mb-1.5",
+                  sIdx === 0 ? "mt-1" : "mt-5"
                 )}
               >
                 {section.title}
               </p>
 
               {/* Section items */}
-              <div className="space-y-1">
+              <div className="space-y-0.5">
                 {section.items.map((item) => {
                   const Icon = item.icon;
                   const isActive =
@@ -256,12 +278,12 @@ export function AdminSidebar({ role = "super_admin" }: AdminSidebarProps) {
                       key={item.href}
                       href={item.href}
                       onClick={() => setIsOpen(false)}
-                      className="relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group outline-none"
+                      className="relative flex items-center gap-3 px-3 py-2 rounded-xl transition-all group outline-none"
                     >
                       {isActive && (
                         <motion.div
                           layoutId="admin-sidebar-active"
-                          className="absolute inset-0 bg-[var(--ink-950)] rounded-xl"
+                          className="absolute inset-0 bg-[#cbfb45] rounded-xl"
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
@@ -270,18 +292,18 @@ export function AdminSidebar({ role = "super_admin" }: AdminSidebarProps) {
 
                       <Icon
                         className={cn(
-                          "w-[18px] h-[18px] relative z-10 transition-colors",
+                          "w-[17px] h-[17px] relative z-10 transition-colors",
                           isActive
-                            ? "text-white"
-                            : "text-[var(--ink-500)] group-hover:text-[var(--ink-950)]"
+                            ? "text-[#0c0c0c]"
+                            : "text-white/40 group-hover:text-white"
                         )}
                       />
                       <span
                         className={cn(
-                          "text-[14px] font-semibold relative z-10 transition-colors",
+                          "text-[13.5px] font-semibold relative z-10 transition-colors",
                           isActive
-                            ? "text-white"
-                            : "text-[var(--ink-600)] group-hover:text-[var(--ink-950)]"
+                            ? "text-[#0c0c0c]"
+                            : "text-white/60 group-hover:text-white"
                         )}
                       >
                         {item.label}

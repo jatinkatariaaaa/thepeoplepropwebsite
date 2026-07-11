@@ -1,5 +1,5 @@
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
-import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import { AdminHeader } from "@/components/admin/AdminHeader";
 import { redirect } from "next/navigation";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
@@ -61,12 +61,12 @@ export default async function AdminLayout({
   const role: AdminRole = (adminRole?.role as AdminRole) ?? "super_admin";
 
   return (
-    <div className="min-h-screen bg-[var(--paper-2)]">
+    <div className="min-h-screen bg-[#e8e8e6]">
       <AdminRoleProvider role={role}>
         <AdminSidebar role={role} />
-        <div className="lg:pl-[260px] flex flex-col min-h-screen">
-          <DashboardHeader />
-          <main className="flex-1 p-4 sm:p-6 lg:p-10 pt-20 lg:pt-10">
+        <div className="lg:pl-[272px] flex flex-col min-h-screen">
+          <AdminHeader />
+          <main className="flex-1 p-4 sm:p-6 lg:px-8 lg:py-6">
             {children}
           </main>
         </div>
