@@ -57,24 +57,16 @@ type Range = "week" | "month";
 function PillStat({
   label,
   value,
-  progress,
 }: {
   label: string;
   value: string;
-  progress: number; // 0–100
 }) {
   return (
-    <div className="rounded-2xl bg-[#f4f4f2] px-5 py-4">
+    <div className="flex flex-col justify-center rounded-2xl bg-[#f4f4f2] px-5 py-5">
       <p className="text-[12px] font-semibold text-[var(--ink-400)]">{label}</p>
-      <p className="mt-0.5 text-xl font-bold tracking-tight text-[var(--ink-950)]">
+      <p className="mt-1 text-xl font-bold tracking-tight text-[var(--ink-950)]">
         {value}
       </p>
-      <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-[var(--ink-200)]">
-        <div
-          className="h-full rounded-full bg-[#0c0c0c]"
-          style={{ width: `${Math.min(Math.max(progress, 4), 100)}%` }}
-        />
-      </div>
     </div>
   );
 }
@@ -235,21 +227,11 @@ export default function AdminDashboardClient() {
             <PillStat
               label="Revenue"
               value={`$${rangeRevenue.toLocaleString()}`}
-              progress={
-                stats?.totalRevenue
-                  ? (rangeRevenue / stats.totalRevenue) * 100
-                  : 0
-              }
             />
-            <PillStat
-              label="Orders"
-              value={rangeOrders.toLocaleString()}
-              progress={rangeOrders > 0 ? 65 : 0}
-            />
+            <PillStat label="Orders" value={rangeOrders.toLocaleString()} />
             <PillStat
               label="Total Users"
               value={(stats?.totalUsers || 0).toLocaleString()}
-              progress={stats?.totalUsers ? 80 : 0}
             />
           </div>
 

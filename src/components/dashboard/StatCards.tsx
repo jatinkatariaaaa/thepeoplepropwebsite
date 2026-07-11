@@ -8,19 +8,17 @@ type AccountStatus = {
 function PillStat({
   label,
   value,
-  progress,
   icon: Icon,
   highlight = false,
 }: {
   label: string;
   value: string;
-  progress: number; // 0–100
   icon: LucideIcon;
   highlight?: boolean;
 }) {
   return (
     <div
-      className={`rounded-2xl px-5 py-4 ${
+      className={`flex flex-col justify-center rounded-2xl px-5 py-5 ${
         highlight ? "bg-[#cbfb45]" : "bg-[#f4f4f2]"
       }`}
     >
@@ -38,19 +36,9 @@ function PillStat({
           }`}
         />
       </div>
-      <p className="mt-0.5 text-xl font-bold tracking-tight text-[var(--ink-950)] break-words">
+      <p className="mt-1 text-xl font-bold tracking-tight text-[var(--ink-950)] break-words">
         {value}
       </p>
-      <div
-        className={`mt-3 h-1.5 w-full overflow-hidden rounded-full ${
-          highlight ? "bg-[#0c0c0c]/15" : "bg-[var(--ink-200)]"
-        }`}
-      >
-        <div
-          className="h-full rounded-full bg-[#0c0c0c]"
-          style={{ width: `${Math.min(Math.max(progress, 4), 100)}%` }}
-        />
-      </div>
     </div>
   );
 }
@@ -76,26 +64,22 @@ export function StatCards({
       <PillStat
         label="Total Payouts"
         value={formattedPayouts}
-        progress={totalPayouts > 0 ? 70 : 0}
         icon={DollarSign}
         highlight
       />
       <PillStat
         label="Number of Accounts"
         value={activeCount.toString()}
-        progress={activeCount > 0 ? Math.min(activeCount * 20, 100) : 0}
         icon={LayoutList}
       />
       <PillStat
         label="Accounts Passed"
         value={passedCount.toString()}
-        progress={activeCount > 0 ? (passedCount / activeCount) * 100 : 0}
         icon={CheckCircle2}
       />
       <PillStat
         label="Funded Accounts"
         value={fundedCount.toString()}
-        progress={activeCount > 0 ? (fundedCount / activeCount) * 100 : 0}
         icon={Award}
       />
     </div>
