@@ -61,7 +61,7 @@ export function Footer() {
             <div className="flex flex-col gap-4">
               <h4 className="mb-2 text-[14px] font-bold uppercase tracking-widest opacity-50">Resources</h4>
               <Link href="/rules" className="text-[15px] font-medium transition-opacity hover:opacity-60">Trading Rules</Link>
-              <Link href="/faq" className="text-[15px] font-medium transition-opacity hover:opacity-60">FAQ</Link>
+              <Link href="/faqs" className="text-[15px] font-medium transition-opacity hover:opacity-60">FAQ</Link>
 
               <Link href="/blog" className="text-[15px] font-medium transition-opacity hover:opacity-60">Blog</Link>
             </div>
