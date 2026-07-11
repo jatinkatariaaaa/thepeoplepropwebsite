@@ -885,58 +885,63 @@ export default function HomePage() {
       {/* ═══════════════ SECTION 4 — CALCULATOR ═══════════════ */}
       <ChallengeCalculator />
 
-      {/* ═══════════════ SECTION 4.5 — GET THE APP ═══════════════ */}
+      {/* ═══════════════ SECTION 4.5 — DASHBOARD ANYWHERE ═══════════════ */}
       <section className="w-full py-16 lg:py-24">
         <div className="mx-auto grid w-full max-w-[1200px] items-center gap-12 px-6 lg:grid-cols-2 lg:gap-8 lg:px-8">
-          {/* Left: headline + store badges */}
+          {/* Left: headline + CTAs */}
           <div className="order-2 text-center lg:order-1 lg:text-left">
             <Reveal>
+              <span className="mb-4 inline-block rounded-full border border-[#0c0c0c]/10 bg-[#0c0c0c]/[0.03] px-4 py-1.5 font-sans text-[11px] font-bold uppercase tracking-[0.15em] text-[#0c0c0c]/50">
+                Your command center
+              </span>
+            </Reveal>
+            <Reveal delay={0.05}>
               <GsapWords
-                text="Be great and get the app"
-                highlight={["app"]}
+                text="Every payout. Every account. One dashboard."
+                highlight={["dashboard."]}
                 className="font-black uppercase leading-[0.95] tracking-[-0.03em] text-[#0c0c0c]"
-                style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)" }}
+                style={{ fontSize: "clamp(2.25rem, 5.5vw, 4rem)" }}
               />
             </Reveal>
             <Reveal delay={0.1}>
               <p className="mx-auto mt-6 max-w-md text-base leading-relaxed text-[#0c0c0c]/60 lg:mx-0 lg:text-lg">
-                Track your challenge, watch payouts clear, and manage every
-                account from your pocket. Real-time alerts the moment you get
-                paid.
+                No downloads, no installs. The TPP dashboard runs in your
+                browser on any device — track live drawdown, watch equity move
+                in real time, and request payouts from wherever you trade.
               </p>
+            </Reveal>
+            <Reveal delay={0.15}>
+              <ul className="mx-auto mt-6 flex max-w-md flex-col gap-2.5 text-left lg:mx-0">
+                {[
+                  "Live equity, drawdown and target tracking",
+                  "One-tap payout requests, cleared in under 24h",
+                  "Instant alerts when you scale or get paid",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-3">
+                    <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#cbfb45]">
+                      <svg viewBox="0 0 12 12" className="h-2.5 w-2.5" aria-hidden="true">
+                        <path d="M2.5 6.5 5 9l4.5-6" fill="none" stroke="#0c0c0c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </span>
+                    <span className="text-[15px] leading-relaxed text-[#0c0c0c]/70">{item}</span>
+                  </li>
+                ))}
+              </ul>
             </Reveal>
             <Reveal delay={0.2}>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-4 lg:justify-start">
-                <a
-                  href="#"
-                  aria-label="Get it on Google Play"
-                  className="group flex items-center gap-3 rounded-xl border border-[#0c0c0c]/10 bg-[#0c0c0c] px-5 py-3 transition-transform duration-200 hover:-translate-y-0.5"
+                <Link
+                  href="/dashboard"
+                  className="rounded-full bg-[#0c0c0c] px-8 py-4 font-sans text-[15px] font-bold text-white transition-transform duration-200 hover:-translate-y-0.5"
                 >
-                  <svg viewBox="0 0 24 24" className="h-7 w-7 shrink-0" aria-hidden="true">
-                    <path fill="#00E3A4" d="M3.6 1.9 13.7 12 3.6 22.1c-.4-.2-.6-.7-.6-1.2V3.1c0-.5.2-1 .6-1.2Z" />
-                    <path fill="#cbfb45" d="m17.4 8.3-3.7 3.7L3.6 1.9c.2-.1.5-.2.7-.2.3 0 .5.1.8.2l12.3 6.4Z" />
-                    <path fill="#FFD400" d="m21.2 10.3-3.8 2-4-.3 4-3.7 3.8 2Z" opacity="0" />
-                    <path fill="#FFC107" d="M17.4 8.3 21 10.2c.5.3.8.8.8 1.3s-.3 1-.8 1.3l-3.6 1.9-4-2.7 4-3.7Z" />
-                    <path fill="#F44336" d="m17.4 15.7-12.3 6.4c-.3.1-.5.2-.8.2-.2 0-.5-.1-.7-.2L13.7 12l3.7 3.7Z" />
-                  </svg>
-                  <span className="text-left leading-tight">
-                    <span className="block text-[10px] font-medium uppercase tracking-wide text-white/60">Get it on</span>
-                    <span className="block text-lg font-bold text-white">Google Play</span>
-                  </span>
-                </a>
-                <a
-                  href="#"
-                  aria-label="Download on the App Store"
-                  className="group flex items-center gap-3 rounded-xl border border-[#0c0c0c]/10 bg-[#0c0c0c] px-5 py-3 transition-transform duration-200 hover:-translate-y-0.5"
+                  Open Dashboard
+                </Link>
+                <Link
+                  href="/challenges"
+                  className="rounded-full border-2 border-[#0c0c0c]/15 px-8 py-4 font-sans text-[15px] font-bold text-[#0c0c0c] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#0c0c0c]/40"
                 >
-                  <svg viewBox="0 0 24 24" className="h-7 w-7 shrink-0 fill-white" aria-hidden="true">
-                    <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8.94-.19 1.84-.74 2.84-.87 1.2-.16 2.35.24 3.15 1.02-2.62 1.57-2.2 5.02.28 6.02-.55 1.44-1.26 2.87-2.35 4Zm-5.03-13.1C11.85 5.17 13.5 3.5 15.36 3.5c.25 2.13-1.94 4.3-3.34 3.68Z" />
-                  </svg>
-                  <span className="text-left leading-tight">
-                    <span className="block text-[10px] font-medium uppercase tracking-wide text-white/60">Download on the</span>
-                    <span className="block text-lg font-bold text-white">App Store</span>
-                  </span>
-                </a>
+                  Start a Challenge
+                </Link>
               </div>
             </Reveal>
           </div>
@@ -953,7 +958,7 @@ export default function HomePage() {
                 <div className="absolute left-1/2 top-2.5 z-10 h-[26px] w-[92px] -translate-x-1/2 rounded-full bg-[#0c0c0c]" aria-hidden="true" />
                 <img
                   src="/images/app-screen.png"
-                  alt="The People Prop mobile app showing account balance, equity chart, and payout controls"
+                  alt="The People Prop web dashboard on a phone showing account balance, equity chart, and payout controls"
                   className="aspect-[9/19] w-full object-cover"
                 />
               </div>
