@@ -776,60 +776,12 @@ export default function HomePage() {
                 </Link>
               </Magnetic>
             </motion.div>
-
-            {/* Trustpilot rating */}
-            <motion.a
-              href="https://www.trustpilot.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 0.8, ease: EASE }}
-              className="group mt-8 inline-flex flex-wrap items-center justify-center gap-x-3 gap-y-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-5 py-2.5 transition-colors duration-300 hover:border-white/20 md:backdrop-blur-md"
-              aria-label="Rated Excellent on Trustpilot"
-            >
-              <span className="text-[14px] font-semibold text-white">Excellent</span>
-              <span className="flex items-center gap-0.5" aria-hidden>
-                {[...Array(5)].map((_, i) => (
-                  <span key={i} className="flex h-[22px] w-[22px] items-center justify-center bg-[#00B67A]">
-                    <svg viewBox="0 0 24 24" className="h-[14px] w-[14px] fill-white">
-                      <path d="M12 1.5l3.09 6.26 6.91 1-5 4.87 1.18 6.88L12 17.27l-6.18 3.24L7 13.63l-5-4.87 6.91-1L12 1.5z" />
-                    </svg>
-                  </span>
-                ))}
-              </span>
-              <span className="hidden text-[13px] text-white/55 sm:inline">5.0 out of 5</span>
-              <span className="flex items-center gap-1.5">
-                <svg viewBox="0 0 24 24" className="h-[18px] w-[18px] fill-[#00B67A]" aria-hidden>
-                  <path d="M12 1.5l3.09 6.26 6.91 1-5 4.87 1.18 6.88L12 17.27l-6.18 3.24L7 13.63l-5-4.87 6.91-1L12 1.5z" />
-                </svg>
-                <span className="text-[14px] font-semibold text-white">Trustpilot</span>
-              </span>
-            </motion.a>
-
-            {/* Social-proof stats strip */}
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 0.95, ease: EASE }}
-              className="mt-10 flex flex-wrap items-center justify-center gap-x-10 gap-y-5"
-            >
-              {dbStats.slice(0, 3).map((s, i) => (
-                <div key={s.label || s.key_name} className="flex items-center gap-x-10">
-                  {i > 0 && <span className="hidden h-8 w-px bg-white/10 sm:block" aria-hidden />}
-                  <div className="text-center">
-                    <p className="text-xl font-bold tracking-tight text-white lg:text-2xl">{s.value}</p>
-                    <p className="mt-0.5 text-[12px] font-medium tracking-wide text-white/45">{s.label}</p>
-                  </div>
-                </div>
-              ))}
-            </motion.div>
           </motion.div>
 
           {/* Scroll cue */}
           <motion.div
             style={{ opacity: skipHeroAnim ? 1 : heroFade }}
-            className="absolute bottom-7 left-1/2 hidden -translate-x-1/2 md:block"
+            className="absolute bottom-7 left-1/2 -translate-x-1/2"
           >
             <motion.div
               animate={{ y: [0, 8, 0] }}
