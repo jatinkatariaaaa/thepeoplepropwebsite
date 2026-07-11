@@ -1234,7 +1234,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ═══════════════ SECTION 9 — FAQ (merged from V1) ═════════════��═ */}
+      {/* ═══════════════ SECTION 9 — FAQ (merged from V1) ═══════════════ */}
       <section className="w-full pb-16 lg:pb-24">
         <div className="px-[5px] py-[5px]">
           <div className="rounded-[2rem] bg-[#0c0c0c] px-[15px] py-20 lg:rounded-[3.5rem] lg:px-[35px] xl:py-28">
