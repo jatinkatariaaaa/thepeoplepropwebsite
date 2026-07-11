@@ -147,7 +147,7 @@ export function AdminBarChart({
           width={50}
         />
         <Tooltip content={<CustomTooltip />} />
-        <Bar dataKey={dataKey} fill={color} radius={[6, 6, 0, 0]} maxBarSize={40} />
+        <Bar dataKey={dataKey} fill={color} radius={[8, 8, 8, 8]} maxBarSize={22} />
       </BarChart>
     </ResponsiveContainer>
   );
