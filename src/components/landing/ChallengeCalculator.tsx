@@ -293,14 +293,12 @@ export function ChallengeCalculator() {
         <div className="px-[5px] py-[5px]">
           <div className="relative rounded-2xl bg-[#0c0c0c] border border-white/[0.05] py-16 xl:py-24 px-[15px] lg:px-[35px] overflow-hidden">
             <div className="relative mx-auto max-w-7xl">
-              <div className="text-center mb-10 md:mb-16">
-                <div className="text-sm font-medium text-white/50 uppercase tracking-widest mb-4">Build Your Challenge</div>
-                <h2 className="tracking-tight text-white font-medium mb-4" style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}>
-                  Choose your trading account.
+              <div className="text-center mb-10 md:mb-14">
+                <div className="text-sm font-medium text-white/50 tracking-wide mb-4">Navigate to funding</div>
+                <h2 className="tracking-tight font-medium mb-4 text-balance" style={{ fontSize: "clamp(2.25rem, 5.5vw, 4rem)", lineHeight: 1.05 }}>
+                  <span className="block text-white">Choose your</span>
+                  <span className="block text-[#bcff2e]">trading account</span>
                 </h2>
-                <p className="text-white/50 text-base md:text-lg max-w-[600px] mx-auto">
-                  Pick a program, account size, and platform. Specs and pricing update live as you customise.
-                </p>
               </div>
 
         {/* Program type pills (Atlas-style hero bar) - Desktop */}
@@ -361,27 +359,34 @@ export function ChallengeCalculator() {
           })}
         </div>
 
-        {/* Promo strip (dark, cobalt accent) */}
-        <div className="mx-auto mb-10 flex w-full max-w-3xl items-center justify-center gap-3 rounded-full bg-white/[0.05] border border-white/[0.08] px-5 py-3 text-[12.5px] text-white/85">
-          <span className="hidden sm:inline-flex items-center gap-1.5 text-[10.5px] uppercase tracking-[0.18em] text-white/55">
+        {/* Promo strip (Atlas-style full-width bar) */}
+        <div className="mx-auto mb-10 flex w-full items-center justify-center gap-3 sm:gap-4 rounded-full bg-[#151b16] border border-white/[0.06] px-5 py-3.5 text-[12.5px] text-white/85">
+          <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] text-white/55">
             <Tag className="w-3 h-3" strokeWidth={2.5} />
-            Exclusive Offer
+            Limited Time
           </span>
-          <span className="hidden sm:block h-3 w-px bg-white/15" />
+          <span className="hidden sm:block text-white/25">•</span>
           <span>
-            <span className="text-amber-400 font-medium">50% off</span> + free
-            retry add-on
+            <span className="text-[#bcff2e] font-semibold">50% off</span>
+            <span className="text-white/70"> + free retry</span>
           </span>
-          <span className="h-3 w-px bg-white/15" />
+          <span className="hidden md:block text-white/25">•</span>
+          <a
+            href="#calculator"
+            className="hidden md:inline-block text-white/80 underline underline-offset-4 decoration-white/30 hover:text-white transition-colors font-medium"
+          >
+            Get Funded
+          </a>
+          <span className="text-white/25">•</span>
           <button
             type="button"
             onClick={() => copy("FIRSTTPP")}
-            className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[11.5px] font-mono tracking-wider text-white hover:bg-white/15 transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-full bg-[#bcff2e] px-3 py-1 text-[11.5px] font-mono tracking-wider text-[#0c0c0c] font-semibold hover:bg-[#a5e622] transition-colors"
             aria-label="Copy promo code"
           >
             {copied ? (
               <>
-                <Check className="w-3 h-3 text-amber-400" strokeWidth={2.5} />
+                <Check className="w-3 h-3" strokeWidth={2.5} />
                 Copied
               </>
             ) : (
@@ -395,8 +400,12 @@ export function ChallengeCalculator() {
         {/* Main grid */}
         <div className="grid grid-cols-1 lg:grid-cols-[180px_1fr_minmax(0,420px)] gap-5 lg:gap-6 items-start">
           {/* ── Platform column ── */}
-          <div className="bg-[#111] border border-white/[0.05] rounded-[2rem] p-5">
-            <h3 className="text-white font-medium mb-4 text-[15px]">Choose a platform</h3>
+          <div className="flex flex-col">
+            <div className="mb-4 lg:mb-6">
+              <h3 className="text-white font-medium text-[17px] lg:text-[20px] leading-snug text-pretty">Choose a platform</h3>
+              <span className="hidden lg:block mt-4 h-10 w-px bg-gradient-to-b from-white/20 to-transparent" aria-hidden="true" />
+            </div>
+            <div className="bg-[#111] border border-white/[0.05] rounded-[2rem] p-5">
             {/* Desktop Platform List */}
             <div className="hidden md:block space-y-2">
               {livePlatforms.map((p) => {
@@ -481,11 +490,16 @@ export function ChallengeCalculator() {
                 );
               })}
             </div>
+            </div>
           </div>
 
           {/* ── Size column ── */}
-          <div className="bg-[#111] border border-white/[0.05] rounded-[2rem] p-5">
-            <h3 className="text-white font-medium mb-4 text-[15px]">Choose account size</h3>
+          <div className="flex flex-col">
+            <div className="mb-4 lg:mb-6">
+              <h3 className="text-white font-medium text-[17px] lg:text-[20px] leading-snug text-pretty">Choose account size</h3>
+              <span className="hidden lg:block mt-4 h-10 w-px bg-gradient-to-b from-white/20 to-transparent" aria-hidden="true" />
+            </div>
+            <div className="bg-[#111] border border-white/[0.05] rounded-[2rem] p-5">
             
             {/* Desktop Size Grid */}
             <div className="hidden md:grid grid-cols-3 lg:grid-cols-3 gap-2">
@@ -697,6 +711,7 @@ export function ChallengeCalculator() {
                 </p>
               )}
             </div>
+            </div>
           </div>
 
           {/* ── Live spec card (Desktop) ── */}
@@ -772,44 +787,28 @@ export function ChallengeCalculator() {
 
               {/* Price row */}
               <div className="relative px-5 md:px-6 py-4 border-t border-white/[0.08] bg-white/[0.02]">
-                <div className="flex items-end justify-between gap-3 mb-3">
-                  <div>
-                    <p className="text-[10.5px] uppercase tracking-[0.2em] text-white/40 mb-0.5">
-                      Average payout
-                    </p>
-                    <p className="text-[14px] font-medium text-white tabular-nums">
-                      $
-                      {Math.round(
-                        ((profitTargetUsd ?? effectiveSize * 0.05) *
-                          (selectedAddOns.includes("split-100")
-                            ? program.profitSplitMax
-                            : program.profitSplit)) /
-                          100,
-                      ).toLocaleString("en-US")}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-[10.5px] uppercase tracking-[0.2em] text-white/40 mb-0.5">
-                      One-time fee
-                    </p>
-                    <AnimatePresence mode="popLayout">
-                      <motion.div
-                        key={finalPrice}
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="flex flex-col items-end"
-                      >
-                        {appliedDiscount > 0 && total != null && programKey !== "access" && (
-                          <span className="text-[15px] font-medium text-white/30 line-through leading-none mb-0.5">
-                            ${total.toLocaleString("en-US")}
-                          </span>
-                        )}
-                        <span className={cn(appliedDiscount > 0 && programKey !== "access" ? "text-[#bcff2e]" : "text-white")}>
-                          {programKey === "access" ? "$5" : (finalPrice != null ? `$${finalPrice.toLocaleString("en-US")}` : "—")}
-                        </span>
-                      </motion.div>
-                    </AnimatePresence>
-                  </div>
+                <div className="flex items-baseline justify-between gap-2 mb-3">
+                  <span className="text-[13px] text-white/60">Average payout</span>
+                  <span
+                    className="flex-1 h-px translate-y-[-3px] opacity-30"
+                    style={{
+                      backgroundImage:
+                        "radial-gradient(circle, rgba(255,255,255,0.4) 1px, transparent 1.2px)",
+                      backgroundSize: "6px 1px",
+                      backgroundRepeat: "repeat-x",
+                    }}
+                    aria-hidden="true"
+                  />
+                  <span className="text-[13.5px] font-medium text-white tabular-nums">
+                    $
+                    {Math.round(
+                      ((profitTargetUsd ?? effectiveSize * 0.05) *
+                        (selectedAddOns.includes("split-100")
+                          ? program.profitSplitMax
+                          : program.profitSplit)) /
+                        100,
+                    ).toLocaleString("en-US")}
+                  </span>
                 </div>
 
                 {programKey === "access" && postPassFee != null && (
@@ -822,23 +821,38 @@ export function ChallengeCalculator() {
                   onClick={() => router.push('/dashboard/new-challenge')}
                   disabled={total == null}
                   size="lg"
-                  className="w-full flex items-center justify-center gap-2 rounded-full bg-[var(--ink-950)] hover:bg-[#bcff2e] text-white hover:text-[var(--ink-950)] transition-colors border border-[var(--ink-950)]"
+                  className="w-full flex items-center justify-center gap-2.5 rounded-full bg-[#bcff2e] hover:bg-[#a5e622] text-[#0c0c0c] transition-colors border border-[#bcff2e] font-semibold shadow-[0_0_24px_rgba(188,255,46,0.18)]"
                 >
-                  Get Funded
+                  <span>Get Funded</span>
+                  <AnimatePresence mode="popLayout">
+                    <motion.span
+                      key={finalPrice}
+                      initial={{ opacity: 0, y: -6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="inline-flex items-baseline gap-1.5 tabular-nums"
+                    >
+                      {appliedDiscount > 0 && total != null && programKey !== "access" && (
+                        <span className="text-[13px] font-medium text-[#0c0c0c]/45 line-through">
+                          ${total.toLocaleString("en-US")}
+                        </span>
+                      )}
+                      <span className="font-bold">
+                        {programKey === "access" ? "$5" : (finalPrice != null ? `$${finalPrice.toLocaleString("en-US")}` : "—")}
+                      </span>
+                    </motion.span>
+                  </AnimatePresence>
                 </Button>
 
-                {/* Payment icons */}
-                <div className="mt-3 flex items-center justify-center gap-3 opacity-60">
-                  {["Visa", "Mastercard", "Apple Pay", "Google Pay", "Crypto"].map(
-                    (p) => (
-                      <span
-                        key={p}
-                        className="text-[10px] uppercase tracking-widest text-white/40"
-                      >
-                        {p}
-                      </span>
-                    ),
-                  )}
+                {/* Payment chips */}
+                <div className="mt-3.5 flex items-center justify-center gap-2">
+                  {["Crypto", "G Pay", "Card", "Apple Pay", "Visa"].map((p) => (
+                    <span
+                      key={p}
+                      className="rounded-full border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 text-[9.5px] uppercase tracking-wider text-white/50 whitespace-nowrap"
+                    >
+                      {p}
+                    </span>
+                  ))}
                 </div>
               </div>
             </div>
@@ -924,6 +938,44 @@ export function ChallengeCalculator() {
                 );
               })}
             </div>
+          </div>
+        </div>
+
+        {/* Bottom promo banner (Atlas-style) */}
+        <div className="mt-10 lg:mt-14 rounded-[2rem] bg-[#111] border border-white/[0.05] px-6 py-8 md:px-10 md:py-10 flex flex-col md:flex-row md:items-center gap-6 md:gap-8">
+          <div className="flex-1">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#bcff2e]/10 px-3 py-1 text-[10.5px] font-semibold uppercase tracking-widest text-[#bcff2e] mb-4">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#bcff2e]" />
+              Limited Time Only
+            </span>
+            <h3 className="text-white font-medium text-[22px] md:text-[26px] leading-snug text-pretty">
+              New to TPP? <span className="text-[#bcff2e]">Get 50% OFF</span>
+            </h3>
+            <p className="text-white/50 text-[14px] mt-1.5">
+              Get 50% off your first challenge account.
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+            <button
+              type="button"
+              onClick={() => copy("FIRSTTPP")}
+              className="inline-flex items-center justify-between gap-3 rounded-full border border-dashed border-white/20 bg-white/[0.02] px-5 py-3 text-[13px] font-mono tracking-wider text-white hover:bg-white/[0.05] transition-colors"
+              aria-label="Copy promo code FIRSTTPP"
+            >
+              FIRSTTPP
+              {copied ? (
+                <Check className="w-3.5 h-3.5 text-[#bcff2e]" strokeWidth={2.5} />
+              ) : (
+                <Copy className="w-3.5 h-3.5 text-white/50" strokeWidth={2.5} />
+              )}
+            </button>
+            <Button
+              onClick={() => router.push('/dashboard/new-challenge')}
+              className="rounded-full bg-[#bcff2e] hover:bg-[#a5e622] text-[#0c0c0c] font-semibold px-7 h-[46px] inline-flex items-center justify-center gap-1.5 transition-colors"
+            >
+              Get Funded
+              <ArrowUpRight className="w-4 h-4" strokeWidth={2.5} />
+            </Button>
           </div>
         </div>
       </div>
