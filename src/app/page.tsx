@@ -814,12 +814,8 @@ export default function HomePage() {
               transition={{ duration: 0.9, delay: 0.95, ease: EASE }}
               className="mt-10 flex flex-wrap items-center justify-center gap-x-10 gap-y-5"
             >
-              {[
-                { value: "28,400+", label: "Funded traders" },
-                { value: "$24.6M", label: "Paid out in 2025" },
-                { value: "96%", label: "Payouts under 24h" },
-              ].map((s, i) => (
-                <div key={s.label} className="flex items-center gap-x-10">
+              {dbStats.slice(0, 3).map((s, i) => (
+                <div key={s.label || s.key_name} className="flex items-center gap-x-10">
                   {i > 0 && <span className="hidden h-8 w-px bg-white/10 sm:block" aria-hidden />}
                   <div className="text-center">
                     <p className="text-xl font-bold tracking-tight text-white lg:text-2xl">{s.value}</p>
@@ -1286,7 +1282,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ═══════════════ SECTION 9 — FAQ (merged from V1) ═══════════════ */}
+      {/* ═══════════════ SECTION 9 — FAQ (merged from V1) ═════════════��═ */}
       <section className="w-full pb-16 lg:pb-24">
         <div className="px-[5px] py-[5px]">
           <div className="rounded-[2rem] bg-[#0c0c0c] px-[15px] py-20 lg:rounded-[3.5rem] lg:px-[35px] xl:py-28">
