@@ -12,9 +12,6 @@ import {
   useInView,
   useScroll,
   useTransform,
-  useSpring,
-  useMotionValue,
-  useMotionTemplate,
 } from "framer-motion";
 import Link from "next/link";
 import { createBrowserClient } from "@supabase/ssr";
@@ -48,6 +45,8 @@ import { cn } from "@/lib/utils";
 import { faq } from "@/data/faq";
 import { ChallengeCalculator } from "@/components/landing/ChallengeCalculator";
 import { ProfitCalculator } from "@/components/landing/ProfitCalculator";
+import { PayoutTicker } from "@/components/landing/PayoutTicker";
+import { PayoutMethodsStrip } from "@/components/landing/PayoutMethodsStrip";
 
 /* ═══════════════════════════════════════════════════════════════
    V3 Landing Page — "Ultra-Premium" evolution of V2
@@ -240,63 +239,6 @@ function TiltCard({
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Floating — gentle infinite float for accent graphics.
-   ───────────────────────────────────────────────────────────── */
-function Floating({
-  children,
-  className = "",
-  amplitude = 12,
-  duration = 6,
-  delay = 0,
-}: {
-  children?: ReactNode;
-  className?: string;
-  amplitude?: number;
-  duration?: number;
-  delay?: number;
-}) {
-  return (
-    <motion.div
-      className={className}
-      animate={{ y: [-amplitude, amplitude, -amplitude] }}
-      transition={{ duration, delay, ease: "easeInOut", repeat: Infinity }}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-/* ─────────────────────────────────────────────────────────────
-   MagneticButton wrapper — subtle pull toward cursor.
-   ───────────────────────────────────────────────────────────── */
-function Magnetic({ children, className = "" }: { children: ReactNode; className?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
-  const mx = useSpring(useMotionValue(0), { stiffness: 250, damping: 18 });
-  const my = useSpring(useMotionValue(0), { stiffness: 250, damping: 18 });
-
-  return (
-    <motion.div
-      ref={ref}
-      style={{ x: reduced ? 0 : mx, y: reduced ? 0 : my, display: "inline-block" }}
-      onPointerMove={(e) => {
-        if (reduced || !ref.current) return;
-        const r = ref.current.getBoundingClientRect();
-        mx.set((e.clientX - (r.left + r.width / 2)) * 0.25);
-        my.set((e.clientY - (r.top + r.height / 2)) * 0.25);
-      }}
-      onPointerLeave={() => {
-        mx.set(0);
-        my.set(0);
-      }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-/* ─────────────────────────────────────────────────────────────
    FAQ accordion item (native, animated)
    ───────────────────────────────────────────────────────────── */
 function FaqRow({
@@ -341,71 +283,6 @@ function FaqRow({
         <p className="px-5 pb-6 text-[14px] leading-relaxed text-white/55 lg:px-7">{item.a}</p>
       </motion.div>
     </div>
-  );
-}
-
-/* ─────────────────────────────────────────────────────────────
-   CustomCursor — lime dot + trailing ring. Fine-pointer only.
-   Grows over interactive elements; hidden for touch / reduced-motion.
-   ───────────────────────────────────────────────────────────── */
-function CustomCursor() {
-  const reduced = useReducedMotion();
-  const [enabled, setEnabled] = useState(false);
-  const [hovering, setHovering] = useState(false);
-  const [hidden, setHidden] = useState(true);
-
-  const dotX = useMotionValue(-100);
-  const dotY = useMotionValue(-100);
-  const ringX = useSpring(dotX, { stiffness: 350, damping: 28, mass: 0.4 });
-  const ringY = useSpring(dotY, { stiffness: 350, damping: 28, mass: 0.4 });
-
-  useEffect(() => {
-    if (reduced || !window.matchMedia("(pointer: fine)").matches) return;
-    setEnabled(true);
-
-    const move = (e: PointerEvent) => {
-      dotX.set(e.clientX);
-      dotY.set(e.clientY);
-      setHidden(false);
-      const target = e.target as HTMLElement | null;
-      setHovering(!!target?.closest('a, button, [data-cursor="hover"], input, [role="button"]'));
-    };
-    const leave = () => setHidden(true);
-
-    window.addEventListener("pointermove", move, { passive: true });
-    window.addEventListener("pointerout", leave);
-    document.documentElement.classList.add("custom-cursor");
-    return () => {
-      window.removeEventListener("pointermove", move);
-      window.removeEventListener("pointerout", leave);
-      document.documentElement.classList.remove("custom-cursor");
-    };
-  }, [reduced, dotX, dotY]);
-
-  if (!enabled) return null;
-
-  return (
-    <>
-      <style>{`.custom-cursor, .custom-cursor * { cursor: none !important; }`}</style>
-      <motion.div
-        aria-hidden
-        className="pointer-events-none fixed left-0 top-0 z-[9999] rounded-full border border-[#cbfb45] mix-blend-difference"
-        style={{ x: ringX, y: ringY, translateX: "-50%", translateY: "-50%" }}
-        animate={{
-          width: hovering ? 56 : 34,
-          height: hovering ? 56 : 34,
-          opacity: hidden ? 0 : hovering ? 0.9 : 0.55,
-        }}
-        transition={{ type: "spring", stiffness: 300, damping: 24 }}
-      />
-      <motion.div
-        aria-hidden
-        className="pointer-events-none fixed left-0 top-0 z-[9999] h-2 w-2 rounded-full bg-[#cbfb45]"
-        style={{ x: dotX, y: dotY, translateX: "-50%", translateY: "-50%" }}
-        animate={{ opacity: hidden ? 0 : 1, scale: hovering ? 0.4 : 1 }}
-        transition={{ type: "spring", stiffness: 500, damping: 30 }}
-      />
-    </>
   );
 }
 
@@ -467,121 +344,6 @@ function StepBullets({ step }: { step: Step }) {
   );
 }
 
-/* ─────────────────────────────────────────────────────────────
-   PinnedSteps — desktop only. Pins the section and translates a
-   horizontal rail of step panels via GSAP ScrollTrigger
-   (synced with Lenis through the global ticker).
-   ───────────────────────────────────────────────────────────── */
-function PinnedSteps() {
-  const reduced = useReducedMotion();
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (reduced || !sectionRef.current || !trackRef.current) return;
-    const mm = gsap.matchMedia();
-    mm.add("(min-width: 1024px)", () => {
-      const ctx = gsap.context(() => {
-        const track = trackRef.current!;
-        const getShift = () => Math.max(0, track.scrollWidth - window.innerWidth);
-
-        gsap.to(track, {
-          x: () => -getShift(),
-          ease: "none",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top top",
-            end: () => "+=" + getShift(),
-            scrub: 1,
-            pin: true,
-            anticipatePin: 1,
-            invalidateOnRefresh: true,
-          },
-        });
-
-        gsap.fromTo(
-          "[data-steps-progress]",
-          { scaleX: 0 },
-          {
-            scaleX: 1,
-            ease: "none",
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: "top top",
-              end: () => "+=" + getShift(),
-              scrub: 1,
-            },
-          }
-        );
-      }, sectionRef);
-      return () => ctx.revert();
-    });
-    return () => mm.revert();
-  }, [reduced]);
-
-  return (
-    <div ref={sectionRef} className="relative hidden h-dvh overflow-hidden lg:block">
-      <div className="absolute left-10 right-10 top-[calc(7.5rem+1rem)] z-20 h-[2px] bg-[#0c0c0c]/10">
-        <div data-steps-progress className="h-full w-full origin-left scale-x-0 bg-[#0c0c0c]" />
-      </div>
-
-      <div ref={trackRef} className="flex h-full w-max items-center will-change-transform">
-        {/* Intro panel */}
-        <div className="flex h-full w-screen shrink-0 flex-col justify-center px-10 xl:px-20">
-          <div className="max-w-xl">
-            <div className="mb-3 text-sm font-medium uppercase tracking-[0.3em] text-[#6c6a68]">How It Works</div>
-            <h2 className="font-bold tracking-[-0.03em] text-[#0c0c0c]" style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}>
-              Three steps from
-              <br />
-              signup to <span className="text-[#cbfb45]">funded</span>
-            </h2>
-            <p className="mt-5 max-w-md text-[15px] leading-relaxed text-[#6c6a68]">
-              No second phases. No 60-day clocks. No hidden gotchas. Just keep scrolling — then trade and get paid.
-            </p>
-            <div className="mt-8 inline-flex items-center gap-2 text-[14px] font-medium text-[#0c0c0c]/50">
-              Scroll to explore <ArrowRight className="h-4 w-4" />
-            </div>
-          </div>
-        </div>
-
-        {/* Step panels */}
-        {STEPS.map((step, i) => (
-          <div key={step.badge} className="flex h-full w-screen shrink-0 items-center px-10 xl:px-20">
-            <div className="grid w-full max-w-6xl grid-cols-[auto_1fr] items-center gap-10 xl:gap-16">
-              <div
-                className="select-none font-black leading-none tracking-[-0.05em] text-[#0c0c0c]/[0.08]"
-                style={{ fontSize: "clamp(8rem, 20vw, 22rem)" }}
-              >
-                {String(i + 1).padStart(2, "0")}
-              </div>
-              <div
-                data-cursor="hover"
-                className={cn(
-                  "max-w-md rounded-[2rem] p-9 shadow-xl",
-                  step.dark ? "bg-[#0c0c0c]" : "border border-[#0c0c0c]/10 bg-white/50 md:backdrop-blur-sm"
-                )}
-              >
-                <span
-                  className={cn(
-                    "mb-5 inline-flex w-fit items-center rounded-full px-3 py-1 text-[12px] font-semibold uppercase tracking-wider",
-                    step.dark ? "bg-[#cbfb45] text-[#0c0c0c]" : "bg-[#0c0c0c] text-[#cbfb45]"
-                  )}
-                >
-                  {step.badge}
-                </span>
-                <h3 className={cn("mb-6 text-2xl font-bold tracking-tight", step.dark ? "text-white" : "text-[#0c0c0c]")}>
-                  {step.title}
-                </h3>
-                <StepBullets step={step} />
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 /* ═══════════════════════════════════════ MAIN PAGE ═══════════════════════════════════════ */
 
 export default function HomePage() {
@@ -629,21 +391,14 @@ export default function HomePage() {
 
   const skipHeroAnim = reduced || isMobile;
 
-  /* Spotlight X-Ray Mouse Tracking */
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const smoothMouseX = useSpring(mouseX, { stiffness: 50, damping: 20 });
-  const smoothMouseY = useSpring(mouseY, { stiffness: 50, damping: 20 });
-
-  /* Hero parallax */
+  /* Hero parallax (gentle fade + drift on scroll) */
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress: heroProgress } = useScroll({
     target: heroRef,
     offset: ["start start", "end start"],
   });
-  const heroTitleY = useTransform(heroProgress, [0, 1], ["0%", "40%"]);
+  const heroTitleY = useTransform(heroProgress, [0, 1], ["0%", "25%"]);
   const heroFade = useTransform(heroProgress, [0, 0.8], [1, 0]);
-  const heroScale = useTransform(heroProgress, [0, 1], [1, 1.08]);
 
   /* Swipeable testimonial deck (mobile) */
   const [activeT, setActiveT] = useState(0);
@@ -672,124 +427,110 @@ export default function HomePage() {
       className="page-wrapper min-h-screen bg-[#f1eade] text-[#0c0c0c] antialiased"
       style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
     >
-      <CustomCursor />
-
-
-
-      {/* ═══════════════ SECTION 1 — HERO ═══════════════ */}
-      <section ref={heroRef} className="relative z-0 overflow-hidden min-h-[100svh] lg:h-dvh px-[5px] py-[5px]">
+      {/* ═══════════════ SECTION 1 — HERO (light minimal) ═══════════════ */}
+      <section ref={heroRef} className="relative overflow-hidden px-5 pb-16 pt-32 lg:px-10 lg:pb-20 lg:pt-44">
         <motion.div
-          style={{ scale: skipHeroAnim ? 1 : heroScale }}
-          onPointerMove={(e) => {
-            if (reduced || isMobile || !heroRef.current) return;
-            const { left, top } = heroRef.current.getBoundingClientRect();
-            mouseX.set(e.clientX - left);
-            mouseY.set(e.clientY - top);
-          }}
-          className="relative flex h-full flex-col items-center justify-center overflow-hidden rounded-xl bg-[#0a0a0a] px-6 py-20 lg:rounded-2xl lg:px-10"
+          style={{ y: skipHeroAnim ? 0 : heroTitleY, opacity: skipHeroAnim ? 1 : heroFade }}
+          className="mx-auto flex max-w-[1300px] flex-col items-center"
         >
-          {/* Middle Layer: X-Ray Reveal Image */}
+          {/* Trust badge */}
           <motion.div
-            className="hidden md:block absolute inset-0 z-0 bg-[url('/images/hero-bg.webp')] bg-cover bg-center bg-no-repeat opacity-80 pointer-events-none"
-            style={{
-              maskImage: useMotionTemplate`radial-gradient(450px circle at ${smoothMouseX}px ${smoothMouseY}px, black 0%, transparent 100%)`,
-              WebkitMaskImage: useMotionTemplate`radial-gradient(450px circle at ${smoothMouseX}px ${smoothMouseY}px, black 0%, transparent 100%)`,
-            }}
-          />
-          {/* Ambient parallax orbs - hidden on mobile to fix GPU lag */}
-          <Floating className="pointer-events-none absolute left-[8%] top-[16%] hidden h-[46vw] w-[46vw] rounded-full bg-[#cbfb45]/[0.07] blur-[120px] md:block" amplitude={24} duration={9} />
-          <Floating className="pointer-events-none absolute bottom-[-12%] right-[8%] hidden h-[36vw] w-[36vw] rounded-full bg-[#cbfb45]/[0.09] blur-[100px] md:block" amplitude={30} duration={11} delay={1} />
-
-          {/* Subtle grid texture */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 opacity-[0.04]"
-            style={{
-              backgroundImage:
-                "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
-              backgroundSize: "64px 64px",
-              maskImage: "radial-gradient(ellipse at center, black 30%, transparent 75%)",
-            }}
-          />
-
-          <motion.div style={{ y: skipHeroAnim ? 0 : heroTitleY, opacity: skipHeroAnim ? 1 : heroFade }} className="relative z-10 flex flex-col items-center">
-            {/* Trust badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: EASE }}
-              className="mb-8"
-            >
-              <div className="inline-flex items-center gap-2.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-4 py-2 md:backdrop-blur-md">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#cbfb45] opacity-75" />
-                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#cbfb45]" />
-                </span>
-                <span className="text-[13px] font-medium tracking-wide text-white/80">
-                  Evaluating traders in 150+ countries
-                </span>
-              </div>
-            </motion.div>
-
-            <GsapWords
-              as="h1"
-              text="The prop firm that funds real traders"
-              highlight={["prop", "firm", "real", "traders"]}
-              className="relative z-10 w-full max-w-[1300px] text-center font-bold leading-[0.9] tracking-[-0.03em] text-white"
-              style={{ fontSize: "clamp(2.8rem, 9vw, 9rem)" }}
-            />
-
-            <motion.p
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 0.5, ease: EASE }}
-              className="mt-8 max-w-[560px] text-center text-[15px] leading-relaxed text-white/55 lg:text-base"
-            >
-              Transparent rules. Real capital up to $200,000. Payouts in under 24 hours.
-              Built for traders — not against them.
-            </motion.p>
-
-            {/* CTA row */}
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 0.65, ease: EASE }}
-              className="mt-10 flex flex-wrap items-center justify-center gap-3"
-            >
-              <Magnetic>
-                <Link
-                  href="/dashboard/new-challenge"
-                  className="group relative inline-flex h-12 items-center gap-2 overflow-hidden rounded-full bg-[#cbfb45] pl-2 pr-5 text-[15px] font-semibold text-[#0c0c0c] transition-all duration-300 hover:rounded-xl"
-                >
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0c0c0c] transition-all duration-300 group-hover:rounded-md">
-                    <ArrowUpRight className="h-4 w-4 text-[#cbfb45] transition-transform duration-300 group-hover:rotate-45" />
-                  </span>
-                  Start your challenge
-                </Link>
-              </Magnetic>
-              <Magnetic>
-                <Link
-                  href="/rules"
-                  className="inline-flex h-12 items-center rounded-full border border-white/25 px-6 text-[15px] font-medium text-white transition-all duration-300 hover:rounded-xl hover:border-white/60 hover:bg-white/[0.04]"
-                >
-                  Read the rules
-                </Link>
-              </Magnetic>
-            </motion.div>
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: EASE }}
+            className="mb-8"
+          >
+            <div className="inline-flex items-center gap-2.5 rounded-full border border-[#0c0c0c]/10 bg-white/40 px-4 py-2">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#0c0c0c] opacity-40" />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#0c0c0c]" />
+              </span>
+              <span className="text-[13px] font-medium tracking-wide text-[#0c0c0c]/70">
+                Evaluating traders in 150+ countries
+              </span>
+            </div>
           </motion.div>
 
-          {/* Scroll cue */}
-          <motion.div
-            style={{ opacity: skipHeroAnim ? 1 : heroFade }}
-            className="absolute bottom-7 left-1/2 -translate-x-1/2"
+          <motion.h1
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.1, ease: EASE }}
+            className="w-full text-center font-bold leading-[0.95] tracking-[-0.04em] text-[#0c0c0c] text-balance"
+            style={{ fontSize: "clamp(2.8rem, 8vw, 7.5rem)" }}
           >
-            <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-              className="flex h-9 w-6 items-start justify-center rounded-full border border-white/25 p-1.5"
+            The prop firm that funds{" "}
+            <span className="whitespace-nowrap rounded-2xl bg-[#cbfb45] px-3 lg:rounded-[2rem] lg:px-5">
+              real traders
+            </span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.3, ease: EASE }}
+            className="mt-8 max-w-[560px] text-center text-[15px] leading-relaxed text-[#6c6a68] lg:text-lg"
+          >
+            Transparent rules. Real capital up to $200,000. Payouts in under 24
+            hours. Built for traders — not against them.
+          </motion.p>
+
+          {/* CTA row */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.45, ease: EASE }}
+            className="mt-10 flex flex-wrap items-center justify-center gap-3"
+          >
+            <Link
+              href="/dashboard/new-challenge"
+              className="group relative inline-flex h-13 items-center gap-2 overflow-hidden rounded-full bg-[#0c0c0c] pl-2 pr-6 text-[15px] font-semibold text-white transition-all duration-300 hover:rounded-xl"
             >
-              <span className="h-1.5 w-1 rounded-full bg-[#cbfb45]" />
-            </motion.div>
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#cbfb45] transition-all duration-300 group-hover:rounded-md">
+                <ArrowUpRight className="h-4 w-4 text-[#0c0c0c] transition-transform duration-300 group-hover:rotate-45" />
+              </span>
+              Start your challenge
+            </Link>
+            <Link
+              href="/rules"
+              className="inline-flex h-13 items-center rounded-full border border-[#0c0c0c]/25 px-6 text-[15px] font-medium text-[#0c0c0c] transition-all duration-300 hover:rounded-xl hover:border-[#0c0c0c]/60 hover:bg-[#0c0c0c]/5"
+            >
+              Read the rules
+            </Link>
+          </motion.div>
+
+          {/* Trust row */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.6, ease: EASE }}
+            className="mt-12 flex flex-wrap items-center justify-center gap-x-7 gap-y-3 lg:mt-16"
+          >
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-0.5">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <span key={i} className="flex h-4.5 w-4.5 items-center justify-center bg-[#00b67a]">
+                    <svg viewBox="0 0 24 24" className="h-3 w-3 fill-white" aria-hidden>
+                      <path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8L12 2z" />
+                    </svg>
+                  </span>
+                ))}
+              </div>
+              <span className="text-[13px] font-semibold text-[#0c0c0c]">
+                5.0 on Trustpilot
+              </span>
+            </div>
+            <div className="flex items-center gap-2 text-[13px] font-medium text-[#0c0c0c]/70">
+              <Clock className="h-4 w-4" strokeWidth={2.2} />
+              Payouts under 24h
+            </div>
+            <div className="flex items-center gap-2 text-[13px] font-medium text-[#0c0c0c]/70">
+              <Percent className="h-4 w-4" strokeWidth={2.2} />
+              Up to 90% profit split
+            </div>
+            <div className="flex items-center gap-2 text-[13px] font-medium text-[#0c0c0c]/70">
+              <Shield className="h-4 w-4" strokeWidth={2.2} />
+              100% fee refund
+            </div>
           </motion.div>
         </motion.div>
       </section>
@@ -802,11 +543,9 @@ export default function HomePage() {
         <div className="w-full px-5 lg:px-10">
           <div className="grid items-center gap-x-7 gap-y-16 md:grid-cols-12">
             <Reveal className="hidden md:col-span-3 md:block lg:col-span-2">
-              <Floating amplitude={10} duration={7}>
-                <div className="aspect-[9/10] w-full overflow-hidden rounded-2xl bg-black lg:rounded-3xl">
-                  <video src="/videos/left-video.webm" autoPlay loop muted playsInline className="h-full w-full object-cover" />
-                </div>
-              </Floating>
+              <div className="aspect-[9/10] w-full overflow-hidden rounded-2xl bg-black lg:rounded-3xl">
+                <video src="/videos/left-video.webm" autoPlay loop muted playsInline className="h-full w-full object-cover" />
+              </div>
             </Reveal>
 
             <div className="md:col-span-6 lg:col-span-8">
@@ -834,12 +573,10 @@ export default function HomePage() {
                   </p>
 
                   <div className="flex flex-wrap justify-center gap-2">
-                    <Magnetic>
-                      <Link href="/dashboard/new-challenge" className="group inline-flex h-9 items-center gap-2 rounded-full border border-[#0c0c0c] bg-[#0c0c0c] pl-1.5 pr-4 text-[15px] font-medium text-white transition-all duration-300 hover:rounded-lg">
-                        <span className="h-6 w-6 shrink-0 rounded-full bg-[#cbfb45] transition-all duration-300 group-hover:rounded-sm" />
-                        Start trading
-                      </Link>
-                    </Magnetic>
+                    <Link href="/dashboard/new-challenge" className="group inline-flex h-9 items-center gap-2 rounded-full border border-[#0c0c0c] bg-[#0c0c0c] pl-1.5 pr-4 text-[15px] font-medium text-white transition-all duration-300 hover:rounded-lg">
+                      <span className="h-6 w-6 shrink-0 rounded-full bg-[#cbfb45] transition-all duration-300 group-hover:rounded-sm" />
+                      Start trading
+                    </Link>
                     <Link href="/rules" className="inline-flex h-9 items-center rounded-full border border-[#0c0c0c]/30 px-5 text-[15px] text-[#0c0c0c] transition-all duration-300 hover:rounded-lg hover:bg-[#0c0c0c]/5">
                       About TPP
                     </Link>
@@ -868,7 +605,7 @@ export default function HomePage() {
           
           <div className="flex flex-col gap-12 text-center md:flex-row md:flex-wrap md:text-left xl:flex-nowrap xl:gap-16">
             {dbStats.map((s, i) => (
-              <Reveal key={s.label || s.key_name} delay={i * 0.1} className={cn("flex-1 min-w-[200px]", s.mt)}>
+              <Reveal key={s.label || s.key_name} delay={i * 0.1} className="flex-1 min-w-[200px]">
                 <div className="flex flex-col items-center gap-2 md:items-start lg:gap-3">
                   <div className="text-5xl font-medium leading-tight tracking-tight text-[#0c0c0c] sm:text-6xl lg:text-7xl xl:text-[5.5rem]">
                     {s.value}
@@ -881,6 +618,9 @@ export default function HomePage() {
 
         </div>
       </section>
+
+      {/* ═══════════════ SECTION 3.5 — LIVE PAYOUT PROOF ═══════════════ */}
+      <PayoutTicker />
 
       {/* ═══════════════ SECTION 4 — CALCULATOR ═══════════════ */}
       <ChallengeCalculator />
@@ -961,17 +701,13 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ═══════════════ SECTION 6 — EVALUATION STEPS (merged from V1) ═══════════════ */}
-      {/* Desktop: full-bleed pinned horizontal-scroll steps */}
-      <PinnedSteps />
-
-      {/* Mobile / tablet: header + stacked step cards */}
-      <section className="w-full pb-16 lg:hidden">
-        <div className="w-full px-5">
+      {/* ═══════════════ SECTION 6 — EVALUATION STEPS ═══════════════ */}
+      <section className="w-full pb-16 lg:pb-24">
+        <div className="w-full px-5 lg:px-10">
           <Reveal>
-            <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
+            <div className="mb-12 flex flex-wrap items-end justify-between gap-6 lg:mb-16">
               <div className="max-w-xl">
-                <div className="mb-3 text-sm font-medium uppercase tracking-[0.3em] text-[#6c6a68]">How It Works</div>
+                <div className="mb-3 text-[12px] font-semibold uppercase tracking-[0.2em] text-[#6c6a68]">How It Works</div>
                 <GsapWords
                   text="Three steps from signup to funded"
                   highlight={["funded"]}
@@ -982,95 +718,38 @@ export default function HomePage() {
                   No second phases. No 60-day clocks. No hidden gotchas. Just trade — and get paid.
                 </p>
               </div>
-              <Magnetic className="hidden md:inline-block">
-                <Link href="/rules" className="inline-flex h-11 items-center gap-2 rounded-full border border-[#0c0c0c]/20 px-5 text-[15px] font-medium text-[#0c0c0c] transition-all duration-300 hover:rounded-lg hover:bg-[#0c0c0c]/5">
-                  Read the full rules
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </Magnetic>
+              <Link href="/rules" className="hidden h-11 items-center gap-2 rounded-full border border-[#0c0c0c]/20 px-5 text-[15px] font-medium text-[#0c0c0c] transition-all duration-300 hover:rounded-lg hover:bg-[#0c0c0c]/5 md:inline-flex">
+                Read the full rules
+                <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
           </Reveal>
 
-          <div className="grid gap-4 md:gap-5 sm:grid-cols-2">
-            {/* Step 01 */}
-            <Reveal>
-              <TiltCard intensity={5} glare={false} className="h-full">
-                <div className="flex h-full flex-col rounded-3xl border border-[#0c0c0c]/10 bg-white/40 p-7 md:backdrop-blur-sm">
-                  <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#cbfb45]">Step 01</span>
-                  <h3 className="mb-4 text-xl font-bold tracking-tight text-[#0c0c0c]">Pass the evaluation</h3>
-                  <div className="flex flex-col gap-4">
-                    {[
-                      { icon: Target, t: "Hit a 10% profit target", s: "Reach and maintain a 10% profit target." },
-                      { icon: Shield, t: "Respect 4% daily / 8% max drawdown", s: "Stay within 4% daily and 8% overall limits." },
-                      { icon: Clock, t: "Minimum 3 trading days, no time limit", s: "Trade for at least 3 days. No time limit." },
-                    ].map((b) => (
-                      <div key={b.t} className="flex gap-3">
-                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#0c0c0c]">
-                          <b.icon className="h-4 w-4 text-[#cbfb45]" strokeWidth={2} />
-                        </span>
-                        <div>
-                          <div className="text-[14px] font-semibold text-[#0c0c0c]">{b.t}</div>
-                          <div className="text-[13px] text-[#6c6a68]">{b.s}</div>
-                        </div>
-                      </div>
-                    ))}
+          <div className="mx-auto flex max-w-5xl flex-col">
+            {STEPS.map((step, i) => (
+              <Reveal key={step.badge} delay={i * 0.08}>
+                <div className="grid gap-6 border-t border-[#0c0c0c]/10 py-10 md:grid-cols-[110px_1fr_1.3fr] md:gap-10 lg:py-14">
+                  <div className="select-none text-5xl font-black leading-none tracking-[-0.04em] text-[#0c0c0c]/15 lg:text-7xl">
+                    {String(i + 1).padStart(2, "0")}
                   </div>
-                </div>
-              </TiltCard>
-            </Reveal>
-
-            {/* Step 02 */}
-            <Reveal delay={0.1}>
-              <TiltCard intensity={5} className="h-full">
-                <div className="flex h-full flex-col rounded-3xl bg-[#0c0c0c] p-7">
-                  <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#cbfb45] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#0c0c0c]">Step 02</span>
-                  <h3 className="mb-6 text-xl font-bold tracking-tight text-white">Unlock funded account</h3>
-                  <div className="flex flex-col gap-4">
-                    {[
-                      { icon: KeyRound, label: "Account credentials", value: "In under 24 hours" },
-                      { icon: DollarSign, label: "Up to $200,000", value: "In scaled capital" },
-                      { icon: Shield, label: "Same rules", value: "No daily target pressure" },
-                    ].map((s) => (
-                      <div key={s.label} className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-4">
-                        <span className="mb-2 flex h-9 w-9 items-center justify-center rounded-lg bg-white/[0.06]">
-                          <s.icon className="h-4 w-4 text-[#cbfb45]" strokeWidth={1.8} />
-                        </span>
-                        <div className="text-[14px] font-semibold text-white">{s.label}</div>
-                        <div className="text-[13px] text-white/45">{s.value}</div>
-                      </div>
-                    ))}
+                  <div>
+                    <span className="mb-4 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#cbfb45]">
+                      {step.badge}
+                    </span>
+                    <h3 className="text-2xl font-bold tracking-tight text-[#0c0c0c] lg:text-3xl">{step.title}</h3>
                   </div>
+                  <StepBullets step={{ ...step, dark: false }} />
                 </div>
-              </TiltCard>
-            </Reveal>
-
-            {/* Step 03 */}
-            <Reveal delay={0.2}>
-              <TiltCard intensity={5} glare={false} className="h-full">
-                <div className="flex h-full flex-col rounded-3xl border border-[#0c0c0c]/10 bg-white/40 p-7 md:backdrop-blur-sm">
-                  <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#cbfb45]">Step 03</span>
-                  <h3 className="mb-4 text-xl font-bold tracking-tight text-[#0c0c0c]">Trade &amp; get paid</h3>
-                  <div className="flex flex-col gap-4">
-                    {[
-                      { icon: CalendarCheck, t: "First payout 14 days", s: "Receive your first payout 14 days after your first trade." },
-                      { icon: Percent, t: "Up to 90% profit split", s: "Keep up to 90% of profits. Paid bi-weekly." },
-                      { icon: RotateCcw, t: "100% refund on payout #1", s: "We refund your full challenge fee with payout #1." },
-                    ].map((b) => (
-                      <div key={b.t} className="flex gap-3">
-                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#0c0c0c]">
-                          <b.icon className="h-4 w-4 text-[#cbfb45]" strokeWidth={2} />
-                        </span>
-                        <div>
-                          <div className="text-[14px] font-semibold text-[#0c0c0c]">{b.t}</div>
-                          <div className="text-[13px] text-[#6c6a68]">{b.s}</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </TiltCard>
-            </Reveal>
+              </Reveal>
+            ))}
           </div>
+
+          <Reveal className="mt-2 md:hidden">
+            <Link href="/rules" className="inline-flex h-11 items-center gap-2 rounded-full border border-[#0c0c0c]/20 px-5 text-[15px] font-medium text-[#0c0c0c] transition-all duration-300 hover:rounded-lg hover:bg-[#0c0c0c]/5">
+              Read the full rules
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Reveal>
         </div>
       </section>
 
@@ -1109,35 +788,31 @@ export default function HomePage() {
                 ))}
               </div>
 
-              {/* Orbit graphic */}
+              {/* Platform graphic */}
               <div className="relative hidden w-[44%] items-center justify-center py-8 lg:flex">
-                <Floating amplitude={10} duration={7}>
-                  <div className="relative flex h-[340px] w-[340px] items-center justify-center">
-                    <div className="absolute inset-[-30px] animate-[spin_20s_linear_infinite]">
-                      <div className="absolute inset-0 rounded-full border border-[#0c0c0c]/10" />
-                      <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 animate-[spin_20s_linear_infinite_reverse]">
-                        <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-[#0c0c0c] shadow-lg">
-                          <img src="/images/icon-mt5.svg" alt="MT5" className="h-8 w-8 rounded-lg" />
-                        </div>
-                      </div>
-                      <div className="absolute bottom-[13%] left-[3%] -translate-x-1/2 animate-[spin_20s_linear_infinite_reverse]">
-                        <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-[#0c0c0c] shadow-lg">
-                          <img src="/images/icon-dxtrade.svg" alt="DXTrade" className="h-8 w-8 rounded-lg" />
-                        </div>
-                      </div>
-                      <div className="absolute bottom-[13%] right-[3%] translate-x-1/2 animate-[spin_20s_linear_infinite_reverse]">
-                        <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-[#0c0c0c] shadow-lg">
-                          <img src="/images/icon-tpp-terminal.webp" alt="TPP Terminal" className="h-10 w-10 rounded-lg object-cover" />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="absolute inset-4 rounded-full border border-[#0c0c0c]/15 animate-[spin_12s_linear_infinite_reverse]" />
-                    <div className="absolute inset-10 rounded-full border border-[#0c0c0c]/20 animate-[spin_8s_linear_infinite]" />
-                    <div className="relative z-10 flex h-[160px] w-[160px] items-center justify-center rounded-full border border-white/[0.05] bg-[#0c0c0c]">
-                      <span className="text-5xl font-bold tracking-tighter text-[#cbfb45]">TPP</span>
+                <div className="relative flex h-[340px] w-[340px] items-center justify-center">
+                  <div className="absolute inset-[-30px] rounded-full border border-[#0c0c0c]/10" />
+                  <div className="absolute inset-4 rounded-full border border-[#0c0c0c]/15" />
+                  <div className="absolute inset-10 rounded-full border border-[#0c0c0c]/20" />
+                  <div className="absolute left-1/2 top-[-30px] -translate-x-1/2 -translate-y-1/2">
+                    <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-[#0c0c0c] shadow-lg">
+                      <img src="/images/icon-mt5.svg" alt="MT5" className="h-8 w-8 rounded-lg" />
                     </div>
                   </div>
-                </Floating>
+                  <div className="absolute bottom-[8%] left-[-2%] -translate-x-1/2">
+                    <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-[#0c0c0c] shadow-lg">
+                      <img src="/images/icon-dxtrade.svg" alt="DXTrade" className="h-8 w-8 rounded-lg" />
+                    </div>
+                  </div>
+                  <div className="absolute bottom-[8%] right-[-2%] translate-x-1/2">
+                    <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-[#0c0c0c] shadow-lg">
+                      <img src="/images/icon-tpp-terminal.webp" alt="TPP Terminal" className="h-10 w-10 rounded-lg object-cover" />
+                    </div>
+                  </div>
+                  <div className="relative z-10 flex h-[160px] w-[160px] items-center justify-center rounded-full border border-white/[0.05] bg-[#0c0c0c]">
+                    <span className="text-5xl font-bold tracking-tighter text-[#cbfb45]">TPP</span>
+                  </div>
+                </div>
               </div>
 
               <div className="flex w-full flex-col gap-5 lg:w-[28%]">
@@ -1191,18 +866,21 @@ export default function HomePage() {
             transition={{ repeat: Infinity, ease: "linear", duration: 40 }}
           >
             {[...testimonials, ...testimonials].map((t, i) => (
-              <div key={i} className="flex h-[180px] w-[300px] flex-col justify-between rounded-[1rem] bg-[#cbfb45] p-6 text-[#0c0c0c] shadow-sm md:h-[200px] md:w-[350px]">
-                <p className="text-[13px] font-semibold leading-relaxed md:text-[14px]">&ldquo;{t.body}&rdquo;</p>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0c0c0c] text-[13px] font-bold text-white">
-                    {t.name.split(" ").map((n) => n[0]).join("")}
-                  </div>
-                  <div>
-                    <div className="text-[14px] font-bold">{t.name}</div>
-                    <div className="flex items-center gap-1 text-[12px] font-semibold opacity-70">
-                      <CheckCircle2 className="h-3 w-3" strokeWidth={3} /> {t.payout} paid
+              <div key={i} className="flex h-[190px] w-[300px] flex-col justify-between rounded-2xl border border-[#0c0c0c]/10 bg-white/50 p-6 text-[#0c0c0c] md:h-[210px] md:w-[350px]">
+                <p className="text-[13px] font-medium leading-relaxed md:text-[14px]">&ldquo;{t.body}&rdquo;</p>
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0c0c0c] text-[13px] font-bold text-white">
+                      {t.name.split(" ").map((n) => n[0]).join("")}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="truncate text-[14px] font-bold">{t.name}</div>
+                      <div className="truncate text-[12px] font-medium text-[#6c6a68]">{t.handle}</div>
                     </div>
                   </div>
+                  <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-[#cbfb45] px-2.5 py-1 text-[12px] font-bold">
+                    <CheckCircle2 className="h-3 w-3" strokeWidth={3} /> {t.payout}
+                  </span>
                 </div>
               </div>
             ))}
@@ -1215,18 +893,21 @@ export default function HomePage() {
             transition={{ repeat: Infinity, ease: "linear", duration: 45 }}
           >
             {[...testimonials.slice().reverse(), ...testimonials.slice().reverse()].map((t, i) => (
-              <div key={i} className="flex h-[180px] w-[300px] flex-col justify-between rounded-[1rem] bg-[#cbfb45] p-6 text-[#0c0c0c] shadow-sm md:h-[200px] md:w-[350px]">
-                <p className="text-[13px] font-semibold leading-relaxed md:text-[14px]">&ldquo;{t.body}&rdquo;</p>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0c0c0c] text-[13px] font-bold text-white">
-                    {t.name.split(" ").map((n) => n[0]).join("")}
-                  </div>
-                  <div>
-                    <div className="text-[14px] font-bold">{t.name}</div>
-                    <div className="flex items-center gap-1 text-[12px] font-semibold opacity-70">
-                      <CheckCircle2 className="h-3 w-3" strokeWidth={3} /> {t.payout} paid
+              <div key={i} className="flex h-[190px] w-[300px] flex-col justify-between rounded-2xl border border-[#0c0c0c]/10 bg-white/50 p-6 text-[#0c0c0c] md:h-[210px] md:w-[350px]">
+                <p className="text-[13px] font-medium leading-relaxed md:text-[14px]">&ldquo;{t.body}&rdquo;</p>
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0c0c0c] text-[13px] font-bold text-white">
+                      {t.name.split(" ").map((n) => n[0]).join("")}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="truncate text-[14px] font-bold">{t.name}</div>
+                      <div className="truncate text-[12px] font-medium text-[#6c6a68]">{t.handle}</div>
                     </div>
                   </div>
+                  <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-[#cbfb45] px-2.5 py-1 text-[12px] font-bold">
+                    <CheckCircle2 className="h-3 w-3" strokeWidth={3} /> {t.payout}
+                  </span>
                 </div>
               </div>
             ))}
@@ -1251,12 +932,10 @@ export default function HomePage() {
                   <p className="mt-4 max-w-sm text-[15px] leading-relaxed text-white/50">
                     Everything you need to know before getting started. For the full list, see the rules page.
                   </p>
-                  <Magnetic className="mt-8 hidden lg:inline-block">
-                    <Link href="/rules" className="inline-flex h-11 items-center gap-2 rounded-full border border-white/20 px-5 text-[15px] font-medium text-white transition-all duration-300 hover:rounded-lg hover:border-[#cbfb45] hover:text-[#cbfb45]">
-                      See all questions
-                      <ArrowRight className="h-4 w-4" />
-                    </Link>
-                  </Magnetic>
+                  <Link href="/rules" className="mt-8 hidden h-11 items-center gap-2 rounded-full border border-white/20 px-5 text-[15px] font-medium text-white transition-all duration-300 hover:rounded-lg hover:border-[#cbfb45] hover:text-[#cbfb45] lg:inline-flex">
+                    See all questions
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
                 </div>
               </Reveal>
 
@@ -1276,6 +955,9 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ═══════════════ SECTION 9.5 — PAYOUT METHODS & TRUSTPILOT ═══════════════ */}
+      <PayoutMethodsStrip />
+
       {/* ═══════════════ SECTION 10 — FINAL CTA ═══════════════ */}
       <section className="w-full py-16 lg:py-24">
         <div className="w-full px-5 lg:px-10">
@@ -1291,19 +973,20 @@ export default function HomePage() {
                 Join thousands of traders who chose transparency over gimmicks. Your first payout is 14 days away.
               </p>
               <div className="flex flex-wrap justify-center gap-3">
-                <Magnetic>
-                  <Link href="/dashboard/new-challenge" className="group inline-flex h-12 items-center gap-2 rounded-full bg-[#0c0c0c] pl-2 pr-5 text-[15px] font-semibold text-white transition-all duration-300 hover:rounded-xl">
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#cbfb45] transition-all duration-300 group-hover:rounded-md">
-                      <ArrowUpRight className="h-4 w-4 text-[#0c0c0c] transition-transform duration-300 group-hover:rotate-45" />
-                    </span>
-                    Start your challenge
-                  </Link>
-                </Magnetic>
-                <Magnetic>
-                  <Link href="/rules" className="inline-flex h-12 items-center rounded-full border border-[#0c0c0c]/20 px-6 text-[15px] font-medium text-[#0c0c0c] transition-all duration-300 hover:rounded-xl hover:bg-[#0c0c0c]/5">
-                    Read the rules
-                  </Link>
-                </Magnetic>
+                <Link href="/dashboard/new-challenge" className="group inline-flex h-12 items-center gap-2 rounded-full bg-[#0c0c0c] pl-2 pr-5 text-[15px] font-semibold text-white transition-all duration-300 hover:rounded-xl">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#cbfb45] transition-all duration-300 group-hover:rounded-md">
+                    <ArrowUpRight className="h-4 w-4 text-[#0c0c0c] transition-transform duration-300 group-hover:rotate-45" />
+                  </span>
+                  Start your challenge
+                </Link>
+                <Link href="/rules" className="inline-flex h-12 items-center rounded-full border border-[#0c0c0c]/20 px-6 text-[15px] font-medium text-[#0c0c0c] transition-all duration-300 hover:rounded-xl hover:bg-[#0c0c0c]/5">
+                  Read the rules
+                </Link>
+              </div>
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] font-medium text-[#0c0c0c]/60">
+                <span className="inline-flex items-center gap-1.5"><Clock className="h-3.5 w-3.5" /> Payouts under 24h</span>
+                <span className="inline-flex items-center gap-1.5"><Percent className="h-3.5 w-3.5" /> Up to 90% split</span>
+                <span className="inline-flex items-center gap-1.5"><Shield className="h-3.5 w-3.5" /> 100% fee refund</span>
               </div>
             </div>
           </Reveal>
