@@ -8,6 +8,15 @@ export async function middleware(request: NextRequest) {
     },
   });
 
+  // If Supabase env vars are not configured (e.g. preview environment),
+  // skip auth checks so public pages still render.
+  if (
+    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  ) {
+    return supabaseResponse;
+  }
+
   const cookieDomain = process.env.NEXT_PUBLIC_COOKIE_DOMAIN;
   const cookieOptions = cookieDomain ? { domain: cookieDomain } : undefined;
 
