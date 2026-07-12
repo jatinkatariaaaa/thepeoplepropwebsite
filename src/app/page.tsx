@@ -35,10 +35,8 @@ import {
   RotateCcw,
   BadgeDollarSign,
   Target,
-  KeyRound,
   DollarSign,
   Percent,
-  CalendarCheck,
   ArrowRight,
   ArrowUpRight,
 } from "lucide-react";
@@ -406,179 +404,6 @@ function CustomCursor() {
         transition={{ type: "spring", stiffness: 500, damping: 30 }}
       />
     </>
-  );
-}
-
-/* ─────────────────────────────────────────────────────────────
-   Shared evaluation-step data — used by BOTH the mobile stacked
-   grid and the desktop pinned horizontal-scroll rail.
-   ───────────────────────────────────────────────────────────── */
-type StepBullet = { icon: typeof Target; t: string; s: string };
-type Step = { badge: string; title: string; dark: boolean; bullets: StepBullet[] };
-
-const STEPS: Step[] = [
-  {
-    badge: "Step 01",
-    title: "Pass the evaluation",
-    dark: false,
-    bullets: [
-      { icon: Target, t: "Hit a 10% profit target", s: "Reach and maintain a 10% profit target." },
-      { icon: Shield, t: "Respect 4% daily / 8% max drawdown", s: "Stay within 4% daily and 8% overall limits." },
-      { icon: Clock, t: "Minimum 3 trading days, no time limit", s: "Trade for at least 3 days. No time limit." },
-    ],
-  },
-  {
-    badge: "Step 02",
-    title: "Unlock funded account",
-    dark: true,
-    bullets: [
-      { icon: KeyRound, t: "Account credentials", s: "Delivered in under 24 hours." },
-      { icon: DollarSign, t: "Up to $200,000", s: "In scaled capital." },
-      { icon: Shield, t: "Same rules", s: "No daily target pressure." },
-    ],
-  },
-  {
-    badge: "Step 03",
-    title: "Trade & get paid",
-    dark: false,
-    bullets: [
-      { icon: CalendarCheck, t: "First payout 14 days", s: "Receive your first payout 14 days after your first trade." },
-      { icon: Percent, t: "Up to 90% profit split", s: "Keep up to 90% of profits. Paid bi-weekly." },
-      { icon: RotateCcw, t: "100% refund on payout #1", s: "We refund your full challenge fee with payout #1." },
-    ],
-  },
-];
-
-function StepBullets({ step }: { step: Step }) {
-  return (
-    <div className="flex flex-col gap-4">
-      {step.bullets.map((b) => (
-        <div key={b.t} className="flex gap-3">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#0c0c0c]">
-            <b.icon className="h-4 w-4 text-[#cbfb45]" strokeWidth={2} />
-          </span>
-          <div>
-            <div className={cn("text-[14px] font-semibold", step.dark ? "text-white" : "text-[#0c0c0c]")}>{b.t}</div>
-            <div className={cn("text-[13px]", step.dark ? "text-white/45" : "text-[#6c6a68]")}>{b.s}</div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-/* ─────────────────────────────────────────────────────────────
-   PinnedSteps — desktop only. Pins the section and translates a
-   horizontal rail of step panels via GSAP ScrollTrigger
-   (synced with Lenis through the global ticker).
-   ───────────────────────────────────────────────────────────── */
-function PinnedSteps() {
-  const reduced = useReducedMotion();
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (reduced || !sectionRef.current || !trackRef.current) return;
-    const mm = gsap.matchMedia();
-    mm.add("(min-width: 1024px)", () => {
-      const ctx = gsap.context(() => {
-        const track = trackRef.current!;
-        const getShift = () => Math.max(0, track.scrollWidth - window.innerWidth);
-
-        gsap.to(track, {
-          x: () => -getShift(),
-          ease: "none",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top top",
-            end: () => "+=" + getShift(),
-            scrub: 1,
-            pin: true,
-            anticipatePin: 1,
-            invalidateOnRefresh: true,
-          },
-        });
-
-        gsap.fromTo(
-          "[data-steps-progress]",
-          { scaleX: 0 },
-          {
-            scaleX: 1,
-            ease: "none",
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: "top top",
-              end: () => "+=" + getShift(),
-              scrub: 1,
-            },
-          }
-        );
-      }, sectionRef);
-      return () => ctx.revert();
-    });
-    return () => mm.revert();
-  }, [reduced]);
-
-  return (
-    <div ref={sectionRef} className="relative hidden h-dvh overflow-hidden lg:block">
-      <div className="absolute left-10 right-10 top-[calc(7.5rem+1rem)] z-20 h-[2px] bg-[#0c0c0c]/10">
-        <div data-steps-progress className="h-full w-full origin-left scale-x-0 bg-[#0c0c0c]" />
-      </div>
-
-      <div ref={trackRef} className="flex h-full w-max items-center will-change-transform">
-        {/* Intro panel */}
-        <div className="flex h-full w-screen shrink-0 flex-col justify-center px-10 xl:px-20">
-          <div className="max-w-xl">
-            <div className="mb-3 text-sm font-medium uppercase tracking-[0.3em] text-[#6c6a68]">How It Works</div>
-            <h2 className="font-bold tracking-[-0.03em] text-[#0c0c0c]" style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}>
-              Three steps from
-              <br />
-              signup to <span className="text-[#cbfb45]">funded</span>
-            </h2>
-            <p className="mt-5 max-w-md text-[15px] leading-relaxed text-[#6c6a68]">
-              No second phases. No 60-day clocks. No hidden gotchas. Just keep scrolling — then trade and get paid.
-            </p>
-            <div className="mt-8 inline-flex items-center gap-2 text-[14px] font-medium text-[#0c0c0c]/50">
-              Scroll to explore <ArrowRight className="h-4 w-4" />
-            </div>
-          </div>
-        </div>
-
-        {/* Step panels */}
-        {STEPS.map((step, i) => (
-          <div key={step.badge} className="flex h-full w-screen shrink-0 items-center px-10 xl:px-20">
-            <div className="grid w-full max-w-6xl grid-cols-[auto_1fr] items-center gap-10 xl:gap-16">
-              <div
-                className="select-none font-black leading-none tracking-[-0.05em] text-[#0c0c0c]/[0.08]"
-                style={{ fontSize: "clamp(8rem, 20vw, 22rem)" }}
-              >
-                {String(i + 1).padStart(2, "0")}
-              </div>
-              <div
-                data-cursor="hover"
-                className={cn(
-                  "max-w-md rounded-[2rem] p-9 shadow-xl",
-                  step.dark ? "bg-[#0c0c0c]" : "border border-[#0c0c0c]/10 bg-white/50 md:backdrop-blur-sm"
-                )}
-              >
-                <span
-                  className={cn(
-                    "mb-5 inline-flex w-fit items-center rounded-full px-3 py-1 text-[12px] font-semibold uppercase tracking-wider",
-                    step.dark ? "bg-[#cbfb45] text-[#0c0c0c]" : "bg-[#0c0c0c] text-[#cbfb45]"
-                  )}
-                >
-                  {step.badge}
-                </span>
-                <h3 className={cn("mb-6 text-2xl font-bold tracking-tight", step.dark ? "text-white" : "text-[#0c0c0c]")}>
-                  {step.title}
-                </h3>
-                <StepBullets step={step} />
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
   );
 }
 
@@ -961,114 +786,99 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ═══════════════ SECTION 6 — EVALUATION STEPS (merged from V1) ═══════════════ */}
-      {/* Desktop: full-bleed pinned horizontal-scroll steps */}
-      <PinnedSteps />
-
-      {/* Mobile / tablet: header + stacked step cards */}
-      <section className="w-full pb-16 lg:hidden">
-        <div className="w-full px-5">
+      {/* ═══════════════ SECTION 6 — HOW IT WORKS (Atlas-style timeline + 3 cards) ═══════════════ */}
+      <section id="how" className="w-full pb-16 lg:pb-24">
+        <div className="w-full px-5 md:px-8">
+          {/* Timeline bar (desktop only) */}
           <Reveal>
-            <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
-              <div className="max-w-xl">
-                <div className="mb-3 text-sm font-medium uppercase tracking-[0.3em] text-[#6c6a68]">How It Works</div>
-                <GsapWords
-                  text="Three steps from signup to funded"
-                  highlight={["funded"]}
-                  className="font-bold tracking-[-0.03em] text-[#0c0c0c]"
-                  style={{ fontSize: "clamp(2rem, 5vw, 3.25rem)" }}
+            <div className="relative mb-8 hidden lg:block">
+              <div className="relative flex h-16 items-center rounded-full border border-[#0c0c0c]/10 bg-white/40">
+                {/* dotted line */}
+                <div
+                  className="absolute left-10 right-10 top-1/2 h-px -translate-y-1/2 opacity-40"
+                  style={{
+                    backgroundImage: "radial-gradient(circle, rgba(12,12,12,0.55) 1px, transparent 1.3px)",
+                    backgroundSize: "8px 1px",
+                    backgroundRepeat: "repeat-x",
+                  }}
+                  aria-hidden="true"
                 />
-                <p className="mt-4 max-w-md text-[15px] leading-relaxed text-[#6c6a68]">
-                  No second phases. No 60-day clocks. No hidden gotchas. Just trade — and get paid.
-                </p>
+                <ArrowRight className="absolute right-5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#0c0c0c]/40" strokeWidth={2} />
+                {/* First Step pill — above middle card center */}
+                <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#6c6a68] px-4 py-1.5 text-[12.5px] font-semibold text-white whitespace-nowrap">
+                  First Step
+                </span>
+                {/* Final Step pill — above right card center */}
+                <span className="absolute left-[83.33%] top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#0c0c0c] px-4 py-1.5 text-[12.5px] font-semibold text-[#cbfb45] whitespace-nowrap">
+                  Final Step
+                </span>
               </div>
-              <Magnetic className="hidden md:inline-block">
-                <Link href="/rules" className="inline-flex h-11 items-center gap-2 rounded-full border border-[#0c0c0c]/20 px-5 text-[15px] font-medium text-[#0c0c0c] transition-all duration-300 hover:rounded-lg hover:bg-[#0c0c0c]/5">
-                  Read the full rules
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </Magnetic>
+              {/* connector stems */}
+              <span className="absolute left-1/2 top-full h-8 w-px -translate-x-1/2 bg-[#0c0c0c]/20" aria-hidden="true" />
+              <span className="absolute left-[83.33%] top-full h-8 w-px -translate-x-1/2 bg-[#0c0c0c]/20" aria-hidden="true" />
             </div>
           </Reveal>
 
-          <div className="grid gap-4 md:gap-5 sm:grid-cols-2">
-            {/* Step 01 */}
+          {/* Cards */}
+          <div className="grid gap-4 lg:grid-cols-3 lg:gap-5">
+            {/* Card 1 — intro */}
             <Reveal>
-              <TiltCard intensity={5} glare={false} className="h-full">
-                <div className="flex h-full flex-col rounded-3xl border border-[#0c0c0c]/10 bg-white/40 p-7 md:backdrop-blur-sm">
-                  <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#cbfb45]">Step 01</span>
-                  <h3 className="mb-4 text-xl font-bold tracking-tight text-[#0c0c0c]">Pass the evaluation</h3>
-                  <div className="flex flex-col gap-4">
-                    {[
-                      { icon: Target, t: "Hit a 10% profit target", s: "Reach and maintain a 10% profit target." },
-                      { icon: Shield, t: "Respect 4% daily / 8% max drawdown", s: "Stay within 4% daily and 8% overall limits." },
-                      { icon: Clock, t: "Minimum 3 trading days, no time limit", s: "Trade for at least 3 days. No time limit." },
-                    ].map((b) => (
-                      <div key={b.t} className="flex gap-3">
-                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#0c0c0c]">
-                          <b.icon className="h-4 w-4 text-[#cbfb45]" strokeWidth={2} />
-                        </span>
-                        <div>
-                          <div className="text-[14px] font-semibold text-[#0c0c0c]">{b.t}</div>
-                          <div className="text-[13px] text-[#6c6a68]">{b.s}</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+              <div className="flex h-full min-h-[340px] flex-col rounded-[2rem] border border-[#0c0c0c]/10 bg-white/40 p-8 md:backdrop-blur-sm lg:min-h-[460px] lg:p-9">
+                <div className="text-[15px] font-medium text-[#6c6a68]">How it works</div>
+                <h2
+                  className="mt-4 font-bold tracking-[-0.03em] text-balance"
+                  style={{ fontSize: "clamp(2.75rem, 4.5vw, 4rem)", lineHeight: 1.02 }}
+                >
+                  <span className="block text-[#0c0c0c]">It&apos;s super</span>
+                  <span className="block text-[#0c0c0c]/40">simple</span>
+                </h2>
+                <div className="mt-auto flex flex-wrap items-center gap-3 pt-10">
+                  <Link
+                    href="/dashboard/new-challenge"
+                    className="inline-flex h-12 items-center rounded-full bg-[#0c0c0c] px-6 text-[15px] font-semibold text-white transition-colors hover:bg-[#0c0c0c]/85"
+                  >
+                    Get Funded
+                  </Link>
+                  <Link
+                    href="/rules"
+                    className="inline-flex h-12 items-center rounded-full bg-[#cbfb45] px-6 text-[15px] font-semibold text-[#0c0c0c] transition-colors hover:bg-[#b9ef2e]"
+                  >
+                    Learn More
+                  </Link>
                 </div>
-              </TiltCard>
+              </div>
             </Reveal>
 
-            {/* Step 02 */}
+            {/* Card 2 — Unlock Account (dark) */}
             <Reveal delay={0.1}>
-              <TiltCard intensity={5} className="h-full">
-                <div className="flex h-full flex-col rounded-3xl bg-[#0c0c0c] p-7">
-                  <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#cbfb45] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#0c0c0c]">Step 02</span>
-                  <h3 className="mb-6 text-xl font-bold tracking-tight text-white">Unlock funded account</h3>
-                  <div className="flex flex-col gap-4">
-                    {[
-                      { icon: KeyRound, label: "Account credentials", value: "In under 24 hours" },
-                      { icon: DollarSign, label: "Up to $200,000", value: "In scaled capital" },
-                      { icon: Shield, label: "Same rules", value: "No daily target pressure" },
-                    ].map((s) => (
-                      <div key={s.label} className="rounded-2xl border border-white/[0.06] bg-white/[0.04] p-4">
-                        <span className="mb-2 flex h-9 w-9 items-center justify-center rounded-lg bg-white/[0.06]">
-                          <s.icon className="h-4 w-4 text-[#cbfb45]" strokeWidth={1.8} />
-                        </span>
-                        <div className="text-[14px] font-semibold text-white">{s.label}</div>
-                        <div className="text-[13px] text-white/45">{s.value}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </TiltCard>
+              <div className="flex h-full min-h-[340px] flex-col rounded-[2rem] bg-[#1d2523] p-8 lg:min-h-[460px] lg:p-9">
+                <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#6c6a68] px-3.5 py-1 text-[12px] font-semibold text-white lg:hidden">
+                  First Step
+                </span>
+                <h3 className="text-[32px] font-bold tracking-tight text-white lg:text-[38px]">Unlock Account</h3>
+                <span className="mt-4 inline-flex w-fit items-center rounded-full bg-white px-3.5 py-1.5 text-[13px] font-semibold text-[#0c0c0c]">
+                  Up to $200k
+                </span>
+                <p className="mt-auto max-w-sm pt-10 text-[17px] leading-relaxed text-white/45 lg:text-[19px]">
+                  Take a challenge or get an instant funding account today.
+                </p>
+              </div>
             </Reveal>
 
-            {/* Step 03 */}
+            {/* Card 3 — Trade & Get Paid (lime) */}
             <Reveal delay={0.2}>
-              <TiltCard intensity={5} glare={false} className="h-full">
-                <div className="flex h-full flex-col rounded-3xl border border-[#0c0c0c]/10 bg-white/40 p-7 md:backdrop-blur-sm">
-                  <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3 py-1 text-[12px] font-semibold uppercase tracking-wider text-[#cbfb45]">Step 03</span>
-                  <h3 className="mb-4 text-xl font-bold tracking-tight text-[#0c0c0c]">Trade &amp; get paid</h3>
-                  <div className="flex flex-col gap-4">
-                    {[
-                      { icon: CalendarCheck, t: "First payout 14 days", s: "Receive your first payout 14 days after your first trade." },
-                      { icon: Percent, t: "Up to 90% profit split", s: "Keep up to 90% of profits. Paid bi-weekly." },
-                      { icon: RotateCcw, t: "100% refund on payout #1", s: "We refund your full challenge fee with payout #1." },
-                    ].map((b) => (
-                      <div key={b.t} className="flex gap-3">
-                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#0c0c0c]">
-                          <b.icon className="h-4 w-4 text-[#cbfb45]" strokeWidth={2} />
-                        </span>
-                        <div>
-                          <div className="text-[14px] font-semibold text-[#0c0c0c]">{b.t}</div>
-                          <div className="text-[13px] text-[#6c6a68]">{b.s}</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </TiltCard>
+              <div className="flex h-full min-h-[340px] flex-col rounded-[2rem] bg-[#cbfb45] p-8 lg:min-h-[460px] lg:p-9">
+                <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3.5 py-1 text-[12px] font-semibold text-[#cbfb45] lg:hidden">
+                  Final Step
+                </span>
+                <h3 className="text-[32px] font-bold tracking-tight text-[#0c0c0c] lg:text-[38px]">Trade &amp; Get Paid</h3>
+                <span className="mt-4 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3.5 py-1.5 text-[13px] font-semibold text-[#cbfb45]">
+                  Up to 90% of the Profit
+                </span>
+                <p className="mt-auto max-w-sm pt-10 text-[17px] leading-relaxed text-[#0c0c0c]/75 lg:text-[19px]">
+                  Trade on your favorite platform and get paid on demand.
+                </p>
+              </div>
             </Reveal>
           </div>
         </div>
