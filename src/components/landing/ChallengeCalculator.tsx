@@ -14,7 +14,6 @@ import {
   FileText,
   Lock,
   Percent,
-  Plus,
   Scale,
   ShieldAlert,
   ShieldCheck,
@@ -299,16 +298,6 @@ export function ChallengeCalculator() {
     );
   }
 
-  function toggleAddOn(k: AddOnKey) {
-    setSelectedAddOns((curr) =>
-      curr.includes(k) ? curr.filter((x) => x !== k) : [...curr, k],
-    );
-  }
-
-  const applicableAddOns = addOns.filter((a) =>
-    a.appliesTo.includes(program.key),
-  );
-
   return (
     <section id="calculator" className="w-full pb-16 lg:pb-24">
       <div className="w-full px-0">
@@ -371,7 +360,7 @@ export function ChallengeCalculator() {
                           "inline-flex items-center rounded-full px-5 py-2.5 text-[14px] font-semibold transition-colors",
                           active
                             ? "bg-white text-[#0c0c0c]"
-                            : "bg-white/[0.05] text-white/80 hover:bg-white/[0.09] hover:text-white",
+                            : "bg-[#2b2b2b] text-white hover:bg-[#383838]",
                         )}
                       >
                         {p.shortLabel}
@@ -406,7 +395,7 @@ export function ChallengeCalculator() {
                         disabled && "opacity-55 cursor-not-allowed",
                         active && !disabled
                           ? "bg-[#bcff2e] text-[#0c0c0c]"
-                          : "bg-white/[0.05] text-white/80 hover:bg-white/[0.09] hover:text-white",
+                          : "bg-[#2b2b2b] text-white hover:bg-[#383838]",
                       )}
                     >
                       {p.label}
@@ -449,7 +438,7 @@ export function ChallengeCalculator() {
                           !offered && "opacity-35 cursor-not-allowed",
                           active
                             ? "bg-white text-[#0c0c0c]"
-                            : "bg-white/[0.05] text-white/80 hover:bg-white/[0.09] hover:text-white",
+                            : "bg-[#2b2b2b] text-white hover:bg-[#383838]",
                         )}
                       >
                         {formatSize(s).replace("$", "")}
@@ -465,99 +454,9 @@ export function ChallengeCalculator() {
               </div>
             </div>
 
-            {/* Add-ons + promo card */}
+            {/* Promo code card */}
             <div className="bg-[#141414] border border-white/[0.05] rounded-3xl p-5 md:p-6">
             <div>
-              <h3 className="text-white font-semibold text-[17px] mb-4">Optional add-ons</h3>
-              <div className="grid grid-cols-2 gap-2">
-                {applicableAddOns.map((a) => {
-                  const active = selectedAddOns.includes(a.key);
-                  return (
-                    <button
-                      key={a.key}
-                      type="button"
-                      onClick={() => toggleAddOn(a.key)}
-                      aria-pressed={active}
-                      className={cn(
-                        "group relative rounded-3xl border p-3 sm:py-3 sm:px-4 text-left transition-all flex flex-col sm:block justify-between min-h-[85px] sm:min-h-0",
-                        active
-                          ? "border-[#bcff2e]/30 bg-white/[0.04] text-white"
-                          : "border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.04]",
-                      )}
-                    >
-                      {/* Desktop layout wrapper & Mobile top row */}
-                      <div className="flex items-center sm:items-center justify-between w-full sm:w-auto gap-3">
-                        {/* Mobile percentage (hidden on desktop) */}
-                        <span
-                          className={cn(
-                            "sm:hidden text-[11px] font-bold tabular-nums mt-0",
-                            active ? "text-[#bcff2e]" : "text-white/70",
-                          )}
-                        >
-                          {a.feePct === 0 ? "Free" : `+${a.feePct}%`}
-                        </span>
-
-                        {/* Desktop text content (hidden on mobile) */}
-                        <div className="hidden sm:block min-w-0">
-                          <p
-                            className={cn(
-                              "text-[13px] font-medium leading-tight",
-                              active ? "text-white" : "text-white/60",
-                            )}
-                          >
-                            {a.label}
-                          </p>
-                        </div>
-
-                        {/* Checkbox (shared) */}
-                        <span
-                          className={cn(
-                            "shrink-0 grid place-items-center w-5 h-5 rounded-[6px] border transition-colors",
-                            active
-                              ? "bg-[#bcff2e] border-[#bcff2e] text-[#0c0c0c]"
-                              : "border-white/[0.1] bg-transparent",
-                          )}
-                        >
-                          {active ? (
-                            <Check className="w-3.5 h-3.5" strokeWidth={3} />
-                          ) : (
-                            <Plus
-                              className="w-3.5 h-3.5 text-white/40 group-hover:text-white/60"
-                              strokeWidth={2.5}
-                            />
-                          )}
-                        </span>
-                      </div>
-
-                      {/* Mobile label (bottom row, hidden on desktop) */}
-                      <div className="sm:hidden mt-2 w-full">
-                        <p
-                          className={cn(
-                            "text-[12px] font-medium leading-tight pr-2",
-                            active ? "text-white" : "text-white/60",
-                          )}
-                        >
-                          {a.label}
-                        </p>
-                      </div>
-
-                      {/* Desktop percentage (absolute top-right, hidden on mobile) */}
-                      <span
-                        className={cn(
-                          "hidden sm:block absolute top-3.5 right-11 text-[10.5px] font-medium tabular-nums",
-                          active ? "text-[#bcff2e]" : "text-white/40",
-                        )}
-                      >
-                        {a.feePct === 0 ? "Free" : `+${a.feePct}%`}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Promo / Coupon Code Section */}
-            <div className="mt-8">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-[11px] font-bold text-white/40 tracking-widest uppercase">Promo Code</span>
                 <span className="text-[10px] bg-white/[0.05] text-white/60 px-2 py-0.5 rounded-full uppercase tracking-wider">Optional</span>
