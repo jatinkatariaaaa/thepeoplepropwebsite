@@ -707,18 +707,47 @@ export function ChallengeCalculator() {
             <Button
               onClick={() => router.push('/dashboard/new-challenge')}
               disabled={total == null}
-              className="w-full bg-[#bcff2e] hover:bg-[#a5e622] text-[#0c0c0c] rounded-full h-[54px] text-[15px] font-semibold mb-6 shadow-[0_0_20px_rgba(188,255,46,0.15)] transition-colors"
+              className="w-full bg-[#bcff2e] hover:bg-[#a5e622] text-[#0c0c0c] rounded-2xl h-[54px] text-[15px] font-bold shadow-[0_0_20px_rgba(188,255,46,0.15)] transition-colors"
             >
               Get Funded
+              <ArrowUpRight className="w-4 h-4 ml-1" strokeWidth={2.5} />
             </Button>
 
-            {/* Specs Grey Box */}
-            <div className="bg-white/[0.02] border border-white/[0.05] rounded-[20px] p-5 space-y-4">
+            {/* Refundable fee badge */}
+            {programKey !== "access" && (
+              <div className="mt-3.5 text-center">
+                <span className="inline-flex items-center rounded-full bg-white/[0.05] border border-white/[0.06] px-3.5 py-1.5 text-[10px] font-semibold uppercase tracking-widest text-white/60">
+                  One-time 100% refundable fee
+                </span>
+              </div>
+            )}
+
+            {/* Payment chips */}
+            <div className="mt-4 mb-6 flex items-center justify-center gap-2 flex-wrap">
+              {["VISA", "Mastercard", "PayPal", "Apple Pay", "Crypto"].map((p) => (
+                <span
+                  key={p}
+                  className="rounded-lg bg-white px-2.5 py-1 text-[10px] font-bold text-[#0c0c0c] whitespace-nowrap"
+                >
+                  {p}
+                </span>
+              ))}
+            </div>
+
+            {/* Spec rows (GFT-style) */}
+            <ul className="space-y-2.5">
               {specs.map((row) => {
-                const Icon = row.icon;
+                const SpecIcon = SPEC_ICONS[row.label] ?? Target;
                 return (
-                  <div key={row.label} className="flex items-center justify-between">
-                    <span className="text-[13.5px] text-white/60 font-semibold flex items-center gap-1.5">
+                  <li
+                    key={row.label}
+                    className="flex items-center justify-between gap-3 rounded-2xl bg-white/[0.03] border border-white/[0.04] px-4 py-3.5"
+                  >
+                    <span className="flex items-center gap-3 text-[13.5px] font-medium text-white/85 min-w-0">
+                      <SpecIcon
+                        className="w-4.5 h-4.5 shrink-0 text-[#bcff2e]"
+                        strokeWidth={2.2}
+                      />
                       {row.label}
                     </span>
                     <AnimatePresence mode="popLayout">
@@ -726,16 +755,15 @@ export function ChallengeCalculator() {
                         key={`${row.label}-${program.key}-${effectiveSize}-${selectedAddOns.length}`}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="text-[14px] tabular-nums font-bold text-[#bcff2e] text-right"
+                        className="text-[14px] tabular-nums font-bold text-white text-right shrink-0"
                       >
                         {row.value}
-                        {Icon && <Icon className="inline-block ml-1 w-3.5 h-3.5 text-white/60" strokeWidth={3} />}
                       </motion.span>
                     </AnimatePresence>
-                  </div>
+                  </li>
                 );
               })}
-            </div>
+            </ul>
           </div>
         </div>
 
