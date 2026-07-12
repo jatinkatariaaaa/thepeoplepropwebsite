@@ -14,6 +14,7 @@ import {
   FileText,
   Lock,
   Percent,
+  Plus,
   Scale,
   ShieldAlert,
   ShieldCheck,
@@ -298,6 +299,16 @@ export function ChallengeCalculator() {
     );
   }
 
+  function toggleAddOn(k: AddOnKey) {
+    setSelectedAddOns((curr) =>
+      curr.includes(k) ? curr.filter((x) => x !== k) : [...curr, k],
+    );
+  }
+
+  const applicableAddOns = addOns.filter((a) =>
+    a.appliesTo.includes(program.key),
+  );
+
   return (
     <section id="calculator" className="w-full pb-16 lg:pb-24">
       <div className="w-full px-0">
@@ -453,6 +464,50 @@ export function ChallengeCalculator() {
                 })}
               </div>
             </div>
+
+            {/* Add-ons card */}
+            {applicableAddOns.length > 0 && (
+              <div className="bg-[#141414] border border-white/[0.05] rounded-3xl p-5 md:p-6">
+                <h3 className="text-white font-semibold text-[17px] mb-4">Optional add-ons</h3>
+                <div className="flex flex-wrap items-start gap-x-2.5 gap-y-3">
+                  {applicableAddOns.map((a) => {
+                    const active = selectedAddOns.includes(a.key);
+                    return (
+                      <div key={a.key} className="flex flex-col items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => toggleAddOn(a.key)}
+                          aria-pressed={active}
+                          className={cn(
+                            "inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[14px] font-semibold transition-colors",
+                            active
+                              ? "bg-white text-[#0c0c0c]"
+                              : "bg-[#2b2b2b] text-white hover:bg-[#383838]",
+                          )}
+                        >
+                          {active ? (
+                            <Check className="w-4 h-4 shrink-0" strokeWidth={2.5} />
+                          ) : (
+                            <Plus className="w-4 h-4 shrink-0 text-white/60" strokeWidth={2.5} />
+                          )}
+                          {a.label}
+                        </button>
+                        <span
+                          className={cn(
+                            "inline-flex items-center rounded-md px-2 py-0.5 text-[9.5px] font-bold uppercase tracking-wide",
+                            active
+                              ? "bg-[#bcff2e] text-[#0c0c0c]"
+                              : "bg-white/[0.06] text-white/50",
+                          )}
+                        >
+                          {a.feePct === 0 ? "Free" : `+${a.feePct}%`}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             {/* Promo code card */}
             <div className="bg-[#141414] border border-white/[0.05] rounded-3xl p-5 md:p-6">
