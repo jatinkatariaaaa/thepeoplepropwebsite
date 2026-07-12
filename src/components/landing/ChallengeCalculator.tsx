@@ -7,13 +7,22 @@ import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import {
   ArrowUpRight,
+  Bot,
+  CalendarDays,
   Check,
   Copy,
+  FileText,
   Lock,
+  Percent,
   Plus,
+  Scale,
+  ShieldAlert,
   ShieldCheck,
-  Tag,
+  Target,
+  TrendingDown,
+  Wallet,
   X,
+  type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -48,6 +57,19 @@ import { cn } from "@/lib/utils";
 const DEFAULT_PROGRAM: ProgramKey = "1-step";
 const DEFAULT_SIZE: AccountSize = 25_000;
 const DEFAULT_PLATFORM: PlatformKey = "tppdashboard";
+
+/* Icon per spec row label (GFT-style rows) */
+const SPEC_ICONS: Record<string, LucideIcon> = {
+  "Account size": Wallet,
+  "Profit target": Target,
+  "Max. daily loss": TrendingDown,
+  "Max. overall loss": ShieldAlert,
+  "Min. trading days": CalendarDays,
+  "Profit split": Percent,
+  "Payout cycle": FileText,
+  "Consistency rule": Scale,
+  "Expert advisors": Bot,
+};
 
 export function ChallengeCalculator() {
   const router = useRouter();
@@ -293,290 +315,160 @@ export function ChallengeCalculator() {
         <div className="px-[5px] py-[5px]">
           <div className="relative rounded-2xl bg-[#0c0c0c] border border-white/[0.05] py-16 xl:py-24 px-[15px] lg:px-[35px] overflow-hidden">
             <div className="relative mx-auto max-w-7xl">
-              <div className="text-center mb-10 md:mb-14">
-                <div className="text-sm font-medium text-white/50 tracking-wide mb-4">Navigate to funding</div>
-                <h2 className="tracking-tight font-medium mb-4 text-balance" style={{ fontSize: "clamp(2.25rem, 5.5vw, 4rem)", lineHeight: 1.05 }}>
-                  <span className="block text-white">Choose your</span>
-                  <span className="block text-[#bcff2e]">trading account</span>
+              <div className="text-center mb-8 md:mb-10">
+                <h2
+                  className="tracking-tight font-bold uppercase text-white text-balance mb-4"
+                  style={{ fontSize: "clamp(2.5rem, 7vw, 5rem)", lineHeight: 1 }}
+                >
+                  Choose your account
                 </h2>
+                <div className="flex items-center justify-center gap-2 text-[14px] text-white/70">
+                  <span className="grid place-items-center w-6 h-6 rounded-[7px] bg-[#bcff2e]">
+                    <Lock className="w-3.5 h-3.5 text-[#0c0c0c]" strokeWidth={2.5} />
+                  </span>
+                  Payout Guaranteed
+                </div>
               </div>
 
-        {/* Program type pills (Atlas-style hero bar) - Desktop */}
-        <div className="hidden md:flex mx-auto mb-5 w-full max-w-3xl flex-wrap items-center justify-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.02] p-1.5 backdrop-blur-md">
-          {livePrograms.map((p) => {
-            const active = p.key === program.key;
-            return (
-              <button
-                key={p.key}
-                type="button"
-                onClick={() => selectProgram(p.key)}
-                aria-pressed={active}
-                className={cn(
-                  "relative inline-flex items-center gap-2 rounded-full px-4 md:px-5 py-2 text-[13px] md:text-[13.5px] font-medium transition-colors",
-                  active
-                    ? "bg-[#bcff2e] text-[#0c0c0c] shadow-[0_0_20px_rgba(188,255,46,0.2)]"
-                    : "text-white/60 hover:text-white hover:bg-white/[0.05]",
-                )}
-              >
-                {p.shortLabel}
-                {p.badge && (
-                  <span
-                    className={cn(
-                      "rounded-full px-1.5 py-0.5 text-[9px] tracking-eyebrow font-semibold",
-                      active
-                        ? "bg-amber-100 text-amber-700"
-                        : "bg-amber-50 text-amber-600",
-                    )}
-                  >
-                    {p.badge.toUpperCase()}
-                  </span>
-                )}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Program type segmented control - Mobile */}
-        <div className="md:hidden mx-auto mb-5 flex w-full max-w-full bg-[#111] p-1 rounded-full items-center border border-white/[0.08]">
-          {livePrograms.map((p) => {
-            const active = p.key === program.key;
-            return (
-              <button
-                key={p.key}
-                type="button"
-                onClick={() => selectProgram(p.key)}
-                aria-pressed={active}
-                className={cn(
-                  "relative inline-flex items-center justify-center whitespace-nowrap rounded-full px-2 py-2.5 transition-all flex-1",
-                  active
-                    ? "bg-[#bcff2e] text-[#0c0c0c]"
-                    : "text-white/50 hover:text-white",
-                )}
-              >
-                <span className="text-[11px] sm:text-[12px] font-semibold tracking-tight">{p.shortLabel}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Promo strip (Atlas-style full-width bar) */}
-        <div className="mx-auto mb-10 flex w-full items-center justify-center gap-3 sm:gap-4 rounded-full bg-[#151b16] border border-white/[0.06] px-5 py-3.5 text-[12.5px] text-white/85">
-          <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] text-white/55">
-            <Tag className="w-3 h-3" strokeWidth={2.5} />
-            Limited Time
-          </span>
-          <span className="hidden sm:block text-white/25">•</span>
-          <span>
-            <span className="text-[#bcff2e] font-semibold">50% off</span>
-            <span className="text-white/70"> + free retry</span>
-          </span>
-          <span className="hidden md:block text-white/25">•</span>
-          <a
-            href="#calculator"
-            className="hidden md:inline-block text-white/80 underline underline-offset-4 decoration-white/30 hover:text-white transition-colors font-medium"
-          >
-            Get Funded
-          </a>
-          <span className="text-white/25">•</span>
+        {/* Promo bar (GFT-style) */}
+        <div className="mx-auto mb-6 flex w-full flex-wrap items-center justify-center gap-x-3 gap-y-1.5 rounded-2xl bg-[#1a1a1a] border border-white/[0.05] px-5 py-4 text-[13px] sm:text-[14.5px] font-semibold text-white uppercase tracking-wide">
+          <span>Limited Time</span>
+          <span className="text-white/30">|</span>
+          <span>50% Off + Free Retry</span>
+          <span className="text-white/30">|</span>
           <button
             type="button"
             onClick={() => copy("FIRSTTPP")}
-            className="inline-flex items-center gap-1.5 rounded-full bg-[#bcff2e] px-3 py-1 text-[11.5px] font-mono tracking-wider text-[#0c0c0c] font-semibold hover:bg-[#a5e622] transition-colors"
-            aria-label="Copy promo code"
+            className="inline-flex items-center gap-2 text-[#bcff2e] hover:text-[#a5e622] transition-colors uppercase"
+            aria-label="Copy promo code FIRSTTPP"
           >
+            Code: FIRSTTPP
             {copied ? (
-              <>
-                <Check className="w-3 h-3" strokeWidth={2.5} />
-                Copied
-              </>
+              <Check className="w-4 h-4" strokeWidth={2.5} />
             ) : (
-              <>
-                Code: FIRSTTPP <Copy className="w-3 h-3" strokeWidth={2.5} />
-              </>
+              <Copy className="w-4 h-4" strokeWidth={2.5} />
             )}
           </button>
         </div>
 
         {/* Main grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-[180px_1fr_minmax(0,420px)] gap-5 lg:gap-6 items-start">
-          {/* ── Platform column ── */}
-          <div className="flex flex-col">
-            <div className="mb-4 lg:mb-6">
-              <h3 className="text-white font-medium text-[17px] lg:text-[20px] leading-snug text-pretty">Choose a platform</h3>
-              <span className="hidden lg:block mt-4 h-10 w-px bg-gradient-to-b from-white/20 to-transparent" aria-hidden="true" />
-            </div>
-            <div className="bg-[#111] border border-white/[0.05] rounded-[2rem] p-5">
-            {/* Desktop Platform List */}
-            <div className="hidden md:block space-y-2">
-              {livePlatforms.map((p) => {
-                const active = p.key === platformKey;
-                const disabled = p.status === "soon";
-                return (
-                  <button
-                    key={p.key}
-                    type="button"
-                    disabled={disabled}
-                    onClick={() => !disabled && setPlatformKey(p.key)}
-                    aria-pressed={active}
-                    className={cn(
-                      "relative w-full rounded-full border px-3.5 py-3 text-left transition-all",
-                      disabled && "opacity-55 cursor-not-allowed",
-                      active && !disabled
-                        ? "border-[#bcff2e] bg-[#bcff2e] text-[#0c0c0c]"
-                        : "border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.04]",
-                    )}
-                  >
-                    <span
-                      className={cn(
-                        "block text-[13px] font-medium",
-                        active && !disabled
-                          ? "text-[#0c0c0c]"
-                          : "text-white",
-                      )}
-                    >
-                      {p.label}
-                    </span>
-                    <span
-                      className={cn(
-                        "block text-[11px] mt-0.5",
-                        active && !disabled
-                          ? "text-[#0c0c0c]/70"
-                          : "text-white/50",
-                      )}
-                    >
-                      {p.sub}
-                    </span>
-                    {disabled && (
-                      <Lock
-                        className="absolute top-3 right-3 w-3.5 h-3.5 text-white/30"
-                        strokeWidth={2.2}
-                      />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Mobile Platform Segmented Control */}
-            <div className="md:hidden flex w-full max-w-full bg-[#111] p-1 rounded-full items-center border border-white/[0.05]">
-              {livePlatforms.map((p) => {
-                const active = p.key === platformKey;
-                const disabled = p.status === "soon";
-                return (
-                  <button
-                    key={p.key}
-                    type="button"
-                    disabled={disabled}
-                    onClick={() => !disabled && setPlatformKey(p.key)}
-                    aria-pressed={active}
-                    className={cn(
-                      "relative inline-flex flex-col items-center justify-center whitespace-nowrap rounded-full px-1 py-2 transition-all flex-1",
-                      disabled && "opacity-55 cursor-not-allowed",
-                      active && !disabled
-                        ? "bg-[#bcff2e] text-[#0c0c0c]"
-                        : "text-white/50 hover:text-white",
-                    )}
-                  >
-                    <span className="block font-semibold text-[10.5px] sm:text-[11.5px] tracking-tight">
-                      {p.label}
-                    </span>
-                    {disabled && (
-                      <Lock
-                        className="absolute top-1.5 right-2 w-2.5 h-2.5 text-white/30"
-                        strokeWidth={2}
-                      />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-            </div>
-          </div>
-
-          {/* ── Size column ── */}
-          <div className="flex flex-col">
-            <div className="mb-4 lg:mb-6">
-              <h3 className="text-white font-medium text-[17px] lg:text-[20px] leading-snug text-pretty">Choose account size</h3>
-              <span className="hidden lg:block mt-4 h-10 w-px bg-gradient-to-b from-white/20 to-transparent" aria-hidden="true" />
-            </div>
-            <div className="bg-[#111] border border-white/[0.05] rounded-[2rem] p-5">
-            
-            {/* Desktop Size Grid */}
-            <div className="hidden md:grid grid-cols-3 lg:grid-cols-3 gap-2">
-              {liveSizes.map((s) => {
-                const offered = program.fees[s] != null;
-                const active = s === effectiveSize && offered;
-                return (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => offered && setSize(s)}
-                    disabled={!offered}
-                    aria-pressed={active}
-                    className={cn(
-                      "relative rounded-full border px-3 py-3.5 text-center transition-all duration-200",
-                      !offered && "opacity-35 cursor-not-allowed",
-                      active
-                        ? "border-[#bcff2e] bg-[#bcff2e] text-[#0c0c0c] shadow-[0_0_20px_rgba(188,255,46,0.2)]"
-                        : "border-white/[0.05] bg-white/[0.02] text-white hover:bg-white/[0.04]",
-                    )}
-                  >
-                    <span className="block font-medium text-[15px] md:text-[17px] tabular-nums tracking-tight">
-                      {formatSize(s)}
-                    </span>
-                    {offered && program.fees[s] != null && (
-                      <span
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_minmax(0,460px)] gap-5 lg:gap-6 items-start">
+          {/* ── LEFT column: stacked config cards ── */}
+          <div className="flex flex-col gap-5">
+            {/* Model card */}
+            <div className="bg-[#141414] border border-white/[0.05] rounded-3xl p-5 md:p-6">
+              <h3 className="text-white font-semibold text-[17px] mb-4">Model</h3>
+              <div className="flex flex-wrap items-start gap-x-2.5 gap-y-3">
+                {livePrograms.map((p) => {
+                  const active = p.key === program.key;
+                  return (
+                    <div key={p.key} className="flex flex-col items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => selectProgram(p.key)}
+                        aria-pressed={active}
                         className={cn(
-                          "block text-[10.5px] mt-0.5 tabular-nums",
+                          "inline-flex items-center rounded-full px-5 py-2.5 text-[14px] font-semibold transition-colors",
                           active
-                            ? "text-[#0c0c0c] font-medium"
-                            : "text-white/50",
+                            ? "bg-white text-[#0c0c0c]"
+                            : "bg-white/[0.05] text-white/80 hover:bg-white/[0.09] hover:text-white",
                         )}
                       >
-                        from ${program.fees[s]}
-                      </span>
-                    )}
-                    {!offered && (
-                      <span className="block text-[10.5px] mt-0.5 text-white/30">
-                        n/a
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
+                        {p.shortLabel}
+                      </button>
+                      {p.badge && (
+                        <span className="inline-flex items-center gap-1 rounded-md bg-[#bcff2e] px-2 py-0.5 text-[9.5px] font-bold uppercase tracking-wide text-[#0c0c0c]">
+                          {p.badge}
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
 
-            {/* Mobile Size Segmented Control */}
-            <div className="md:hidden flex w-full max-w-full bg-[#111] p-1 rounded-full items-center border border-white/[0.05]">
-              {liveSizes.map((s) => {
-                const offered = program.fees[s] != null;
-                const active = s === effectiveSize && offered;
-                return (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => offered && setSize(s)}
-                    disabled={!offered}
-                    aria-pressed={active}
-                    className={cn(
-                      "relative flex flex-col items-center justify-center whitespace-nowrap rounded-full px-0.5 py-2.5 transition-all flex-1",
-                      !offered && "opacity-35 cursor-not-allowed hidden",
-                      active
-                        ? "bg-[#bcff2e] text-[#0c0c0c]"
-                        : "text-white/50 hover:text-white",
-                    )}
-                  >
-                    <span className="block font-semibold text-[10.5px] sm:text-[11.5px] tabular-nums tracking-tighter">
-                      {formatSize(s).replace("$", "")}
-                    </span>
-                  </button>
-                );
-              })}
+            {/* Platform card */}
+            <div className="bg-[#141414] border border-white/[0.05] rounded-3xl p-5 md:p-6">
+              <h3 className="text-white font-semibold text-[17px] mb-4">Platform</h3>
+              <div className="flex flex-wrap gap-2.5">
+                {livePlatforms.map((p) => {
+                  const active = p.key === platformKey;
+                  const disabled = p.status === "soon";
+                  return (
+                    <button
+                      key={p.key}
+                      type="button"
+                      disabled={disabled}
+                      onClick={() => !disabled && setPlatformKey(p.key)}
+                      aria-pressed={active}
+                      className={cn(
+                        "relative inline-flex items-center gap-2.5 rounded-full px-6 py-3 text-[14px] font-bold uppercase tracking-wide transition-colors",
+                        disabled && "opacity-55 cursor-not-allowed",
+                        active && !disabled
+                          ? "bg-[#bcff2e] text-[#0c0c0c]"
+                          : "bg-white/[0.05] text-white/80 hover:bg-white/[0.09] hover:text-white",
+                      )}
+                    >
+                      {p.label}
+                      <span
+                        className={cn(
+                          "rounded-full px-2 py-0.5 text-[10px] font-semibold normal-case tracking-normal",
+                          active && !disabled
+                            ? "bg-[#0c0c0c]/85 text-white"
+                            : "bg-white/[0.08] text-white/60",
+                        )}
+                      >
+                        {p.sub}
+                      </span>
+                      {disabled && (
+                        <Lock className="w-3.5 h-3.5 text-white/40" strokeWidth={2.2} />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
-            {/* Add-ons */}
-            <div className="mt-6">
-              <h3 className="text-white font-medium mb-4 text-[15px]">Optional add-ons</h3>
+            {/* Account size card */}
+            <div className="bg-[#141414] border border-white/[0.05] rounded-3xl p-5 md:p-6">
+              <h3 className="text-white font-semibold text-[17px] mb-4">Account size</h3>
+              <div className="flex flex-wrap items-start gap-x-2.5 gap-y-3">
+                {liveSizes.map((s) => {
+                  const offered = program.fees[s] != null;
+                  const active = s === effectiveSize && offered;
+                  const isPopular = s === 25_000;
+                  return (
+                    <div key={s} className="flex flex-col items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => offered && setSize(s)}
+                        disabled={!offered}
+                        aria-pressed={active}
+                        className={cn(
+                          "inline-flex items-center rounded-full px-5 py-2.5 text-[14px] font-semibold tabular-nums transition-colors",
+                          !offered && "opacity-35 cursor-not-allowed",
+                          active
+                            ? "bg-white text-[#0c0c0c]"
+                            : "bg-white/[0.05] text-white/80 hover:bg-white/[0.09] hover:text-white",
+                        )}
+                      >
+                        {formatSize(s).replace("$", "")}
+                      </button>
+                      {isPopular && offered && (
+                        <span className="inline-flex items-center rounded-md bg-[#bcff2e] px-2 py-0.5 text-[9.5px] font-bold uppercase tracking-wide text-[#0c0c0c]">
+                          Most Popular
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Add-ons + promo card */}
+            <div className="bg-[#141414] border border-white/[0.05] rounded-3xl p-5 md:p-6">
+            <div>
+              <h3 className="text-white font-semibold text-[17px] mb-4">Optional add-ons</h3>
               <div className="grid grid-cols-2 gap-2">
                 {applicableAddOns.map((a) => {
                   const active = selectedAddOns.includes(a.key);
@@ -714,47 +606,25 @@ export function ChallengeCalculator() {
             </div>
           </div>
 
-          {/* ── Live spec card (Desktop) ── */}
-          <div className="hidden lg:block lg:sticky lg:top-24">
-            <div className="bg-[#111] border border-white/[0.05] rounded-[2rem] overflow-hidden relative shadow-2xl shadow-black/50">
-              {/* Heading inside card */}
-              <div className="relative px-5 md:px-6 pt-5 md:pt-6 pb-4 border-b border-white/[0.05] bg-white/[0.02]">
-                <div className="flex items-center justify-between gap-3 mb-3">
-                  <span className="inline-flex items-center gap-1.5 px-2 py-1 text-[11px] font-medium rounded-full bg-[#bcff2e]/10 text-[#bcff2e]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#bcff2e] animate-pulse" />
-                    Live configuration
-                  </span>
-                  <span className="text-[11px] tracking-widest uppercase font-semibold text-white/40">
-                    {program.shortLabel}
-                  </span>
-                </div>
-                <p className="text-[12.5px] text-white/50">
-                  {program.tagline}
-                </p>
-              </div>
-
-              {/* Dotted-leader spec rows */}
-              <ul className="px-5 md:px-6 py-4 divide-y divide-white/[0.05]">
+          {/* ── Right column: spec rows + price card (Desktop, GFT-style) ── */}
+          <div className="hidden lg:flex flex-col gap-5 lg:sticky lg:top-24">
+            {/* Spec rows card */}
+            <div className="bg-[#141414] border border-white/[0.05] rounded-3xl p-4 md:p-5">
+              <ul className="space-y-2.5">
                 {specs.map((row) => {
-                  const Icon = row.icon;
+                  const SpecIcon = SPEC_ICONS[row.label] ?? Target;
                   return (
                     <li
                       key={row.label}
-                      className="flex items-baseline gap-2 py-2.5"
+                      className="flex items-center justify-between gap-3 rounded-2xl bg-white/[0.03] border border-white/[0.04] px-4 py-3.5"
                     >
-                      <span className="text-[13px] text-white/60 shrink-0">
+                      <span className="flex items-center gap-3 text-[14px] font-medium text-white/85 min-w-0">
+                        <SpecIcon
+                          className="w-4.5 h-4.5 shrink-0 text-[#bcff2e]"
+                          strokeWidth={2.2}
+                        />
                         {row.label}
                       </span>
-                      <span
-                        className="flex-1 h-px translate-y-[6px] opacity-30"
-                        style={{
-                          backgroundImage:
-                            "radial-gradient(circle, rgba(255,255,255,0.4) 1px, transparent 1.2px)",
-                          backgroundSize: "6px 1px",
-                          backgroundRepeat: "repeat-x",
-                        }}
-                        aria-hidden="true"
-                      />
                       <AnimatePresence mode="popLayout">
                         <motion.span
                           key={`${row.label}-${program.key}-${effectiveSize}-${selectedAddOns.length}`}
@@ -762,103 +632,77 @@ export function ChallengeCalculator() {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -4 }}
                           transition={{ duration: 0.18 }}
-                          className={cn(
-                            "inline-flex items-center gap-1.5 text-[13.5px] tabular-nums shrink-0 font-medium",
-                            row.strong
-                              ? "text-white text-[15px]"
-                              : row.accent
-                                ? "text-[#bcff2e]"
-                                : "text-white",
-                          )}
+                          className="text-[14.5px] font-bold text-white tabular-nums text-right shrink-0"
                         >
                           {row.value}
-                          {Icon && (
-                            <Icon
-                              className="w-3.5 h-3.5 text-white/80"
-                              strokeWidth={2.4}
-                            />
-                          )}
                         </motion.span>
                       </AnimatePresence>
                     </li>
                   );
                 })}
               </ul>
+            </div>
 
-              {/* Price row */}
-              <div className="relative px-5 md:px-6 py-4 border-t border-white/[0.08] bg-white/[0.02]">
-                <div className="flex items-baseline justify-between gap-2 mb-3">
-                  <span className="text-[13px] text-white/60">Average payout</span>
-                  <span
-                    className="flex-1 h-px translate-y-[-3px] opacity-30"
-                    style={{
-                      backgroundImage:
-                        "radial-gradient(circle, rgba(255,255,255,0.4) 1px, transparent 1.2px)",
-                      backgroundSize: "6px 1px",
-                      backgroundRepeat: "repeat-x",
-                    }}
-                    aria-hidden="true"
-                  />
-                  <span className="text-[13.5px] font-medium text-white tabular-nums">
-                    $
-                    {Math.round(
-                      ((profitTargetUsd ?? effectiveSize * 0.05) *
-                        (selectedAddOns.includes("split-100")
-                          ? program.profitSplitMax
-                          : program.profitSplit)) /
-                        100,
-                    ).toLocaleString("en-US")}
-                  </span>
-                </div>
-
-                {programKey === "access" && postPassFee != null && (
-                  <p className="text-[12.5px] text-[#bcff2e]/90 text-center mb-4 mt-2 px-2 font-medium">
-                    * Remaining ${postPassFee.toLocaleString("en-US")} due within 48h of passing.
+            {/* Price card */}
+            <div className="bg-[#141414] border border-white/[0.05] rounded-3xl p-5 md:p-6">
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <div>
+                  <div className="flex items-baseline gap-2.5">
+                    <AnimatePresence mode="popLayout">
+                      <motion.span
+                        key={finalPrice}
+                        initial={{ opacity: 0, y: -8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-[44px] font-bold text-white tracking-tight leading-none tabular-nums"
+                      >
+                        {programKey === "access" ? "$5" : (finalPrice != null ? `$${finalPrice.toLocaleString("en-US")}` : "—")}
+                      </motion.span>
+                    </AnimatePresence>
+                    {appliedDiscount > 0 && total != null && programKey !== "access" && (
+                      <span className="text-[20px] font-medium text-white/30 line-through tabular-nums">
+                        ${total.toLocaleString("en-US")}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[15px] text-white/50 mt-2">
+                    {formatSize(effectiveSize).replace("$", "")} Account
                   </p>
-                )}
-
+                </div>
                 <Button
                   onClick={() => router.push('/dashboard/new-challenge')}
                   disabled={total == null}
                   size="lg"
-                  className="w-full flex items-center justify-center gap-2.5 rounded-full bg-[#bcff2e] hover:bg-[#a5e622] text-[#0c0c0c] transition-colors border border-[#bcff2e] font-semibold shadow-[0_0_24px_rgba(188,255,46,0.18)]"
+                  className="rounded-2xl bg-[#bcff2e] hover:bg-[#a5e622] text-[#0c0c0c] font-bold px-7 h-[54px] inline-flex items-center gap-2 transition-colors text-[15px]"
                 >
-                  <span>Get Funded</span>
-                  <AnimatePresence mode="popLayout">
-                    <motion.span
-                      key={finalPrice}
-                      initial={{ opacity: 0, y: -6 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="inline-flex items-baseline gap-1.5 tabular-nums"
-                    >
-                      {appliedDiscount > 0 && total != null && programKey !== "access" && (
-                        <span className="text-[13px] font-medium text-[#0c0c0c]/45 line-through">
-                          ${total.toLocaleString("en-US")}
-                        </span>
-                      )}
-                      <span className="font-bold">
-                        {programKey === "access" ? "$5" : (finalPrice != null ? `$${finalPrice.toLocaleString("en-US")}` : "—")}
-                      </span>
-                    </motion.span>
-                  </AnimatePresence>
+                  Get Funded
+                  <ArrowUpRight className="w-4.5 h-4.5" strokeWidth={2.5} />
                 </Button>
-
-                {/* Payment chips */}
-                <div className="mt-3.5 flex items-center justify-center gap-2">
-                  {["Crypto", "G Pay", "Card", "Apple Pay", "Visa"].map((p) => (
-                    <span
-                      key={p}
-                      className="rounded-full border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 text-[9.5px] uppercase tracking-wider text-white/50 whitespace-nowrap"
-                    >
-                      {p}
-                    </span>
-                  ))}
-                </div>
               </div>
+              {programKey === "access" && postPassFee != null ? (
+                <p className="mt-4 text-[12.5px] text-[#bcff2e]/90 font-medium">
+                  * Remaining ${postPassFee.toLocaleString("en-US")} due within 48h of passing.
+                </p>
+              ) : (
+                <span className="mt-4 inline-flex items-center rounded-full bg-white/[0.05] border border-white/[0.06] px-3 py-1.5 text-[10.5px] font-semibold uppercase tracking-widest text-white/60">
+                  One-time 100% refundable fee
+                </span>
+              )}
+            </div>
+
+            {/* Payment methods card */}
+            <div className="bg-[#141414] border border-white/[0.05] rounded-3xl px-5 py-4 flex items-center justify-center gap-2.5 flex-wrap">
+              {["VISA", "Mastercard", "PayPal", "Apple Pay", "Crypto"].map((p) => (
+                <span
+                  key={p}
+                  className="rounded-lg bg-white px-3 py-1.5 text-[11px] font-bold text-[#0c0c0c] whitespace-nowrap"
+                >
+                  {p}
+                </span>
+              ))}
             </div>
 
             {/* Highlights below card */}
-            <ul className="mt-4 grid grid-cols-1 gap-1.5 text-[12.5px] text-white/50">
+            <ul className="grid grid-cols-1 gap-1.5 text-[12.5px] text-white/50">
               {program.highlights.map((h) => (
                 <li key={h} className="flex items-center gap-2">
                   <Check
@@ -941,37 +785,34 @@ export function ChallengeCalculator() {
           </div>
         </div>
 
-        {/* Bottom promo banner (Atlas-style) */}
-        <div className="mt-10 lg:mt-14 rounded-[2rem] bg-[#111] border border-white/[0.05] px-6 py-8 md:px-10 md:py-10 flex flex-col md:flex-row md:items-center gap-6 md:gap-8">
-          <div className="flex-1">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#bcff2e]/10 px-3 py-1 text-[10.5px] font-semibold uppercase tracking-widest text-[#bcff2e] mb-4">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#bcff2e]" />
-              Limited Time Only
-            </span>
-            <h3 className="text-white font-medium text-[22px] md:text-[26px] leading-snug text-pretty">
-              New to TPP? <span className="text-[#bcff2e]">Get 50% OFF</span>
-            </h3>
-            <p className="text-white/50 text-[14px] mt-1.5">
-              Get 50% off your first challenge account.
-            </p>
-          </div>
+        {/* Bottom promo banner (GFT-style, lime border) */}
+        <div className="mt-10 lg:mt-14 rounded-3xl bg-[#111] border-2 border-[#bcff2e]/70 px-6 py-7 md:px-10 md:py-8 flex flex-col md:flex-row md:items-center gap-6 md:gap-8">
+          <h3 className="flex-1 text-white font-bold uppercase tracking-tight text-pretty" style={{ fontSize: "clamp(1.5rem, 3.5vw, 2.25rem)", lineHeight: 1.1 }}>
+            New to TPP? <span className="text-[#bcff2e]">50% OFF</span>
+          </h3>
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
             <button
               type="button"
               onClick={() => copy("FIRSTTPP")}
-              className="inline-flex items-center justify-between gap-3 rounded-full border border-dashed border-white/20 bg-white/[0.02] px-5 py-3 text-[13px] font-mono tracking-wider text-white hover:bg-white/[0.05] transition-colors"
+              className="flex flex-col items-center justify-center rounded-2xl bg-[#1a1a1a] border border-white/[0.08] px-8 py-2.5 hover:bg-white/[0.06] transition-colors"
               aria-label="Copy promo code FIRSTTPP"
             >
-              FIRSTTPP
-              {copied ? (
-                <Check className="w-3.5 h-3.5 text-[#bcff2e]" strokeWidth={2.5} />
-              ) : (
-                <Copy className="w-3.5 h-3.5 text-white/50" strokeWidth={2.5} />
-              )}
+              <span className="text-[15px] font-bold tracking-wider text-white font-mono">FIRSTTPP</span>
+              <span className="inline-flex items-center gap-1 text-[11px] text-white/50 mt-0.5">
+                {copied ? (
+                  <>
+                    Copied <Check className="w-3 h-3 text-[#bcff2e]" strokeWidth={2.5} />
+                  </>
+                ) : (
+                  <>
+                    Copy Code <Copy className="w-3 h-3" strokeWidth={2.5} />
+                  </>
+                )}
+              </span>
             </button>
             <Button
               onClick={() => router.push('/dashboard/new-challenge')}
-              className="rounded-full bg-[#bcff2e] hover:bg-[#a5e622] text-[#0c0c0c] font-semibold px-7 h-[46px] inline-flex items-center justify-center gap-1.5 transition-colors"
+              className="rounded-2xl bg-[#bcff2e] hover:bg-[#a5e622] text-[#0c0c0c] font-bold px-8 h-[56px] inline-flex items-center justify-center gap-1.5 transition-colors text-[15px]"
             >
               Get Funded
               <ArrowUpRight className="w-4 h-4" strokeWidth={2.5} />
