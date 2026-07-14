@@ -786,100 +786,152 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ═══════════════ SECTION 6 — HOW IT WORKS (Atlas-style timeline + 3 cards) ═══════════════ */}
+      {/* ═══════════════ SECTION 6 — HOW IT WORKS (Dark staircase steps) ═══════════════ */}
       <section id="how" className="w-full pb-16 lg:pb-24">
-        <div className="w-full px-5 md:px-8">
-          {/* Timeline bar (desktop only) */}
-          <Reveal>
-            <div className="relative mb-8 hidden lg:block">
-              <div className="relative flex h-16 items-center rounded-full border border-[#0c0c0c]/10 bg-white/40">
-                {/* dotted line */}
+        <div className="px-[5px]">
+          <div className="relative overflow-hidden rounded-[2rem] bg-[#0c0c0c] px-[15px] py-16 lg:rounded-[3.5rem] lg:px-[35px] lg:py-24">
+            {/* Orbit rings background decoration */}
+            <div className="pointer-events-none absolute right-[-10%] top-1/2 hidden -translate-y-1/2 lg:block" aria-hidden="true">
+              <div className="relative h-[720px] w-[720px]">
+                <div className="absolute inset-0 rounded-full border border-white/[0.05]" />
+                <div className="absolute inset-[90px] rounded-full border border-white/[0.06]" />
+                <div className="absolute inset-[180px] rounded-full border border-white/[0.07]" />
+                <div className="absolute inset-[270px] rounded-full border border-white/[0.08]" />
+              </div>
+            </div>
+
+            <div className="relative mx-auto flex max-w-7xl flex-col gap-14 lg:flex-row lg:items-center lg:gap-10">
+              {/* Left — headline + CTAs */}
+              <div className="flex flex-col lg:w-[42%]">
+                <Reveal>
+                  <div className="mb-4 text-sm font-medium uppercase tracking-[0.3em] text-[#cbfb45]">
+                    How it works
+                  </div>
+                  <h2
+                    className="font-bold tracking-[-0.03em] text-balance"
+                    style={{ fontSize: "clamp(2.75rem, 5vw, 4.5rem)", lineHeight: 1.02 }}
+                  >
+                    <span className="block text-white">It&apos;s super</span>
+                    <span className="block text-[#cbfb45]">simple</span>
+                  </h2>
+                  <p className="mt-6 max-w-sm text-[15px] leading-relaxed text-white/50 lg:text-[16px]">
+                    Three steps between you and a funded account. No hidden hoops, no fine print — just trade.
+                  </p>
+                  <div className="mt-10 flex flex-wrap items-center gap-3">
+                    <Link
+                      href="/dashboard/new-challenge"
+                      className="inline-flex h-12 items-center rounded-full bg-[#cbfb45] px-6 text-[15px] font-semibold text-[#0c0c0c] transition-colors hover:bg-[#b9ef2e]"
+                    >
+                      Get Funded
+                    </Link>
+                    <Link
+                      href="/rules"
+                      className="inline-flex h-12 items-center rounded-full border border-white/20 px-6 text-[15px] font-semibold text-white transition-colors hover:border-white/40 hover:bg-white/[0.06]"
+                    >
+                      Learn More
+                    </Link>
+                  </div>
+                </Reveal>
+              </div>
+
+              {/* Right — staircase steps */}
+              <div className="relative flex flex-col gap-5 lg:w-[58%] lg:gap-6">
+                {/* dotted connector line (desktop) */}
                 <div
-                  className="absolute left-10 right-10 top-1/2 h-px -translate-y-1/2 opacity-40"
+                  className="pointer-events-none absolute bottom-16 left-[27px] top-16 hidden w-px lg:left-[29px] lg:block"
                   style={{
-                    backgroundImage: "radial-gradient(circle, rgba(12,12,12,0.55) 1px, transparent 1.3px)",
-                    backgroundSize: "8px 1px",
-                    backgroundRepeat: "repeat-x",
+                    backgroundImage: "radial-gradient(circle, rgba(203,251,69,0.5) 1.2px, transparent 1.5px)",
+                    backgroundSize: "1px 10px",
+                    backgroundRepeat: "repeat-y",
                   }}
                   aria-hidden="true"
                 />
-                <ArrowRight className="absolute right-5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#0c0c0c]/40" strokeWidth={2} />
-                {/* First Step pill — above middle card center */}
-                <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#6c6a68] px-4 py-1.5 text-[12.5px] font-semibold text-white whitespace-nowrap">
-                  First Step
-                </span>
-                {/* Final Step pill — above right card center */}
-                <span className="absolute left-[83.33%] top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#0c0c0c] px-4 py-1.5 text-[12.5px] font-semibold text-[#cbfb45] whitespace-nowrap">
-                  Final Step
-                </span>
+
+                {[
+                  {
+                    num: "1",
+                    title: "Take a Challenge",
+                    badge: null,
+                    badgeStyle: "",
+                    desc: "Prove your skill on a demo account. No time limit — pass whenever you're ready.",
+                    accent: false,
+                    offset: "lg:mr-24",
+                  },
+                  {
+                    num: "2",
+                    title: "Unlock Account",
+                    badge: "Up to $200k",
+                    badgeStyle: "bg-white text-[#0c0c0c]",
+                    desc: "Take a challenge or get an instant funding account today.",
+                    accent: false,
+                    offset: "lg:ml-12 lg:mr-12",
+                  },
+                  {
+                    num: "3",
+                    title: "Trade & Get Paid",
+                    badge: "Up to 90% of the Profit",
+                    badgeStyle: "bg-[#0c0c0c] text-[#cbfb45]",
+                    desc: "Trade on your favorite platform and get paid on demand.",
+                    accent: true,
+                    offset: "lg:ml-24",
+                  },
+                ].map((step, i) => (
+                  <Reveal key={step.title} delay={i * 0.12}>
+                    <div className={cn("relative", step.offset)}>
+                      <div
+                        className={cn(
+                          "flex items-start gap-5 rounded-3xl p-6 lg:p-7",
+                          step.accent
+                            ? "bg-[#cbfb45]"
+                            : "border border-[#cbfb45]/20 bg-white/[0.03] md:backdrop-blur-sm",
+                        )}
+                      >
+                        <div
+                          className={cn(
+                            "flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[16px] font-bold lg:h-12 lg:w-12",
+                            step.accent
+                              ? "bg-[#0c0c0c] text-[#cbfb45]"
+                              : "bg-[#cbfb45] text-[#0c0c0c]",
+                          )}
+                        >
+                          {step.num}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="flex flex-wrap items-center gap-3">
+                            <h3
+                              className={cn(
+                                "text-[22px] font-bold tracking-tight lg:text-[26px]",
+                                step.accent ? "text-[#0c0c0c]" : "text-white",
+                              )}
+                            >
+                              {step.title}
+                            </h3>
+                            {step.badge && (
+                              <span
+                                className={cn(
+                                  "inline-flex items-center rounded-full px-3 py-1 text-[12.5px] font-semibold whitespace-nowrap",
+                                  step.badgeStyle,
+                                )}
+                              >
+                                {step.badge}
+                              </span>
+                            )}
+                          </div>
+                          <p
+                            className={cn(
+                              "mt-2 max-w-md text-[14px] leading-relaxed lg:text-[15px]",
+                              step.accent ? "text-[#0c0c0c]/70" : "text-white/50",
+                            )}
+                          >
+                            {step.desc}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </Reveal>
+                ))}
               </div>
-              {/* connector stems */}
-              <span className="absolute left-1/2 top-full h-8 w-px -translate-x-1/2 bg-[#0c0c0c]/20" aria-hidden="true" />
-              <span className="absolute left-[83.33%] top-full h-8 w-px -translate-x-1/2 bg-[#0c0c0c]/20" aria-hidden="true" />
             </div>
-          </Reveal>
-
-          {/* Cards */}
-          <div className="grid gap-4 lg:grid-cols-3 lg:gap-5">
-            {/* Card 1 — intro */}
-            <Reveal>
-              <div className="flex h-full min-h-[340px] flex-col rounded-[2rem] border border-[#0c0c0c]/10 bg-white/40 p-8 md:backdrop-blur-sm lg:min-h-[460px] lg:p-9">
-                <div className="text-[15px] font-medium text-[#6c6a68]">How it works</div>
-                <h2
-                  className="mt-4 font-bold tracking-[-0.03em] text-balance"
-                  style={{ fontSize: "clamp(2.75rem, 4.5vw, 4rem)", lineHeight: 1.02 }}
-                >
-                  <span className="block text-[#0c0c0c]">It&apos;s super</span>
-                  <span className="block text-[#0c0c0c]/40">simple</span>
-                </h2>
-                <div className="mt-auto flex flex-wrap items-center gap-3 pt-10">
-                  <Link
-                    href="/dashboard/new-challenge"
-                    className="inline-flex h-12 items-center rounded-full bg-[#0c0c0c] px-6 text-[15px] font-semibold text-white transition-colors hover:bg-[#0c0c0c]/85"
-                  >
-                    Get Funded
-                  </Link>
-                  <Link
-                    href="/rules"
-                    className="inline-flex h-12 items-center rounded-full bg-[#cbfb45] px-6 text-[15px] font-semibold text-[#0c0c0c] transition-colors hover:bg-[#b9ef2e]"
-                  >
-                    Learn More
-                  </Link>
-                </div>
-              </div>
-            </Reveal>
-
-            {/* Card 2 — Unlock Account (dark) */}
-            <Reveal delay={0.1}>
-              <div className="flex h-full min-h-[340px] flex-col rounded-[2rem] bg-[#1d2523] p-8 lg:min-h-[460px] lg:p-9">
-                <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#6c6a68] px-3.5 py-1 text-[12px] font-semibold text-white lg:hidden">
-                  First Step
-                </span>
-                <h3 className="text-[32px] font-bold tracking-tight text-white lg:text-[38px]">Unlock Account</h3>
-                <span className="mt-4 inline-flex w-fit items-center rounded-full bg-white px-3.5 py-1.5 text-[13px] font-semibold text-[#0c0c0c]">
-                  Up to $200k
-                </span>
-                <p className="mt-auto max-w-sm pt-10 text-[17px] leading-relaxed text-white/45 lg:text-[19px]">
-                  Take a challenge or get an instant funding account today.
-                </p>
-              </div>
-            </Reveal>
-
-            {/* Card 3 — Trade & Get Paid (lime) */}
-            <Reveal delay={0.2}>
-              <div className="flex h-full min-h-[340px] flex-col rounded-[2rem] bg-[#cbfb45] p-8 lg:min-h-[460px] lg:p-9">
-                <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3.5 py-1 text-[12px] font-semibold text-[#cbfb45] lg:hidden">
-                  Final Step
-                </span>
-                <h3 className="text-[32px] font-bold tracking-tight text-[#0c0c0c] lg:text-[38px]">Trade &amp; Get Paid</h3>
-                <span className="mt-4 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3.5 py-1.5 text-[13px] font-semibold text-[#cbfb45]">
-                  Up to 90% of the Profit
-                </span>
-                <p className="mt-auto max-w-sm pt-10 text-[17px] leading-relaxed text-[#0c0c0c]/75 lg:text-[19px]">
-                  Trade on your favorite platform and get paid on demand.
-                </p>
-              </div>
-            </Reveal>
           </div>
         </div>
       </section>
