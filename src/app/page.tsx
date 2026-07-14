@@ -22,9 +22,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   TrendingUp,
-  Shield,
-  Clock,
-  Award,
   CheckCircle2,
   ChevronUp,
   ChevronDown,
@@ -35,8 +32,6 @@ import {
   RotateCcw,
   BadgeDollarSign,
   Target,
-  DollarSign,
-  Percent,
   ArrowRight,
   ArrowUpRight,
 } from "lucide-react";
@@ -884,91 +879,209 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ═══════════════ SECTION 7 — FEATURES (lime card, orbit) ═══════════════ */}
-      <section className="w-full pb-16 lg:pb-24">
+      {/* ═══════════════ SECTION 7 — WHY TPP (evidence matrix) ═══════════════ */}
+      <section id="why-tpp" className="w-full scroll-mt-20 pb-16 lg:pb-24" aria-label="Why The People's Prop">
         <div className="px-[5px] py-[5px]">
-          <div className="rounded-[2rem] bg-[#cbfb45] px-[15px] py-20 lg:rounded-[3.5rem] lg:px-[35px] xl:py-32">
+          <div className="rounded-[2rem] bg-[#f0ece2] p-3 md:p-5 lg:rounded-[3.5rem] lg:p-7">
+            {/* ── Dark header card ── */}
             <Reveal>
-              <div className="mb-16 text-center">
-                <div className="mb-4 text-sm font-medium uppercase tracking-[0.3em] text-[#0c0c0c]/60">Why TPP</div>
-                <GsapWords
-                  text="Built for traders, not against them"
-                  className="font-bold tracking-[-0.03em] text-[#0c0c0c]"
-                  style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}
-                />
+              <div className="rounded-[1.6rem] bg-[#0c0c0c] px-7 py-10 md:px-11 md:py-12 lg:rounded-[2.4rem] lg:px-14 lg:py-14">
+                <div className="flex flex-col gap-9 lg:flex-row lg:items-center lg:justify-between lg:gap-14">
+                  <div className="max-w-2xl">
+                    <div className="mb-5 text-[13px] font-bold uppercase tracking-[0.24em] text-[#cbfb45]">
+                      Why TPP
+                    </div>
+                    <h2
+                      className="text-balance font-bold leading-[1.04] tracking-[-0.04em] text-[#f0ece2]"
+                      style={{ fontSize: "clamp(2.5rem, 5.5vw, 4.75rem)" }}
+                    >
+                      The difference is in the details.
+                    </h2>
+                  </div>
+                  <div className="flex w-full flex-col gap-6 lg:w-[330px] lg:shrink-0">
+                    <p className="text-[14px] leading-relaxed text-white/45 md:text-[15px]">
+                      Professional trading conditions, transparent rules, and a funding model built to keep serious traders moving forward.
+                    </p>
+                    <Link
+                      href="/challenges"
+                      className="inline-flex h-[52px] w-full items-center justify-center rounded-full bg-[#cbfb45] px-8 text-[16px] font-bold text-[#0c0c0c] transition-colors hover:bg-[#b9ef2e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#cbfb45] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0c0c0c]"
+                    >
+                      Get Funded
+                    </Link>
+                  </div>
+                </div>
               </div>
             </Reveal>
 
-            <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 lg:flex-row lg:gap-0">
-              <div className="flex w-full flex-col gap-5 lg:w-[28%]">
-                {[
-                  { icon: TrendingUp, title: "Tier-1 Liquidity", desc: "Raw spreads, no re-quotes. Your strategy deserves real market conditions." },
-                  { icon: Shield, title: "Transparent Rules", desc: "4% daily drawdown, 8% max. No hidden gotchas. What you see is what you get." },
-                ].map((f, i) => (
-                  <Reveal key={f.title} delay={i * 0.08}>
-                    <TiltCard>
-                      <div className="flex min-h-[200px] flex-col overflow-hidden rounded-3xl border border-white/[0.05] bg-[#0c0c0c] p-7">
-                        <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06]">
-                          <f.icon className="h-5 w-5 text-[#cbfb45]" strokeWidth={2} />
-                        </div>
-                        <h3 className="mb-1.5 text-lg font-bold tracking-tight text-white">{f.title}</h3>
-                        <p className="text-[13px] leading-relaxed text-white/50">{f.desc}</p>
-                      </div>
-                    </TiltCard>
-                  </Reveal>
-                ))}
-              </div>
+            {/* ── Comparison matrix ── */}
+            <Reveal delay={0.08}>
+              <div className="relative mt-2 px-1 py-9 md:px-3 lg:px-6 lg:py-12">
+                {/* dashed blueprint frame + registration marks */}
+                <div className="pointer-events-none absolute inset-0 hidden md:block" aria-hidden="true">
+                  <div className="absolute inset-x-3 top-4 border-t border-dashed border-[#0c0c0c]/25 lg:inset-x-6" />
+                  <div className="absolute inset-x-3 bottom-4 border-t border-dashed border-[#0c0c0c]/25 lg:inset-x-6" />
+                  <div className="absolute bottom-4 left-3 top-4 border-l border-dashed border-[#0c0c0c]/25 lg:left-6" />
+                  <div className="absolute bottom-4 right-3 top-4 border-r border-dashed border-[#0c0c0c]/25 lg:right-6" />
+                  {[
+                    "left-3 top-4 lg:left-6",
+                    "right-3 top-4 lg:right-6",
+                    "left-3 bottom-4 lg:left-6",
+                    "right-3 bottom-4 lg:right-6",
+                  ].map((pos) => (
+                    <span key={pos} className={cn("absolute flex h-5 w-5 -translate-x-1/2 -translate-y-1/2 items-center justify-center", pos.includes("right") && "translate-x-1/2", pos.includes("bottom") && "translate-y-1/2")}>
+                      <span className="absolute h-full w-px bg-[#0c0c0c]/40" />
+                      <span className="absolute h-px w-full bg-[#0c0c0c]/40" />
+                      <span className="absolute h-2.5 w-2.5 rounded-full border border-[#0c0c0c]/45 bg-[#f0ece2]" />
+                    </span>
+                  ))}
+                </div>
 
-              {/* Orbit graphic */}
-              <div className="relative hidden w-[44%] items-center justify-center py-8 lg:flex">
-                <Floating amplitude={10} duration={7}>
-                  <div className="relative flex h-[340px] w-[340px] items-center justify-center">
-                    <div className="absolute inset-[-30px] animate-[spin_20s_linear_infinite]">
-                      <div className="absolute inset-0 rounded-full border border-[#0c0c0c]/10" />
-                      <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 animate-[spin_20s_linear_infinite_reverse]">
-                        <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-[#0c0c0c] shadow-lg">
-                          <img src="/images/icon-mt5.svg" alt="MT5" className="h-8 w-8 rounded-lg" />
+                {/* Desktop matrix */}
+                <div className="relative mx-auto hidden max-w-6xl lg:block">
+                  <div className="grid grid-cols-[0.58fr_1fr_1fr] gap-x-4">
+                    {/* Categories */}
+                    <div className="pt-[76px]">
+                      {[
+                        { icon: Target, label: "Execution" },
+                        { icon: CalendarOff, label: "Freedom" },
+                        { icon: BadgeDollarSign, label: "Payouts" },
+                        { icon: TrendingUp, label: "Growth" },
+                      ].map(({ icon: Icon, label }) => (
+                        <div key={label} className="flex h-[84px] items-center gap-4 border-b border-dashed border-[#0c0c0c]/20 px-2 text-[#0c0c0c] last:border-b-0">
+                          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#0c0c0c]/35">
+                            <Icon className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
+                          </span>
+                          <span className="text-[18px] font-semibold">{label}</span>
                         </div>
-                      </div>
-                      <div className="absolute bottom-[13%] left-[3%] -translate-x-1/2 animate-[spin_20s_linear_infinite_reverse]">
-                        <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-[#0c0c0c] shadow-lg">
-                          <img src="/images/icon-dxtrade.svg" alt="DXTrade" className="h-8 w-8 rounded-lg" />
-                        </div>
-                      </div>
-                      <div className="absolute bottom-[13%] right-[3%] translate-x-1/2 animate-[spin_20s_linear_infinite_reverse]">
-                        <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-[#0c0c0c] shadow-lg">
-                          <img src="/images/icon-tpp-terminal.webp" alt="TPP Terminal" className="h-10 w-10 rounded-lg object-cover" />
-                        </div>
-                      </div>
+                      ))}
                     </div>
-                    <div className="absolute inset-4 rounded-full border border-[#0c0c0c]/15 animate-[spin_12s_linear_infinite_reverse]" />
-                    <div className="absolute inset-10 rounded-full border border-[#0c0c0c]/20 animate-[spin_8s_linear_infinite]" />
-                    <div className="relative z-10 flex h-[160px] w-[160px] items-center justify-center rounded-full border border-white/[0.05] bg-[#0c0c0c]">
-                      <span className="text-5xl font-bold tracking-tighter text-[#cbfb45]">TPP</span>
+
+                    {/* Industry Standard */}
+                    <div className="overflow-hidden rounded-[1.5rem] bg-[#55544d] text-[#f0ece2]">
+                      <div className="flex h-[76px] items-center justify-center bg-[#3f3e39] px-6 text-center text-[16px] font-bold uppercase tracking-[0.05em]">
+                        Industry Standard
+                      </div>
+                      {["Marked-up spreads", "30-day deadline", "Fixed payout windows", "Paid resets"].map((item) => (
+                        <div key={item} className="flex h-[84px] items-center gap-3.5 border-b border-white/10 px-7 text-white/75 last:border-b-0">
+                          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/15 text-[16px] leading-none text-white/45" aria-hidden="true">×</span>
+                          <span className="text-[17px] font-medium">{item}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* The People's Prop */}
+                    <div className="relative">
+                      <div className="overflow-hidden rounded-[1.5rem] bg-[#cbfb45] text-[#0c0c0c]">
+                        <div className="flex h-[76px] items-center justify-center border-b border-[#0c0c0c]/10 px-6 text-center text-[16px] font-extrabold uppercase tracking-[0.04em]">
+                          The People&apos;s Prop
+                        </div>
+                        {["Raw 0.0 pip spreads", "No time limit", "Payout on demand", "Free retry + auto scaling"].map((item) => (
+                          <div key={item} className="flex h-[84px] items-center gap-3.5 border-b border-[#0c0c0c]/10 px-7 last:border-b-0">
+                            <CheckCircle2 className="h-7 w-7 shrink-0 fill-[#0c0c0c] text-[#cbfb45]" strokeWidth={2.5} aria-hidden="true" />
+                            <span className="text-[17px] font-bold">{item}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="absolute -left-2 top-1/2 z-10 flex h-[66px] w-[66px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#0c0c0c] text-[20px] font-black text-[#f0ece2] shadow-xl ring-4 ring-[#f0ece2]">
+                        VS
+                      </div>
                     </div>
                   </div>
-                </Floating>
-              </div>
+                </div>
 
-              <div className="flex w-full flex-col gap-5 lg:w-[28%]">
-                {[
-                  { icon: Clock, title: "No Time Limit", desc: "Trade at your own pace. Pass the evaluation whenever you're ready." },
-                  { icon: Award, title: "Auto-Scaling", desc: "Hit targets and grow automatically. $25K → $50K → $100K → $200K." },
-                ].map((f, i) => (
-                  <Reveal key={f.title} delay={i * 0.08}>
-                    <TiltCard>
-                      <div className="flex min-h-[200px] flex-col overflow-hidden rounded-3xl border border-white/[0.05] bg-[#0c0c0c] p-7">
-                        <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06]">
-                          <f.icon className="h-5 w-5 text-[#cbfb45]" strokeWidth={2} />
+                {/* Mobile / tablet stacked matrix */}
+                <div className="relative mx-auto lg:hidden">
+                  <div className="overflow-hidden rounded-[1.4rem] bg-[#55544d] text-[#f0ece2]">
+                    <div className="flex h-[64px] items-center justify-center bg-[#3f3e39] px-5 text-center text-[14px] font-bold uppercase tracking-[0.05em]">
+                      Industry Standard
+                    </div>
+                    {[
+                      { cat: "Execution", value: "Marked-up spreads" },
+                      { cat: "Freedom", value: "30-day deadline" },
+                      { cat: "Payouts", value: "Fixed payout windows" },
+                      { cat: "Growth", value: "Paid resets" },
+                    ].map(({ cat, value }) => (
+                      <div key={value} className="flex items-center gap-3 border-b border-white/10 px-5 py-4 last:border-b-0">
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/15 text-[14px] leading-none text-white/45" aria-hidden="true">×</span>
+                        <div className="min-w-0">
+                          <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/40">{cat}</div>
+                          <div className="text-[15px] font-medium text-white/80">{value}</div>
                         </div>
-                        <h3 className="mb-1.5 text-lg font-bold tracking-tight text-white">{f.title}</h3>
-                        <p className="text-[13px] leading-relaxed text-white/50">{f.desc}</p>
                       </div>
-                    </TiltCard>
-                  </Reveal>
-                ))}
+                    ))}
+                  </div>
+
+                  <div className="relative z-10 mx-auto -my-[26px] flex h-[58px] w-[58px] items-center justify-center rounded-full bg-[#0c0c0c] text-[17px] font-black text-[#f0ece2] shadow-xl ring-4 ring-[#f0ece2]">
+                    VS
+                  </div>
+
+                  <div className="overflow-hidden rounded-[1.4rem] bg-[#cbfb45] text-[#0c0c0c]">
+                    <div className="flex h-[64px] items-center justify-center border-b border-[#0c0c0c]/10 px-5 pt-3 text-center text-[14px] font-extrabold uppercase tracking-[0.04em]">
+                      The People&apos;s Prop
+                    </div>
+                    {[
+                      { cat: "Execution", value: "Raw 0.0 pip spreads" },
+                      { cat: "Freedom", value: "No time limit" },
+                      { cat: "Payouts", value: "Payout on demand" },
+                      { cat: "Growth", value: "Free retry + auto scaling" },
+                    ].map(({ cat, value }) => (
+                      <div key={value} className="flex items-center gap-3 border-b border-[#0c0c0c]/10 px-5 py-4 last:border-b-0">
+                        <CheckCircle2 className="h-6 w-6 shrink-0 fill-[#0c0c0c] text-[#cbfb45]" strokeWidth={2.5} aria-hidden="true" />
+                        <div className="min-w-0">
+                          <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#0c0c0c]/50">{cat}</div>
+                          <div className="text-[15px] font-bold">{value}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
-            </div>
+            </Reveal>
+
+            {/* ── Metrics rail ── */}
+            <Reveal delay={0.12}>
+              <div className="mx-1 mb-4 border-y-2 border-[#0c0c0c]/70 md:mx-3 lg:mx-6">
+                <div className="grid grid-cols-2 md:grid-cols-4">
+                  {[
+                    { value: "0.0", label: "average spread", dark: false, bars: [7, 10, 8, 14, 11, 18, 15, 24, 19, 33, 40, 22] },
+                    { value: "90%", label: "profit split", dark: false, bars: [12, 20, 26, 22, 30, 26, 36, 31, 28, 34, 30, 38] },
+                    { value: "$200K", label: "max allocation", dark: true, bars: [6, 9, 12, 15, 18, 26, 21, 38, 30, 20, 14, 9] },
+                    { value: "24h", label: "average payout", dark: false, bars: [8, 12, 17, 26, 40, 21, 15, 30, 23, 18, 13, 9] },
+                  ].map((metric, index) => (
+                    <div
+                      key={metric.label}
+                      className={cn(
+                        "flex min-h-[210px] flex-col px-5 py-8 md:min-h-[240px] lg:px-9",
+                        index % 2 !== 0 && "border-l-2 border-[#0c0c0c]/25",
+                        index > 1 && "border-t-2 border-[#0c0c0c]/25 md:border-t-0",
+                        index === 2 && "md:border-l-2",
+                      )}
+                    >
+                      <div className="text-center">
+                        <div className="text-[44px] font-bold leading-none tracking-[-0.05em] text-[#0c0c0c] lg:text-[58px]">
+                          {metric.value}
+                        </div>
+                        <div className="mt-2.5 text-[15px] font-medium text-[#0c0c0c]/70 lg:text-[17px]">{metric.label}</div>
+                      </div>
+                      <div className="mt-auto flex items-end gap-2 pt-8" aria-hidden="true">
+                        <div className="flex h-12 flex-1 items-end gap-[3px] border-b border-dashed border-[#0c0c0c]/30 pb-0.5">
+                          {metric.bars.map((height, barIndex) => (
+                            <span
+                              key={`${metric.label}-${barIndex}`}
+                              className={cn("min-w-1 flex-1 rounded-t-[2px]", metric.dark ? "bg-[#3f3e39]" : "bg-[#a8dc23]")}
+                              style={{ height }}
+                            />
+                          ))}
+                        </div>
+                        <span className="mb-1 shrink-0 rounded-full bg-[#dcf0b4] px-2.5 py-1 text-[9px] font-black uppercase tracking-wide text-[#0c0c0c]">
+                          Verified
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Reveal>
           </div>
         </div>
       </section>
