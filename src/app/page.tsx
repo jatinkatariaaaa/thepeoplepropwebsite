@@ -22,9 +22,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   TrendingUp,
-  Shield,
-  Clock,
-  Award,
   CheckCircle2,
   ChevronUp,
   ChevronDown,
@@ -35,8 +32,6 @@ import {
   RotateCcw,
   BadgeDollarSign,
   Target,
-  DollarSign,
-  Percent,
   ArrowRight,
   ArrowUpRight,
 } from "lucide-react";
@@ -884,89 +879,123 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ═══════════════ SECTION 7 — FEATURES (lime card, orbit) ═══════════════ */}
-      <section className="w-full pb-16 lg:pb-24">
+      {/* ═══════════════ SECTION 7 — WHY TPP (evidence matrix) ═══════════════ */}
+      <section id="why-tpp" className="w-full scroll-mt-20 pb-16 lg:pb-24" aria-label="Why The People's Prop">
         <div className="px-[5px] py-[5px]">
-          <div className="rounded-[2rem] bg-[#cbfb45] px-[15px] py-20 lg:rounded-[3.5rem] lg:px-[35px] xl:py-32">
-            <Reveal>
-              <div className="mb-16 text-center">
-                <div className="mb-4 text-sm font-medium uppercase tracking-[0.3em] text-[#0c0c0c]/60">Why TPP</div>
-                <GsapWords
-                  text="Built for traders, not against them"
-                  className="font-bold tracking-[-0.03em] text-[#0c0c0c]"
-                  style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}
-                />
-              </div>
-            </Reveal>
+          <div className="overflow-hidden rounded-[2rem] bg-[#f5f1e8] p-3 lg:rounded-[3.5rem] lg:p-5">
+            <div className="relative overflow-hidden rounded-[1.4rem] border border-[#0c0c0c]/15 lg:rounded-[2.6rem]">
+              <Reveal>
+                <div className="flex flex-col gap-8 bg-[#0c0c0c] px-6 py-9 md:px-10 lg:flex-row lg:items-end lg:justify-between lg:px-12 lg:py-12">
+                  <div className="max-w-3xl">
+                    <div className="mb-4 text-[12px] font-bold uppercase tracking-[0.18em] text-[#cbfb45] md:text-[14px]">
+                      Why TPP
+                    </div>
+                    <GsapWords
+                      text="The difference is in the details."
+                      className="font-bold tracking-[-0.045em] text-[#f5f1e8]"
+                      style={{ fontSize: "clamp(2.75rem, 6vw, 5.75rem)" }}
+                    />
+                  </div>
+                  <div className="flex w-full max-w-sm flex-col gap-5 lg:pb-1">
+                    <p className="text-[14px] leading-relaxed text-white/50 md:text-[15px]">
+                      Professional trading conditions, transparent rules, and a funding model designed to keep serious traders moving forward.
+                    </p>
+                    <Link
+                      href="/challenges"
+                      className="inline-flex h-12 w-full items-center justify-center rounded-full bg-[#cbfb45] px-7 text-[15px] font-bold text-[#0c0c0c] transition-colors hover:bg-[#b9ef2e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#cbfb45] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0c0c0c]"
+                    >
+                      Get Funded
+                    </Link>
+                  </div>
+                </div>
+              </Reveal>
 
-            <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 lg:flex-row lg:gap-0">
-              <div className="flex w-full flex-col gap-5 lg:w-[28%]">
-                {[
-                  { icon: TrendingUp, title: "Tier-1 Liquidity", desc: "Raw spreads, no re-quotes. Your strategy deserves real market conditions." },
-                  { icon: Shield, title: "Transparent Rules", desc: "4% daily drawdown, 8% max. No hidden gotchas. What you see is what you get." },
-                ].map((f, i) => (
-                  <Reveal key={f.title} delay={i * 0.08}>
-                    <TiltCard>
-                      <div className="flex min-h-[200px] flex-col overflow-hidden rounded-3xl border border-white/[0.05] bg-[#0c0c0c] p-7">
-                        <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06]">
-                          <f.icon className="h-5 w-5 text-[#cbfb45]" strokeWidth={2} />
-                        </div>
-                        <h3 className="mb-1.5 text-lg font-bold tracking-tight text-white">{f.title}</h3>
-                        <p className="text-[13px] leading-relaxed text-white/50">{f.desc}</p>
-                      </div>
-                    </TiltCard>
-                  </Reveal>
-                ))}
-              </div>
+              <div className="relative px-3 py-8 md:px-6 lg:px-10 lg:py-12">
+                <div className="pointer-events-none absolute inset-0 opacity-30" aria-hidden="true">
+                  <div className="absolute inset-x-0 top-5 border-t border-dashed border-[#0c0c0c]/35" />
+                  <div className="absolute inset-x-0 bottom-5 border-t border-dashed border-[#0c0c0c]/35" />
+                  <div className="absolute bottom-0 left-5 top-0 border-l border-dashed border-[#0c0c0c]/35 lg:left-10" />
+                  <div className="absolute bottom-0 right-5 top-0 border-r border-dashed border-[#0c0c0c]/35 lg:right-10" />
+                </div>
 
-              {/* Orbit graphic */}
-              <div className="relative hidden w-[44%] items-center justify-center py-8 lg:flex">
-                <Floating amplitude={10} duration={7}>
-                  <div className="relative flex h-[340px] w-[340px] items-center justify-center">
-                    <div className="absolute inset-[-30px] animate-[spin_20s_linear_infinite]">
-                      <div className="absolute inset-0 rounded-full border border-[#0c0c0c]/10" />
-                      <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 animate-[spin_20s_linear_infinite_reverse]">
-                        <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-[#0c0c0c] shadow-lg">
-                          <img src="/images/icon-mt5.svg" alt="MT5" className="h-8 w-8 rounded-lg" />
+                <Reveal delay={0.08}>
+                  <div className="relative mx-auto max-w-7xl">
+                    <div className="overflow-x-auto pb-2">
+                      <div className="grid min-w-[820px] grid-cols-[0.72fr_1fr_1.08fr] px-2 md:px-4">
+                        <div className="pt-[72px]">
+                          {[
+                            { icon: Target, label: "Execution" },
+                            { icon: CalendarOff, label: "Freedom" },
+                            { icon: BadgeDollarSign, label: "Payouts" },
+                            { icon: TrendingUp, label: "Growth" },
+                          ].map(({ icon: Icon, label }) => (
+                            <div key={label} className="flex h-[78px] items-center gap-4 border-b border-dashed border-[#0c0c0c]/20 px-3 text-[#0c0c0c] last:border-b-0 lg:px-5">
+                              <Icon className="h-6 w-6 shrink-0" strokeWidth={1.8} aria-hidden="true" />
+                              <span className="text-[16px] font-semibold lg:text-[18px]">{label}</span>
+                            </div>
+                          ))}
                         </div>
-                      </div>
-                      <div className="absolute bottom-[13%] left-[3%] -translate-x-1/2 animate-[spin_20s_linear_infinite_reverse]">
-                        <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-[#0c0c0c] shadow-lg">
-                          <img src="/images/icon-dxtrade.svg" alt="DXTrade" className="h-8 w-8 rounded-lg" />
+
+                        <div className="overflow-hidden rounded-l-[1.6rem] bg-[#4b4b48] text-[#f5f1e8]">
+                          <div className="flex h-[72px] items-center justify-center border-b border-white/10 px-5 text-center text-[14px] font-bold uppercase tracking-[0.04em] lg:text-[17px]">
+                            Industry Standard
+                          </div>
+                          {["Marked-up spreads", "30-day deadline", "Fixed payout windows", "Paid resets"].map((item) => (
+                            <div key={item} className="flex h-[78px] items-center gap-3 border-b border-dashed border-white/15 px-5 text-white/70 last:border-b-0 lg:px-7">
+                              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/10 text-[15px] text-white/35" aria-hidden="true">×</span>
+                              <span className="text-[15px] font-medium lg:text-[17px]">{item}</span>
+                            </div>
+                          ))}
                         </div>
-                      </div>
-                      <div className="absolute bottom-[13%] right-[3%] translate-x-1/2 animate-[spin_20s_linear_infinite_reverse]">
-                        <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-[#0c0c0c] shadow-lg">
-                          <img src="/images/icon-tpp-terminal.webp" alt="TPP Terminal" className="h-10 w-10 rounded-lg object-cover" />
+
+                        <div className="relative overflow-hidden rounded-r-[1.6rem] bg-[#cbfb45] text-[#0c0c0c]">
+                          <div className="flex h-[72px] items-center justify-center border-b border-[#0c0c0c]/10 px-5 text-center text-[14px] font-extrabold uppercase tracking-[0.02em] lg:text-[17px]">
+                            The People&apos;s Prop
+                          </div>
+                          {["Raw 0.0 pip spreads", "No time limit", "Payout on demand", "Free retry + auto scaling"].map((item) => (
+                            <div key={item} className="flex h-[78px] items-center gap-3 border-b border-dashed border-[#0c0c0c]/20 px-5 last:border-b-0 lg:px-7">
+                              <CheckCircle2 className="h-6 w-6 shrink-0 fill-[#0c0c0c] text-[#cbfb45]" strokeWidth={2.5} aria-hidden="true" />
+                              <span className="text-[15px] font-bold lg:text-[17px]">{item}</span>
+                            </div>
+                          ))}
+                          <div className="absolute left-0 top-1/2 z-10 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-[5px] border-[#f5f1e8] bg-[#0c0c0c] text-[19px] font-black italic text-[#f5f1e8] shadow-lg">
+                            VS
+                          </div>
                         </div>
                       </div>
                     </div>
-                    <div className="absolute inset-4 rounded-full border border-[#0c0c0c]/15 animate-[spin_12s_linear_infinite_reverse]" />
-                    <div className="absolute inset-10 rounded-full border border-[#0c0c0c]/20 animate-[spin_8s_linear_infinite]" />
-                    <div className="relative z-10 flex h-[160px] w-[160px] items-center justify-center rounded-full border border-white/[0.05] bg-[#0c0c0c]">
-                      <span className="text-5xl font-bold tracking-tighter text-[#cbfb45]">TPP</span>
+
+                    <div className="mt-10 border-y border-[#0c0c0c]/65 md:mt-14">
+                      <div className="grid grid-cols-2 md:grid-cols-4">
+                        {[
+                          { value: "0.0", label: "average spread", bars: [8, 11, 9, 16, 13, 20, 17, 26, 21, 35, 18, 12] },
+                          { value: "90%", label: "profit split", bars: [10, 18, 24, 21, 29, 25, 34, 30, 27, 32, 29, 36] },
+                          { value: "$200K", label: "max allocation", bars: [7, 11, 13, 16, 19, 28, 22, 39, 25, 17, 13, 9] },
+                          { value: "24h", label: "average payout", bars: [8, 12, 17, 25, 39, 20, 15, 29, 22, 18, 14, 10] },
+                        ].map((metric, index) => (
+                          <div key={metric.label} className={cn("flex min-h-[220px] flex-col px-5 py-7 md:min-h-[250px] lg:px-8", index % 2 !== 0 && "border-l border-[#0c0c0c]/20", index > 1 && "border-t border-[#0c0c0c]/20 md:border-t-0", index === 2 && "md:border-l")}>
+                            <div className="text-center">
+                              <div className="text-[42px] font-bold leading-none tracking-[-0.05em] text-[#0c0c0c] lg:text-[54px]">{metric.value}</div>
+                              <div className="mt-2 text-[14px] font-medium text-[#0c0c0c]/75 lg:text-[16px]">{metric.label}</div>
+                            </div>
+                            <div className="mt-auto flex items-end gap-1 pt-8" aria-hidden="true">
+                              <div className="flex h-12 flex-1 items-end gap-[3px] border-b border-dashed border-[#0c0c0c]/25 pb-1">
+                                {metric.bars.map((height, barIndex) => (
+                                  <span
+                                    key={`${metric.label}-${barIndex}`}
+                                    className={cn("min-w-1 flex-1 rounded-t-[2px]", index === 2 ? "bg-[#0c0c0c]/65" : "bg-[#cbfb45]")}
+                                    style={{ height }}
+                                  />
+                                ))}
+                              </div>
+                              <span className="mb-1 rounded-full bg-[#d9f6a0] px-2 py-1 text-[8px] font-black uppercase tracking-wide text-[#0c0c0c]">Verified</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </Floating>
-              </div>
-
-              <div className="flex w-full flex-col gap-5 lg:w-[28%]">
-                {[
-                  { icon: Clock, title: "No Time Limit", desc: "Trade at your own pace. Pass the evaluation whenever you're ready." },
-                  { icon: Award, title: "Auto-Scaling", desc: "Hit targets and grow automatically. $25K → $50K → $100K → $200K." },
-                ].map((f, i) => (
-                  <Reveal key={f.title} delay={i * 0.08}>
-                    <TiltCard>
-                      <div className="flex min-h-[200px] flex-col overflow-hidden rounded-3xl border border-white/[0.05] bg-[#0c0c0c] p-7">
-                        <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06]">
-                          <f.icon className="h-5 w-5 text-[#cbfb45]" strokeWidth={2} />
-                        </div>
-                        <h3 className="mb-1.5 text-lg font-bold tracking-tight text-white">{f.title}</h3>
-                        <p className="text-[13px] leading-relaxed text-white/50">{f.desc}</p>
-                      </div>
-                    </TiltCard>
-                  </Reveal>
-                ))}
+                </Reveal>
               </div>
             </div>
           </div>
