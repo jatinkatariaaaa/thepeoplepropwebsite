@@ -2,6 +2,21 @@
 
 const concepts = [
   {
+    src: "/mockups/why-tpp-dark-1.png",
+    title: "Dark Concept 1 — Numbered Vertical Flow",
+    desc: "How it works wale dark section ki exact feel — left me bada headline + buttons, right me numbered (1-4) feature cards connected by dotted lime line with orbit rings.",
+  },
+  {
+    src: "/mockups/why-tpp-dark-2.png",
+    title: "Dark Concept 2 — VS Comparison (Dark)",
+    desc: "Dark background pe 'Other Prop Firms' (gray, X marks) vs 'The People's Prop' (lime, checkmarks) with VS badge + niche stat chips.",
+  },
+  {
+    src: "/mockups/why-tpp-dark-3.png",
+    title: "Dark Concept 3 — TPP Orbit Hub",
+    desc: "Center me glowing lime TPP badge with orbit rings, 4 feature cards orbit ke around connected by dotted lines. Left me headline + CTAs + stat chips.",
+  },
+  {
     src: "/mockups/why-tpp-concept-7.png",
     title: "Concept D — VS Comparison + Stats",
     desc: "Header + 'Other Prop Firms vs The People's Prop' comparison cards with VS badge + 4 stat cards strip niche (0.0 / 90% / $200K / 24h).",
