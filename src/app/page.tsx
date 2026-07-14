@@ -882,122 +882,206 @@ export default function HomePage() {
       {/* ═══════════════ SECTION 7 — WHY TPP (evidence matrix) ═══════════════ */}
       <section id="why-tpp" className="w-full scroll-mt-20 pb-16 lg:pb-24" aria-label="Why The People's Prop">
         <div className="px-[5px] py-[5px]">
-          <div className="overflow-hidden rounded-[2rem] bg-[#f5f1e8] p-3 lg:rounded-[3.5rem] lg:p-5">
-            <div className="relative overflow-hidden rounded-[1.4rem] border border-[#0c0c0c]/15 lg:rounded-[2.6rem]">
-              <Reveal>
-                <div className="flex flex-col gap-8 bg-[#0c0c0c] px-6 py-9 md:px-10 lg:flex-row lg:items-end lg:justify-between lg:px-12 lg:py-12">
-                  <div className="max-w-3xl">
-                    <div className="mb-4 text-[12px] font-bold uppercase tracking-[0.18em] text-[#cbfb45] md:text-[14px]">
+          <div className="rounded-[2rem] bg-[#f0ece2] p-3 md:p-5 lg:rounded-[3.5rem] lg:p-7">
+            {/* ── Dark header card ── */}
+            <Reveal>
+              <div className="rounded-[1.6rem] bg-[#0c0c0c] px-7 py-10 md:px-11 md:py-12 lg:rounded-[2.4rem] lg:px-14 lg:py-14">
+                <div className="flex flex-col gap-9 lg:flex-row lg:items-center lg:justify-between lg:gap-14">
+                  <div className="max-w-2xl">
+                    <div className="mb-5 text-[13px] font-bold uppercase tracking-[0.24em] text-[#cbfb45]">
                       Why TPP
                     </div>
-                    <GsapWords
-                      text="The difference is in the details."
-                      className="font-bold tracking-[-0.045em] text-[#f5f1e8]"
-                      style={{ fontSize: "clamp(2.75rem, 6vw, 5.75rem)" }}
-                    />
+                    <h2
+                      className="text-balance font-bold leading-[1.04] tracking-[-0.04em] text-[#f0ece2]"
+                      style={{ fontSize: "clamp(2.5rem, 5.5vw, 4.75rem)" }}
+                    >
+                      The difference is in the details.
+                    </h2>
                   </div>
-                  <div className="flex w-full max-w-sm flex-col gap-5 lg:pb-1">
-                    <p className="text-[14px] leading-relaxed text-white/50 md:text-[15px]">
-                      Professional trading conditions, transparent rules, and a funding model designed to keep serious traders moving forward.
+                  <div className="flex w-full flex-col gap-6 lg:w-[330px] lg:shrink-0">
+                    <p className="text-[14px] leading-relaxed text-white/45 md:text-[15px]">
+                      Professional trading conditions, transparent rules, and a funding model built to keep serious traders moving forward.
                     </p>
                     <Link
                       href="/challenges"
-                      className="inline-flex h-12 w-full items-center justify-center rounded-full bg-[#cbfb45] px-7 text-[15px] font-bold text-[#0c0c0c] transition-colors hover:bg-[#b9ef2e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#cbfb45] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0c0c0c]"
+                      className="inline-flex h-[52px] w-full items-center justify-center rounded-full bg-[#cbfb45] px-8 text-[16px] font-bold text-[#0c0c0c] transition-colors hover:bg-[#b9ef2e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#cbfb45] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0c0c0c]"
                     >
                       Get Funded
                     </Link>
                   </div>
                 </div>
-              </Reveal>
+              </div>
+            </Reveal>
 
-              <div className="relative px-3 py-8 md:px-6 lg:px-10 lg:py-12">
-                <div className="pointer-events-none absolute inset-0 opacity-30" aria-hidden="true">
-                  <div className="absolute inset-x-0 top-5 border-t border-dashed border-[#0c0c0c]/35" />
-                  <div className="absolute inset-x-0 bottom-5 border-t border-dashed border-[#0c0c0c]/35" />
-                  <div className="absolute bottom-0 left-5 top-0 border-l border-dashed border-[#0c0c0c]/35 lg:left-10" />
-                  <div className="absolute bottom-0 right-5 top-0 border-r border-dashed border-[#0c0c0c]/35 lg:right-10" />
+            {/* ── Comparison matrix ── */}
+            <Reveal delay={0.08}>
+              <div className="relative mt-2 px-1 py-9 md:px-3 lg:px-6 lg:py-12">
+                {/* dashed blueprint frame + registration marks */}
+                <div className="pointer-events-none absolute inset-0 hidden md:block" aria-hidden="true">
+                  <div className="absolute inset-x-3 top-4 border-t border-dashed border-[#0c0c0c]/25 lg:inset-x-6" />
+                  <div className="absolute inset-x-3 bottom-4 border-t border-dashed border-[#0c0c0c]/25 lg:inset-x-6" />
+                  <div className="absolute bottom-4 left-3 top-4 border-l border-dashed border-[#0c0c0c]/25 lg:left-6" />
+                  <div className="absolute bottom-4 right-3 top-4 border-r border-dashed border-[#0c0c0c]/25 lg:right-6" />
+                  {[
+                    "left-3 top-4 lg:left-6",
+                    "right-3 top-4 lg:right-6",
+                    "left-3 bottom-4 lg:left-6",
+                    "right-3 bottom-4 lg:right-6",
+                  ].map((pos) => (
+                    <span key={pos} className={cn("absolute flex h-5 w-5 -translate-x-1/2 -translate-y-1/2 items-center justify-center", pos.includes("right") && "translate-x-1/2", pos.includes("bottom") && "translate-y-1/2")}>
+                      <span className="absolute h-full w-px bg-[#0c0c0c]/40" />
+                      <span className="absolute h-px w-full bg-[#0c0c0c]/40" />
+                      <span className="absolute h-2.5 w-2.5 rounded-full border border-[#0c0c0c]/45 bg-[#f0ece2]" />
+                    </span>
+                  ))}
                 </div>
 
-                <Reveal delay={0.08}>
-                  <div className="relative mx-auto max-w-7xl">
-                    <div className="overflow-x-auto pb-2">
-                      <div className="grid min-w-[820px] grid-cols-[0.72fr_1fr_1.08fr] px-2 md:px-4">
-                        <div className="pt-[72px]">
-                          {[
-                            { icon: Target, label: "Execution" },
-                            { icon: CalendarOff, label: "Freedom" },
-                            { icon: BadgeDollarSign, label: "Payouts" },
-                            { icon: TrendingUp, label: "Growth" },
-                          ].map(({ icon: Icon, label }) => (
-                            <div key={label} className="flex h-[78px] items-center gap-4 border-b border-dashed border-[#0c0c0c]/20 px-3 text-[#0c0c0c] last:border-b-0 lg:px-5">
-                              <Icon className="h-6 w-6 shrink-0" strokeWidth={1.8} aria-hidden="true" />
-                              <span className="text-[16px] font-semibold lg:text-[18px]">{label}</span>
-                            </div>
-                          ))}
+                {/* Desktop matrix */}
+                <div className="relative mx-auto hidden max-w-6xl lg:block">
+                  <div className="grid grid-cols-[0.58fr_1fr_1fr] gap-x-4">
+                    {/* Categories */}
+                    <div className="pt-[76px]">
+                      {[
+                        { icon: Target, label: "Execution" },
+                        { icon: CalendarOff, label: "Freedom" },
+                        { icon: BadgeDollarSign, label: "Payouts" },
+                        { icon: TrendingUp, label: "Growth" },
+                      ].map(({ icon: Icon, label }) => (
+                        <div key={label} className="flex h-[84px] items-center gap-4 border-b border-dashed border-[#0c0c0c]/20 px-2 text-[#0c0c0c] last:border-b-0">
+                          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#0c0c0c]/35">
+                            <Icon className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
+                          </span>
+                          <span className="text-[18px] font-semibold">{label}</span>
                         </div>
-
-                        <div className="overflow-hidden rounded-l-[1.6rem] bg-[#4b4b48] text-[#f5f1e8]">
-                          <div className="flex h-[72px] items-center justify-center border-b border-white/10 px-5 text-center text-[14px] font-bold uppercase tracking-[0.04em] lg:text-[17px]">
-                            Industry Standard
-                          </div>
-                          {["Marked-up spreads", "30-day deadline", "Fixed payout windows", "Paid resets"].map((item) => (
-                            <div key={item} className="flex h-[78px] items-center gap-3 border-b border-dashed border-white/15 px-5 text-white/70 last:border-b-0 lg:px-7">
-                              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/10 text-[15px] text-white/35" aria-hidden="true">×</span>
-                              <span className="text-[15px] font-medium lg:text-[17px]">{item}</span>
-                            </div>
-                          ))}
-                        </div>
-
-                        <div className="relative overflow-hidden rounded-r-[1.6rem] bg-[#cbfb45] text-[#0c0c0c]">
-                          <div className="flex h-[72px] items-center justify-center border-b border-[#0c0c0c]/10 px-5 text-center text-[14px] font-extrabold uppercase tracking-[0.02em] lg:text-[17px]">
-                            The People&apos;s Prop
-                          </div>
-                          {["Raw 0.0 pip spreads", "No time limit", "Payout on demand", "Free retry + auto scaling"].map((item) => (
-                            <div key={item} className="flex h-[78px] items-center gap-3 border-b border-dashed border-[#0c0c0c]/20 px-5 last:border-b-0 lg:px-7">
-                              <CheckCircle2 className="h-6 w-6 shrink-0 fill-[#0c0c0c] text-[#cbfb45]" strokeWidth={2.5} aria-hidden="true" />
-                              <span className="text-[15px] font-bold lg:text-[17px]">{item}</span>
-                            </div>
-                          ))}
-                          <div className="absolute left-0 top-1/2 z-10 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-[5px] border-[#f5f1e8] bg-[#0c0c0c] text-[19px] font-black italic text-[#f5f1e8] shadow-lg">
-                            VS
-                          </div>
-                        </div>
-                      </div>
+                      ))}
                     </div>
 
-                    <div className="mt-10 border-y border-[#0c0c0c]/65 md:mt-14">
-                      <div className="grid grid-cols-2 md:grid-cols-4">
-                        {[
-                          { value: "0.0", label: "average spread", bars: [8, 11, 9, 16, 13, 20, 17, 26, 21, 35, 18, 12] },
-                          { value: "90%", label: "profit split", bars: [10, 18, 24, 21, 29, 25, 34, 30, 27, 32, 29, 36] },
-                          { value: "$200K", label: "max allocation", bars: [7, 11, 13, 16, 19, 28, 22, 39, 25, 17, 13, 9] },
-                          { value: "24h", label: "average payout", bars: [8, 12, 17, 25, 39, 20, 15, 29, 22, 18, 14, 10] },
-                        ].map((metric, index) => (
-                          <div key={metric.label} className={cn("flex min-h-[220px] flex-col px-5 py-7 md:min-h-[250px] lg:px-8", index % 2 !== 0 && "border-l border-[#0c0c0c]/20", index > 1 && "border-t border-[#0c0c0c]/20 md:border-t-0", index === 2 && "md:border-l")}>
-                            <div className="text-center">
-                              <div className="text-[42px] font-bold leading-none tracking-[-0.05em] text-[#0c0c0c] lg:text-[54px]">{metric.value}</div>
-                              <div className="mt-2 text-[14px] font-medium text-[#0c0c0c]/75 lg:text-[16px]">{metric.label}</div>
-                            </div>
-                            <div className="mt-auto flex items-end gap-1 pt-8" aria-hidden="true">
-                              <div className="flex h-12 flex-1 items-end gap-[3px] border-b border-dashed border-[#0c0c0c]/25 pb-1">
-                                {metric.bars.map((height, barIndex) => (
-                                  <span
-                                    key={`${metric.label}-${barIndex}`}
-                                    className={cn("min-w-1 flex-1 rounded-t-[2px]", index === 2 ? "bg-[#0c0c0c]/65" : "bg-[#cbfb45]")}
-                                    style={{ height }}
-                                  />
-                                ))}
-                              </div>
-                              <span className="mb-1 rounded-full bg-[#d9f6a0] px-2 py-1 text-[8px] font-black uppercase tracking-wide text-[#0c0c0c]">Verified</span>
-                            </div>
+                    {/* Industry Standard */}
+                    <div className="overflow-hidden rounded-[1.5rem] bg-[#55544d] text-[#f0ece2]">
+                      <div className="flex h-[76px] items-center justify-center bg-[#3f3e39] px-6 text-center text-[16px] font-bold uppercase tracking-[0.05em]">
+                        Industry Standard
+                      </div>
+                      {["Marked-up spreads", "30-day deadline", "Fixed payout windows", "Paid resets"].map((item) => (
+                        <div key={item} className="flex h-[84px] items-center gap-3.5 border-b border-white/10 px-7 text-white/75 last:border-b-0">
+                          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/15 text-[16px] leading-none text-white/45" aria-hidden="true">×</span>
+                          <span className="text-[17px] font-medium">{item}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* The People's Prop */}
+                    <div className="relative">
+                      <div className="overflow-hidden rounded-[1.5rem] bg-[#cbfb45] text-[#0c0c0c]">
+                        <div className="flex h-[76px] items-center justify-center border-b border-[#0c0c0c]/10 px-6 text-center text-[16px] font-extrabold uppercase tracking-[0.04em]">
+                          The People&apos;s Prop
+                        </div>
+                        {["Raw 0.0 pip spreads", "No time limit", "Payout on demand", "Free retry + auto scaling"].map((item) => (
+                          <div key={item} className="flex h-[84px] items-center gap-3.5 border-b border-[#0c0c0c]/10 px-7 last:border-b-0">
+                            <CheckCircle2 className="h-7 w-7 shrink-0 fill-[#0c0c0c] text-[#cbfb45]" strokeWidth={2.5} aria-hidden="true" />
+                            <span className="text-[17px] font-bold">{item}</span>
                           </div>
                         ))}
                       </div>
+                      <div className="absolute -left-2 top-1/2 z-10 flex h-[66px] w-[66px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#0c0c0c] text-[20px] font-black text-[#f0ece2] shadow-xl ring-4 ring-[#f0ece2]">
+                        VS
+                      </div>
                     </div>
                   </div>
-                </Reveal>
+                </div>
+
+                {/* Mobile / tablet stacked matrix */}
+                <div className="relative mx-auto lg:hidden">
+                  <div className="overflow-hidden rounded-[1.4rem] bg-[#55544d] text-[#f0ece2]">
+                    <div className="flex h-[64px] items-center justify-center bg-[#3f3e39] px-5 text-center text-[14px] font-bold uppercase tracking-[0.05em]">
+                      Industry Standard
+                    </div>
+                    {[
+                      { cat: "Execution", value: "Marked-up spreads" },
+                      { cat: "Freedom", value: "30-day deadline" },
+                      { cat: "Payouts", value: "Fixed payout windows" },
+                      { cat: "Growth", value: "Paid resets" },
+                    ].map(({ cat, value }) => (
+                      <div key={value} className="flex items-center gap-3 border-b border-white/10 px-5 py-4 last:border-b-0">
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/15 text-[14px] leading-none text-white/45" aria-hidden="true">×</span>
+                        <div className="min-w-0">
+                          <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/40">{cat}</div>
+                          <div className="text-[15px] font-medium text-white/80">{value}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="relative z-10 mx-auto -my-[26px] flex h-[58px] w-[58px] items-center justify-center rounded-full bg-[#0c0c0c] text-[17px] font-black text-[#f0ece2] shadow-xl ring-4 ring-[#f0ece2]">
+                    VS
+                  </div>
+
+                  <div className="overflow-hidden rounded-[1.4rem] bg-[#cbfb45] text-[#0c0c0c]">
+                    <div className="flex h-[64px] items-center justify-center border-b border-[#0c0c0c]/10 px-5 pt-3 text-center text-[14px] font-extrabold uppercase tracking-[0.04em]">
+                      The People&apos;s Prop
+                    </div>
+                    {[
+                      { cat: "Execution", value: "Raw 0.0 pip spreads" },
+                      { cat: "Freedom", value: "No time limit" },
+                      { cat: "Payouts", value: "Payout on demand" },
+                      { cat: "Growth", value: "Free retry + auto scaling" },
+                    ].map(({ cat, value }) => (
+                      <div key={value} className="flex items-center gap-3 border-b border-[#0c0c0c]/10 px-5 py-4 last:border-b-0">
+                        <CheckCircle2 className="h-6 w-6 shrink-0 fill-[#0c0c0c] text-[#cbfb45]" strokeWidth={2.5} aria-hidden="true" />
+                        <div className="min-w-0">
+                          <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#0c0c0c]/50">{cat}</div>
+                          <div className="text-[15px] font-bold">{value}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
-            </div>
+            </Reveal>
+
+            {/* ── Metrics rail ── */}
+            <Reveal delay={0.12}>
+              <div className="mx-1 mb-4 border-y-2 border-[#0c0c0c]/70 md:mx-3 lg:mx-6">
+                <div className="grid grid-cols-2 md:grid-cols-4">
+                  {[
+                    { value: "0.0", label: "average spread", dark: false, bars: [7, 10, 8, 14, 11, 18, 15, 24, 19, 33, 40, 22] },
+                    { value: "90%", label: "profit split", dark: false, bars: [12, 20, 26, 22, 30, 26, 36, 31, 28, 34, 30, 38] },
+                    { value: "$200K", label: "max allocation", dark: true, bars: [6, 9, 12, 15, 18, 26, 21, 38, 30, 20, 14, 9] },
+                    { value: "24h", label: "average payout", dark: false, bars: [8, 12, 17, 26, 40, 21, 15, 30, 23, 18, 13, 9] },
+                  ].map((metric, index) => (
+                    <div
+                      key={metric.label}
+                      className={cn(
+                        "flex min-h-[210px] flex-col px-5 py-8 md:min-h-[240px] lg:px-9",
+                        index % 2 !== 0 && "border-l-2 border-[#0c0c0c]/25",
+                        index > 1 && "border-t-2 border-[#0c0c0c]/25 md:border-t-0",
+                        index === 2 && "md:border-l-2",
+                      )}
+                    >
+                      <div className="text-center">
+                        <div className="text-[44px] font-bold leading-none tracking-[-0.05em] text-[#0c0c0c] lg:text-[58px]">
+                          {metric.value}
+                        </div>
+                        <div className="mt-2.5 text-[15px] font-medium text-[#0c0c0c]/70 lg:text-[17px]">{metric.label}</div>
+                      </div>
+                      <div className="mt-auto flex items-end gap-2 pt-8" aria-hidden="true">
+                        <div className="flex h-12 flex-1 items-end gap-[3px] border-b border-dashed border-[#0c0c0c]/30 pb-0.5">
+                          {metric.bars.map((height, barIndex) => (
+                            <span
+                              key={`${metric.label}-${barIndex}`}
+                              className={cn("min-w-1 flex-1 rounded-t-[2px]", metric.dark ? "bg-[#3f3e39]" : "bg-[#a8dc23]")}
+                              style={{ height }}
+                            />
+                          ))}
+                        </div>
+                        <span className="mb-1 shrink-0 rounded-full bg-[#dcf0b4] px-2.5 py-1 text-[9px] font-black uppercase tracking-wide text-[#0c0c0c]">
+                          Verified
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Reveal>
           </div>
         </div>
       </section>
