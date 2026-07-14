@@ -2,6 +2,21 @@
 
 const concepts = [
   {
+    src: "/mockups/why-tpp-pro-1.png",
+    title: "Professional Concept 1 — Trading Command Center",
+    desc: "Editorial headline, trader trust proof, live trading dashboard, connected feature modules, technical orbit details aur evidence rail.",
+  },
+  {
+    src: "/mockups/why-tpp-pro-2.png",
+    title: "Professional Concept 2 — Evidence Matrix",
+    desc: "Structured industry comparison, category icons, VS treatment, verified metrics aur micro data charts — strongest conversion-focused option.",
+  },
+  {
+    src: "/mockups/why-tpp-pro-3.png",
+    title: "Professional Concept 3 — TPP Trading Ecosystem",
+    desc: "Advanced orbit system with execution, freedom, profit, scale and payout modules plus live market ticker.",
+  },
+  {
     src: "/mockups/why-tpp-dark-1.png",
     title: "Dark Concept 1 — Numbered Vertical Flow",
     desc: "How it works wale dark section ki exact feel — left me bada headline + buttons, right me numbered (1-4) feature cards connected by dotted lime line with orbit rings.",
