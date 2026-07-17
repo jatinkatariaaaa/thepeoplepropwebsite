@@ -37,6 +37,7 @@ import {
 } from "lucide-react";
 
 import { FeaturedIn } from "@/components/landing/FeaturedIn";
+import { Testimonials } from "@/components/landing/Testimonials";
 import { cn } from "@/lib/utils";
 import { faq } from "@/data/faq";
 import { ChallengeCalculator } from "@/components/landing/ChallengeCalculator";
@@ -465,21 +466,9 @@ export default function HomePage() {
   const heroFade = useTransform(heroProgress, [0, 0.8], [1, 0]);
   const heroScale = useTransform(heroProgress, [0, 1], [1, 1.08]);
 
-  /* Swipeable testimonial deck (mobile) */
-  const [activeT, setActiveT] = useState(0);
-
   /* FAQ */
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const faqItems = faq.slice(0, 6);
-
-  const testimonials = [
-    { name: "Marcus Adeyemi", handle: "@marcus.fx · Lagos", body: "The execution feels like a real institutional desk — no slippage tricks, no shifting goalposts. Got my first payout in 11 days.", payout: "$18,420" },
-    { name: "Sofía Carrasco", handle: "@sofi.trades · Madrid", body: "The consistency rule is actually fair here. The 90% split on the 25K is the highest I've seen anywhere.", payout: "$9,610" },
-    { name: "Daniel Park", handle: "@dpfx · Seoul", body: "Scaling plan got me from 25K to 75K in 8 months. Bi-weekly payouts always land on time.", payout: "$24,300" },
-    { name: "Aisha Okafor", handle: "@aisha.fx · Abuja", body: "Sub-24h payouts aren't marketing fluff — my withdrawal hit in 9 hours. The dashboard is clean.", payout: "$14,850" },
-    { name: "Chen Wei", handle: "@chen.markets · Singapore", body: "Auto-scaling bumped me from $25K to $50K without paperwork. The profit split at this level is 90%.", payout: "$21,400" },
-    { name: "Grace Nwankwo", handle: "@grace.fx · London", body: "100% refund on first payout means the challenge is essentially free if you're profitable.", payout: "$13,750" },
-  ];
 
   /* Refresh ScrollTrigger once mounted so it cooperates with Lenis. */
   useEffect(() => {
@@ -1088,74 +1077,8 @@ export default function HomePage() {
 
       <ProfitCalculator />
 
-      {/* ═══════════════ SECTION 8 — TESTIMONIALS (MARQUEE) ═══════════════ */}
-      <section className="w-full pb-16 pt-8 lg:pb-24">
-        <div className="mb-12 text-center">
-          <GsapWords
-            text="Trader Voices"
-            highlight={["Voices"]}
-            className="font-bold tracking-tight text-[#0c0c0c]"
-            style={{ fontSize: "clamp(2rem, 5vw, 3rem)" }}
-          />
-          <p className="mt-2 text-[15px] font-medium text-[#0c0c0c]/60">What our traders are saying</p>
-        </div>
-
-        <div 
-          className="relative flex w-full flex-col gap-3 overflow-hidden py-4"
-          style={{
-            maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
-            WebkitMaskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)"
-          }}
-        >
-          {/* Row 1 */}
-          <motion.div
-            className="flex w-max items-center gap-3"
-            animate={{ x: ["0%", "-50%"] }}
-            transition={{ repeat: Infinity, ease: "linear", duration: 40 }}
-          >
-            {[...testimonials, ...testimonials].map((t, i) => (
-              <div key={i} className="flex h-[180px] w-[300px] flex-col justify-between rounded-[1rem] bg-[#cbfb45] p-6 text-[#0c0c0c] shadow-sm md:h-[200px] md:w-[350px]">
-                <p className="text-[13px] font-semibold leading-relaxed md:text-[14px]">&ldquo;{t.body}&rdquo;</p>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0c0c0c] text-[13px] font-bold text-white">
-                    {t.name.split(" ").map((n) => n[0]).join("")}
-                  </div>
-                  <div>
-                    <div className="text-[14px] font-bold">{t.name}</div>
-                    <div className="flex items-center gap-1 text-[12px] font-semibold opacity-70">
-                      <CheckCircle2 className="h-3 w-3" strokeWidth={3} /> {t.payout} paid
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </motion.div>
-
-          {/* Row 2 */}
-          <motion.div
-            className="flex w-max items-center gap-3"
-            animate={{ x: ["-50%", "0%"] }}
-            transition={{ repeat: Infinity, ease: "linear", duration: 45 }}
-          >
-            {[...testimonials.slice().reverse(), ...testimonials.slice().reverse()].map((t, i) => (
-              <div key={i} className="flex h-[180px] w-[300px] flex-col justify-between rounded-[1rem] bg-[#cbfb45] p-6 text-[#0c0c0c] shadow-sm md:h-[200px] md:w-[350px]">
-                <p className="text-[13px] font-semibold leading-relaxed md:text-[14px]">&ldquo;{t.body}&rdquo;</p>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0c0c0c] text-[13px] font-bold text-white">
-                    {t.name.split(" ").map((n) => n[0]).join("")}
-                  </div>
-                  <div>
-                    <div className="text-[14px] font-bold">{t.name}</div>
-                    <div className="flex items-center gap-1 text-[12px] font-semibold opacity-70">
-                      <CheckCircle2 className="h-3 w-3" strokeWidth={3} /> {t.payout} paid
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
+      {/* ═══════════════ SECTION 8 — TESTIMONIALS (BENTO GRID) ═══════════════ */}
+      <Testimonials />
 
       {/* ═══════════════ SECTION 9 — FAQ (merged from V1) ═══════════════ */}
       <section className="w-full pb-16 lg:pb-24">

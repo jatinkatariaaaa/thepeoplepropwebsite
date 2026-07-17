@@ -1,35 +1,36 @@
-import { SectionHeading } from "@/components/ui/SectionHeading";
-import { Badge } from "@/components/ui/Badge";
-import { CheckCircle2, Globe2, Star, TrendingUp } from "lucide-react";
+"use client";
+
+import { useEffect, useState } from "react";
+import { BadgeCheck, Globe2, Star, Wallet } from "lucide-react";
 import { testimonialsExtended, type Testimonial } from "@/data/testimonials";
 
 /* ═══════════════════════════════════════════════════════════════
-   Testimonials — Bento Grid
+   Testimonials — Dark Bento Grid (TPP V3 landing style)
 
-   Asymmetric bento layout:
-   - 1 large hero card (long quote + big payout number)
-   - 1 dark inverted card for contrast
-   - Medium quote cards
-   - Small stat tiles mixed in
+   - Matches the landing page language: full-width rounded dark
+     card (#0c0c0c) on cream, neon lime (#cbfb45) accents.
+   - Testimonials shuffle randomly on every page load, so each
+     visitor / refresh sees a different set.
    ═══════════════════════════════════════════════════════════════ */
 
-/* Pick a curated set for the bento grid */
-const hero = testimonialsExtended.find((t) => t.payout === "$24,300")!; // Daniel Park
-const dark = testimonialsExtended.find((t) => t.initials === "FR")!; // Fatima — scaling story
-const mediums: Testimonial[] = [
-  testimonialsExtended.find((t) => t.initials === "MA")!, // Marcus
-  testimonialsExtended.find((t) => t.initials === "AO")!, // Aisha
-  testimonialsExtended.find((t) => t.initials === "CW")!, // Chen
-  testimonialsExtended.find((t) => t.initials === "NK")!, // Nina
-];
+const INK = "#0c0c0c";
+const LIME = "#cbfb45";
 
-function Avatar({ t, dark = false }: { t: Testimonial; dark?: boolean }) {
+/* Fisher–Yates shuffle (non-mutating) */
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function Avatar({ t, onLime = false }: { t: Testimonial; onLime?: boolean }) {
   return (
     <div
-      className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-[12px] font-semibold tracking-wide ${
-        dark
-          ? "bg-[var(--lime)] text-[var(--ink-950)]"
-          : "bg-[var(--ink-950)] text-white"
+      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[12px] font-bold tracking-wide ${
+        onLime ? "bg-[#0c0c0c] text-[#cbfb45]" : "bg-[#cbfb45] text-[#0c0c0c]"
       }`}
       aria-hidden="true"
     >
@@ -38,21 +39,26 @@ function Avatar({ t, dark = false }: { t: Testimonial; dark?: boolean }) {
   );
 }
 
-function PersonRow({ t, dark = false }: { t: Testimonial; dark?: boolean }) {
+function PersonRow({ t, onLime = false }: { t: Testimonial; onLime?: boolean }) {
   return (
-    <div className="flex items-center gap-3 min-w-0">
-      <Avatar t={t} dark={dark} />
+    <div className="flex min-w-0 items-center gap-3">
+      <Avatar t={t} onLime={onLime} />
       <div className="min-w-0">
         <p
-          className={`text-[14px] font-semibold truncate ${
-            dark ? "text-white" : "text-[var(--ink-950)]"
+          className={`flex items-center gap-1.5 truncate text-[14px] font-bold ${
+            onLime ? "text-[#0c0c0c]" : "text-white"
           }`}
         >
           {t.name}
+          <BadgeCheck
+            className={`h-4 w-4 shrink-0 ${onLime ? "text-[#0c0c0c]" : "text-[#cbfb45]"}`}
+            strokeWidth={2.25}
+            aria-label="Verified trader"
+          />
         </p>
         <p
-          className={`text-[12px] truncate ${
-            dark ? "text-white/50" : "text-[var(--ink-400)]"
+          className={`truncate text-[12px] font-medium ${
+            onLime ? "text-[#0c0c0c]/60" : "text-white/45"
           }`}
         >
           {t.handle} · {t.location}
@@ -62,156 +68,181 @@ function PersonRow({ t, dark = false }: { t: Testimonial; dark?: boolean }) {
   );
 }
 
-function VerifiedPayout({ payout }: { payout: string }) {
-  return (
-    <Badge variant="success" className="!gap-1">
-      <CheckCircle2 className="w-3.5 h-3.5" strokeWidth={2.5} />
-      {payout} payout
-    </Badge>
-  );
-}
-
-/* ── Large hero card ── */
+/* ── Large hero card (2×2) ── */
 function HeroCard({ t }: { t: Testimonial }) {
   return (
-    <article className="lift surface-elevated flex flex-col justify-between gap-8 p-7 md:p-9 md:col-span-2 md:row-span-2">
+    <article className="flex flex-col justify-between gap-8 rounded-[1.25rem] border border-white/[0.08] bg-white/[0.03] p-7 transition-colors duration-300 hover:border-[#cbfb45]/30 sm:col-span-2 md:col-span-2 md:row-span-2 md:p-9">
       <div className="flex flex-col gap-6">
-        <div className="flex items-center justify-between gap-3">
-          <VerifiedPayout payout={t.payout} />
-          <div className="flex items-center gap-0.5" aria-label="5 star rating">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Star
-                key={i}
-                className="w-3.5 h-3.5 fill-[var(--amber)] text-[var(--amber)]"
-                aria-hidden="true"
-              />
-            ))}
-          </div>
+        <div className="flex items-center gap-1" aria-label="5 star rating">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Star
+              key={i}
+              className="h-4 w-4 fill-[#cbfb45] text-[#cbfb45]"
+              aria-hidden="true"
+            />
+          ))}
         </div>
-        <blockquote className="text-[22px] md:text-[26px] lg:text-[30px] leading-[1.25] font-medium tracking-[-0.02em] text-[var(--ink-950)] text-pretty">
+        <blockquote className="text-pretty text-[18px] font-medium leading-[1.45] tracking-[-0.01em] text-white/90 md:text-[21px] lg:text-[23px]">
           &ldquo;{t.body}&rdquo;
         </blockquote>
       </div>
-      <div className="flex items-end justify-between gap-4 flex-wrap">
-        <PersonRow t={t} />
-        <div className="text-right">
-          <p className="text-[28px] md:text-[34px] font-bold tracking-[-0.03em] text-[var(--ink-950)] tabular-nums leading-none">
+      <div className="flex flex-col gap-7">
+        <p className="leading-none">
+          <span className="text-[40px] font-bold tracking-[-0.04em] text-[#cbfb45] tabular-nums md:text-[52px]">
             {t.payout}
-          </p>
-          <p className="text-[11px] tracking-[0.1em] uppercase text-[var(--ink-400)] font-medium mt-1.5">
-            Largest single payout
-          </p>
-        </div>
+          </span>
+          <span className="ml-3 text-[18px] font-semibold text-white/50 md:text-[22px]">
+            paid
+          </span>
+        </p>
+        <PersonRow t={t} />
       </div>
     </article>
   );
 }
 
-/* ── Dark inverted card ── */
-function DarkCard({ t }: { t: Testimonial }) {
+/* ── Charcoal review card ── */
+function QuoteCard({ t, className = "" }: { t: Testimonial; className?: string }) {
   return (
-    <article className="lift flex flex-col justify-between gap-6 p-6 md:p-7 rounded-[18px] bg-[var(--ink-950)] border border-[var(--ink-900)] shadow-[var(--shadow-lg)] md:col-span-2">
-      <div className="flex flex-col gap-4">
-        <span className="inline-flex items-center gap-1.5 self-start px-2.5 py-1 rounded-full text-[11px] font-medium tracking-[0.04em] bg-[rgba(203,251,69,0.14)] text-[var(--lime)] border border-[rgba(203,251,69,0.25)]">
-          <CheckCircle2 className="w-3.5 h-3.5" strokeWidth={2.5} />
-          {t.payout} payout
-        </span>
-        <blockquote className="text-[16px] md:text-[18px] leading-relaxed text-white/85 text-pretty">
-          &ldquo;{t.body}&rdquo;
-        </blockquote>
-      </div>
-      <PersonRow t={t} dark />
-    </article>
-  );
-}
-
-/* ── Medium quote card ── */
-function QuoteCard({ t }: { t: Testimonial }) {
-  return (
-    <article className="lift surface-card flex flex-col justify-between gap-5 p-6">
-      <blockquote className="text-[14px] leading-relaxed text-[var(--ink-600)] text-pretty">
+    <article
+      className={`flex flex-col justify-between gap-5 rounded-[1.25rem] border border-white/[0.08] bg-white/[0.03] p-6 transition-colors duration-300 hover:border-[#cbfb45]/30 ${className}`}
+    >
+      <blockquote className="text-pretty text-[13.5px] font-medium leading-relaxed text-white/70">
         &ldquo;{t.body}&rdquo;
       </blockquote>
-      <div className="flex items-center justify-between gap-3 flex-wrap">
-        <PersonRow t={t} />
-        <VerifiedPayout payout={t.payout} />
+      <PersonRow t={t} />
+    </article>
+  );
+}
+
+/* ── Lime inverted quote card ── */
+function LimeQuoteCard({ t, className = "" }: { t: Testimonial; className?: string }) {
+  return (
+    <article
+      className={`flex flex-col justify-between gap-5 rounded-[1.25rem] bg-[#cbfb45] p-6 ${className}`}
+    >
+      <blockquote className="text-pretty text-[14px] font-semibold leading-relaxed text-[#0c0c0c] md:text-[15px]">
+        &ldquo;{t.body}&rdquo;
+      </blockquote>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <PersonRow t={t} onLime />
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#0c0c0c] px-3 py-1.5 text-[10px] font-black uppercase tracking-wide text-[#cbfb45]">
+          <BadgeCheck className="h-3.5 w-3.5" strokeWidth={2.5} />
+          {t.payout} paid
+        </span>
       </div>
     </article>
   );
 }
 
-/* ── Small stat tile ── */
+/* ── Stat tile ── */
 function StatTile({
   icon: Icon,
   value,
   label,
+  lime = false,
 }: {
   icon: React.ElementType;
   value: string;
   label: string;
+  lime?: boolean;
 }) {
   return (
-    <div className="surface-quiet flex flex-col justify-between gap-6 p-6">
-      <div className="w-9 h-9 rounded-full bg-[var(--lime)] flex items-center justify-center">
-        <Icon className="w-4 h-4 text-[var(--ink-950)]" strokeWidth={2.25} aria-hidden="true" />
+    <div
+      className={`flex flex-col justify-between gap-6 rounded-[1.25rem] p-6 ${
+        lime ? "bg-[#cbfb45]" : "border border-white/[0.08] bg-white/[0.03]"
+      }`}
+    >
+      <div
+        className={`flex h-9 w-9 items-center justify-center rounded-full ${
+          lime ? "bg-[#0c0c0c]" : "bg-[#cbfb45]"
+        }`}
+      >
+        <Icon
+          className={`h-4 w-4 ${lime ? "text-[#cbfb45]" : "text-[#0c0c0c]"}`}
+          strokeWidth={2.25}
+          aria-hidden="true"
+        />
       </div>
       <div>
-        <p className="text-[26px] md:text-[30px] font-bold tracking-[-0.03em] text-[var(--ink-950)] tabular-nums leading-none">
+        <p
+          className={`text-[28px] font-bold leading-none tracking-[-0.04em] tabular-nums md:text-[32px] ${
+            lime ? "text-[#0c0c0c]" : "text-white"
+          }`}
+        >
           {value}
         </p>
-        <p className="text-[12px] text-[var(--ink-500)] mt-1.5">{label}</p>
+        <p
+          className={`mt-1.5 text-[12px] font-medium ${
+            lime ? "text-[#0c0c0c]/65" : "text-white/45"
+          }`}
+        >
+          {label}
+        </p>
       </div>
     </div>
   );
 }
 
 export function Testimonials() {
+  /* Deterministic order for SSR/first paint, shuffled after mount
+     so every page load / visitor sees a different random set. */
+  const [picks, setPicks] = useState<Testimonial[]>(() =>
+    testimonialsExtended.slice(0, 5),
+  );
+
+  useEffect(() => {
+    setPicks(shuffle(testimonialsExtended).slice(0, 5));
+  }, []);
+
+  const [hero, limeQuote, ...quotes] = picks;
+
   return (
-    <section
-      className="relative w-full py-12 md:py-32 lg:py-40"
-      aria-label="Trader Testimonials"
-    >
-      {/* Dot-grid background */}
-      <div className="testimonial-dot-grid absolute inset-0 pointer-events-none" aria-hidden="true" />
+    <section className="w-full pb-16 pt-8 lg:pb-24" aria-label="Trader Testimonials">
+      <div className="px-[5px] py-[5px]">
+        <div
+          className="rounded-[2rem] px-[15px] py-20 lg:rounded-[3.5rem] lg:px-[35px] xl:py-28"
+          style={{ backgroundColor: INK }}
+        >
+          <div className="mx-auto max-w-6xl">
+            {/* Section Header */}
+            <header className="mb-12 text-center md:mb-16">
+              <div
+                className="mb-4 text-sm font-medium uppercase tracking-[0.3em]"
+                style={{ color: LIME }}
+              >
+                Trader Voices
+              </div>
+              <h2
+                className="text-balance font-bold tracking-[-0.03em] text-white"
+                style={{ fontSize: "clamp(2rem, 5vw, 3.25rem)" }}
+              >
+                Real traders. <span style={{ color: LIME }}>Real payouts.</span>
+              </h2>
+              <p className="mx-auto mt-4 max-w-md text-[15px] font-medium leading-relaxed text-white/50">
+                Every review is from a verified TPP trader — backed by a real
+                payout.
+              </p>
+            </header>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6">
-        {/* Section Header */}
-        <header className="max-w-xl mx-auto text-center mb-12 md:mb-16">
-          <SectionHeading
-            eyebrow="Trader Voices"
-            title={
-              <>
-                Real <span className="word-serif">payouts</span>.
-                <br />
-                Real reviews.
-              </>
-            }
-            description="Every testimonial below is from a verified TPP trader, with a verified payout receipt."
-            align="center"
-          />
-        </header>
+            {/* Bento Grid */}
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-4 md:gap-4">
+              {/* Rows 1–2 left: hero (2×2) */}
+              <HeroCard t={hero} />
 
-        {/* Bento Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
-          {/* Row 1–2 left: hero (2×2) */}
-          <HeroCard t={hero} />
+              {/* Row 1 right: review + stat */}
+              <QuoteCard t={quotes[0]} />
+              <StatTile icon={Star} value="5★" label="TrustPilot rating" />
 
-          {/* Row 1 right: quote + stat */}
-          <QuoteCard t={mediums[0]} />
-          <StatTile icon={TrendingUp} value="$2.4M+" label="Paid out to traders" />
+              {/* Row 2 right: lime stat + stat */}
+              <StatTile icon={Globe2} value="142+" label="Countries served" lime />
+              <StatTile icon={Wallet} value="250+" label="Successful payouts" />
 
-          {/* Row 2 right: dark card (2 wide) */}
-          <DarkCard t={dark} />
-
-          {/* Row 3: stat + quote + quote + stat */}
-          <StatTile icon={Globe2} value="142" label="Countries served" />
-          <QuoteCard t={mediums[1]} />
-          <QuoteCard t={mediums[2]} />
-          <StatTile icon={Star} value="4.9/5" label="Average trader rating" />
-
-          {/* Row 4: wide quote spans handled naturally on md */}
-          <div className="sm:col-span-2 md:col-span-4">
-            <QuoteCard t={mediums[3]} />
+              {/* Row 3: lime quote (2 wide) + two reviews */}
+              <LimeQuoteCard t={limeQuote} className="sm:col-span-2" />
+              <QuoteCard t={quotes[1]} />
+              <QuoteCard t={quotes[2]} />
+            </div>
           </div>
         </div>
       </div>
