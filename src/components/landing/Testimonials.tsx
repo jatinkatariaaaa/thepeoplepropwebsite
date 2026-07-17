@@ -1,228 +1,219 @@
-"use client";
-
-import { useEffect, useRef, useCallback } from "react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Badge } from "@/components/ui/Badge";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Globe2, Star, TrendingUp } from "lucide-react";
 import { testimonialsExtended, type Testimonial } from "@/data/testimonials";
 
 /* ═══════════════════════════════════════════════════════════════
-   Testimonials — Scroll-Accelerated Infinite Marquee
-   
-   3 rows of glass cards drifting at different speeds.
-   Scroll velocity boosts drift speed with smooth decay.
-   Each row has cards + clones for seamless infinite loop.
+   Testimonials — Bento Grid
+
+   Asymmetric bento layout:
+   - 1 large hero card (long quote + big payout number)
+   - 1 dark inverted card for contrast
+   - Medium quote cards
+   - Small stat tiles mixed in
    ═══════════════════════════════════════════════════════════════ */
 
-/* Split testimonials into 3 rows of 7 */
-const row1 = testimonialsExtended.slice(0, 7);
-const row2 = testimonialsExtended.slice(7, 14);
-const row3 = testimonialsExtended.slice(14, 21);
+/* Pick a curated set for the bento grid */
+const hero = testimonialsExtended.find((t) => t.payout === "$24,300")!; // Daniel Park
+const dark = testimonialsExtended.find((t) => t.initials === "FR")!; // Fatima — scaling story
+const mediums: Testimonial[] = [
+  testimonialsExtended.find((t) => t.initials === "MA")!, // Marcus
+  testimonialsExtended.find((t) => t.initials === "AO")!, // Aisha
+  testimonialsExtended.find((t) => t.initials === "CW")!, // Chen
+  testimonialsExtended.find((t) => t.initials === "NK")!, // Nina
+];
 
-function TestimonialCard({ t, isClone = false }: { t: Testimonial; isClone?: boolean }) {
+function Avatar({ t, dark = false }: { t: Testimonial; dark?: boolean }) {
   return (
-    <article
-      className="testimonial-glass-card"
-      aria-hidden={isClone ? "true" : undefined}
+    <div
+      className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-[12px] font-semibold tracking-wide ${
+        dark
+          ? "bg-[var(--lime)] text-[var(--ink-950)]"
+          : "bg-[var(--ink-950)] text-white"
+      }`}
+      aria-hidden="true"
     >
-      <div className="flex items-center gap-3 mb-2.5">
-        {/* Initials avatar */}
-        <div className="w-[36px] h-[36px] rounded-full bg-[var(--ink-950)] text-white text-[12px] font-medium tracking-wide flex items-center justify-center shrink-0">
-          {t.initials}
-        </div>
-        <div className="min-w-0">
-          <p className="text-[15px] font-semibold text-[var(--ink-950)] whitespace-nowrap overflow-hidden text-ellipsis">
-            {t.name}
-          </p>
-          <p className="text-[13px] text-[var(--ink-400)] whitespace-nowrap overflow-hidden text-ellipsis">
-            {t.handle} · {t.location}
-          </p>
-        </div>
+      {t.initials}
+    </div>
+  );
+}
+
+function PersonRow({ t, dark = false }: { t: Testimonial; dark?: boolean }) {
+  return (
+    <div className="flex items-center gap-3 min-w-0">
+      <Avatar t={t} dark={dark} />
+      <div className="min-w-0">
+        <p
+          className={`text-[14px] font-semibold truncate ${
+            dark ? "text-white" : "text-[var(--ink-950)]"
+          }`}
+        >
+          {t.name}
+        </p>
+        <p
+          className={`text-[12px] truncate ${
+            dark ? "text-white/50" : "text-[var(--ink-400)]"
+          }`}
+        >
+          {t.handle} · {t.location}
+        </p>
       </div>
-      <p className="text-[13px] leading-[1.5] text-[var(--ink-600)] line-clamp-2" title={t.body}>
-        &ldquo;{t.body}&rdquo;
-      </p>
-      <div className="mt-2.5 flex items-center justify-between">
-        <Badge variant="success" className="!gap-1 !text-[10px] !py-0.5 !px-1.5">
-          <CheckCircle2 className="w-3 h-3" strokeWidth={2.5} />
-          {t.payout}
-        </Badge>
-        <span className="text-[11px] tracking-[0.08em] uppercase text-[var(--ink-300)] font-medium">
-          Verified
-        </span>
+    </div>
+  );
+}
+
+function VerifiedPayout({ payout }: { payout: string }) {
+  return (
+    <Badge variant="success" className="!gap-1">
+      <CheckCircle2 className="w-3.5 h-3.5" strokeWidth={2.5} />
+      {payout} payout
+    </Badge>
+  );
+}
+
+/* ── Large hero card ── */
+function HeroCard({ t }: { t: Testimonial }) {
+  return (
+    <article className="lift surface-elevated flex flex-col justify-between gap-8 p-7 md:p-9 md:col-span-2 md:row-span-2">
+      <div className="flex flex-col gap-6">
+        <div className="flex items-center justify-between gap-3">
+          <VerifiedPayout payout={t.payout} />
+          <div className="flex items-center gap-0.5" aria-label="5 star rating">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Star
+                key={i}
+                className="w-3.5 h-3.5 fill-[var(--amber)] text-[var(--amber)]"
+                aria-hidden="true"
+              />
+            ))}
+          </div>
+        </div>
+        <blockquote className="text-[22px] md:text-[26px] lg:text-[30px] leading-[1.25] font-medium tracking-[-0.02em] text-[var(--ink-950)] text-pretty">
+          &ldquo;{t.body}&rdquo;
+        </blockquote>
+      </div>
+      <div className="flex items-end justify-between gap-4 flex-wrap">
+        <PersonRow t={t} />
+        <div className="text-right">
+          <p className="text-[28px] md:text-[34px] font-bold tracking-[-0.03em] text-[var(--ink-950)] tabular-nums leading-none">
+            {t.payout}
+          </p>
+          <p className="text-[11px] tracking-[0.1em] uppercase text-[var(--ink-400)] font-medium mt-1.5">
+            Largest single payout
+          </p>
+        </div>
       </div>
     </article>
   );
 }
 
-function MarqueeRow({
-  items,
-  direction,
-  speed,
-  className = "",
+/* ── Dark inverted card ── */
+function DarkCard({ t }: { t: Testimonial }) {
+  return (
+    <article className="lift flex flex-col justify-between gap-6 p-6 md:p-7 rounded-[18px] bg-[var(--ink-950)] border border-[var(--ink-900)] shadow-[var(--shadow-lg)] md:col-span-2">
+      <div className="flex flex-col gap-4">
+        <span className="inline-flex items-center gap-1.5 self-start px-2.5 py-1 rounded-full text-[11px] font-medium tracking-[0.04em] bg-[rgba(203,251,69,0.14)] text-[var(--lime)] border border-[rgba(203,251,69,0.25)]">
+          <CheckCircle2 className="w-3.5 h-3.5" strokeWidth={2.5} />
+          {t.payout} payout
+        </span>
+        <blockquote className="text-[16px] md:text-[18px] leading-relaxed text-white/85 text-pretty">
+          &ldquo;{t.body}&rdquo;
+        </blockquote>
+      </div>
+      <PersonRow t={t} dark />
+    </article>
+  );
+}
+
+/* ── Medium quote card ── */
+function QuoteCard({ t }: { t: Testimonial }) {
+  return (
+    <article className="lift surface-card flex flex-col justify-between gap-5 p-6">
+      <blockquote className="text-[14px] leading-relaxed text-[var(--ink-600)] text-pretty">
+        &ldquo;{t.body}&rdquo;
+      </blockquote>
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <PersonRow t={t} />
+        <VerifiedPayout payout={t.payout} />
+      </div>
+    </article>
+  );
+}
+
+/* ── Small stat tile ── */
+function StatTile({
+  icon: Icon,
+  value,
+  label,
 }: {
-  items: Testimonial[];
-  direction: number;
-  speed: number;
-  className?: string;
+  icon: React.ElementType;
+  value: string;
+  label: string;
 }) {
   return (
-    <div
-      className={`marquee-row flex gap-5 md:gap-6 will-change-transform ${className}`}
-      data-direction={direction}
-      data-speed={speed}
-    >
-      {/* Original set */}
-      {items.map((t) => (
-        <TestimonialCard key={t.handle} t={t} />
-      ))}
-      {/* Clone set for seamless loop */}
-      {items.map((t) => (
-        <TestimonialCard key={`clone-${t.handle}`} t={t} isClone />
-      ))}
+    <div className="surface-quiet flex flex-col justify-between gap-6 p-6">
+      <div className="w-9 h-9 rounded-full bg-[var(--lime)] flex items-center justify-center">
+        <Icon className="w-4 h-4 text-[var(--ink-950)]" strokeWidth={2.25} aria-hidden="true" />
+      </div>
+      <div>
+        <p className="text-[26px] md:text-[30px] font-bold tracking-[-0.03em] text-[var(--ink-950)] tabular-nums leading-none">
+          {value}
+        </p>
+        <p className="text-[12px] text-[var(--ink-500)] mt-1.5">{label}</p>
+      </div>
     </div>
   );
 }
 
 export function Testimonials() {
-  const hostRef = useRef<HTMLDivElement>(null);
-
-  /* ── Marquee engine (ported from engine.js) ── */
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (mq.matches) return;
-
-    const host = hostRef.current;
-    if (!host) return;
-
-    const rows = host.querySelectorAll<HTMLDivElement>(".marquee-row");
-    if (!rows.length) return;
-    let rafId: number | null = null;
-
-    type RowState = {
-      el: HTMLDivElement;
-      dir: number;
-      baseSpeed: number;
-      halfWidth: number;
-      pos: number;
-      paused: boolean;
-    };
-
-    const rowState: RowState[] = [];
-
-    rows.forEach((row) => {
-      const dir = parseFloat(row.dataset.direction || "1");
-      const baseSpeed = parseFloat(row.dataset.speed || "0.35");
-      const halfWidth = row.scrollWidth / 2;
-
-      const state: RowState = {
-        el: row,
-        dir,
-        baseSpeed,
-        halfWidth,
-        pos: dir > 0 ? 0 : -halfWidth,
-        paused: false,
-      };
-
-      rowState.push(state);
-
-      row.addEventListener("mouseenter", () => { state.paused = true; });
-      row.addEventListener("mouseleave", () => { state.paused = false; });
-    });
-
-    function tick() {
-      for (const s of rowState) {
-        if (s.paused) continue;
-
-        const speed = s.baseSpeed * s.dir;
-        s.pos += speed;
-
-        if (s.dir > 0 && s.pos >= 0) {
-          s.pos -= s.halfWidth;
-        } else if (s.dir < 0 && s.pos <= -s.halfWidth) {
-          s.pos += s.halfWidth;
-        }
-
-        s.el.style.transform = `translate3d(${s.pos.toFixed(2)}px, 0, 0)`;
-      }
-
-      rafId = requestAnimationFrame(tick);
-    }
-
-    function recalcWidths() {
-      rowState.forEach((s) => {
-        s.halfWidth = s.el.scrollWidth / 2;
-      });
-    }
-
-    // Start after a short delay for layout
-    const timer = setTimeout(() => {
-      recalcWidths();
-      rafId = requestAnimationFrame(tick);
-    }, 100);
-
-    let resizeTimer: ReturnType<typeof setTimeout>;
-    const onResize = () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(recalcWidths, 200);
-    };
-    window.addEventListener("resize", onResize);
-
-    const onMotionChange = (e: MediaQueryListEvent) => {
-      if (e.matches && rafId) {
-        cancelAnimationFrame(rafId);
-        rows.forEach((r) => { r.style.transform = "none"; });
-      }
-    };
-    mq.addEventListener("change", onMotionChange);
-
-    return () => {
-      clearTimeout(timer);
-      if (rafId) cancelAnimationFrame(rafId);
-      window.removeEventListener("resize", onResize);
-      mq.removeEventListener("change", onMotionChange);
-    };
-  }, []);
-
   return (
     <section
-      className="relative w-full py-12 md:py-32 lg:py-40 overflow-hidden"
+      className="relative w-full py-12 md:py-32 lg:py-40"
       aria-label="Trader Testimonials"
     >
       {/* Dot-grid background */}
       <div className="testimonial-dot-grid absolute inset-0 pointer-events-none" aria-hidden="true" />
 
-      {/* Section Header */}
-      <header className="relative z-10 max-w-xl mx-auto text-center px-6 mb-16 md:mb-20 lg:mb-24">
-        <SectionHeading
-          eyebrow="Trader Voices"
-          title={
-            <>
-              Real <span className="word-serif">payouts</span>.
-              <br />
-              Real reviews.
-            </>
-          }
-          description="Every testimonial below is from a verified TPP trader, with a verified payout receipt."
-          align="center"
-        />
-      </header>
+      <div className="relative z-10 max-w-6xl mx-auto px-6">
+        {/* Section Header */}
+        <header className="max-w-xl mx-auto text-center mb-12 md:mb-16">
+          <SectionHeading
+            eyebrow="Trader Voices"
+            title={
+              <>
+                Real <span className="word-serif">payouts</span>.
+                <br />
+                Real reviews.
+              </>
+            }
+            description="Every testimonial below is from a verified TPP trader, with a verified payout receipt."
+            align="center"
+          />
+        </header>
 
-      {/* Marquee Rows */}
-      <div className="relative z-[1]" ref={hostRef}>
-        <MarqueeRow items={row1} direction={1} speed={0.35} className="mb-5 md:mb-6" />
-        <MarqueeRow items={row2} direction={-1} speed={0.4} className="mb-5 md:mb-6" />
-        <MarqueeRow items={row3} direction={1} speed={0.3} />
+        {/* Bento Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
+          {/* Row 1–2 left: hero (2×2) */}
+          <HeroCard t={hero} />
 
-        {/* Edge fade masks (removed white gradients for global bg compatibility) */}
-        <div
-          className="pointer-events-none absolute inset-y-0 left-0 w-24 sm:w-36 md:w-48 lg:w-56 z-10"
-          aria-hidden="true"
-        />
-        <div
-          className="pointer-events-none absolute inset-y-0 right-0 w-24 sm:w-36 md:w-48 lg:w-56 z-10"
-          aria-hidden="true"
-        />
+          {/* Row 1 right: quote + stat */}
+          <QuoteCard t={mediums[0]} />
+          <StatTile icon={TrendingUp} value="$2.4M+" label="Paid out to traders" />
+
+          {/* Row 2 right: dark card (2 wide) */}
+          <DarkCard t={dark} />
+
+          {/* Row 3: stat + quote + quote + stat */}
+          <StatTile icon={Globe2} value="142" label="Countries served" />
+          <QuoteCard t={mediums[1]} />
+          <QuoteCard t={mediums[2]} />
+          <StatTile icon={Star} value="4.9/5" label="Average trader rating" />
+
+          {/* Row 4: wide quote spans handled naturally on md */}
+          <div className="sm:col-span-2 md:col-span-4">
+            <QuoteCard t={mediums[3]} />
+          </div>
+        </div>
       </div>
     </section>
   );
