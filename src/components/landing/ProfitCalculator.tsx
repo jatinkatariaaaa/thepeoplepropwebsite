@@ -183,7 +183,7 @@ export function ProfitCalculator() {
                 <label className="block text-[13px] font-medium text-white/80 mb-1">
                   Your estimated payout (90% split)
                 </label>
-                <div className="text-[36px] md:text-[48px] font-bold text-white tracking-tight">
+                <div className="text-[36px] md:text-[48px] font-bold text-[#cbfb45] tracking-tight tabular-nums">
                   ${estimatedProfit.toLocaleString("en-US")}
                 </div>
               </div>

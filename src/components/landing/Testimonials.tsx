@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowDownToLine, BadgeCheck, Star, Wallet } from "lucide-react";
+import { ArrowDownToLine, ArrowRight, BadgeCheck, Star, Wallet } from "lucide-react";
 import DottedMap from "dotted-map";
 import { testimonialsExtended, type Testimonial } from "@/data/testimonials";
 
@@ -192,7 +192,7 @@ function PayoutTicker({ items }: { items: Testimonial[] }) {
   );
 }
 
-/* ───────────────────────── Shared bits ───────────────────────── */
+/* ───────────────────────── Shared bits ───────────��───────────── */
 
 function Avatar({ t, onLime = false }: { t: Testimonial; onLime?: boolean }) {
   return (
@@ -375,8 +375,57 @@ export function Testimonials() {
               </p>
             </header>
 
-            {/* Bento Grid */}
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-4 md:gap-4">
+            {/* ── Mobile layout: swipe deck + highlights (no boring stack) ── */}
+            <div className="flex flex-col gap-3 md:hidden">
+              {/* Live payout ticker up top — instant social proof */}
+              <PayoutTicker items={[q3, ...tickerPool]} />
+
+              {/* Tilted swipeable review deck */}
+              <div
+                className="-mx-[15px] snap-x snap-mandatory overflow-x-auto px-[15px] py-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                role="region"
+                aria-label="Trader reviews — swipe to browse"
+              >
+                <div className="flex items-stretch gap-3">
+                  <div className="min-w-[86%] rotate-[-1.2deg] snap-center">
+                    <HeroCard t={hero} />
+                  </div>
+                  <div className="min-w-[82%] rotate-[1.2deg] snap-center">
+                    <QuoteCard t={q1} className="h-full" />
+                  </div>
+                  <div className="min-w-[82%] rotate-[-1.2deg] snap-center">
+                    <LimeQuoteCard t={limeQuote} className="h-full" />
+                  </div>
+                  <div className="min-w-[82%] rotate-[1.2deg] snap-center">
+                    <QuoteCard t={q2} className="h-full" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Swipe hint */}
+              <div className="-mt-2 mb-1 flex items-center justify-center gap-2 text-[12px] font-medium text-white/40" aria-hidden="true">
+                <motion.span
+                  animate={{ x: [0, 6, 0] }}
+                  transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+                  className="inline-flex"
+                >
+                  <ArrowRight className="h-3.5 w-3.5 text-[#cbfb45]/70" />
+                </motion.span>
+                Swipe for more reviews
+              </div>
+
+              {/* World map — visual break */}
+              <MapCard />
+
+              {/* Stat row */}
+              <div className="grid grid-cols-2 gap-3">
+                <StatTile icon={Star} value="5★" label="TrustPilot rating" />
+                <StatTile icon={Wallet} value="250+" label="Successful payouts" lime />
+              </div>
+            </div>
+
+            {/* ── Desktop / tablet: bento grid (unchanged) ── */}
+            <div className="hidden md:grid md:grid-cols-4 md:gap-4">
               {/* Rows 1–2: hero (2×2) + world map (2×2) */}
               <HeroCard t={hero} />
               <MapCard />

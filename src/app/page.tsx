@@ -759,6 +759,18 @@ export default function HomePage() {
                   </Reveal>
                 ))}
               </div>
+
+              {/* Mobile swipe hint */}
+              <div className="mt-1 flex items-center justify-center gap-2 text-[12px] font-medium text-white/40 sm:hidden" aria-hidden="true">
+                <motion.span
+                  animate={{ x: [0, 6, 0] }}
+                  transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+                  className="inline-flex"
+                >
+                  <ArrowRight className="h-3.5 w-3.5 text-[#cbfb45]/70" />
+                </motion.span>
+                Swipe to explore
+              </div>
             </div>
 
             <Reveal className="mt-12 text-center lg:mt-16">
@@ -804,19 +816,19 @@ export default function HomePage() {
           </Reveal>
 
           {/* Cards */}
-          <div className="grid gap-4 lg:grid-cols-3 lg:gap-5">
+          <div className="grid gap-3 lg:grid-cols-3 lg:gap-5">
             {/* Card 1 — intro */}
             <Reveal>
-              <div className="flex h-full min-h-[340px] flex-col rounded-[2rem] border border-[#0c0c0c]/10 bg-white/40 p-8 md:backdrop-blur-sm lg:min-h-[460px] lg:p-9">
+              <div className="flex h-full flex-col rounded-[2rem] border border-[#0c0c0c]/10 bg-white/40 p-7 md:backdrop-blur-sm lg:min-h-[460px] lg:p-9">
                 <div className="text-[15px] font-medium text-[#6c6a68]">How it works</div>
                 <h2
-                  className="mt-4 font-bold tracking-[-0.03em] text-balance"
+                  className="mt-3 font-bold tracking-[-0.03em] text-balance lg:mt-4"
                   style={{ fontSize: "clamp(2.75rem, 4.5vw, 4rem)", lineHeight: 1.02 }}
                 >
                   <span className="block text-[#0c0c0c]">It&apos;s super</span>
                   <span className="block text-[#0c0c0c]/40">simple</span>
                 </h2>
-                <div className="mt-auto flex flex-wrap items-center gap-3 pt-10">
+                <div className="mt-auto flex flex-wrap items-center gap-3 pt-7 lg:pt-10">
                   <Link
                     href="/dashboard/new-challenge"
                     className="inline-flex h-12 items-center rounded-full bg-[#0c0c0c] px-6 text-[15px] font-semibold text-white transition-colors hover:bg-[#0c0c0c]/85"
@@ -833,33 +845,63 @@ export default function HomePage() {
               </div>
             </Reveal>
 
+            {/* Mobile connector: intro → step 1 */}
+            <div aria-hidden="true" className="-my-1 flex flex-col items-center lg:hidden">
+              <span className="h-5 w-px bg-[#0c0c0c]/25" />
+              <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[#0c0c0c]/15 bg-white/60 text-[#0c0c0c]/60">
+                <ChevronDown className="h-4 w-4" strokeWidth={2.2} />
+              </span>
+              <span className="h-5 w-px bg-[#0c0c0c]/25" />
+            </div>
+
             {/* Card 2 — Unlock Account (dark) */}
             <Reveal delay={0.1}>
-              <div className="flex h-full min-h-[340px] flex-col rounded-[2rem] bg-[#1d2523] p-8 lg:min-h-[460px] lg:p-9">
-                <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#6c6a68] px-3.5 py-1 text-[12px] font-semibold text-white lg:hidden">
+              <div className="relative flex h-full flex-col overflow-hidden rounded-[2rem] bg-[#1d2523] p-7 lg:min-h-[460px] lg:p-9">
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -right-2 -top-5 select-none text-[110px] font-black leading-none tracking-[-0.06em] text-white/[0.06] lg:hidden"
+                >
+                  01
+                </span>
+                <span className="mb-4 inline-flex w-fit items-center rounded-full bg-[#6c6a68] px-3.5 py-1 text-[12px] font-semibold text-white lg:hidden">
                   First Step
                 </span>
-                <h3 className="text-[32px] font-bold tracking-tight text-white lg:text-[38px]">Unlock Account</h3>
-                <span className="mt-4 inline-flex w-fit items-center rounded-full bg-white px-3.5 py-1.5 text-[13px] font-semibold text-[#0c0c0c]">
+                <h3 className="text-[28px] font-bold tracking-tight text-white lg:text-[38px]">Unlock Account</h3>
+                <span className="mt-3 inline-flex w-fit items-center rounded-full bg-white px-3.5 py-1.5 text-[13px] font-semibold text-[#0c0c0c] lg:mt-4">
                   Up to $200k
                 </span>
-                <p className="mt-auto max-w-sm pt-10 text-[17px] leading-relaxed text-white/45 lg:text-[19px]">
+                <p className="mt-auto max-w-sm pt-6 text-[15px] leading-relaxed text-white/45 lg:pt-10 lg:text-[19px]">
                   Take a challenge or get an instant funding account today.
                 </p>
               </div>
             </Reveal>
 
+            {/* Mobile connector: step 1 → step 2 */}
+            <div aria-hidden="true" className="-my-1 flex flex-col items-center lg:hidden">
+              <span className="h-5 w-px bg-[#0c0c0c]/25" />
+              <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[#0c0c0c]/15 bg-white/60 text-[#0c0c0c]/60">
+                <ChevronDown className="h-4 w-4" strokeWidth={2.2} />
+              </span>
+              <span className="h-5 w-px bg-[#0c0c0c]/25" />
+            </div>
+
             {/* Card 3 — Trade & Get Paid (lime) */}
             <Reveal delay={0.2}>
-              <div className="flex h-full min-h-[340px] flex-col rounded-[2rem] bg-[#cbfb45] p-8 lg:min-h-[460px] lg:p-9">
-                <span className="mb-5 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3.5 py-1 text-[12px] font-semibold text-[#cbfb45] lg:hidden">
+              <div className="relative flex h-full flex-col overflow-hidden rounded-[2rem] bg-[#cbfb45] p-7 lg:min-h-[460px] lg:p-9">
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -right-2 -top-5 select-none text-[110px] font-black leading-none tracking-[-0.06em] text-[#0c0c0c]/[0.07] lg:hidden"
+                >
+                  02
+                </span>
+                <span className="mb-4 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3.5 py-1 text-[12px] font-semibold text-[#cbfb45] lg:hidden">
                   Final Step
                 </span>
-                <h3 className="text-[32px] font-bold tracking-tight text-[#0c0c0c] lg:text-[38px]">Trade &amp; Get Paid</h3>
-                <span className="mt-4 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3.5 py-1.5 text-[13px] font-semibold text-[#cbfb45]">
+                <h3 className="text-[28px] font-bold tracking-tight text-[#0c0c0c] lg:text-[38px]">Trade &amp; Get Paid</h3>
+                <span className="mt-3 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3.5 py-1.5 text-[13px] font-semibold text-[#cbfb45] lg:mt-4">
                   Up to 90% of the Profit
                 </span>
-                <p className="mt-auto max-w-sm pt-10 text-[17px] leading-relaxed text-[#0c0c0c]/75 lg:text-[19px]">
+                <p className="mt-auto max-w-sm pt-6 text-[15px] leading-relaxed text-[#0c0c0c]/75 lg:pt-10 lg:text-[19px]">
                   Trade on your favorite platform and get paid on demand.
                 </p>
               </div>
