@@ -375,8 +375,37 @@ export function Testimonials() {
               </p>
             </header>
 
-            {/* Bento Grid */}
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-4 md:gap-4">
+            {/* Mobile: featured quote + proof metrics + horizontal snap rail */}
+            <div className="flex flex-col gap-3 sm:hidden">
+              {/* Featured quote */}
+              <HeroCard t={hero} />
+
+              {/* Compact proof metrics */}
+              <div className="grid grid-cols-2 gap-3">
+                <StatTile icon={Star} value="5★" label="TrustPilot rating" />
+                <StatTile icon={Wallet} value="250+" label="Successful payouts" lime />
+              </div>
+
+              {/* Horizontal snap rail — supporting reviews */}
+              <div
+                className="-mx-[15px] flex snap-x snap-mandatory gap-3 overflow-x-auto px-[15px] pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                role="group"
+                aria-label="More trader reviews"
+              >
+                <QuoteCard t={q1} className="w-[82vw] max-w-[340px] shrink-0 snap-center" />
+                <LimeQuoteCard t={limeQuote} className="w-[82vw] max-w-[340px] shrink-0 snap-center" />
+                <QuoteCard t={q2} className="w-[82vw] max-w-[340px] shrink-0 snap-center" />
+              </div>
+
+              {/* Live payout proof */}
+              <PayoutTicker items={[q3, ...tickerPool]} />
+
+              {/* Global reach */}
+              <MapCard />
+            </div>
+
+            {/* Bento Grid (tablet / desktop) */}
+            <div className="hidden gap-3 sm:grid sm:grid-cols-2 md:grid-cols-4 md:gap-4">
               {/* Rows 1–2: hero (2×2) + world map (2×2) */}
               <HeroCard t={hero} />
               <MapCard />
