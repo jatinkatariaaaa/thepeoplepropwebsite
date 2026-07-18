@@ -803,106 +803,8 @@ export default function HomePage() {
             </div>
           </Reveal>
 
-          {/* Mobile: continuous numbered journey */}
-          <div className="lg:hidden">
-            <Reveal>
-              <div className="pb-9">
-                <div className="text-[13px] font-bold uppercase tracking-[0.24em] text-[#6c6a68]">How it works</div>
-                <h2
-                  className="mt-3 font-bold tracking-[-0.03em] text-balance"
-                  style={{ fontSize: "clamp(2.5rem, 10vw, 3.5rem)", lineHeight: 1.02 }}
-                >
-                  <span className="block text-[#0c0c0c]">It&apos;s super</span>
-                  <span className="block text-[#0c0c0c]/40">simple</span>
-                </h2>
-              </div>
-            </Reveal>
-
-            <div className="relative pl-12">
-              {/* dotted journey rail */}
-              <span
-                className="absolute bottom-4 left-[17px] top-1 w-px border-l border-dashed border-[#0c0c0c]/30"
-                aria-hidden="true"
-              />
-
-              {/* Step 1 — Unlock Account */}
-              <Reveal>
-                <div className="relative pb-9">
-                  <span
-                    className="absolute -left-12 top-0 flex h-9 w-9 items-center justify-center rounded-full bg-[#6c6a68] text-[14px] font-bold text-white ring-4 ring-[#f1eade]"
-                    aria-hidden="true"
-                  >
-                    1
-                  </span>
-                  <span className="inline-flex items-center rounded-full bg-[#6c6a68] px-3.5 py-1 text-[12px] font-semibold text-white">
-                    First Step
-                  </span>
-                  <div className="mt-4 rounded-[1.5rem] bg-[#1d2523] p-6">
-                    <h3 className="text-[27px] font-bold tracking-tight text-white">Unlock Account</h3>
-                    <span className="mt-3 inline-flex w-fit items-center rounded-full bg-white px-3.5 py-1.5 text-[13px] font-semibold text-[#0c0c0c]">
-                      Up to $200k
-                    </span>
-                    <p className="mt-6 text-[15.5px] leading-relaxed text-white/45">
-                      Take a challenge or get an instant funding account today.
-                    </p>
-                  </div>
-                </div>
-              </Reveal>
-
-              {/* Step 2 — Trade & Get Paid */}
-              <Reveal delay={0.08}>
-                <div className="relative pb-9">
-                  <span
-                    className="absolute -left-12 top-0 flex h-9 w-9 items-center justify-center rounded-full bg-[#0c0c0c] text-[14px] font-bold text-[#cbfb45] ring-4 ring-[#f1eade]"
-                    aria-hidden="true"
-                  >
-                    2
-                  </span>
-                  <span className="inline-flex items-center rounded-full bg-[#0c0c0c] px-3.5 py-1 text-[12px] font-semibold text-[#cbfb45]">
-                    Final Step
-                  </span>
-                  <div className="mt-4 rounded-[1.5rem] bg-[#cbfb45] p-6">
-                    <h3 className="text-[27px] font-bold tracking-tight text-[#0c0c0c]">Trade &amp; Get Paid</h3>
-                    <span className="mt-3 inline-flex w-fit items-center rounded-full bg-[#0c0c0c] px-3.5 py-1.5 text-[13px] font-semibold text-[#cbfb45]">
-                      Up to 90% of the Profit
-                    </span>
-                    <p className="mt-6 text-[15.5px] leading-relaxed text-[#0c0c0c]/75">
-                      Trade on your favorite platform and get paid on demand.
-                    </p>
-                  </div>
-                </div>
-              </Reveal>
-
-              {/* Journey end — CTAs */}
-              <Reveal delay={0.16}>
-                <div className="relative">
-                  <span
-                    className="absolute -left-12 top-1 flex h-9 w-9 items-center justify-center rounded-full border border-[#0c0c0c]/25 bg-[#f1eade] ring-4 ring-[#f1eade]"
-                    aria-hidden="true"
-                  >
-                    <ArrowRight className="h-4 w-4 text-[#0c0c0c]" strokeWidth={2} />
-                  </span>
-                  <div className="flex flex-wrap items-center gap-3 pt-1">
-                    <Link
-                      href="/dashboard/new-challenge"
-                      className="inline-flex h-12 items-center rounded-full bg-[#0c0c0c] px-6 text-[15px] font-semibold text-white transition-colors hover:bg-[#0c0c0c]/85"
-                    >
-                      Get Funded
-                    </Link>
-                    <Link
-                      href="/rules"
-                      className="inline-flex h-12 items-center rounded-full bg-[#cbfb45] px-6 text-[15px] font-semibold text-[#0c0c0c] transition-colors hover:bg-[#b9ef2e]"
-                    >
-                      Learn More
-                    </Link>
-                  </div>
-                </div>
-              </Reveal>
-            </div>
-          </div>
-
-          {/* Cards (desktop) */}
-          <div className="hidden gap-4 lg:grid lg:grid-cols-3 lg:gap-5">
+          {/* Cards */}
+          <div className="grid gap-4 lg:grid-cols-3 lg:gap-5">
             {/* Card 1 — intro */}
             <Reveal>
               <div className="flex h-full min-h-[340px] flex-col rounded-[2rem] border border-[#0c0c0c]/10 bg-white/40 p-8 md:backdrop-blur-sm lg:min-h-[460px] lg:p-9">
@@ -1076,68 +978,51 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                {/* Mobile / tablet comparison ledger */}
+                {/* Mobile / tablet stacked matrix */}
                 <div className="relative mx-auto lg:hidden">
-                  {/* Ledger header */}
-                  <div className="flex items-center justify-between gap-3 border-b-2 border-[#0c0c0c]/70 pb-4">
-                    <span className="text-[12px] font-bold uppercase tracking-[0.14em] text-[#0c0c0c]/45">
+                  <div className="overflow-hidden rounded-[1.4rem] bg-[#55544d] text-[#f0ece2]">
+                    <div className="flex h-[64px] items-center justify-center bg-[#3f3e39] px-5 text-center text-[14px] font-bold uppercase tracking-[0.05em]">
                       Industry Standard
-                    </span>
-                    <span className="inline-flex items-center rounded-full bg-[#0c0c0c] px-3.5 py-1.5 text-[12px] font-extrabold uppercase tracking-[0.06em] text-[#cbfb45]">
-                      The People&apos;s Prop
-                    </span>
+                    </div>
+                    {[
+                      { cat: "Execution", value: "Marked-up spreads" },
+                      { cat: "Freedom", value: "30-day deadline" },
+                      { cat: "Payouts", value: "Fixed payout windows" },
+                      { cat: "Growth", value: "Paid resets" },
+                    ].map(({ cat, value }) => (
+                      <div key={value} className="flex items-center gap-3 border-b border-white/10 px-5 py-4 last:border-b-0">
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/15 text-[14px] leading-none text-white/45" aria-hidden="true">×</span>
+                        <div className="min-w-0">
+                          <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/40">{cat}</div>
+                          <div className="text-[15px] font-medium text-white/80">{value}</div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
 
-                  {/* Paired category rows */}
-                  {[
-                    { icon: Target, cat: "Execution", industry: "Marked-up spreads", tpp: "Raw 0.0 pip spreads" },
-                    { icon: CalendarOff, cat: "Freedom", industry: "30-day deadline", tpp: "No time limit" },
-                    { icon: BadgeDollarSign, cat: "Payouts", industry: "Fixed payout windows", tpp: "Payout on demand" },
-                    { icon: TrendingUp, cat: "Growth", industry: "Paid resets", tpp: "Free retry + auto scaling" },
-                  ].map(({ icon: Icon, cat, industry, tpp }, rowIndex) => (
-                    <div
-                      key={cat}
-                      className={cn(
-                        "py-5",
-                        rowIndex < 3 && "border-b border-dashed border-[#0c0c0c]/25",
-                      )}
-                    >
-                      <div className="mb-3.5 flex items-center gap-3">
-                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#0c0c0c]/35">
-                          <Icon className="h-4 w-4 text-[#0c0c0c]" strokeWidth={1.8} aria-hidden="true" />
-                        </span>
-                        <span className="text-[16px] font-semibold text-[#0c0c0c]">{cat}</span>
-                      </div>
-                      <div className="grid grid-cols-[1fr_auto_1fr] items-stretch gap-2.5">
-                        {/* Industry side */}
-                        <div className="flex items-center gap-2.5 rounded-xl bg-[#55544d] px-3.5 py-3.5">
-                          <span
-                            className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/15 text-[12px] leading-none text-white/50"
-                            aria-hidden="true"
-                          >
-                            ×
-                          </span>
-                          <span className="text-[13px] font-medium leading-snug text-white/75">{industry}</span>
-                        </div>
-                        {/* VS cue */}
-                        <div className="flex flex-col items-center justify-center" aria-hidden="true">
-                          <span className="w-px flex-1 bg-[#0c0c0c]/20" />
-                          <span className="py-1 text-[10px] font-black uppercase text-[#0c0c0c]/50">vs</span>
-                          <span className="w-px flex-1 bg-[#0c0c0c]/20" />
-                        </div>
-                        {/* TPP side */}
-                        <div className="flex items-center gap-2.5 rounded-xl bg-[#cbfb45] px-3.5 py-3.5">
-                          <CheckCircle2
-                            className="h-5 w-5 shrink-0 fill-[#0c0c0c] text-[#cbfb45]"
-                            strokeWidth={2.5}
-                            aria-hidden="true"
-                          />
-                          <span className="text-[13px] font-bold leading-snug text-[#0c0c0c]">{tpp}</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                  <div className="relative z-10 mx-auto -my-[26px] flex h-[58px] w-[58px] items-center justify-center rounded-full bg-[#0c0c0c] text-[17px] font-black text-[#f0ece2] shadow-xl ring-4 ring-[#f0ece2]">
+                    VS
+                  </div>
 
+                  <div className="overflow-hidden rounded-[1.4rem] bg-[#cbfb45] text-[#0c0c0c]">
+                    <div className="flex h-[64px] items-center justify-center border-b border-[#0c0c0c]/10 px-5 pt-3 text-center text-[14px] font-extrabold uppercase tracking-[0.04em]">
+                      The People&apos;s Prop
+                    </div>
+                    {[
+                      { cat: "Execution", value: "Raw 0.0 pip spreads" },
+                      { cat: "Freedom", value: "No time limit" },
+                      { cat: "Payouts", value: "Payout on demand" },
+                      { cat: "Growth", value: "Free retry + auto scaling" },
+                    ].map(({ cat, value }) => (
+                      <div key={value} className="flex items-center gap-3 border-b border-[#0c0c0c]/10 px-5 py-4 last:border-b-0">
+                        <CheckCircle2 className="h-6 w-6 shrink-0 fill-[#0c0c0c] text-[#cbfb45]" strokeWidth={2.5} aria-hidden="true" />
+                        <div className="min-w-0">
+                          <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#0c0c0c]/50">{cat}</div>
+                          <div className="text-[15px] font-bold">{value}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </Reveal>
