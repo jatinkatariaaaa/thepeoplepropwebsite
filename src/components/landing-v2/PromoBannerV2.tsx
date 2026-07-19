@@ -2,60 +2,86 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 /* ─────────────────────────────────────────────────────────────
-   PromoBannerV2 — Meridian-style limited-offer strip, on the
-   TPP dark card with lime accents.
+   PromoBannerV2 — bright royal-blue limited-offer strip with a
+   giant discount lockup and a promo-code card on the right.
    ───────────────────────────────────────────────────────────── */
 export function PromoBannerV2() {
   return (
-    <div className="relative z-20 mx-auto mt-3 max-w-[1320px] px-3">
+    <div className="relative z-20 mx-auto mt-4 max-w-[1320px] px-3 lg:mt-5">
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-40px" }}
         transition={{ duration: 0.7, ease: EASE }}
-        className="relative flex flex-col items-center gap-6 overflow-hidden rounded-2xl bg-[#0c0c0c] px-6 py-8 shadow-xl shadow-black/10 md:flex-row md:justify-between md:px-10"
+        className="relative flex flex-col items-center gap-8 overflow-hidden rounded-2xl bg-gradient-to-r from-[#1a49d8] via-[#2e6bff] to-[#1a49d8] px-6 py-9 shadow-2xl shadow-[#2e6bff]/30 lg:flex-row lg:justify-between lg:px-10"
       >
-        {/* subtle grid texture */}
+        {/* stadium-light texture */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-[0.05]"
+          className="pointer-events-none absolute inset-0 opacity-20"
           style={{
             backgroundImage:
-              "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
-            backgroundSize: "48px 48px",
+              "radial-gradient(circle at 20% 0%, rgba(255,255,255,0.5) 0%, transparent 30%), radial-gradient(circle at 80% 100%, rgba(255,255,255,0.35) 0%, transparent 35%), linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.18) 50%, transparent 60%)",
           }}
         />
-        <div className="pointer-events-none absolute -right-16 -top-24 h-64 w-64 rounded-full bg-[#cbfb45]/15 blur-[80px]" aria-hidden />
 
-        <div className="relative flex flex-col items-center gap-2 md:items-start">
-          <span className="inline-flex items-center rounded-full border border-[#cbfb45]/40 px-3.5 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-[#cbfb45]">
-            Limited Offer
+        {/* Limited offer chip */}
+        <span className="absolute left-6 top-5 inline-flex items-center rounded-full border border-white/40 bg-white/10 px-3.5 py-1 text-[10.5px] font-bold uppercase tracking-[0.2em] text-white backdrop-blur lg:left-10">
+          Limited Offer
+        </span>
+
+        {/* Big discount lockup */}
+        <div className="relative mt-6 flex flex-col items-center gap-2 md:flex-row md:gap-8 lg:mt-0 lg:pl-2">
+          <div className="text-center">
+            <p
+              className="font-extrabold uppercase tracking-tight text-white"
+              style={{ fontSize: "clamp(2.6rem, 5vw, 4rem)", lineHeight: 0.95 }}
+            >
+              30% OFF
+            </p>
+            <p className="mt-1 text-[12px] font-bold uppercase tracking-[0.18em] text-white/85">
+              On all accounts
+            </p>
+          </div>
+          <span
+            className="hidden font-extrabold text-white/80 md:block"
+            style={{ fontSize: "clamp(1.6rem, 3vw, 2.4rem)" }}
+            aria-hidden
+          >
+            +
           </span>
-          <p className="text-center text-2xl font-bold tracking-tight text-white md:text-left lg:text-3xl">
-            30% OFF <span className="text-white/45">on all accounts</span>
-            <span className="mx-3 text-[#cbfb45]">+</span>
-            100% fee refund
-          </p>
+          <div className="text-center">
+            <p
+              className="font-extrabold uppercase tracking-tight text-white"
+              style={{ fontSize: "clamp(2.6rem, 5vw, 4rem)", lineHeight: 0.95 }}
+            >
+              Keep 90%
+            </p>
+            <p className="mt-1 text-[12px] font-bold uppercase tracking-[0.18em] text-white/85">
+              Of your challenge profit
+            </p>
+          </div>
         </div>
 
-        <div className="relative flex items-center gap-4">
-          <div className="flex flex-col items-center rounded-xl border border-white/15 px-5 py-2.5">
-            <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/50">
+        {/* Promo code card */}
+        <div className="relative flex flex-col items-center gap-2.5">
+          <div className="flex flex-col items-center rounded-xl bg-white/12 px-7 py-3 backdrop-blur">
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/70">
               Promo code
             </span>
-            <span className="text-lg font-bold tracking-widest text-[#cbfb45]">TPP30</span>
+            <span className="text-xl font-extrabold tracking-[0.14em] text-white">
+              TPP30
+            </span>
           </div>
           <Link
             href="/dashboard/new-challenge"
-            className="group inline-flex h-12 items-center gap-2 rounded-full bg-[#cbfb45] px-6 text-[14px] font-bold text-[#0c0c0c] transition-transform duration-300 hover:scale-[1.04]"
+            className="inline-flex h-11 w-full items-center justify-center rounded-xl bg-white px-7 text-[14px] font-bold text-[#2e6bff] shadow-lg transition-transform duration-300 hover:scale-[1.04]"
           >
             Get Started
-            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" strokeWidth={2.4} />
           </Link>
         </div>
       </motion.div>

@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { Footer } from "@/components/layout/Footer";
 import { ChallengeCalculator } from "@/components/landing/ChallengeCalculator";
+import { NavV2 } from "@/components/landing-v2/NavV2";
 import { HeroV2 } from "@/components/landing-v2/HeroV2";
 import { PromoBannerV2 } from "@/components/landing-v2/PromoBannerV2";
 import { FeatureGridV2 } from "@/components/landing-v2/FeatureGridV2";
 import { DashboardShowcaseV2 } from "@/components/landing-v2/DashboardShowcaseV2";
+import { PlatformsV2 } from "@/components/landing-v2/PlatformsV2";
+import { SupportV2 } from "@/components/landing-v2/SupportV2";
 import { FaqV2 } from "@/components/landing-v2/FaqV2";
 import { FinalCtaV2 } from "@/components/landing-v2/FinalCtaV2";
 
@@ -15,40 +18,47 @@ export const metadata: Metadata = {
 };
 
 /* ═══════════════════════════════════════════════════════════════
-   V2 Landing Page — Meridian-inspired redesign on the TPP theme.
+   V2 Landing Page — Meridian-style visual system on TPP branding.
 
-   Layout language borrowed from meridian-funded.com:
-   • Full-bleed image hero with headline on dark tiles
-   • Overlapping stat cards + limited-offer promo strip
-   • Challenge configurator
-   • Numbered feature grid with hairline dividers
-   • Dark dashboard showcase band
-   • Split FAQ + giant closing CTA with connector line
+   Section order mirrors meridian-funded.com:
+   1. Floating pill nav (logo pill + nav pill with CTA)
+   2. Full-bleed city hero → headline on dark navy tiles
+   3. Overlapping stat cards + blue limited-offer promo strip
+   4. Numbered feature list with hairline dividers
+   5. "Choose your challenge" configurator
+   6. Blue dashboard showcase band
+   7. Available trading platforms
+   8. 24/7 support + community split cards
+   9. Split FAQ
+   10. "Ready to start trading?" + city skyline band
+   11. Footer
 
-   Adapted to the TPP palette: cream #f1eade, ink #0c0c0c,
-   lime #cbfb45 (with #9bc927 for lime-on-light text contrast).
+   Palette: royal blue #2e6bff · navy ink #0e1b33 · white ·
+   light blue wash #f4f8ff.
 
    The original landing page at "/" is untouched — iterate here.
    ═══════════════════════════════════════════════════════════════ */
 export default function LandingV2Page() {
   return (
     <div
-      className="page-wrapper min-h-screen bg-[#f1eade] text-[#0c0c0c] antialiased"
+      className="page-wrapper min-h-screen bg-white text-[#0e1b33] antialiased"
       style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
     >
+      <NavV2 />
       <HeroV2 />
       <PromoBannerV2 />
+      <FeatureGridV2 />
 
       {/* Challenge configurator */}
-      <section className="mx-auto max-w-[1320px] px-4 pb-8 pt-20 lg:pt-28">
+      <section className="mx-auto max-w-[1320px] px-4 pb-20 pt-4 lg:pb-28">
         <div className="mb-12 text-center">
           <h2
-            className="text-balance font-bold tracking-[-0.03em] text-[#0c0c0c]"
-            style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", lineHeight: 1.05 }}
+            className="text-balance font-bold tracking-[-0.02em] text-[#0e1b33]"
+            style={{ fontSize: "clamp(2.2rem, 5vw, 3.6rem)", lineHeight: 1.05 }}
           >
-            Choose your <span className="text-[#9bc927]">challenge</span>
+            Choose your <span className="text-[#2e6bff]">challenge</span>
           </h2>
-          <p className="mx-auto mt-4 max-w-[460px] text-pretty text-[15px] leading-relaxed text-[#0c0c0c]/55">
+          <p className="mx-auto mt-4 max-w-[460px] text-pretty text-[15px] leading-relaxed text-[#475467]">
             Pick a program, account size and platform — see every rule upfront
             before you pay.
           </p>
@@ -56,8 +66,9 @@ export default function LandingV2Page() {
         <ChallengeCalculator />
       </section>
 
-      <FeatureGridV2 />
       <DashboardShowcaseV2 />
+      <PlatformsV2 />
+      <SupportV2 />
       <FaqV2 />
       <FinalCtaV2 />
       <Footer />

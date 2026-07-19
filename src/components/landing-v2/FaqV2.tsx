@@ -26,22 +26,22 @@ export function FaqV2() {
         transition={{ duration: 0.8, ease: EASE }}
         className="lg:sticky lg:top-28 lg:self-start"
       >
-        <span className="inline-flex items-center rounded-full border border-[#0c0c0c]/15 px-3.5 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-[#0c0c0c]/60">
+        <span className="inline-flex items-center rounded-full border border-[#2e6bff]/25 px-3.5 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-[#2e6bff]">
           FAQ
         </span>
         <h2
-          className="mt-6 text-balance font-bold tracking-[-0.03em] text-[#0c0c0c]"
+          className="mt-6 text-balance font-bold tracking-[-0.02em] text-[#0e1b33]"
           style={{ fontSize: "clamp(2rem, 4.5vw, 3.4rem)", lineHeight: 1.05 }}
         >
-          Questions? <span className="text-[#9bc927]">Answered.</span>
+          Questions? <span className="text-[#2e6bff]">Answered.</span>
         </h2>
-        <p className="mt-4 max-w-[380px] text-pretty text-[15px] leading-relaxed text-[#0c0c0c]/55">
+        <p className="mt-4 max-w-[380px] text-pretty text-[15px] leading-relaxed text-[#475467]">
           The rules, the payouts, the platforms — everything you need to know
           before you start.
         </p>
         <Link
           href="/faqs"
-          className="group mt-8 inline-flex h-12 items-center gap-2 rounded-full bg-[#0c0c0c] px-6 text-[14px] font-bold text-white transition-transform duration-300 hover:scale-[1.04]"
+          className="group mt-8 inline-flex h-12 items-center gap-2 rounded-full bg-[#2e6bff] px-6 text-[14px] font-bold text-white transition-all duration-300 hover:scale-[1.04] hover:bg-[#1f56e0]"
         >
           View all FAQs
           <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" strokeWidth={2.4} />
@@ -60,7 +60,7 @@ export function FaqV2() {
               transition={{ duration: 0.6, delay: i * 0.06, ease: EASE }}
               className={cn(
                 "rounded-2xl border bg-white shadow-sm transition-colors duration-300",
-                isOpen ? "border-[#9bc927]/50" : "border-[#0c0c0c]/[0.07]"
+                isOpen ? "border-[#2e6bff]/40" : "border-[#0e1b33]/[0.07]"
               )}
             >
               <button
@@ -68,15 +68,15 @@ export function FaqV2() {
                 aria-expanded={isOpen}
                 className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
               >
-                <span className="text-[15px] font-semibold text-[#0c0c0c] lg:text-base">
+                <span className="text-[15px] font-semibold text-[#0e1b33] lg:text-base">
                   {item.q}
                 </span>
                 <span
                   className={cn(
                     "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-all duration-300",
                     isOpen
-                      ? "rotate-180 border-[#cbfb45] bg-[#cbfb45] text-[#0c0c0c]"
-                      : "border-[#0c0c0c]/15 text-[#0c0c0c]/50"
+                      ? "rotate-180 border-[#2e6bff] bg-[#2e6bff] text-white"
+                      : "border-[#0e1b33]/15 text-[#0e1b33]/50"
                   )}
                 >
                   <ChevronDown className="h-4 w-4" strokeWidth={2.2} />
@@ -88,7 +88,7 @@ export function FaqV2() {
                 transition={{ duration: 0.35, ease: EASE }}
                 className="overflow-hidden"
               >
-                <p className="px-6 pb-6 text-[14px] leading-relaxed text-[#0c0c0c]/60">
+                <p className="px-6 pb-6 text-[14px] leading-relaxed text-[#475467]">
                   {item.a}
                 </p>
               </motion.div>

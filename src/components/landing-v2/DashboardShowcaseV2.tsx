@@ -3,107 +3,91 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-const POINTS = [
-  "Live equity, drawdown & target tracking",
-  "One-click payout requests",
-  "Trade analytics & session breakdowns",
-  "Leaderboards, rewards & referrals",
-];
-
 /* ─────────────────────────────────────────────────────────────
-   DashboardShowcaseV2 — Meridian's "The Most Trader-First
-   Dashboard" band, on the TPP dark card with lime accents.
+   DashboardShowcaseV2 — full-bleed royal-blue band with a giant
+   white headline on the left and tilted dashboard screens on
+   the right.
    ───────────────────────────────────────────────────────────── */
 export function DashboardShowcaseV2() {
   return (
-    <section className="px-[5px] py-2">
-      <div className="relative overflow-hidden rounded-2xl bg-[#0c0c0c] px-6 py-20 lg:px-14 lg:py-28">
-        {/* ambient lime glow */}
-        <div className="pointer-events-none absolute -left-24 top-1/3 h-[420px] w-[420px] rounded-full bg-[#cbfb45]/10 blur-[120px]" aria-hidden />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-[0.04]"
-          style={{
-            backgroundImage:
-              "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
-            backgroundSize: "64px 64px",
-          }}
-        />
+    <section className="relative overflow-hidden bg-gradient-to-br from-[#2e6bff] via-[#2a63f2] to-[#1a49d8] py-20 lg:py-28">
+      {/* faint contour lines */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-[0.12]"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle at 80% 20%, rgba(255,255,255,0.4) 0%, transparent 40%), linear-gradient(rgba(255,255,255,0.25) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.25) 1px, transparent 1px)",
+          backgroundSize: "auto, 96px 96px, 96px 96px",
+        }}
+      />
 
-        <div className="relative mx-auto grid max-w-[1320px] items-center gap-14 lg:grid-cols-2">
-          <motion.div
-            initial={{ opacity: 0, y: 36 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.8, ease: EASE }}
+      <div className="relative mx-auto grid max-w-[1320px] items-center gap-14 px-4 lg:grid-cols-[1fr_1.15fr]">
+        <motion.div
+          initial={{ opacity: 0, y: 36 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.8, ease: EASE }}
+        >
+          <h2
+            className="text-balance font-bold tracking-[-0.02em] text-white"
+            style={{ fontSize: "clamp(2.6rem, 5.5vw, 4.4rem)", lineHeight: 1.05 }}
           >
-            <span className="inline-flex items-center rounded-full border border-[#cbfb45]/40 px-3.5 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-[#cbfb45]">
-              The Dashboard
-            </span>
-            <h2
-              className="mt-6 text-balance font-bold tracking-[-0.03em] text-white"
-              style={{ fontSize: "clamp(2.2rem, 5vw, 4rem)", lineHeight: 1.02 }}
-            >
-              The most <span className="text-[#cbfb45]">trader-first</span> dashboard
-            </h2>
-            <p className="mt-5 max-w-[460px] text-pretty text-[15px] leading-relaxed text-white/55">
-              Everything about your evaluation and funded account in one place —
-              built to feel like a trading terminal, not an admin panel.
+            The Most Advanced Dashboard{" "}
+            <span className="text-white/60">in Prop Trading.</span>
+          </h2>
+          <p className="mt-6 max-w-[480px] text-pretty text-[15.5px] leading-relaxed text-white/85">
+            Built entirely in-house, our platform gives traders a faster,
+            clearer, and more powerful way to manage accounts, track
+            performance, and stay in control from one seamless interface.
+          </p>
+
+          <Link
+            href="/dashboard/new-challenge"
+            className="group mt-10 inline-flex h-[52px] items-center gap-2.5 rounded-full bg-white px-8 text-[15px] font-bold text-[#0e1b33] shadow-xl shadow-[#0e1b33]/20 transition-transform duration-300 hover:scale-[1.04]"
+          >
+            Start your challenge
+            <ArrowRight className="h-4.5 w-4.5 text-[#2e6bff] transition-transform duration-300 group-hover:translate-x-1" strokeWidth={2.4} />
+          </Link>
+        </motion.div>
+
+        {/* Tilted dashboard screens */}
+        <motion.div
+          initial={{ opacity: 0, y: 48 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.9, delay: 0.15, ease: EASE }}
+          className="relative"
+        >
+          <div className="rotate-2 overflow-hidden rounded-2xl border border-white/25 shadow-2xl shadow-[#0e1b33]/40">
+            <Image
+              src="/images/dashboard-v2.webp"
+              alt="The People Prop trader dashboard showing account balance, payouts and performance analytics"
+              width={1200}
+              height={760}
+              className="h-auto w-full"
+            />
+          </div>
+
+          {/* floating payout chip */}
+          <motion.div
+            animate={{ y: [-8, 8, -8] }}
+            transition={{ duration: 6, ease: "easeInOut", repeat: Infinity }}
+            className="absolute -bottom-6 -left-3 rounded-2xl bg-white px-5 py-3.5 shadow-xl shadow-[#0e1b33]/30 lg:-left-8"
+          >
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-[#475467]">
+              Payout approved
             </p>
-
-            <ul className="mt-8 flex flex-col gap-3.5">
-              {POINTS.map((p) => (
-                <li key={p} className="flex items-center gap-3 text-[15px] font-medium text-white/85">
-                  <CheckCircle2 className="h-5 w-5 shrink-0 text-[#cbfb45]" strokeWidth={2} />
-                  {p}
-                </li>
-              ))}
-            </ul>
-
-            <Link
-              href="/dashboard"
-              className="group mt-10 inline-flex h-12 items-center gap-2 rounded-full bg-[#cbfb45] px-6 text-[14px] font-bold text-[#0c0c0c] transition-transform duration-300 hover:scale-[1.04]"
-            >
-              Explore the Dashboard
-              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" strokeWidth={2.4} />
-            </Link>
+            <p className="text-xl font-bold tracking-tight text-[#0e1b33]">
+              +$4,820{" "}
+              <span className="text-[13px] font-semibold text-[#2e6bff]">in 9h 14m</span>
+            </p>
           </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 48, rotate: 2 }}
-            whileInView={{ opacity: 1, y: 0, rotate: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.9, delay: 0.15, ease: EASE }}
-            className="relative"
-          >
-            <div className="overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-black/50">
-              <Image
-                src="/images/dashboard-v2.webp"
-                alt="TPP trader dashboard showing live equity, targets and payout tracking"
-                width={1200}
-                height={760}
-                className="h-auto w-full"
-              />
-            </div>
-            {/* floating payout chip */}
-            <motion.div
-              animate={{ y: [-8, 8, -8] }}
-              transition={{ duration: 6, ease: "easeInOut", repeat: Infinity }}
-              className="absolute -bottom-5 -left-3 rounded-2xl bg-white px-5 py-3.5 shadow-xl shadow-black/30 lg:-left-8"
-            >
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-[#0c0c0c]/45">
-                Payout approved
-              </p>
-              <p className="text-xl font-bold tracking-tight text-[#0c0c0c]">
-                +$4,820 <span className="text-[13px] font-semibold text-[#9bc927]">in 9h 14m</span>
-              </p>
-            </motion.div>
-          </motion.div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
