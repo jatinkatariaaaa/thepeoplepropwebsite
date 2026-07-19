@@ -37,51 +37,57 @@ export function Stats() {
   }, [])
 
   return (
-    <section className="px-4 pb-20 md:pb-28" aria-label="Company statistics">
-      <div className="mx-auto max-w-[1320px]">
-        <div className="relative overflow-hidden rounded-[2rem] bg-secondary px-6 py-14 md:rounded-[2.5rem] md:px-14 md:py-20">
-          {/* Decorative ring */}
-          <div
-            aria-hidden="true"
-            className="absolute -right-24 -top-24 size-72 rounded-full border-[3rem] border-primary/10"
-          />
+    <section
+      className="border-b border-border"
+      aria-label="Company statistics"
+    >
+      <div className="mx-auto max-w-[1400px] px-5 py-14 md:px-8 md:py-20">
+        <Reveal>
+          <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+            <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+              02 &mdash; Track record
+            </p>
+            <p className="max-w-xs text-pretty text-sm leading-relaxed text-muted-foreground">
+              Real traders. Real payouts. Verified results across the globe,
+              every single week.
+            </p>
+          </div>
+          <h2 className="mt-6 max-w-2xl text-balance font-heading text-4xl font-bold uppercase leading-[1.02] tracking-tight text-foreground md:text-6xl">
+            Numbers louder than promises<span className="text-primary">.</span>
+          </h2>
+        </Reveal>
 
-          <Reveal>
-            <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
-              <h2 className="max-w-md text-balance font-heading text-3xl font-bold leading-tight text-navy md:text-4xl">
-                Numbers that speak louder than promises
-              </h2>
-              <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
-                Real traders. Real payouts. Verified results across the globe,
-                every single week.
-              </p>
-            </div>
-          </Reveal>
-
-          <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
-            {stats.map((s, i) => {
-              const { num, suffix } = parseStat(s.value)
-              return (
-                <Reveal key={s.key_name ?? s.label} delay={i * 0.1}>
-                  <div className="rounded-[1.5rem] border border-border bg-card px-8 py-10 shadow-lg shadow-navy/5 transition-shadow hover:shadow-xl hover:shadow-primary/10">
-                    <p className="font-heading text-5xl font-bold tracking-tight text-navy md:text-6xl">
-                      {num != null ? (
-                        <>
-                          <CountUp value={num} />
-                          <span className="text-primary">{suffix}</span>
-                        </>
-                      ) : (
-                        s.value
-                      )}
-                    </p>
-                    <p className="mt-3 text-sm font-medium text-muted-foreground">
+        <div className="mt-12 flex flex-col">
+          {stats.map((s, i) => {
+            const { num, suffix } = parseStat(s.value)
+            return (
+              <Reveal key={s.key_name ?? s.label} delay={i * 0.08}>
+                <div className="group flex items-baseline justify-between gap-6 border-t border-border py-6 transition-colors last:border-b hover:bg-card md:py-8">
+                  <p className="font-heading text-6xl font-bold tracking-tight text-foreground md:text-8xl">
+                    {num != null ? (
+                      <>
+                        <CountUp value={num} />
+                        <span className="text-primary">{suffix}</span>
+                      </>
+                    ) : (
+                      s.value
+                    )}
+                  </p>
+                  <div className="flex items-baseline gap-6">
+                    <p className="text-right font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground md:text-xs">
                       {s.label}
                     </p>
+                    <p
+                      className="hidden font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 md:block"
+                      aria-hidden="true"
+                    >
+                      {String(i + 1).padStart(2, '0')}
+                    </p>
                   </div>
-                </Reveal>
-              )
-            })}
-          </div>
+                </div>
+              </Reveal>
+            )
+          })}
         </div>
       </div>
     </section>

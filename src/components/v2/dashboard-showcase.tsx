@@ -37,6 +37,8 @@ const sidebarMain = [
   { icon: Tag, label: 'Offers', badge: '9' },
 ]
 
+const GREEN = '#1c5b38'
+
 function ChartArea() {
   return (
     <svg
@@ -47,8 +49,8 @@ function ChartArea() {
     >
       <defs>
         <linearGradient id="dashFill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#0e9f6e" stopOpacity="0.25" />
-          <stop offset="100%" stopColor="#0e9f6e" stopOpacity="0" />
+          <stop offset="0%" stopColor={GREEN} stopOpacity="0.25" />
+          <stop offset="100%" stopColor={GREEN} stopOpacity="0" />
         </linearGradient>
       </defs>
       <path
@@ -58,23 +60,23 @@ function ChartArea() {
       <path
         d="M0,60 C60,30 100,25 150,45 C200,65 240,85 300,80 C360,75 380,45 440,40 C500,35 540,55 600,50"
         fill="none"
-        stroke="#0e9f6e"
+        stroke={GREEN}
         strokeWidth="2.5"
       />
-      <circle cx="150" cy="45" r="4" fill="#0e9f6e" />
-      <circle cx="440" cy="40" r="4" fill="#0e9f6e" />
+      <circle cx="150" cy="45" r="4" fill={GREEN} />
+      <circle cx="440" cy="40" r="4" fill={GREEN} />
     </svg>
   )
 }
 
 function DashboardMock() {
   return (
-    <div className="overflow-hidden rounded-2xl bg-white text-left shadow-2xl shadow-navy/20">
+    <div className="overflow-hidden border border-border bg-white text-left">
       {/* Top bar */}
       <div className="flex items-center justify-between border-b border-border px-5 py-3">
-        <span className="font-heading text-sm font-bold">
-          <span className="text-navy">THE PEOPLE</span>{' '}
-          <span className="text-primary">PROP</span>
+        <span className="font-heading text-sm font-bold uppercase tracking-tight">
+          <span className="text-foreground">ThePeople</span>
+          <span className="text-primary">/Prop</span>
         </span>
         <span className="relative">
           <Bell className="size-4 text-muted-foreground" />
@@ -87,12 +89,12 @@ function DashboardMock() {
       <div className="flex">
         {/* Sidebar */}
         <div className="hidden w-44 shrink-0 flex-col gap-1 border-r border-border p-3 sm:flex">
-          <div className="mb-2 rounded-lg border border-border px-3 py-2 text-[10px] font-medium text-muted-foreground">
+          <div className="mb-2 border border-border px-3 py-2 text-[10px] font-medium text-muted-foreground">
             Account - 1 - MF1234567
           </div>
           <button
             type="button"
-            className="mb-2 flex items-center justify-between rounded-lg bg-primary px-3 py-2 text-[10px] font-bold text-white"
+            className="mb-2 flex items-center justify-between bg-primary px-3 py-2 text-[10px] font-bold text-white"
           >
             New Challenge <ArrowRight className="size-3" />
           </button>
@@ -102,7 +104,7 @@ function DashboardMock() {
           {sidebarMain.map((item) => (
             <span
               key={item.label}
-              className={`flex items-center justify-between rounded-lg px-3 py-1.5 text-[10px] font-medium ${
+              className={`flex items-center justify-between px-3 py-1.5 text-[10px] font-medium ${
                 item.active
                   ? 'bg-primary/10 text-primary'
                   : 'text-muted-foreground'
@@ -125,18 +127,18 @@ function DashboardMock() {
           {['Performance', 'Certificates', 'Competitions'].map((label) => (
             <span
               key={label}
-              className="flex items-center gap-2 rounded-lg px-3 py-1.5 text-[10px] font-medium text-muted-foreground"
+              className="flex items-center gap-2 px-3 py-1.5 text-[10px] font-medium text-muted-foreground"
             >
               <LineChart className="size-3" />
               {label}
             </span>
           ))}
-          <div className="mt-3 flex items-center gap-2 rounded-xl border border-border px-3 py-2">
+          <div className="mt-3 flex items-center gap-2 border border-border px-3 py-2">
             <span className="flex size-6 items-center justify-center rounded-full bg-primary/10 text-[8px] font-bold text-primary">
               JC
             </span>
             <span>
-              <span className="block text-[9px] font-bold text-navy">
+              <span className="block text-[9px] font-bold text-foreground">
                 James Carter
               </span>
               <span className="block text-[8px] text-muted-foreground">
@@ -149,10 +151,10 @@ function DashboardMock() {
         {/* Main */}
         <div className="flex-1 p-4">
           <div className="flex items-center justify-between">
-            <p className="font-heading text-sm font-bold text-navy">
+            <p className="font-heading text-sm font-bold text-foreground">
               Welcome back, James Carter
             </p>
-            <span className="rounded-lg bg-primary px-3 py-1.5 text-[9px] font-bold text-white">
+            <span className="bg-primary px-3 py-1.5 text-[9px] font-bold text-white">
               New Challenge
             </span>
           </div>
@@ -161,9 +163,9 @@ function DashboardMock() {
             {statCards.map((card) => (
               <div
                 key={card.label}
-                className="rounded-xl border border-border bg-[#f8faff] p-3"
+                className="border border-border bg-[#f7f6f2] p-3"
               >
-                <span className="flex size-6 items-center justify-center rounded-md bg-primary/10">
+                <span className="flex size-6 items-center justify-center bg-primary/10">
                   <card.icon className="size-3 text-primary" />
                 </span>
                 <p className="mt-2 text-[9px] text-muted-foreground">
@@ -172,7 +174,7 @@ function DashboardMock() {
                 <p className="font-heading text-sm font-bold text-primary">
                   {card.value}
                 </p>
-                <p className="mt-0.5 flex items-center gap-0.5 text-[8px] text-emerald-600">
+                <p className="mt-0.5 flex items-center gap-0.5 text-[8px] text-emerald-700">
                   <ArrowUp className="size-2" />
                   {card.delta}
                 </p>
@@ -180,10 +182,12 @@ function DashboardMock() {
             ))}
           </div>
 
-          <div className="mt-3 rounded-xl border border-border p-3">
+          <div className="mt-3 border border-border p-3">
             <div className="flex items-center justify-between">
-              <p className="text-[10px] font-bold text-navy">Payout Overview</p>
-              <span className="rounded-md border border-border px-2 py-1 text-[8px] text-muted-foreground">
+              <p className="text-[10px] font-bold text-foreground">
+                Payout Overview
+              </p>
+              <span className="border border-border px-2 py-1 text-[8px] text-muted-foreground">
                 Last 7 Days
               </span>
             </div>
@@ -198,8 +202,8 @@ function DashboardMock() {
           </div>
 
           <div className="mt-3 grid grid-cols-1 gap-2 lg:grid-cols-2">
-            <div className="rounded-xl border border-border p-3">
-              <p className="text-[10px] font-bold text-navy">
+            <div className="border border-border p-3">
+              <p className="text-[10px] font-bold text-foreground">
                 Challenge Progress
               </p>
               <div className="mt-2 flex flex-col gap-2.5">
@@ -209,15 +213,17 @@ function DashboardMock() {
                 ].map((row) => (
                   <div key={row.label}>
                     <div className="flex justify-between text-[8px] text-muted-foreground">
-                      <span className="font-semibold text-navy">
+                      <span className="font-semibold text-foreground">
                         {row.label}
                       </span>
                       <span>{row.amount}</span>
-                      <span className="font-bold text-navy">{row.pct}%</span>
+                      <span className="font-bold text-foreground">
+                        {row.pct}%
+                      </span>
                     </div>
-                    <div className="mt-1 h-1 rounded-full bg-border">
+                    <div className="mt-1 h-1 bg-border">
                       <div
-                        className="h-1 rounded-full bg-primary"
+                        className="h-1 bg-primary"
                         style={{ width: `${row.pct}%` }}
                       />
                     </div>
@@ -225,9 +231,9 @@ function DashboardMock() {
                 ))}
               </div>
             </div>
-            <div className="rounded-xl border border-border p-3">
+            <div className="border border-border p-3">
               <div className="flex items-center justify-between">
-                <p className="text-[10px] font-bold text-navy">
+                <p className="text-[10px] font-bold text-foreground">
                   Recent Payouts
                 </p>
                 <span className="text-[8px] font-bold text-primary">
@@ -250,7 +256,7 @@ function DashboardMock() {
                           .map((n) => n[0])
                           .join('')}
                       </span>
-                      <span className="font-semibold text-navy">
+                      <span className="font-semibold text-foreground">
                         {row.name}
                       </span>
                     </span>
@@ -276,73 +282,77 @@ export function DashboardShowcase() {
   const [tab, setTab] = useState<(typeof tabs)[number]>('Home Page')
 
   return (
-    <section className="overflow-hidden bg-gradient-to-b from-[#0b8a5f] via-[#0fae78] to-[#37c68f] px-4 py-24">
-      <div className="mx-auto max-w-[1320px]">
+    <section className="border-b border-border bg-foreground text-background">
+      <div className="mx-auto max-w-[1400px] px-5 py-16 md:px-8 md:py-24">
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
           <Reveal>
-            <h2 className="text-balance font-heading text-5xl font-bold leading-tight text-white md:text-6xl">
-              The Most Advanced <span className="text-white/70">Dashboard</span>{' '}
-              in Prop Trading.
+            <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-background/50">
+              07 &mdash; The platform
+            </p>
+            <h2 className="mt-6 text-balance font-heading text-4xl font-bold uppercase leading-[1.02] tracking-tight md:text-6xl">
+              The most advanced{' '}
+              <span className="text-outline">dashboard</span> in prop trading
+              <span className="text-highlight">.</span>
             </h2>
-            <p className="mt-6 max-w-lg leading-relaxed text-white/90">
+            <p className="mt-6 max-w-lg text-pretty text-[15px] leading-relaxed text-background/70">
               Built entirely in-house, our platform gives traders a faster,
               clearer, and more powerful way to manage accounts, track
               performance, and stay in control from one seamless interface.
             </p>
             <Link
               href="#pricing"
-              className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 text-sm font-bold text-primary shadow-xl shadow-navy/20 transition-transform hover:scale-105"
+              className="group mt-8 inline-flex items-center gap-2 border-b-2 border-background pb-1 text-sm font-bold uppercase tracking-[0.14em] text-background transition-colors hover:border-highlight hover:text-highlight"
             >
               Start your challenge
-              <ArrowRight className="size-4" />
+              <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5" />
             </Link>
           </Reveal>
 
           <motion.div
-            initial={{ opacity: 0, y: 60, rotate: 4 }}
-            whileInView={{ opacity: 1, y: 0, rotate: 1 }}
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-80px' }}
             transition={{ duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] }}
-            whileHover={{ rotate: 0, scale: 1.02 }}
-            className="rounded-3xl bg-navy/60 p-3 backdrop-blur-sm"
+            className="border border-background/20 bg-background/5 p-2.5"
           >
             <DashboardMock />
           </motion.div>
         </div>
 
-        <div className="mt-28 text-center">
+        <div className="mt-24 md:mt-32">
           <Reveal>
-          <h2 className="text-balance font-heading text-4xl font-bold leading-tight text-white md:text-5xl">
-            Everything <span className="text-white/70">traders need</span> to
-            perform, in one place.
-          </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-balance leading-relaxed text-white/90">
-            Explore every part of your The People Prop journey in one place,
-            from account metrics, competitions, tasks, points, exclusive
-            promotions, and free challenges to educational resources built to
-            help you progress faster.
-          </p>
+            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+              <h2 className="max-w-2xl text-balance font-heading text-3xl font-bold uppercase leading-[1.05] tracking-tight md:text-5xl">
+                Everything traders need to perform, in one place
+                <span className="text-highlight">.</span>
+              </h2>
+              <p className="max-w-md text-pretty text-sm leading-relaxed text-background/60">
+                Account metrics, competitions, tasks, points, exclusive
+                promotions, free challenges, and educational resources built to
+                help you progress faster.
+              </p>
+            </div>
 
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-2">
-            {tabs.map((t) => (
-              <button
-                key={t}
-                type="button"
-                onClick={() => setTab(t)}
-                className={`rounded-full px-6 py-2.5 text-sm font-semibold transition-colors ${
-                  tab === t
-                    ? 'bg-white text-primary'
-                    : 'bg-white/15 text-white hover:bg-white/25'
-                }`}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
+            <div className="mt-8 flex flex-wrap items-center gap-2.5">
+              {tabs.map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setTab(t)}
+                  className={`border px-5 py-2.5 text-[12px] font-semibold uppercase tracking-[0.1em] transition-colors ${
+                    tab === t
+                      ? 'border-background bg-background text-foreground'
+                      : 'border-background/30 text-background/70 hover:border-background hover:text-background'
+                  }`}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
 
-          <div className="mx-auto mt-10 max-w-[960px]">
-            <DashboardMock />
-          </div>
+            <div className="mt-10 border border-background/20 bg-background/5 p-2.5">
+              <DashboardMock />
+            </div>
           </Reveal>
         </div>
       </div>

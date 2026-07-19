@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { Menu, X } from 'lucide-react'
+import { ArrowUpRight, Menu, X } from 'lucide-react'
 
 const navLinks = [
   { label: 'Rules', href: '#rules' },
@@ -15,10 +15,13 @@ const navLinks = [
 export function Logo({ className = '' }: { className?: string }) {
   return (
     <span
-      className={`font-heading text-xl font-bold tracking-tight ${className}`}
+      className={`font-heading text-lg font-bold uppercase tracking-tight ${className}`}
     >
-      <span className="text-navy">ThePeople</span>
-      <span className="text-primary">/Prop</span>
+      ThePeople<span className="text-primary">/</span>Prop
+      <span className="align-super text-[9px] font-medium tracking-normal">
+        {' '}
+        &reg;
+      </span>
     </span>
   )
 }
@@ -27,78 +30,90 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false)
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4">
-      <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-4">
-        <Link
-          href="/v2"
-          className="flex items-center rounded-2xl bg-card px-6 py-3.5 shadow-lg shadow-navy/5"
-        >
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-border bg-background/95 backdrop-blur-sm">
+      {/* Top micro row */}
+      <div className="mx-auto flex max-w-[1400px] items-center justify-between px-5 py-3 md:px-8">
+        <Link href="/v2" className="text-foreground">
           <Logo />
         </Link>
+        <p className="hidden font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground md:block">
+          Funded capital &mdash; up to $500K
+        </p>
+        <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-foreground">
+          Rated 4.8 / 5
+        </p>
+      </div>
 
-        <div className="hidden items-center gap-2 rounded-2xl bg-card py-2 pl-6 pr-2 shadow-lg shadow-navy/5 lg:flex">
-          <nav aria-label="Main" className="flex items-center gap-1">
+      {/* Nav row */}
+      <div className="hidden border-t border-border lg:block">
+        <div className="mx-auto flex max-w-[1400px] items-center justify-between px-5 md:px-8">
+          <nav aria-label="Main" className="flex items-center">
+            <Link
+              href="#pricing"
+              className="border-r border-border py-3 pr-6 text-[12px] font-bold uppercase tracking-[0.14em] text-foreground transition-colors hover:text-primary"
+            >
+              Start Challenge
+            </Link>
             {navLinks.map((link) => (
               <Link
                 key={link.label}
                 href={link.href}
-                className="rounded-lg px-3 py-2 text-sm font-medium text-navy transition-colors hover:text-primary"
+                className="px-6 py-3 text-[12px] font-medium uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground"
               >
                 {link.label}
               </Link>
             ))}
           </nav>
-          <span aria-hidden="true" className="mx-2 h-6 w-px bg-border" />
-          <Link
-            href="#login"
-            className="rounded-xl border border-border px-5 py-2.5 text-sm font-semibold text-navy transition-colors hover:bg-muted"
-          >
-            Log In
-          </Link>
-          <Link
-            href="#pricing"
-            className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-[#0b8a5f]"
-          >
-            Start My Challenge
-          </Link>
+          <div className="flex items-center">
+            <Link
+              href="#login"
+              className="flex items-center gap-1.5 border-l border-border py-3 pl-6 text-[12px] font-bold uppercase tracking-[0.14em] text-foreground transition-colors hover:text-primary"
+            >
+              Log In
+              <ArrowUpRight className="size-3.5" />
+            </Link>
+          </div>
         </div>
-
-        <button
-          type="button"
-          onClick={() => setOpen(!open)}
-          className="flex size-12 items-center justify-center rounded-2xl bg-card text-navy shadow-lg shadow-navy/5 lg:hidden"
-          aria-expanded={open}
-          aria-label="Toggle menu"
-        >
-          {open ? <X className="size-5" /> : <Menu className="size-5" />}
-        </button>
       </div>
 
+      {/* Mobile toggle */}
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="absolute right-4 top-2.5 flex size-9 items-center justify-center text-foreground lg:hidden"
+        aria-expanded={open}
+        aria-label="Toggle menu"
+      >
+        {open ? <X className="size-5" /> : <Menu className="size-5" />}
+      </button>
+
       {open && (
-        <div className="mx-auto mt-2 max-w-[1400px] rounded-2xl bg-card p-4 shadow-lg shadow-navy/10 lg:hidden">
-          <nav aria-label="Mobile" className="flex flex-col gap-1">
+        <div className="border-t border-border bg-background lg:hidden">
+          <nav aria-label="Mobile" className="flex flex-col">
             {navLinks.map((link) => (
               <Link
                 key={link.label}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="rounded-lg px-3 py-2.5 text-sm font-medium text-navy hover:bg-muted"
+                className="border-b border-border px-5 py-3.5 text-sm font-medium uppercase tracking-[0.14em] text-foreground"
               >
                 {link.label}
               </Link>
             ))}
-            <div className="mt-2 flex flex-col gap-2 border-t border-border pt-3">
+            <div className="flex">
               <Link
                 href="#login"
-                className="rounded-xl border border-border px-5 py-2.5 text-center text-sm font-semibold text-navy"
+                onClick={() => setOpen(false)}
+                className="flex-1 border-r border-border px-5 py-4 text-center text-sm font-bold uppercase tracking-[0.14em] text-foreground"
               >
                 Log In
               </Link>
               <Link
                 href="#pricing"
-                className="rounded-xl bg-primary px-5 py-2.5 text-center text-sm font-semibold text-primary-foreground"
+                onClick={() => setOpen(false)}
+                className="flex-1 bg-foreground px-5 py-4 text-center text-sm font-bold uppercase tracking-[0.14em] text-background"
               >
-                Start My Challenge
+                Start
               </Link>
             </div>
           </nav>

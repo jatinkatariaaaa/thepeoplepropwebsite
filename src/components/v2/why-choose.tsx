@@ -21,51 +21,59 @@ const features = [
 
 export function WhyChoose() {
   return (
-    <section id="why-choose" className="px-4 pb-20 pt-24">
-      <div className="mx-auto max-w-[1320px]">
+    <section id="why-choose" className="border-b border-border">
+      <div className="mx-auto max-w-[1400px] px-5 py-14 md:px-8 md:py-20">
         <Reveal>
-          <h2 className="text-balance text-center font-heading text-5xl font-bold text-navy md:text-6xl">
-            Why Traders Choose
-            <br />
-            The People <span className="text-primary">Prop</span>
+          <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+            <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+              04 &mdash; The advantage
+            </p>
+            <p className="max-w-xs text-pretty text-sm leading-relaxed text-muted-foreground">
+              Everything traders need to trade freely, with better conditions
+              from day one.
+            </p>
+          </div>
+          <h2 className="mt-6 max-w-3xl text-balance font-heading text-4xl font-bold uppercase leading-[1.02] tracking-tight text-foreground md:text-6xl">
+            Why traders choose The People Prop
+            <span className="text-primary">.</span>
           </h2>
-          <p className="mx-auto mt-6 max-w-lg text-balance text-center leading-relaxed text-muted-foreground">
-            Everything traders need to trade freely, and grow with better
-            conditions from day one.
-          </p>
         </Reveal>
 
         <Reveal delay={0.1}>
-          <div className="mx-auto mt-12 max-w-[920px] rounded-[2rem] bg-card p-3 shadow-2xl shadow-navy/10">
-            <Stagger
-              className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4"
-              staggerDelay={0.05}
-            >
-              {features.map((f) => (
-                <StaggerItem
-                  key={`${f.highlight}-${f.rest}`}
-                  className="group rounded-2xl bg-secondary px-6 py-8 transition-colors hover:bg-primary"
+          <Stagger
+            className="mt-12 grid grid-cols-1 border-l border-t border-border sm:grid-cols-2 lg:grid-cols-4"
+            staggerDelay={0.04}
+          >
+            {features.map((f, i) => (
+              <StaggerItem
+                key={`${f.highlight}-${f.rest}`}
+                className="group relative border-b border-r border-border bg-transparent px-6 py-9 transition-colors hover:bg-foreground"
+              >
+                <p
+                  className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground transition-colors group-hover:text-background/50"
+                  aria-hidden="true"
                 >
-                  <p className="font-heading text-xl font-bold leading-snug text-navy transition-colors group-hover:text-primary-foreground">
-                    <span className="text-primary transition-colors group-hover:text-highlight">
-                      {f.highlight}
-                    </span>{' '}
-                    {f.rest}
-                  </p>
-                </StaggerItem>
-              ))}
-            </Stagger>
-          </div>
+                  {String(i + 1).padStart(2, '0')}
+                </p>
+                <p className="mt-4 font-heading text-xl font-bold leading-snug text-foreground transition-colors group-hover:text-background">
+                  <span className="text-primary transition-colors group-hover:text-highlight">
+                    {f.highlight}
+                  </span>{' '}
+                  {f.rest}
+                </p>
+              </StaggerItem>
+            ))}
+          </Stagger>
         </Reveal>
 
         <Reveal delay={0.15}>
-          <div className="mt-12 flex justify-center">
+          <div className="mt-12 flex">
             <Link
               href="#pricing"
-              className="flex items-center gap-3 rounded-full bg-primary px-8 py-4 text-sm font-bold text-primary-foreground shadow-xl shadow-primary/30 transition-transform hover:scale-105"
+              className="group inline-flex items-center gap-2 border-b-2 border-foreground pb-1 text-sm font-bold uppercase tracking-[0.14em] text-foreground transition-colors hover:border-primary hover:text-primary"
             >
               Start My Challenge Now
-              <ArrowRight className="size-4" />
+              <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5" />
             </Link>
           </div>
         </Reveal>

@@ -27,41 +27,44 @@ function DiscordMark({ className = '' }: { className?: string }) {
 }
 
 const orbitIcons = [
-  { icon: Mail, className: 'left-[16%] top-[8%] text-red-500' },
+  { icon: Mail, className: 'left-[16%] top-[8%]' },
   { icon: Mail, className: 'right-[14%] top-[16%] text-primary' },
-  { icon: Send, className: 'right-[8%] top-[52%] text-sky-500' },
-  { icon: XMark, className: 'bottom-[10%] right-[26%] text-navy' },
-  { icon: MessageCircle, className: 'bottom-[6%] left-[38%] text-indigo-500' },
-  { icon: MessageCircle, className: 'left-[8%] top-[48%] text-primary' },
+  { icon: Send, className: 'right-[8%] top-[52%]' },
+  { icon: XMark, className: 'bottom-[10%] right-[26%]' },
+  { icon: MessageCircle, className: 'bottom-[6%] left-[38%] text-primary' },
+  { icon: MessageCircle, className: 'left-[8%] top-[48%]' },
 ]
 
 export function Community() {
   return (
-    <section id="contact" className="px-4 py-24">
-      <div className="mx-auto max-w-[1220px]">
+    <section id="contact" className="border-b border-border">
+      <div className="mx-auto max-w-[1400px] px-5 py-14 md:px-8 md:py-20">
         <Reveal>
-          <h2 className="text-balance text-center font-heading text-5xl font-bold text-navy md:text-6xl">
-            Join Our <span className="text-primary">Community</span>
+          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+            09 &mdash; Community
+          </p>
+          <h2 className="mt-6 max-w-3xl text-balance font-heading text-4xl font-bold uppercase leading-[1.02] tracking-tight text-foreground md:text-6xl">
+            Never trade alone<span className="text-primary">.</span>
           </h2>
-          <p className="mx-auto mt-6 max-w-lg text-balance text-center leading-relaxed text-muted-foreground">
+          <p className="mt-6 max-w-lg text-pretty text-[15px] leading-relaxed text-muted-foreground">
             Connect with thousands of traders, get real-time support, and find
             answers to your questions.
           </p>
         </Reveal>
 
-        <div className="mt-14 grid grid-cols-1 gap-6 lg:grid-cols-2">
-          {/* Support card */}
-          <div className="flex flex-col items-center rounded-[2rem] border border-border bg-card px-8 py-12 text-center shadow-xl shadow-navy/5">
-            <div className="relative flex aspect-square w-full max-w-[420px] items-center justify-center">
+        <div className="mt-12 grid grid-cols-1 border border-foreground lg:grid-cols-2">
+          {/* Support panel */}
+          <div className="flex flex-col items-center border-b border-foreground bg-card px-8 py-12 text-center lg:border-b-0 lg:border-r">
+            <div className="relative flex aspect-square w-full max-w-[380px] items-center justify-center">
               <span
                 aria-hidden="true"
                 className="absolute inset-[6%] rounded-full border border-border"
               />
               <span
                 aria-hidden="true"
-                className="absolute inset-[18%] rounded-full border border-primary/20"
+                className="absolute inset-[18%] rounded-full border border-primary/30"
               />
-              <div className="relative size-[52%] overflow-hidden rounded-full border-4 border-primary/20">
+              <div className="relative size-[52%] overflow-hidden rounded-full border-2 border-foreground">
                 <Image
                   src="/v2/images/support-agent.png"
                   alt="The People Prop support agent wearing a headset"
@@ -73,7 +76,7 @@ export function Community() {
               {orbitIcons.map((item, i) => (
                 <motion.span
                   key={i}
-                  className={`absolute flex size-11 items-center justify-center rounded-2xl bg-card shadow-lg shadow-navy/10 ${item.className}`}
+                  className={`absolute flex size-10 items-center justify-center border border-border bg-background text-foreground ${item.className}`}
                   aria-hidden="true"
                   animate={{ y: [0, -10, 0] }}
                   transition={{
@@ -83,17 +86,17 @@ export function Community() {
                     delay: i * 0.4,
                   }}
                 >
-                  <item.icon className="size-5" />
+                  <item.icon className="size-4.5" />
                 </motion.span>
               ))}
             </div>
 
-            <h3 className="mt-6 font-heading text-3xl font-bold text-navy">
+            <h3 className="mt-6 font-heading text-3xl font-bold tracking-tight text-foreground">
               24/7 Human Support
             </h3>
-            <p className="mt-4 max-w-md leading-relaxed text-muted-foreground">
+            <p className="mt-4 max-w-md text-pretty text-[15px] leading-relaxed text-muted-foreground">
               We&apos;re always here to help.{' '}
-              <strong className="text-navy">
+              <strong className="text-foreground">
                 Check our FAQ for quick answers
               </strong>{' '}
               or reach out to our dedicated support team via human live chat,
@@ -103,41 +106,44 @@ export function Community() {
             <div className="mt-8 flex gap-3">
               <Link
                 href="#faq"
-                className="rounded-full bg-primary px-8 py-3 text-sm font-bold text-primary-foreground transition-colors hover:bg-[#0b8a5f]"
+                className="bg-foreground px-8 py-3 text-sm font-bold uppercase tracking-[0.12em] text-background transition-colors hover:bg-primary hover:text-primary-foreground"
               >
                 FAQ
               </Link>
               <Link
                 href="#contact"
-                className="rounded-full border border-border px-8 py-3 text-sm font-bold text-navy transition-colors hover:bg-muted"
+                className="border border-foreground px-8 py-3 text-sm font-bold uppercase tracking-[0.12em] text-foreground transition-colors hover:bg-secondary"
               >
                 Live Chat
               </Link>
             </div>
           </div>
 
-          {/* Discord card */}
-          <div className="relative flex flex-col justify-end overflow-hidden rounded-[2rem] bg-gradient-to-b from-[#14b47e] to-[#0a7a53] px-8 py-12 shadow-xl shadow-primary/20">
+          {/* Discord panel */}
+          <div className="relative flex flex-col justify-end overflow-hidden bg-foreground px-8 py-12 text-background">
             <span
               aria-hidden="true"
-              className="absolute left-1/2 top-[36%] -translate-x-1/2 -translate-y-1/2"
+              className="absolute left-1/2 top-[34%] -translate-x-1/2 -translate-y-1/2"
             >
-              <span className="absolute left-1/2 top-1/2 size-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/15" />
-              <span className="absolute left-1/2 top-1/2 size-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/20" />
-              <DiscordMark className="relative size-56 text-white/30 md:size-72" />
+              <span className="absolute left-1/2 top-1/2 size-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-background/10" />
+              <span className="absolute left-1/2 top-1/2 size-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-background/15" />
+              <DiscordMark className="relative size-56 text-background/15 md:size-72" />
             </span>
 
-            <div className="relative z-10 mt-72">
-              <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white/90">
-                <span className="size-2.5 rounded-full bg-white/70" />
-                Join the Community
+            <div className="relative z-10 mt-64">
+              <p className="flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-highlight">
+                <span
+                  aria-hidden="true"
+                  className="size-2 rounded-full bg-highlight"
+                />
+                Join the community
               </p>
-              <h3 className="mt-4 font-heading text-5xl font-bold text-white">
-                Never trade alone.
+              <h3 className="mt-4 font-heading text-4xl font-bold uppercase leading-[1.02] tracking-tight md:text-5xl">
+                Trade alongside thousands<span className="text-highlight">.</span>
               </h3>
               <Link
                 href="#discord"
-                className="mt-8 inline-flex items-center gap-3 rounded-full border border-white/40 bg-white/10 px-8 py-3.5 text-sm font-bold text-white backdrop-blur-sm transition-colors hover:bg-white/20"
+                className="mt-8 inline-flex items-center gap-3 border border-background/40 px-8 py-3.5 text-sm font-bold uppercase tracking-[0.12em] text-background transition-colors hover:bg-background hover:text-foreground"
               >
                 <DiscordMark className="size-5" />
                 Join our Discord
