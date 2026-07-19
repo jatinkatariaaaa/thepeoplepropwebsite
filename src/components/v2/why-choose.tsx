@@ -21,7 +21,7 @@ const features = [
 
 export function WhyChoose() {
   return (
-    <section id="about" className="px-4 pb-20 pt-24">
+    <section id="why-choose" className="px-4 pb-20 pt-24">
       <div className="mx-auto max-w-[1320px]">
         <Reveal>
           <h2 className="text-balance text-center font-heading text-5xl font-bold text-navy md:text-6xl">

@@ -1,8 +1,10 @@
 import { SiteHeader } from "@/components/v2/site-header";
 import { Hero } from "@/components/v2/hero";
+import { Intro } from "@/components/v2/intro";
+import { Stats } from "@/components/v2/stats";
+import { ChallengeConfigurator } from "@/components/v2/challenge-configurator";
 import { PromoBanner } from "@/components/v2/promo-banner";
 import { WhyChoose } from "@/components/v2/why-choose";
-import { Pricing } from "@/components/v2/pricing";
 import { MarketPosition } from "@/components/v2/market-position";
 import { FeatureList } from "@/components/v2/feature-list";
 import { DashboardShowcase } from "@/components/v2/dashboard-showcase";
@@ -17,10 +19,15 @@ export default function V2Page() {
     <>
       <SiteHeader />
       <main>
+        {/* ── Original landing sections 1–4, redesigned for V2 ── */}
         <Hero />
+        <Intro />
+        <Stats />
+        <ChallengeConfigurator />
+
+        {/* ── Existing V2 sections ── */}
         <PromoBanner />
         <WhyChoose />
-        <Pricing />
         <Reveal>
           <MarketPosition />
         </Reveal>
