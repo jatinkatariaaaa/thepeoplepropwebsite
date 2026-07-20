@@ -7,10 +7,10 @@ export function PromoBanner() {
   return (
     <div className="mx-auto mt-4 max-w-[1320px] px-4">
       <Reveal>
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#066a49] via-[#0fae78] to-[#066a49] shadow-2xl shadow-primary/30">
+      <div className="relative overflow-hidden rounded-md border border-primary/40 bg-primary shadow-2xl shadow-primary/20">
         <motion.span
           aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 w-40 -skew-x-12 bg-gradient-to-r from-transparent via-white/25 to-transparent"
+          className="pointer-events-none absolute inset-y-0 w-px bg-white/50"
           animate={{ x: ['-160px', '110vw'] }}
           transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.4 }}
         />

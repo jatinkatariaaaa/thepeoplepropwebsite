@@ -69,7 +69,7 @@ function ChartArea() {
 
 function DashboardMock() {
   return (
-    <div className="overflow-hidden rounded-2xl bg-white text-left shadow-2xl shadow-navy/20">
+    <div className="overflow-hidden rounded-md bg-[#f7f9fc] text-left shadow-2xl shadow-navy/60">
       {/* Top bar */}
       <div className="flex items-center justify-between border-b border-border px-5 py-3">
         <span className="font-heading text-sm font-bold">
@@ -78,7 +78,7 @@ function DashboardMock() {
         </span>
         <span className="relative">
           <Bell className="size-4 text-muted-foreground" />
-          <span className="absolute -right-1.5 -top-1.5 flex size-3.5 items-center justify-center rounded-full bg-primary text-[7px] font-bold text-white">
+          <span className="absolute -right-1.5 -top-1.5 flex size-3.5 items-center justify-center rounded-full bg-primary text-[7px] font-bold text-foreground">
             12
           </span>
         </span>
@@ -92,7 +92,7 @@ function DashboardMock() {
           </div>
           <button
             type="button"
-            className="mb-2 flex items-center justify-between rounded-lg bg-primary px-3 py-2 text-[10px] font-bold text-white"
+            className="mb-2 flex items-center justify-between rounded-lg bg-primary px-3 py-2 text-[10px] font-bold text-foreground"
           >
             New Challenge <ArrowRight className="size-3" />
           </button>
@@ -113,7 +113,7 @@ function DashboardMock() {
                 {item.label}
               </span>
               {item.badge && (
-                <span className="rounded-full bg-primary px-1.5 text-[7px] font-bold text-white">
+                <span className="rounded-full bg-primary px-1.5 text-[7px] font-bold text-foreground">
                   {item.badge}
                 </span>
               )}
@@ -152,7 +152,7 @@ function DashboardMock() {
             <p className="font-heading text-sm font-bold text-navy">
               Welcome back, James Carter
             </p>
-            <span className="rounded-lg bg-primary px-3 py-1.5 text-[9px] font-bold text-white">
+            <span className="rounded-lg bg-primary px-3 py-1.5 text-[9px] font-bold text-foreground">
               New Challenge
             </span>
           </div>
@@ -276,15 +276,15 @@ export function DashboardShowcase() {
   const [tab, setTab] = useState<(typeof tabs)[number]>('Home Page')
 
   return (
-    <section className="overflow-hidden bg-gradient-to-b from-[#0b8a5f] via-[#0fae78] to-[#37c68f] px-4 py-24">
+    <section className="overflow-hidden border-y border-border bg-secondary px-4 py-24">
       <div className="mx-auto max-w-[1320px]">
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
           <Reveal>
-            <h2 className="text-balance font-heading text-5xl font-bold leading-tight text-white md:text-6xl">
-              The Most Advanced <span className="text-white/70">Dashboard</span>{' '}
+            <h2 className="text-balance font-heading text-5xl font-bold leading-tight text-foreground md:text-6xl">
+              The Most Advanced <span className="text-foreground/70">Dashboard</span>{' '}
               in Prop Trading.
             </h2>
-            <p className="mt-6 max-w-lg leading-relaxed text-white/90">
+            <p className="mt-6 max-w-lg leading-relaxed text-foreground/90">
               Built entirely in-house, our platform gives traders a faster,
               clearer, and more powerful way to manage accounts, track
               performance, and stay in control from one seamless interface.
@@ -312,11 +312,11 @@ export function DashboardShowcase() {
 
         <div className="mt-28 text-center">
           <Reveal>
-          <h2 className="text-balance font-heading text-4xl font-bold leading-tight text-white md:text-5xl">
-            Everything <span className="text-white/70">traders need</span> to
+          <h2 className="text-balance font-heading text-4xl font-bold leading-tight text-foreground md:text-5xl">
+            Everything <span className="text-foreground/70">traders need</span> to
             perform, in one place.
           </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-balance leading-relaxed text-white/90">
+          <p className="mx-auto mt-6 max-w-2xl text-balance leading-relaxed text-foreground/90">
             Explore every part of your The People Prop journey in one place,
             from account metrics, competitions, tasks, points, exclusive
             promotions, and free challenges to educational resources built to
@@ -332,7 +332,7 @@ export function DashboardShowcase() {
                 className={`rounded-full px-6 py-2.5 text-sm font-semibold transition-colors ${
                   tab === t
                     ? 'bg-white text-primary'
-                    : 'bg-white/15 text-white hover:bg-white/25'
+                    : 'bg-white/15 text-foreground hover:bg-white/25'
                 }`}
               >
                 {t}

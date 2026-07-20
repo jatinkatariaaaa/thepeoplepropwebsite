@@ -1480,29 +1480,29 @@ body.v2-active .v2-page footer {
 }
 
 .v2-scope {
-  color-scheme: light;
-  --background: #ffffff;
-  --foreground: #0c2418;
-  --card: #ffffff;
-  --card-foreground: #0c2418;
-  --popover: #ffffff;
-  --popover-foreground: #0c2418;
-  --primary: #0e9f6e;
+  color-scheme: dark;
+  --background: #05070a;
+  --foreground: #f4f7fb;
+  --card: #0b0f15;
+  --card-foreground: #f4f7fb;
+  --popover: #0b0f15;
+  --popover-foreground: #f4f7fb;
+  --primary: #2563eb;
   --primary-foreground: #ffffff;
-  --secondary: #edf7f2;
-  --secondary-foreground: #0c2418;
-  --muted: #f1f8f4;
-  --muted-foreground: #5c7268;
-  --accent: #edf7f2;
-  --accent-foreground: #0c2418;
-  --destructive: #e5484d;
-  --border: #dfece5;
-  --input: #dfece5;
-  --ring: #0e9f6e;
-  --navy: #0d1f16;
-  --navy-soft: #182c22;
-  --highlight: #ffd233;
-  --radius: 1rem;
+  --secondary: #101722;
+  --secondary-foreground: #f4f7fb;
+  --muted: #111720;
+  --muted-foreground: #8994a4;
+  --accent: #dce8ff;
+  --accent-foreground: #071022;
+  --destructive: #ef4444;
+  --border: #212a37;
+  --input: #212a37;
+  --ring: #2563eb;
+  --navy: #05070a;
+  --navy-soft: #0b1018;
+  --highlight: #dce8ff;
+  --radius: 0.45rem;
   --v2-radius-sm: calc(var(--radius) * 0.6);
   --v2-radius-md: calc(var(--radius) * 0.8);
   --v2-radius-lg: var(--radius);
@@ -1526,9 +1526,12 @@ body.v2-active .v2-page footer {
     outline-color: color-mix(in oklab, var(--ring) 50%, transparent);
   }
   .v2-scope :where(h1, h2, h3, h4) {
-    font-family: inherit;
-    letter-spacing: normal;
-    line-height: normal;
+    font-family: var(--font-bricolage), system-ui, sans-serif;
+    letter-spacing: -0.035em;
+  }
+  .v2-scope ::selection {
+    background: var(--primary);
+    color: var(--primary-foreground);
   }
 }
 

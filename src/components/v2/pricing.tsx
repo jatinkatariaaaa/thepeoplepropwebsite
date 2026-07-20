@@ -184,9 +184,9 @@ export function Pricing() {
 
         <Reveal delay={0.1} className="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-[1.35fr_1fr]">
           {/* Configurator */}
-          <div className="rounded-[2rem] bg-primary p-1 shadow-2xl shadow-primary/25">
-            <div className="rounded-[1.85rem] bg-primary p-6 md:p-8">
-              <div className="flex items-center justify-center gap-2 rounded-2xl bg-navy px-6 py-4">
+          <div className="rounded-md border border-border bg-card p-1 shadow-2xl shadow-navy/50">
+            <div className="rounded-md bg-card p-6 md:p-8">
+              <div className="flex items-center justify-between gap-2 border-b border-border px-1 pb-5">
                 <CandlestickChart className="size-5 text-white" aria-hidden="true" />
                 <span className="font-heading text-lg font-bold text-white">
                   MetaTrader 5
@@ -258,7 +258,7 @@ export function Pricing() {
           </div>
 
           {/* Price card */}
-          <div className="flex flex-col justify-center rounded-[2rem] bg-card p-8 text-center shadow-2xl shadow-navy/10">
+          <div className="flex flex-col justify-center rounded-md border border-primary/40 bg-secondary p-8 text-center shadow-2xl shadow-primary/10">
             <p className="font-heading text-lg font-bold">
               <span className="text-primary">{selectedSize.label}</span>
               <span className="text-muted-foreground">{' \u00B7 '}</span>
@@ -314,7 +314,7 @@ export function Pricing() {
         </Reveal>
 
         {/* What's included */}
-        <Reveal className="mt-6 rounded-[2rem] bg-card p-8 shadow-2xl shadow-navy/10 md:p-10">
+        <Reveal className="mt-6 rounded-md border border-border bg-card p-8 md:p-10">
           <h3 className="font-heading text-2xl font-bold text-navy">
             What&apos;s Included
           </h3>

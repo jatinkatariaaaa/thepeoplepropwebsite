@@ -18,10 +18,10 @@ export default function V2Page() {
         <Hero />
         <PromoBanner />
         <WhyChoose />
-        <Pricing />
         <HowItWorks />
-        <TraderAdvantage />
+        <Pricing />
         <DashboardShowcase />
+        <TraderAdvantage />
         <Reveal><Platforms /></Reveal>
         <ProofAndFaq />
         <Community />

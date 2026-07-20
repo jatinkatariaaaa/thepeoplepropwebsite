@@ -24,30 +24,30 @@ export function WhyChoose() {
     <section id="about" className="px-4 pb-20 pt-24">
       <div className="mx-auto max-w-[1320px]">
         <Reveal>
-          <h2 className="text-balance text-center font-heading text-5xl font-bold text-navy md:text-6xl">
+          <h2 className="max-w-4xl text-balance font-heading text-5xl font-semibold leading-[.95] text-foreground md:text-7xl">
             Why Traders Choose
             <br />
             The People <span className="text-primary">Prop</span>
           </h2>
-          <p className="mx-auto mt-6 max-w-lg text-balance text-center leading-relaxed text-muted-foreground">
+          <p className="mt-6 max-w-xl text-pretty leading-relaxed text-muted-foreground">
             Everything traders need to trade freely, and grow with better
             conditions from day one.
           </p>
         </Reveal>
 
         <Reveal delay={0.1}>
-          <div className="mx-auto mt-12 max-w-[920px] rounded-[2rem] bg-card p-3 shadow-2xl shadow-navy/10">
+          <div className="mt-14 max-w-[1100px] border-y border-border bg-card">
             <Stagger
-              className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4"
+              className="grid grid-cols-2 gap-px bg-border lg:grid-cols-4"
               staggerDelay={0.05}
             >
               {features.map((f) => (
                 <StaggerItem
                   key={`${f.highlight}-${f.rest}`}
-                  className="group rounded-2xl bg-secondary px-6 py-8 transition-colors hover:bg-primary"
+                  className="group min-h-40 bg-card px-5 py-7 transition-colors hover:bg-secondary md:px-7"
                 >
-                  <p className="font-heading text-xl font-bold leading-snug text-navy transition-colors group-hover:text-primary-foreground">
-                    <span className="text-primary transition-colors group-hover:text-highlight">
+                  <p className="font-heading text-xl font-semibold leading-snug text-foreground transition-colors">
+                    <span className="block text-3xl text-primary transition-colors">
                       {f.highlight}
                     </span>{' '}
                     {f.rest}
