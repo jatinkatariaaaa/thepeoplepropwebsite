@@ -1,107 +1,24 @@
-const footerLinks = [
-  "Home",
-  "Rewards",
-  "Affiliate",
-  "About",
-  "Privacy Policy",
-  "Refund Policy",
-  "Cookie Policy",
-  "Terms and Conditions",
-  "Contact",
-  "FAQ",
+import Link from 'next/link'
+import { ArrowUpRight } from 'lucide-react'
+import { Logo } from '@/components/v2/site-header'
+
+const groups = [
+  { title: 'Discover', links: [['Challenges', '#pricing'], ['How it works', '#how-it-works'], ['Trading rules', '/rules'], ['Reviews', '/reviews']] },
+  { title: 'Company', links: [['About', '/about'], ['Contact', '/contact'], ['Press', '/press'], ['Careers', '/careers']] },
+  { title: 'Legal', links: [['Terms', '/terms'], ['Privacy', '/privacy'], ['Cookie policy', '/cookie'], ['Risk disclosure', '/risk-disclosure']] },
 ]
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border bg-background">
-      <div className="mx-auto max-w-6xl px-4 py-12">
-        <div className="flex flex-col items-center gap-8">
-          <div className="flex flex-col items-center gap-3 text-center">
-            <p className="text-sm font-semibold text-foreground">Subscribe for our newsletter</p>
-            <form
-              className="flex w-full max-w-md items-center gap-2"
-              onSubmit={undefined}
-              action="#"
-            >
-              <label htmlFor="newsletter-email" className="sr-only">
-                Email address
-              </label>
-              <input
-                id="newsletter-email"
-                type="email"
-                required
-                placeholder="Enter your email"
-                className="h-11 w-full rounded-full border border-border bg-secondary px-5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-              <button
-                type="submit"
-                className="h-11 shrink-0 rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
-              >
-                Subscribe
-              </button>
-            </form>
-            <p className="text-xs text-muted-foreground">
-              Your information is never disclosed to third parties.
-            </p>
-          </div>
-
-          <nav aria-label="Footer">
-            <ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
-              {footerLinks.map((link) => (
-                <li key={link}>
-                  <a
-                    href="#"
-                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                  >
-                    {link}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          <div className="flex flex-col gap-4 border-t border-border pt-8 text-center">
-            <p className="text-xs text-muted-foreground">
-              {
-                "\u00A9ThePeopleProp 2026. All Rights Reserved - thepeopleprop.live"
-              }
-            </p>
-            <div className="mx-auto flex max-w-4xl flex-col gap-3 text-left text-[11px] leading-relaxed text-muted-foreground/70">
-              <p>
-                Clients are provided with demo accounts containing simulated funds. All client
-                trading operations are conducted in a simulated environment. More details can be
-                found in the FAQ section.
-              </p>
-              <p>
-                <span className="font-semibold">Important:</span> The People Prop is not a financial
-                institution and does not promote or sell any financial products or services. All
-                accounts are demo accounts with simulated funds, and no real money is involved in
-                any trading activity on the platform.
-              </p>
-              <p>
-                <span className="font-semibold">Risk Warning:</span> Speculative trading, even in a
-                simulated environment, carries substantial risk. Leverage can magnify both gains
-                and losses. We do not provide investment advice; our services are intended for
-                educational and practice purposes only. Consider your objectives, financial
-                situation, and experience before trading, and consult an independent financial
-                advisor if you have concerns.
-              </p>
-              <p>
-                <span className="font-semibold">Disclaimer:</span> Simulated trading is not
-                suitable for everyone, and past performance in simulated trading is not indicative
-                of future results. All content on this website is for educational purposes only and
-                should not be construed as investment advice or an offer to buy or sell any
-                financial instruments. The People Prop does not act as a broker, custodian, or financial
-                advisor and does not conduct any regulated financial activities.
-              </p>
-              <p>
-                BLUEWAVE DIGITAL EDUCATION - FZCO, IFZA Properties, Dubai Silicon Oasis, Dubai,
-                UAE, acts solely as a technology and platform provider, remains the sole seller and
-                issuer of all products and services on this website, and provides simulated trading
-                platforms and related technological infrastructure.
-              </p>
-            </div>
-          </div>
+    <footer className="mt-8 border-t border-border bg-background px-4">
+      <div className="mx-auto max-w-[1240px] py-14 md:py-20">
+        <div className="grid gap-12 lg:grid-cols-[1.2fr_1fr]">
+          <div><Link href="/v2" aria-label="The People Prop home"><Logo /></Link><p className="mt-5 max-w-sm text-sm leading-relaxed text-muted-foreground">A trader-first prop firm built around transparent rules, flexible evaluation models and fast payouts.</p><Link href="/contact" className="mt-7 inline-flex min-h-12 items-center gap-2 rounded-full bg-navy px-6 text-sm font-bold text-primary-foreground">Talk to support <ArrowUpRight className="size-4" /></Link></div>
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">{groups.map(group => <div key={group.title}><h2 className="font-mono text-xs font-bold uppercase tracking-[0.16em] text-navy">{group.title}</h2><ul className="mt-5 flex flex-col gap-3">{group.links.map(([label, href]) => <li key={label}><Link href={href} className="text-sm text-muted-foreground transition-colors hover:text-primary">{label}</Link></li>)}</ul></div>)}</div>
+        </div>
+        <div className="mt-14 border-t border-border pt-8">
+          <p className="text-xs font-semibold text-navy">© 2026 The People Prop. All rights reserved.</p>
+          <div className="mt-5 grid gap-4 text-[11px] leading-relaxed text-muted-foreground/80 md:grid-cols-2"><p>Clients are provided with demo accounts containing simulated funds. All trading operations are conducted in a simulated environment. The People Prop is not a financial institution and does not promote or sell financial products or services.</p><p>Simulated trading carries substantial risk. Past performance is not indicative of future results. All website content is educational and should not be construed as investment advice. BLUEWAVE DIGITAL EDUCATION - FZCO, Dubai, UAE, acts solely as the technology and platform provider.</p></div>
         </div>
       </div>
     </footer>

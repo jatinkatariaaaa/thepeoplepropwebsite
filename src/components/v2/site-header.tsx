@@ -1,109 +1,34 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
-import { Menu, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { ArrowUpRight, Menu, X } from 'lucide-react'
 
 const navLinks = [
+  { label: 'How it works', href: '#how-it-works' },
+  { label: 'Challenges', href: '#pricing' },
   { label: 'Rules', href: '#rules' },
-  { label: 'About', href: '#about' },
-  { label: 'Affiliate', href: '#affiliate' },
+  { label: 'Platforms', href: '#platforms' },
   { label: 'FAQ', href: '#faq' },
-  { label: 'Contact', href: '#contact' },
 ]
 
 export function Logo({ className = '' }: { className?: string }) {
-  return (
-    <span
-      className={`font-heading text-xl font-bold tracking-tight ${className}`}
-    >
-      <span className="text-navy">ThePeople</span>
-      <span className="text-primary">/Prop</span>
-    </span>
-  )
+  return <span className={`font-heading text-xl font-bold tracking-tight ${className}`}><span className="text-navy">ThePeople</span><span className="text-primary">/Prop</span></span>
 }
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false)
+  useEffect(() => { if (!open) return; const close = (event: KeyboardEvent) => event.key === 'Escape' && setOpen(false); window.addEventListener('keydown', close); return () => window.removeEventListener('keydown', close) }, [open])
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4">
-      <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-4">
-        <Link
-          href="/v2"
-          className="flex items-center rounded-2xl bg-card px-6 py-3.5 shadow-lg shadow-navy/5"
-        >
-          <Logo />
-        </Link>
-
-        <div className="hidden items-center gap-2 rounded-2xl bg-card py-2 pl-6 pr-2 shadow-lg shadow-navy/5 lg:flex">
-          <nav aria-label="Main" className="flex items-center gap-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                className="rounded-lg px-3 py-2 text-sm font-medium text-navy transition-colors hover:text-primary"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-          <span aria-hidden="true" className="mx-2 h-6 w-px bg-border" />
-          <Link
-            href="#login"
-            className="rounded-xl border border-border px-5 py-2.5 text-sm font-semibold text-navy transition-colors hover:bg-muted"
-          >
-            Log In
-          </Link>
-          <Link
-            href="#pricing"
-            className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-[#0b8a5f]"
-          >
-            Start My Challenge
-          </Link>
-        </div>
-
-        <button
-          type="button"
-          onClick={() => setOpen(!open)}
-          className="flex size-12 items-center justify-center rounded-2xl bg-card text-navy shadow-lg shadow-navy/5 lg:hidden"
-          aria-expanded={open}
-          aria-label="Toggle menu"
-        >
-          {open ? <X className="size-5" /> : <Menu className="size-5" />}
-        </button>
+    <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 md:px-4 md:pt-4">
+      <div className="mx-auto flex max-w-[1240px] items-center justify-between rounded-2xl border border-border/70 bg-card/90 px-3 py-2 shadow-xl shadow-navy/10 backdrop-blur-xl md:px-4">
+        <Link href="/v2" aria-label="The People Prop home" className="rounded-xl px-2 py-2"><Logo /></Link>
+        <nav aria-label="Primary navigation" className="hidden items-center gap-1 lg:flex">{navLinks.map(link => <Link key={link.label} href={link.href} className="rounded-xl px-3 py-2 text-sm font-semibold text-navy transition-colors hover:bg-secondary hover:text-primary">{link.label}</Link>)}</nav>
+        <div className="hidden items-center gap-2 sm:flex"><Link href="/login" className="inline-flex min-h-11 items-center rounded-xl px-4 text-sm font-bold text-navy hover:bg-secondary">Log in</Link><Link href="#pricing" className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-primary-foreground">Get funded <ArrowUpRight className="size-4" /></Link></div>
+        <button type="button" onClick={() => setOpen(value => !value)} className="flex size-11 items-center justify-center rounded-xl bg-secondary text-navy lg:hidden sm:ml-2" aria-expanded={open} aria-controls="v2-mobile-menu" aria-label={open ? 'Close menu' : 'Open menu'}>{open ? <X className="size-5" /> : <Menu className="size-5" />}</button>
       </div>
-
-      {open && (
-        <div className="mx-auto mt-2 max-w-[1400px] rounded-2xl bg-card p-4 shadow-lg shadow-navy/10 lg:hidden">
-          <nav aria-label="Mobile" className="flex flex-col gap-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                onClick={() => setOpen(false)}
-                className="rounded-lg px-3 py-2.5 text-sm font-medium text-navy hover:bg-muted"
-              >
-                {link.label}
-              </Link>
-            ))}
-            <div className="mt-2 flex flex-col gap-2 border-t border-border pt-3">
-              <Link
-                href="#login"
-                className="rounded-xl border border-border px-5 py-2.5 text-center text-sm font-semibold text-navy"
-              >
-                Log In
-              </Link>
-              <Link
-                href="#pricing"
-                className="rounded-xl bg-primary px-5 py-2.5 text-center text-sm font-semibold text-primary-foreground"
-              >
-                Start My Challenge
-              </Link>
-            </div>
-          </nav>
-        </div>
-      )}
+      {open && <div id="v2-mobile-menu" className="mx-auto mt-2 max-w-[1240px] rounded-2xl border border-border bg-card p-3 shadow-2xl lg:hidden"><nav aria-label="Mobile navigation" className="flex flex-col gap-1">{navLinks.map(link => <Link key={link.label} href={link.href} onClick={() => setOpen(false)} className="rounded-xl px-4 py-3 text-sm font-semibold text-navy hover:bg-secondary">{link.label}</Link>)}<div className="mt-2 grid grid-cols-2 gap-2 border-t border-border pt-3"><Link href="/login" className="inline-flex min-h-12 items-center justify-center rounded-xl border border-border text-sm font-bold text-navy">Log in</Link><Link href="#pricing" onClick={() => setOpen(false)} className="inline-flex min-h-12 items-center justify-center rounded-xl bg-primary text-sm font-bold text-primary-foreground">Get funded</Link></div></nav></div>}
     </header>
   )
 }

@@ -1,132 +1,39 @@
 'use client'
 
-import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, Star, TrendingUp } from 'lucide-react'
+import Link from 'next/link'
+import { ArrowDown, ArrowRight, CheckCircle2, ShieldCheck, Star } from 'lucide-react'
 import { motion, Stagger, StaggerItem } from '@/components/v2/motion'
 
-const heroStats = [
-  { value: '150%', suffix: '+', label: 'Fee Refund' },
-  { value: '24/7', suffix: '+', label: 'Human Support' },
-  { value: '100', suffix: '%', label: 'Profit Split' },
-  { value: '12h', suffix: '', label: 'Average Processing Time' },
+const stats = [
+  { value: '$200K', label: 'Maximum allocation' },
+  { value: '90%', label: 'Profit split' },
+  { value: '<24h', label: 'Average payout' },
+  { value: '0.0', label: 'Raw spreads' },
 ]
 
 export function Hero() {
   return (
-    <section className="relative">
-      <div className="relative flex min-h-[92vh] flex-col items-center justify-start overflow-hidden pt-36 md:pt-40">
-        <Image
-          src="/v2/images/hero-green.png"
-          alt=""
-          fill
-          priority
-          className="object-cover"
-          sizes="100vw"
-        />
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-b from-navy/40 via-transparent to-navy/60"
-        />
-
-        {/* floating glow particles */}
-        <motion.span
-          aria-hidden="true"
-          className="absolute left-[12%] top-[30%] size-3 rounded-full bg-primary/70 blur-[2px]"
-          animate={{ y: [0, -24, 0], opacity: [0.4, 1, 0.4] }}
-          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.span
-          aria-hidden="true"
-          className="absolute right-[16%] top-[24%] size-2 rounded-full bg-highlight/80 blur-[1px]"
-          animate={{ y: [0, -18, 0], opacity: [0.3, 0.9, 0.3] }}
-          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-        />
-        <motion.span
-          aria-hidden="true"
-          className="absolute bottom-[34%] left-[24%] size-2.5 rounded-full bg-primary/60 blur-[2px]"
-          animate={{ y: [0, -20, 0], opacity: [0.4, 1, 0.4] }}
-          transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-        />
-
-        <div className="relative z-10 flex flex-col items-center px-4">
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
-            className="flex items-center gap-3 rounded-full bg-card py-2 pl-2 pr-5 shadow-lg shadow-navy/10"
-          >
-            <span className="flex size-8 items-center justify-center rounded-full bg-primary">
-              <TrendingUp className="size-4 text-primary-foreground" />
-            </span>
-            <span className="text-sm font-semibold text-navy">
-              Join Active Traders
-            </span>
-            <span className="h-4 w-px bg-border" aria-hidden="true" />
-            <span className="text-sm font-bold text-navy">
-              4.8<span className="font-normal text-muted-foreground">/5</span>
-            </span>
-            <Star className="size-4 fill-highlight text-highlight" />
-            <span className="text-sm font-semibold text-navy">Excellent</span>
+    <section className="relative overflow-hidden bg-navy px-4 pb-16 pt-28 text-primary-foreground md:pb-24 md:pt-36">
+      <Image src="/v2/images/hero-green.png" alt="" fill priority sizes="100vw" className="object-cover opacity-30" />
+      <div aria-hidden="true" className="absolute inset-0 bg-navy/55" />
+      <div aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.045)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.045)_1px,transparent_1px)] bg-[size:72px_72px] [mask-image:linear-gradient(to_bottom,black,transparent_88%)]" />
+      <div className="relative mx-auto max-w-[1240px]">
+        <div className="grid min-h-[620px] items-center gap-12 lg:grid-cols-[1.15fr_.85fr]">
+          <div>
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/15 bg-primary-foreground/5 px-4 py-2 text-xs font-bold uppercase tracking-[0.15em] backdrop-blur-md"><span className="size-2 rounded-full bg-highlight" />Built for the people who trade</motion.div>
+            <motion.h1 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .1, duration: .7 }} className="mt-7 max-w-4xl text-balance font-heading text-5xl font-bold leading-[.96] tracking-[-.045em] sm:text-6xl md:text-8xl">Trade our capital.<br /><span className="text-primary">Keep the profits.</span></motion.h1>
+            <motion.p initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .2, duration: .7 }} className="mt-7 max-w-xl text-pretty text-base leading-relaxed text-primary-foreground/65 md:text-lg">Transparent rules. Real capital up to $200,000. Payouts in under 24 hours. A prop firm engineered to back disciplined traders—not work against them.</motion.p>
+            <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .3, duration: .7 }} className="mt-9 flex flex-col gap-3 sm:flex-row"><Link href="#pricing" className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-primary px-7 text-sm font-bold shadow-xl shadow-primary/20">Start my challenge <ArrowRight className="size-4" /></Link><Link href="#how-it-works" className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full border border-primary-foreground/20 bg-primary-foreground/5 px-7 text-sm font-bold backdrop-blur-md">See how it works <ArrowDown className="size-4" /></Link></motion.div>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .45 }} className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-sm text-primary-foreground/65">{['No time limit', 'Free retry', '24/7 support'].map(item => <span key={item} className="flex items-center gap-2"><CheckCircle2 className="size-4 text-highlight" />{item}</span>)}</motion.div>
+          </div>
+          <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: .25, duration: .8 }} className="relative hidden lg:block">
+            <div className="rotate-2 rounded-[2rem] border border-primary-foreground/10 bg-primary-foreground/5 p-5 shadow-2xl backdrop-blur-xl"><div className="rounded-[1.5rem] bg-card p-6 text-navy"><div className="flex items-center justify-between"><div><p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Funded account</p><p className="mt-2 font-heading text-3xl font-bold">$100,000</p></div><span className="flex size-12 items-center justify-center rounded-2xl bg-secondary text-primary"><ShieldCheck className="size-6" /></span></div><div className="mt-8 flex h-36 items-end gap-2">{[24,38,31,52,46,68,62,78,72,91,84,100].map((h,i)=><span key={i} className="flex-1 rounded-t bg-primary/20" style={{height:`${h}%`}}><span className="block h-1/3 rounded-t bg-primary" /></span>)}</div><div className="mt-6 grid grid-cols-2 gap-3"><div className="rounded-2xl bg-secondary p-4"><p className="text-xs text-muted-foreground">Today&apos;s profit</p><p className="mt-1 font-heading text-xl font-bold text-primary">+$2,482</p></div><div className="rounded-2xl bg-navy p-4 text-primary-foreground"><p className="text-xs text-primary-foreground/55">Profit split</p><p className="mt-1 font-heading text-xl font-bold">90%</p></div></div></div></div>
+            <div className="absolute -bottom-6 -left-8 flex items-center gap-3 rounded-2xl bg-card p-4 text-navy shadow-2xl"><Star className="size-5 fill-highlight text-highlight" /><div><p className="text-sm font-bold">Trader-first conditions</p><p className="text-xs text-muted-foreground">No hidden catches</p></div></div>
           </motion.div>
-
-          <h1 className="mt-8 flex flex-wrap items-center justify-center gap-4 text-center">
-            <motion.span
-              initial={{ opacity: 0, x: -50, rotate: -3 }}
-              animate={{ opacity: 1, x: 0, rotate: 0 }}
-              transition={{ duration: 0.7, delay: 0.2, ease: [0.21, 0.47, 0.32, 0.98] }}
-              className="rounded-2xl bg-navy/70 px-6 py-3 font-heading text-5xl font-bold text-white backdrop-blur-sm md:text-7xl"
-            >
-              The Home
-            </motion.span>
-            <motion.span
-              initial={{ opacity: 0, x: 50, rotate: 3 }}
-              animate={{ opacity: 1, x: 0, rotate: 0 }}
-              transition={{ duration: 0.7, delay: 0.35, ease: [0.21, 0.47, 0.32, 0.98] }}
-              className="rounded-2xl bg-navy/70 px-6 py-3 font-heading text-5xl font-bold text-white backdrop-blur-sm md:text-7xl"
-            >
-              of Traders<span className="text-primary">.</span>
-            </motion.span>
-          </h1>
         </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="relative z-10 mt-auto pb-40 pt-16 md:pb-44"
-        >
-          <motion.div
-            animate={{ scale: [1, 1.04, 1] }}
-            transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <Link
-              href="#pricing"
-              className="flex items-center gap-3 rounded-full bg-primary px-8 py-4 text-sm font-bold uppercase tracking-wide text-primary-foreground shadow-xl shadow-primary/40 transition-transform hover:scale-105"
-            >
-              Start My Challenge
-              <ArrowRight className="size-4" />
-            </Link>
-          </motion.div>
-        </motion.div>
+        <Stagger className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-[2rem] border border-primary-foreground/10 bg-primary-foreground/10 lg:grid-cols-4">{stats.map(stat => <StaggerItem key={stat.label} className="bg-navy/80 p-6 backdrop-blur-md md:p-8"><p className="font-heading text-3xl font-bold text-primary-foreground md:text-4xl">{stat.value}</p><p className="mt-2 text-xs font-medium text-primary-foreground/50">{stat.label}</p></StaggerItem>)}</Stagger>
       </div>
-
-      <Stagger className="relative z-20 mx-auto -mt-32 grid max-w-[1320px] grid-cols-1 gap-3 px-4 sm:grid-cols-2 lg:grid-cols-4">
-        {heroStats.map((stat) => (
-          <StaggerItem
-            key={stat.label}
-            className="flex flex-col items-center rounded-3xl border border-border/60 bg-card px-6 py-8 text-center shadow-xl shadow-navy/10 transition-shadow hover:shadow-2xl hover:shadow-primary/15"
-          >
-            <p className="font-heading text-4xl font-bold text-navy">
-              {stat.value}
-              {stat.suffix && (
-                <span className="text-primary">{stat.suffix}</span>
-              )}
-            </p>
-            <p className="mt-2 text-sm text-muted-foreground">{stat.label}</p>
-          </StaggerItem>
-        ))}
-      </Stagger>
     </section>
   )
 }

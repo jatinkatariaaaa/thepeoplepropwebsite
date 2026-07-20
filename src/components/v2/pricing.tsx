@@ -288,8 +288,8 @@ export function Pricing() {
             </div>
 
             <Link
-              href="#pricing"
-              className="mt-6 flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary to-[#37c68f] px-8 py-5 text-sm font-bold uppercase tracking-wide text-primary-foreground shadow-lg shadow-primary/30 transition-transform hover:scale-[1.02]"
+              href="/dashboard/new-challenge"
+              className="mt-6 flex items-center justify-center gap-2 rounded-2xl bg-primary hover:bg-navy px-8 py-5 text-sm font-bold uppercase tracking-wide text-primary-foreground shadow-lg shadow-primary/30 transition-transform hover:scale-[1.02]"
             >
               Buy Challenge
               <ArrowRight className="size-4" />
@@ -343,8 +343,8 @@ export function Pricing() {
               </span>
             </p>
             <Link
-              href="#pricing"
-              className="flex w-full max-w-sm items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary to-[#37c68f] px-8 py-5 text-sm font-bold uppercase tracking-wide text-primary-foreground shadow-lg shadow-primary/30 transition-transform hover:scale-[1.02]"
+              href="/dashboard/new-challenge"
+              className="flex w-full max-w-sm items-center justify-center gap-2 rounded-2xl bg-primary hover:bg-navy px-8 py-5 text-sm font-bold uppercase tracking-wide text-primary-foreground shadow-lg shadow-primary/30 transition-transform hover:scale-[1.02]"
             >
               Buy Challenge
               <ArrowRight className="size-4" />

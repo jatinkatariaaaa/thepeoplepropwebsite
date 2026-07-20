@@ -3,7 +3,7 @@ import { ArrowRight, CandlestickChart } from 'lucide-react'
 
 export function Platforms() {
   return (
-    <section className="px-4 py-24">
+    <section id="platforms" className="scroll-mt-24 px-4 py-24">
       <div className="mx-auto max-w-[1180px]">
         <h2 className="text-balance text-center font-heading text-5xl font-bold text-navy md:text-6xl">
           Available <span className="text-primary">Trading</span> Platforms
