@@ -1442,7 +1442,8 @@ body.v2-active .v2-page footer {
 
 /* ══════════════════════════════════════
    V2 Design System — scoped to /v2 routes via .v2-scope
-   (Green fintech theme: Inter + Bricolage Grotesque)
+   Cinematic dark: near-black blue-tinted void, volumetric
+   light, atmospheric fog, hairline glass surfaces.
    Tokens map to CSS vars that are ONLY defined inside
    .v2-scope, so the original site is unaffected.
    ══════════════════════════════════════ */
@@ -1468,7 +1469,7 @@ body.v2-active .v2-page footer {
   --color-navy: var(--navy);
   --color-navy-soft: var(--navy-soft);
   --color-highlight: var(--highlight);
-  --font-heading: var(--font-bricolage), system-ui, sans-serif;
+  --font-heading: var(--font-inter), system-ui, sans-serif;
   /* Radius scale: falls back to Tailwind defaults outside .v2-scope */
   --radius-sm: var(--v2-radius-sm, 0.25rem);
   --radius-md: var(--v2-radius-md, 0.375rem);
@@ -1480,28 +1481,28 @@ body.v2-active .v2-page footer {
 }
 
 .v2-scope {
-  color-scheme: light;
-  --background: #ffffff;
-  --foreground: #0c2418;
-  --card: #ffffff;
-  --card-foreground: #0c2418;
-  --popover: #ffffff;
-  --popover-foreground: #0c2418;
-  --primary: #0e9f6e;
-  --primary-foreground: #ffffff;
-  --secondary: #edf7f2;
-  --secondary-foreground: #0c2418;
-  --muted: #f1f8f4;
-  --muted-foreground: #5c7268;
-  --accent: #edf7f2;
-  --accent-foreground: #0c2418;
-  --destructive: #e5484d;
-  --border: #dfece5;
-  --input: #dfece5;
-  --ring: #0e9f6e;
-  --navy: #0d1f16;
-  --navy-soft: #182c22;
-  --highlight: #ffd233;
+  color-scheme: dark;
+  --background: #04060b;
+  --foreground: #e9eef8;
+  --card: #080c14;
+  --card-foreground: #e9eef8;
+  --popover: #0a0f19;
+  --popover-foreground: #e9eef8;
+  --primary: #4c8dff;
+  --primary-foreground: #04060b;
+  --secondary: #0d131f;
+  --secondary-foreground: #e9eef8;
+  --muted: #0b1018;
+  --muted-foreground: #7a879c;
+  --accent: #0f1725;
+  --accent-foreground: #e9eef8;
+  --destructive: #ff5f57;
+  --border: rgba(255, 255, 255, 0.07);
+  --input: rgba(255, 255, 255, 0.1);
+  --ring: #4c8dff;
+  --navy: #060a12;
+  --navy-soft: #0b1220;
+  --highlight: #a8c8ff;
   --radius: 1rem;
   --v2-radius-sm: calc(var(--radius) * 0.6);
   --v2-radius-md: calc(var(--radius) * 0.8);
@@ -1533,5 +1534,157 @@ body.v2-active .v2-page footer {
 }
 
 .v2-scope .font-heading {
-  font-family: var(--font-bricolage), system-ui, sans-serif;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  letter-spacing: -0.035em;
+  font-weight: 500;
+}
+
+/* ── Atmosphere: fog, beams, grain, glass ───────────── */
+
+/* Fine film grain overlay — kills the flat "vector" look */
+.v2-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.5;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.32'/%3E%3C/svg%3E");
+}
+
+/* Soft volumetric fog blob */
+.v2-fog {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  filter: blur(80px);
+  background: radial-gradient(
+    circle at 50% 50%,
+    color-mix(in oklab, var(--primary) 55%, transparent),
+    transparent 70%
+  );
+}
+
+/* Wide upward light shaft */
+.v2-beam {
+  position: absolute;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    color-mix(in oklab, var(--highlight) 42%, transparent),
+    color-mix(in oklab, var(--primary) 16%, transparent) 42%,
+    transparent 78%
+  );
+  filter: blur(44px);
+}
+
+/* Hairline top edge catching light — used on glass panels */
+.v2-litedge {
+  position: relative;
+}
+.v2-litedge::before {
+  content: "";
+  position: absolute;
+  inset-inline: 12%;
+  top: -1px;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in oklab, var(--highlight) 70%, transparent),
+    transparent
+  );
+}
+
+/* Glass surface: barely-there fill + hairline stroke */
+.v2-glass {
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.045),
+    rgba(255, 255, 255, 0.012) 40%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.075);
+  backdrop-filter: blur(14px);
+}
+
+/* Text that fades toward the bottom, like light falling off */
+.v2-fadetext {
+  background: linear-gradient(
+    to bottom,
+    var(--foreground) 25%,
+    color-mix(in oklab, var(--foreground) 66%, var(--background)) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Star field, drawn as three offset dot layers */
+.v2-stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(1.4px 1.4px at 12% 18%, rgba(255, 255, 255, 0.55), transparent 60%),
+    radial-gradient(1px 1px at 34% 8%, rgba(255, 255, 255, 0.4), transparent 60%),
+    radial-gradient(1.2px 1.2px at 62% 22%, rgba(255, 255, 255, 0.5), transparent 60%),
+    radial-gradient(1px 1px at 81% 12%, rgba(255, 255, 255, 0.35), transparent 60%),
+    radial-gradient(1.3px 1.3px at 91% 34%, rgba(255, 255, 255, 0.45), transparent 60%),
+    radial-gradient(1px 1px at 22% 42%, rgba(255, 255, 255, 0.3), transparent 60%),
+    radial-gradient(1.1px 1.1px at 52% 46%, rgba(255, 255, 255, 0.28), transparent 60%),
+    radial-gradient(1px 1px at 72% 5%, rgba(255, 255, 255, 0.42), transparent 60%),
+    radial-gradient(1px 1px at 5% 30%, rgba(255, 255, 255, 0.3), transparent 60%);
+}
+
+/* Faint technical grid, fades out downward */
+.v2-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 20%, transparent 75%);
+}
+
+.v2-scope ::selection {
+  background: color-mix(in oklab, var(--primary) 40%, transparent);
+  color: var(--foreground);
+}
+
+@keyframes v2-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.75;
+  }
+  50% {
+    transform: translate3d(0, -3%, 0) scale(1.08);
+    opacity: 1;
+  }
+}
+.v2-drift {
+  animation: v2-drift 14s ease-in-out infinite;
+}
+
+@keyframes v2-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.v2-marquee {
+  animation: v2-marquee 42s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v2-drift,
+  .v2-marquee {
+    animation: none;
+  }
 }
