@@ -1488,21 +1488,25 @@ body.v2-active .v2-page footer {
   --card-foreground: #e9eef8;
   --popover: #0a0f19;
   --popover-foreground: #e9eef8;
-  --primary: #4c8dff;
+  /* Light itself is cool white — blue only survives at the rim */
+  --primary: #dfe8f7;
   --primary-foreground: #04060b;
   --secondary: #0d131f;
   --secondary-foreground: #e9eef8;
   --muted: #0b1018;
-  --muted-foreground: #7a879c;
+  --muted-foreground: #78849a;
   --accent: #0f1725;
   --accent-foreground: #e9eef8;
-  --destructive: #ff5f57;
+  --destructive: #ff6b60;
   --border: rgba(255, 255, 255, 0.07);
   --input: rgba(255, 255, 255, 0.1);
-  --ring: #4c8dff;
+  --ring: #9fc0ea;
   --navy: #060a12;
   --navy-soft: #0b1220;
-  --highlight: #a8c8ff;
+  --highlight: #f0f5ff;
+  /* Ice-blue, reserved for hairline rims and edge catches only */
+  --rim: #6fa0d8;
+  --positive: #7fd6a8;
   --radius: 1rem;
   --v2-radius-sm: calc(var(--radius) * 0.6);
   --v2-radius-md: calc(var(--radius) * 0.8);
