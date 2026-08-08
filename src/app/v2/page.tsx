@@ -1,40 +1,31 @@
-import { SiteHeader } from "@/components/v2/site-header";
-import { Hero } from "@/components/v2/hero";
-import { PromoBanner } from "@/components/v2/promo-banner";
-import { WhyChoose } from "@/components/v2/why-choose";
-import { Pricing } from "@/components/v2/pricing";
-import { MarketPosition } from "@/components/v2/market-position";
-import { FeatureList } from "@/components/v2/feature-list";
-import { DashboardShowcase } from "@/components/v2/dashboard-showcase";
-import { Platforms } from "@/components/v2/platforms";
-import { Community } from "@/components/v2/community";
-import { Cta } from "@/components/v2/cta";
-import { SiteFooter } from "@/components/v2/site-footer";
-import { Reveal } from "@/components/v2/motion";
+import { Header } from "@/components/v2/redesign/header";
+import { Hero } from "@/components/v2/redesign/hero";
+import { Marquee } from "@/components/v2/redesign/marquee";
+import { Edge } from "@/components/v2/redesign/edge";
+import { Steps } from "@/components/v2/redesign/steps";
+import { Pricing } from "@/components/v2/redesign/pricing";
+import { Proof } from "@/components/v2/redesign/proof";
+import { Platforms } from "@/components/v2/redesign/platforms";
+import { Faq } from "@/components/v2/redesign/faq";
+import { Cta } from "@/components/v2/redesign/cta";
+import { Footer } from "@/components/v2/redesign/footer";
 
 export default function V2Page() {
   return (
     <>
-      <SiteHeader />
+      <Header />
       <main>
         <Hero />
-        <PromoBanner />
-        <WhyChoose />
+        <Marquee />
+        <Edge />
+        <Steps />
         <Pricing />
-        <Reveal>
-          <MarketPosition />
-        </Reveal>
-        <Reveal>
-          <FeatureList />
-        </Reveal>
-        <DashboardShowcase />
-        <Reveal>
-          <Platforms />
-        </Reveal>
-        <Community />
+        <Proof />
+        <Platforms />
+        <Faq />
         <Cta />
       </main>
-      <SiteFooter />
+      <Footer />
     </>
   );
 }
