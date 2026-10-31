@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>TPP asset studio</title>
+    <style>
+      body { margin: 0; padding: 12px; background: #111; color: #cbfb45; font: 12px/1.5 ui-monospace, monospace; }
+      #log { white-space: pre-wrap; }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "/node_modules/three/build/three.module.js",
+          "three/addons/": "/node_modules/three/examples/jsm/",
+          "three/examples/jsm/": "/node_modules/three/examples/jsm/",
+          "three-mesh-bvh": "/node_modules/three-mesh-bvh/src/index.js",
+          "three-gpu-pathtracer": "/node_modules/three-gpu-pathtracer/build/index.module.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="log">booting…</div>
+    <script type="module">
+      const log = (m) => (document.getElementById("log").textContent += "\n" + m);
+      window.__status = "running";
+      const params = Object.fromEntries(new URLSearchParams(location.search));
+      const names = (params.scene || "").split(",").filter(Boolean);
+      try {
+        for (const name of names) {
+          const t0 = performance.now();
+          log(`▶ ${name}`);
+          const mod = await import(`./scenes/${name}.js?v=${Date.now()}`);
+          const out = await mod.default({ ...params, log });
+          log(`✓ ${name} in ${((performance.now() - t0) / 1000).toFixed(1)}s ${out ? JSON.stringify(out) : ""}`);
+        }
+        window.__status = "done";
+        log("ALL DONE");
+      } catch (e) {
+        console.error(e);
+        window.__status = "error: " + (e && e.message ? e.message : String(e));
+        log("✗ " + window.__status + "\n" + (e && e.stack ? e.stack : ""));
+      }
+    </script>
+  </body>
+</html>

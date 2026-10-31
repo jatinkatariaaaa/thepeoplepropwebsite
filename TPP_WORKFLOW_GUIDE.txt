@@ -1,0 +1,642 @@
+TPP PROP FIRM PLATFORM - BACKEND WORKFLOW GUIDE
+Last updated: 26 June 2026
+
+Purpose of this file:
+This guide explains in simple Hinglish how your website, CRM admin panel,
+dashboard, terminal, risk worker, and Supabase database work together.
+You can read this whenever you want to understand what happens behind the scenes.
+
+
+============================================================
+1. PLATFORM KE 3 MAIN PARTS
+============================================================
+
+Your project has 3 connected systems:
+
+1. Website, User Dashboard, and CRM Admin Panel
+   Folder:
+   C:\finalwebsitecopy\tpp-prop - Copy - Copy - Copy - Copy
+
+   Tech:
+   Next.js
+
+   Main use:
+   User purchase, dashboard, account list, metrics, admin panel,
+   challenge settings, payments, webhooks.
+
+
+2. Trading Terminal and Risk Worker
+   Folder:
+   C:\Users\jatin\Downloads\propfirms-main\propfirms-main\fix-buy-sell (1)
+
+   Tech:
+   Next.js terminal app plus Node.js risk worker.
+
+   Main use:
+   Trading account, orders, positions, trades, live equity,
+   risk checking, pass/breach handling.
+
+
+3. Shared Supabase Database
+
+   Both website and terminal use the same Supabase project.
+   This is very important because CRM and Terminal can see the same account data.
+
+
+============================================================
+2. IMPORTANT DATABASE TABLES
+============================================================
+
+CRM / Website side tables:
+
+1. tpp_programs
+   Stores challenge program setup:
+   1-step, 2-step, 3-step, instant, access.
+
+   Important columns:
+   key
+   phases
+   profit_target
+   daily_drawdown
+   max_drawdown
+   phase_1_rule_id
+   phase_2_rule_id
+   phase_3_rule_id
+   funded_rule_id
+
+
+2. tpp_program_fees
+   Stores account size and price.
+   Example:
+   100000 account = 489 dollars
+
+
+3. trading_rules
+   Stores backend rules for every phase:
+   profit target, daily drawdown, max overall drawdown,
+   min trading days, EA allowed, weekend holding, etc.
+
+   Important:
+   The terminal account gets its risk values from this table during account creation.
+
+
+4. trading_accounts
+   CRM copy of a user's trading account.
+   This is what dashboard and admin panel mainly read.
+
+   Important columns:
+   user_id
+   terminal_account_id
+   program_key
+   phase
+   status
+   previous_account_id
+   phase_group_id
+   phase_index
+   balance
+   equity
+   rule_id
+
+
+Terminal side tables:
+
+1. accounts
+   Terminal's real trading account row.
+   Risk worker uses this table.
+
+   Important columns:
+   id
+   business_account_id
+   program_key
+   phase
+   status
+   starting_balance
+   balance
+   equity
+   daily_start_balance
+   max_daily_drawdown
+   max_overall_drawdown
+   profit_target
+
+
+2. positions
+   Open trades.
+
+3. orders
+   Pending orders.
+
+4. trades
+   Closed trades.
+   Dashboard metrics are calculated from this table.
+
+5. account_events
+   Important events:
+   daily reset, target hit, daily breach, overall breach.
+
+
+============================================================
+3. USER PURCHASE TO ACCOUNT CREATION FLOW
+============================================================
+
+Step 1:
+User chooses program and account size from website/dashboard.
+
+Example:
+Program = 2-step
+Account size = 200K
+
+
+Step 2:
+Website calls checkout API:
+src/app/api/checkout/route.ts
+
+This creates a purchase row in Supabase.
+
+
+Step 3:
+Payment flow:
+
+If price is more than 0:
+NOWPayments invoice is created.
+When payment is finished, NOWPayments calls:
+src/app/api/nowpayments-ipn/route.ts
+
+If price is 0:
+Website directly creates the account after marking purchase paid.
+
+
+Step 4:
+CRM reads tpp_programs and trading_rules.
+
+The file below decides what the first account should be:
+src/lib/program-lifecycle.ts
+
+Normal evaluation programs:
+1-step starts at Phase 1.
+2-step starts at Phase 1.
+3-step starts at Phase 1.
+
+Risk-only programs:
+instant starts as funded / risk-only.
+access starts as funded / risk-only.
+
+
+Step 5:
+CRM calls Terminal API to create terminal account:
+Terminal API route:
+app/api/admin/create-account/route.ts
+
+This creates a row in terminal table:
+accounts
+
+
+Step 6:
+CRM inserts a row in:
+trading_accounts
+
+This row stores:
+which user owns it,
+which terminal account is linked,
+which phase it is,
+which program it belongs to,
+which backend rule applies.
+
+
+Step 7:
+User dashboard now shows this account.
+
+
+============================================================
+4. DASHBOARD METRICS FLOW
+============================================================
+
+Dashboard account page reads the CRM account from:
+trading_accounts
+
+Then it uses terminal_account_id to find terminal trades from:
+trades
+
+API:
+src/app/api/account-metrics/[id]/route.ts
+
+This API calculates live metrics:
+Win Rate
+Profit Factor
+Average Win
+Average Loss
+Daily PnL calendar
+Equity curve
+Closed trades count
+Gross profit
+Gross loss
+
+Important:
+Dashboard does not store fake metrics manually.
+It calculates from closed terminal trades.
+
+
+============================================================
+5. TRADING TERMINAL FLOW
+============================================================
+
+User trades inside terminal.
+
+Terminal stores:
+Open trades in positions
+Pending orders in orders
+Closed trades in trades
+
+Risk worker runs in background:
+server/risk-worker/src/worker.ts
+
+Risk worker does these things again and again:
+
+1. Gets latest prices.
+2. Fills pending orders if price is hit.
+3. Closes positions if SL or TP is hit.
+4. Calculates live equity.
+5. Checks daily loss and max overall loss.
+6. Checks profit target.
+7. Sends webhook to CRM if account passed or breached.
+
+
+============================================================
+6. DAILY LOSS AND OVERALL LOSS LOGIC
+============================================================
+
+Daily loss formula:
+daily floor = daily_start_balance * (1 - max_daily_drawdown)
+
+Overall loss formula:
+overall floor = starting_balance * (1 - max_overall_drawdown)
+
+The account breaches when equity reaches the closer/higher floor.
+
+Example:
+400K account
+Daily loss = 5 percent
+Overall loss = 10 percent
+
+daily floor = 400000 * 0.95 = 380000
+overall floor = 400000 * 0.90 = 360000
+
+Because 380000 is higher, daily breach happens first.
+
+So for 400K account:
+5 percent daily loss means max daily loss is 20K.
+Account should breach at 380K equity.
+It should not wait until 360K / 40K loss.
+
+
+Important:
+Daily start balance can reset after daily rollover.
+The system uses 5pm ET daily session reset.
+After reset, daily_start_balance becomes current balance.
+
+
+============================================================
+7. PROFIT TARGET AND PASS LOGIC
+============================================================
+
+For challenge accounts:
+If equity reaches profit target, account passes.
+
+Example:
+200K account with 8 percent target:
+target equity = 200000 * 1.08 = 216000
+
+When equity >= 216000:
+Terminal marks account as passed.
+
+
+Important:
+Profit target only works if profit_target is greater than 0.
+
+For instant and access:
+profit_target = 0
+So they do not auto-pass.
+They are risk-only accounts.
+
+
+============================================================
+8. WHAT HAPPENS WHEN ACCOUNT PASSES
+============================================================
+
+Terminal risk worker does this:
+
+1. Closes all open positions.
+2. Locks final balance/equity.
+3. Marks terminal account as passed.
+4. Sends webhook to CRM:
+   src/app/api/terminal-webhook/route.ts
+
+
+CRM webhook does this:
+
+1. Finds matching CRM account from trading_accounts.
+2. Updates balance/equity/status.
+3. Checks tpp_programs to know what program this is.
+4. Decides next account phase.
+5. Creates next terminal account.
+6. Inserts next CRM trading account.
+
+
+Progression rules:
+
+1-step:
+Phase 1 passed -> Funded account created.
+
+2-step:
+Phase 1 passed -> Phase 2 account created.
+Phase 2 passed -> Funded account created.
+
+3-step:
+Phase 1 passed -> Phase 2 account created.
+Phase 2 passed -> Phase 3 account created.
+Phase 3 passed -> Funded account created.
+
+instant:
+No pass progression.
+Already risk-only/funded style account.
+
+access:
+No pass progression.
+Risk-only account with loss limits only.
+
+
+Duplicate safety:
+CRM checks previous_account_id plus phase before creating next phase.
+So if webhook comes twice, duplicate Phase 2/Funded should not be created.
+
+
+============================================================
+9. WHAT HAPPENS WHEN ACCOUNT BREACHES
+============================================================
+
+Terminal risk worker does this:
+
+1. Closes all open positions.
+2. Marks terminal account as breached.
+3. Stores breach reason.
+4. Sends webhook to CRM.
+
+
+CRM webhook does this:
+
+1. Updates CRM trading_accounts status to breached.
+2. Updates latest balance/equity.
+3. Calls Terminal disable API if needed.
+4. Account will no longer be active for trading.
+
+
+============================================================
+10. ADMIN CHALLENGES PAGE FLOW
+============================================================
+
+Admin page:
+src/app/(admin)/admin/challenges/page.tsx
+
+This page manages:
+Program name
+Program active/inactive
+Profit target display
+Daily drawdown display
+Max drawdown display
+Number of phases
+Account sizes
+Prices
+Rule templates
+
+
+When admin changes prices:
+tpp_program_fees gets updated.
+
+
+When admin changes risk or targets:
+program-specific trading_rules get created or updated.
+
+Examples:
+1-Step Phase 1
+1-Step Funded
+2-Step Phase 1
+2-Step Phase 2
+2-Step Funded
+3-Step Phase 1
+3-Step Phase 2
+3-Step Phase 3
+3-Step Funded
+Instant Risk Only
+Access Risk Only
+
+
+Why program-specific rules are important:
+If 1-step target changes, it should not accidentally change 2-step rules.
+So each program has its own backend rule templates.
+
+
+Important:
+New accounts created after admin changes will use the new backend rules.
+Already-created terminal accounts usually keep the risk values they received
+at account creation time. This protects existing traders from sudden mid-account
+rule changes. If you ever want old active accounts updated too, do it as a
+separate intentional sync, not silently.
+
+
+============================================================
+11. CURRENT PROGRAM LIFECYCLE SETUP
+============================================================
+
+1-step:
+phases = 1
+Phase 1 target = 10 percent
+Daily loss = 4 percent
+Overall loss = 7 percent
+After pass = Funded
+
+
+2-step:
+phases = 2
+Phase 1 target = 8 percent
+Phase 2 target = 5 percent
+Daily loss = 5 percent
+Overall loss = 10 percent
+After Phase 2 pass = Funded
+
+
+3-step:
+phases = 3
+Phase 1 target = 6 percent
+Phase 2 target = 6 percent
+Phase 3 target = 6 percent
+Daily loss = 4 percent
+Overall loss = 8 percent
+After Phase 3 pass = Funded
+
+
+instant:
+phases = 0
+Profit target = 0
+Daily loss = 3 percent
+Overall loss = 5 percent
+No evaluation progression.
+
+
+access:
+phases = 0
+Profit target = 0
+Daily loss = 5 percent
+Overall loss = 10 percent
+No evaluation progression.
+
+
+============================================================
+12. ADMIN TRADING ACCOUNT VISIBILITY
+============================================================
+
+Admin account detail page:
+src/app/(admin)/admin/trading/accounts/[id]/page.tsx
+
+Admin can see:
+CRM account details
+Terminal balance
+Terminal equity
+Rules
+Metrics
+Equity curve
+Phase history
+Terminal events
+
+
+Phase history works using:
+phase_group_id
+previous_account_id
+phase_index
+
+
+Example:
+Phase 1 account has phase_group_id = its own id.
+Phase 2 account stores previous_account_id = Phase 1 account id.
+Funded account stores previous_account_id = Phase 2 account id.
+
+This lets admin see the full journey.
+
+
+============================================================
+13. IMPORTANT FILES TO KNOW
+============================================================
+
+Website / CRM repo:
+
+Checkout:
+src/app/api/checkout/route.ts
+
+Payment IPN:
+src/app/api/nowpayments-ipn/route.ts
+
+Lifecycle decision:
+src/lib/program-lifecycle.ts
+
+Terminal webhook:
+src/app/api/terminal-webhook/route.ts
+
+Dashboard metrics API:
+src/app/api/account-metrics/[id]/route.ts
+
+Admin Challenges page:
+src/app/(admin)/admin/challenges/page.tsx
+
+Admin trading account detail:
+src/app/(admin)/admin/trading/accounts/[id]/page.tsx
+
+Admin trading account API:
+src/app/api/admin/trading/accounts/[id]/route.ts
+
+
+Terminal repo:
+
+Create terminal account:
+app/api/admin/create-account/route.ts
+
+Disable terminal account:
+app/api/admin/disable-account/route.ts
+
+Risk worker:
+server/risk-worker/src/worker.ts
+
+Risk worker DB helpers:
+server/risk-worker/src/db.ts
+
+Risk SQL:
+supabase/migrations/0004_risk_engine.sql
+supabase/migrations/20260626163037_risk_tick_closest_breach_floor.sql
+
+
+============================================================
+14. SIMPLE DEBUGGING GUIDE
+============================================================
+
+Problem:
+User bought account but dashboard does not show it.
+
+Check:
+1. purchases table payment_status is paid.
+2. trading_accounts row exists.
+3. terminal_account_id is filled.
+4. accounts table has matching terminal id.
+
+
+Problem:
+Dashboard metrics are blank.
+
+Check:
+1. terminal_account_id exists in trading_accounts.
+2. trades table has closed trades for that account.
+3. /api/account-metrics/[id] is returning data.
+
+
+Problem:
+Phase 2 did not create after pass.
+
+Check:
+1. Terminal account status became passed.
+2. Terminal webhook reached /api/terminal-webhook.
+3. CRM account has program_key.
+4. tpp_programs has correct phase_2_rule_id / funded_rule_id.
+5. Terminal platform has api_url and api_key.
+6. No existing next phase already exists with same previous_account_id.
+
+
+Problem:
+Account breached too late.
+
+Check:
+1. accounts.max_daily_drawdown is correct.
+2. accounts.max_overall_drawdown is correct.
+3. accounts.daily_start_balance is correct.
+4. risk worker is running.
+5. apply_risk_tick SQL has closest-floor logic.
+
+
+Problem:
+Instant/access account passed automatically.
+
+Check:
+1. accounts.profit_target must be 0.
+2. account phase/status should be funded/risk-only.
+3. tpp_programs phases should be 0.
+
+
+============================================================
+15. SHORT VERSION
+============================================================
+
+Purchase creates CRM purchase.
+Paid purchase creates Terminal account plus CRM trading account.
+Dashboard reads CRM account and calculates metrics from terminal trades.
+Risk worker watches terminal account equity.
+If target is hit, terminal sends passed webhook to CRM.
+CRM creates next phase or funded account automatically.
+If loss limit is hit, terminal breaches account and CRM disables it.
+Admin Challenges page controls program prices, targets, and rules for future accounts.
+Supabase is the common database connecting everything.
+
