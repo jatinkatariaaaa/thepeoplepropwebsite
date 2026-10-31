@@ -151,7 +151,7 @@ export function LeaderboardPage() {
   return (
     <>
       <PageHero
-        art="/v2/pt/page-leaderboard.webp"
+        art="/art/page-leaderboard.webp"
         crumb="Leaderboard"
         eyebrow="Leaderboard"
         icon={Trophy}

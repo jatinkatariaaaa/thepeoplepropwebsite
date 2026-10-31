@@ -46,7 +46,7 @@ export function TwoWays() {
                 <div aria-hidden="true" className="absolute inset-x-0 top-0 h-1/2 bg-[radial-gradient(ellipse_70%_60%_at_70%_0%,rgba(126,170,158,0.22),transparent)]" />
                 <Parallax speed={0.1} className="pointer-events-none absolute -top-4 right-2 w-[44%] max-w-[260px]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/v2/pt/prop-rules.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" className="w-full drop-shadow-[0_40px_40px_rgba(0,0,0,0.55)]" />
+                  <img src="/art/prop-rules.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" className="w-full drop-shadow-[0_40px_40px_rgba(0,0,0,0.55)]" />
                 </Parallax>
                 <div className="relative mt-auto pt-48">
                   <p className="text-[13px] font-medium text-[var(--g-mint)]">Evaluation · from {usd(evalFrom)}</p>
@@ -80,7 +80,7 @@ export function TwoWays() {
                   <div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(ellipse_80%_55%_at_20%_0%,rgba(203,251,69,0.16),transparent)]" />
                   <Parallax speed={0.14} className="pointer-events-none absolute -top-2 right-4 w-[40%] max-w-[240px]">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/v2/pt/prop-bolt.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" className="w-full drop-shadow-[0_40px_40px_rgba(2,30,24,0.6)]" />
+                    <img src="/art/prop-bolt.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" className="w-full drop-shadow-[0_40px_40px_rgba(2,30,24,0.6)]" />
                   </Parallax>
                   <div className="relative mt-auto pt-48">
                     <p className="text-[13px] font-medium text-[var(--g-lime-soft)]">

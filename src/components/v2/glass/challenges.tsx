@@ -27,8 +27,8 @@ import { Container, Eyebrow, Lede, Section, Title } from "./ui";
 import { AnimatedNumber, EASE, Parallax, Reveal } from "./motion";
 import { ACCESS_UPFRONT, compactUsd, entryPrice, sizesOf, targetRows, useCatalogue, usd, usePlatformOptions, usePrograms, useSelectedProgram } from "./data";
 
-const POPULAR_SIZE = 25_000; // flagged "Most popular" on the main calculator too
-/** The main site's launch offer; the dashboard checkout applies it (50% off + free retry). */
+const POPULAR_SIZE = 25_000; // flagged "Most popular", as on the previous landing page
+/** The launch offer; the dashboard checkout applies it (50% off + free retry). */
 const PROMO = "FIRSTTPP";
 
 function PromoStrip() {
@@ -103,7 +103,8 @@ export function Challenges({ className }: { className?: string } = {}) {
   if (!program || size == null) return null;
 
   const { base, total, addOnFees } = feeFor(program, size, active);
-  const surcharge = platform?.extra ?? 0;
+  // same maths as the dashboard checkout: a percentage of the base fee
+  const surcharge = base != null && platform?.extra ? Math.round((base * platform.extra) / 100) : 0;
   const grand = total != null ? total + surcharge : null;
   const isAccess = program.key === "access";
   const toggle = (k: AddOnKey) => setPicked((cur) => (cur.includes(k) ? cur.filter((x) => x !== k) : [...cur, k]));
@@ -153,7 +154,7 @@ export function Challenges({ className }: { className?: string } = {}) {
           {/* objects resting behind the glass — the blur sells the depth */}
           <Parallax speed={0.28} rotate={6} className="pointer-events-none absolute -top-24 -left-20 -z-10 hidden w-56 lg:block">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/v2/pt/prop-coins.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" className="w-full" />
+            <img src="/art/prop-coins.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" className="w-full" />
           </Parallax>
 
           {/* ── choices ── */}
@@ -232,7 +233,7 @@ export function Challenges({ className }: { className?: string } = {}) {
                       >
                         {p.label}
                         <span className={cn("rounded-full px-2 py-0.5 text-[11px] font-medium", on ? "bg-[var(--g-ink)]/[0.08] text-black/60" : "bg-white/[0.07] text-white/50")}>
-                          {p.extra > 0 ? `+${usd(p.extra)}` : "Included"}
+                          {p.extra > 0 ? `+${p.extra}%` : "Included"}
                         </span>
                       </button>
                     );

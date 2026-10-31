@@ -14,8 +14,8 @@ import { QASearch, type QA } from "./shared";
 
 const SUPABASE_READY = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
-/** Same source as the current FAQ page (`tpp_faqs`), with the static FAQ as a fallback so the page is never empty. */
-function useFaqs(): QA[] {
+/** The published FAQ (`tpp_faqs`), with the static FAQ as a fallback so the page is never empty. */
+export function useFaqs(): QA[] {
   const [items, setItems] = useState<QA[]>(staticFaq);
   useEffect(() => {
     if (!SUPABASE_READY) return;
@@ -41,7 +41,7 @@ export function FaqsPage() {
   return (
     <>
       <PageHero
-        art="/v2/pt/page-faqs.webp"
+        art="/art/page-faqs.webp"
         crumb="FAQ"
         eyebrow="FAQ"
         icon={CircleHelp}

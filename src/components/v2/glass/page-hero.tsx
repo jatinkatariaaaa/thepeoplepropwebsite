@@ -7,6 +7,7 @@ import { ChevronRight, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Container, Eyebrow } from "./ui";
 import { EASE } from "./motion";
+import { href } from "./routes";
 
 const rise = (delay: number) => ({
   initial: { opacity: 0, y: 22, filter: "blur(8px)" },
@@ -75,7 +76,7 @@ export function PageHero({
       <Container className="pt-[300px] pb-16 sm:pt-[380px] lg:flex lg:min-h-[min(760px,100svh)] lg:flex-col lg:justify-center lg:pt-36 lg:pb-24">
         <div className="max-w-[620px]">
           <motion.nav {...rise(0)} aria-label="Breadcrumb" className="mb-5 flex items-center gap-1.5 text-[12.5px] text-white/45">
-            <Link href="/v2" className="transition-colors hover:text-white">
+            <Link href={href("home")} className="transition-colors hover:text-white">
               Home
             </Link>
             <ChevronRight className="h-3.5 w-3.5" />

@@ -83,7 +83,7 @@ export function PassFirst() {
             {/* the card itself breaks out of the slab */}
             <Parallax speed={0.18} rotate={4} className="pointer-events-none absolute -top-24 right-[4%] hidden w-[38%] max-w-[470px] lg:block">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/v2/pt/prop-card5.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" className="g-float w-full drop-shadow-[0_50px_40px_rgba(2,26,21,0.55)]" style={{ ["--g-amp" as string]: "-10px" }} />
+              <img src="/art/prop-card5.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" className="g-float w-full drop-shadow-[0_50px_40px_rgba(2,26,21,0.55)]" style={{ ["--g-amp" as string]: "-10px" }} />
             </Parallax>
           </div>
         </Reveal>

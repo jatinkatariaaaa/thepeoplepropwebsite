@@ -83,8 +83,8 @@ export function Hero() {
         <motion.div className="absolute inset-x-0 top-0 h-[100svh] overflow-hidden lg:bottom-0 lg:h-auto" style={reduce ? undefined : { y: artY, scale: artS }}>
           <motion.div className="absolute inset-[-2%]" style={reduce ? undefined : { x: artX, y: artYp }}>
             <picture>
-              <source media="(max-width: 1023px)" srcSet="/v2/pt/hero-mobile.webp" width={1080} height={1920} />
-              <img src="/v2/pt/hero-desktop.webp" width={2560} height={1600} alt="" fetchPriority="high" decoding="async" className="h-auto w-full [mask-image:linear-gradient(180deg,#000_60%,transparent_97%)] lg:[mask-image:none]" />
+              <source media="(max-width: 1023px)" srcSet="/art/hero-mobile.webp" width={1080} height={1920} />
+              <img src="/art/hero-desktop.webp" width={2560} height={1600} alt="" fetchPriority="high" decoding="async" className="h-auto w-full [mask-image:linear-gradient(180deg,#000_60%,transparent_97%)] lg:[mask-image:none]" />
             </picture>
           </motion.div>
           <div className="absolute inset-x-0 bottom-0 h-1/3 bg-[linear-gradient(0deg,#06100d,transparent)] lg:hidden" />

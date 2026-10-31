@@ -5,10 +5,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Check } from "lucide-react";
-import { Logo } from "@/components/layout/Logo";
-import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
+import { AuthHeading, AuthNotices, AuthShell, authField, authLabel } from "@/components/v2/glass/auth-shell";
+import { href } from "@/components/v2/glass/routes";
 
 type Mode = "signin" | "signup" | "forgot";
 
@@ -137,476 +137,278 @@ export default function LoginPage() {
     }
   };
 
+  const step = { initial: { opacity: 0, y: 12 }, animate: { opacity: 1, y: 0 }, exit: { opacity: 0, y: -12 }, transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] as const } };
+  const linkButton = "cursor-pointer font-semibold text-[var(--g-lime)] transition-colors hover:text-[var(--g-lime-soft)] disabled:opacity-50";
+
   return (
-    <div className="min-h-screen grid lg:grid-cols-2 bg-[var(--paper)]">
-      {/* Left brand panel — dark, signature lime */}
-      <aside className="relative hidden lg:flex flex-col justify-between p-12 overflow-hidden bg-[#0a0a0a] text-white">
-        <div
+    <AuthShell
+      eyebrow="Welcome to TPP"
+      lead="Fund your skills."
+      fade="Trade our capital."
+      lede="Your dashboard, challenges and payouts, all in one place."
+    >
+      {/* Toggle */}
+      <div className="relative mb-10 grid w-full max-w-[320px] grid-cols-2 rounded-full bg-white/[0.05] p-1 ring-1 ring-white/10">
+        <motion.div
+          transition={{ type: "spring", stiffness: 400, damping: 30 }}
+          animate={{ x: mode === "signin" || mode === "forgot" ? 0 : "100%" }}
+          className="absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] rounded-full bg-white"
           aria-hidden="true"
-          className="absolute inset-0 pointer-events-none opacity-[0.07]"
-          style={{
-            backgroundImage:
-              "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
-            backgroundSize: "44px 44px",
-          }}
         />
-        <div
-          aria-hidden="true"
-          className="absolute -bottom-48 -left-24 w-[700px] h-[700px] rounded-full bg-[rgba(203,251,69,0.16)] blur-3xl pointer-events-none"
-        />
-
-        <div className="relative z-10">
-          <Logo invert />
-        </div>
-
-        <div className="relative z-10 max-w-md">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-3 py-1.5 text-xs font-medium text-white/80 mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--lime)]" />
-            Welcome to TPP
-          </div>
-          <h1 className="font-display text-4xl xl:text-5xl leading-[1.04] tracking-[-0.03em] mb-6">
-            Trade our capital.
-            <br />
-            Keep the <span className="text-[var(--lime)]">profits</span>.
-          </h1>
-          <p className="text-white/55 leading-relaxed mb-10 text-[15px]">
-            Join 28,000+ funded traders worldwide. Bi-weekly payouts, up to 90%
-            split, and the fairest rules in the industry.
-          </p>
-
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { v: "$24.6M", l: "Paid out" },
-              { v: "96%", l: "< 24h payouts" },
-              { v: "142", l: "Countries" },
-              { v: "90%", l: "Max split" },
-            ].map((s) => (
-              <div
-                key={s.l}
-                className="rounded-xl border border-white/10 bg-white/[0.03] p-4"
-              >
-                <div className="font-display text-xl text-white tabular-nums">
-                  {s.v}
-                </div>
-                <div className="text-xs text-white/45 mt-1">{s.l}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="relative z-10 text-xs text-white/40">
-          &copy; {new Date().getFullYear()} The People Prop &mdash; Guaranteed free evaluation Prizes on 1 August 2026
-        </div>
-      </aside>
-
-      {/* Right form */}
-      <main className="relative flex flex-col justify-center px-5 sm:px-10 lg:px-16 py-12 lg:py-0 bg-white">
-        {/* Mobile logo */}
-        <div className="lg:hidden mb-10 mt-6">
-          <Logo />
-        </div>
-
-        <div className="mx-auto w-full max-w-md">
-          {/* Toggle */}
-          <div
-            className="relative mb-10 grid grid-cols-2 p-1 rounded-full border border-[var(--border)] bg-[var(--paper)]"
-            style={{ width: "min(320px, 100%)" }}
+        {(["signin", "signup"] as const).map((m) => (
+          <button
+            key={m}
+            type="button"
+            onClick={() => {
+              setError(null);
+              setSuccess(null);
+              setMode(m);
+            }}
+            disabled={loading}
+            className={cn(
+              "relative z-10 cursor-pointer rounded-full py-2.5 text-center text-[14px] font-semibold transition-colors disabled:opacity-50",
+              (mode === m || (mode === "forgot" && m === "signin")) ? "text-[var(--g-ink)]" : "text-white/60 hover:text-white",
+            )}
           >
-            <motion.div
-              transition={{ type: "spring", stiffness: 400, damping: 30 }}
-              animate={{ x: mode === "signin" || mode === "forgot" ? 0 : "100%" }}
-              className="absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] rounded-full bg-[var(--ink-950)]"
-              aria-hidden="true"
-            />
-            {(["signin", "signup"] as const).map((m) => (
-              <button
-                key={m}
-                type="button"
-                onClick={() => {
-                  setError(null);
-                  setSuccess(null);
-                  setMode(m);
-                }}
-                disabled={loading}
-                className={cn(
-                  "relative z-10 py-2 text-sm font-medium rounded-full transition-colors text-center cursor-pointer disabled:opacity-50",
-                  (mode === m || (mode === "forgot" && m === "signin")) ? "text-white" : "text-[var(--ink-600)] hover:text-[var(--ink-950)]",
-                )}
-              >
-                {m === "signin" ? "Sign in" : "Create account"}
+            {m === "signin" ? "Sign in" : "Create account"}
+          </button>
+        ))}
+      </div>
+
+      <AnimatePresence mode="wait">
+        {mode === "forgot" ? (
+          <motion.div key="forgot" {...step}>
+            <AuthHeading lead="Reset your" fade="password." lede="Enter your email and we'll send you a reset link." />
+            <AuthNotices error={error} success={success} />
+
+            <form
+              className="space-y-4"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                setError(null);
+                setSuccess(null);
+                if (!email) {
+                  setError("Please enter your email address.");
+                  return;
+                }
+                setLoading(true);
+                try {
+                  const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
+                    redirectTo: window.location.origin + '/auth/reset-password',
+                  });
+                  if (resetError) throw resetError;
+                  setSuccess("Check your email for a password reset link.");
+                } catch (err) {
+                  setError(err instanceof Error ? err.message : "An error occurred.");
+                } finally {
+                  setLoading(false);
+                }
+              }}
+            >
+              <div>
+                <label htmlFor="forgot-email" className={authLabel}>
+                  Email address
+                </label>
+                <div className="relative">
+                  <Mail className="pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-white/40" strokeWidth={2.2} />
+                  <input
+                    id="forgot-email"
+                    type="email"
+                    autoComplete="email"
+                    disabled={loading}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@domain.com"
+                    className={cn(authField(!isEmailValid), "pr-4 pl-11")}
+                  />
+                </div>
+                {!isEmailValid && <p className="mt-1.5 text-[12.5px] text-red-300">Enter a valid email address.</p>}
+              </div>
+
+              <button type="submit" disabled={loading} className="g-btn g-btn-lime group mt-2 w-full cursor-pointer disabled:opacity-60">
+                {loading ? "Please wait..." : "Send Reset Link"}
+                {!loading && <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" strokeWidth={2.2} />}
               </button>
-            ))}
-          </div>
+            </form>
 
-          <AnimatePresence mode="wait">
-            {mode === "forgot" ? (
-              <motion.div
-                key="forgot"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <h2 className="font-display text-3xl md:text-4xl text-[var(--ink-950)] leading-[1.05] tracking-tight">
-                  Reset your <span className="word-serif">password</span>.
-                </h2>
-                <p className="mt-3 text-sm text-[var(--ink-600)] mb-6">
-                  Enter your email and we&apos;ll send you a reset link.
-                </p>
+            <p className="mt-8 text-center text-[13px] text-white/50">
+              <button type="button" onClick={() => { setError(null); setSuccess(null); setMode("signin"); }} disabled={loading} className={linkButton}>
+                Back to Sign In
+              </button>
+            </p>
+          </motion.div>
+        ) : (
+          <motion.div key={mode} {...step}>
+            {mode === "signin" ? (
+              <AuthHeading lead="Welcome" fade="back." lede="Sign in to access your dashboard, payouts, and challenges." />
+            ) : (
+              <AuthHeading lead="Create your" fade="account." lede="Start your evaluation in minutes. No commitment required." />
+            )}
+            <AuthNotices error={error} success={success} />
 
-                {/* Status messages */}
-                <div className="space-y-3 mb-6">
-                  {error && (
-                    <div className="p-3 text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg">
-                      {error}
-                    </div>
-                  )}
-                  {success && (
-                    <div className="p-3 text-xs text-green-600 bg-green-50 border border-green-200 rounded-lg">
-                      {success}
-                    </div>
+            <form className="space-y-4" onSubmit={handleSubmit}>
+              {/* Email */}
+              <div>
+                <label htmlFor="email" className={authLabel}>
+                  Email address
+                </label>
+                <div className="relative">
+                  <Mail className="pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-white/40" strokeWidth={2.2} />
+                  <input
+                    id="email"
+                    type="email"
+                    autoComplete="email"
+                    disabled={loading}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@domain.com"
+                    className={cn(authField(!isEmailValid), "pr-4 pl-11")}
+                  />
+                </div>
+                {!isEmailValid && <p className="mt-1.5 text-[12.5px] text-red-300">Enter a valid email address.</p>}
+              </div>
+
+              {/* Password */}
+              <div>
+                <div className="mb-2 flex items-center justify-between">
+                  <label htmlFor="pw" className="text-[13px] font-medium text-white/70">
+                    Password
+                  </label>
+                  {mode === "signin" && (
+                    <button type="button" onClick={() => { setError(null); setSuccess(null); setMode("forgot"); }} className={cn(linkButton, "text-[12.5px]")}>
+                      Forgot password?
+                    </button>
                   )}
                 </div>
-
-                <form
-                  className="space-y-4"
-                  onSubmit={async (e) => {
-                    e.preventDefault();
-                    setError(null);
-                    setSuccess(null);
-                    if (!email) {
-                      setError("Please enter your email address.");
-                      return;
-                    }
-                    setLoading(true);
-                    try {
-                      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-                        redirectTo: window.location.origin + '/auth/reset-password',
-                      });
-                      if (resetError) throw resetError;
-                      setSuccess("Check your email for a password reset link.");
-                    } catch (err) {
-                      setError(err instanceof Error ? err.message : "An error occurred.");
-                    } finally {
-                      setLoading(false);
-                    }
-                  }}
-                >
-                  {/* Email */}
-                  <div>
-                    <label htmlFor="forgot-email" className="text-xs text-[var(--ink-700)] mb-2 block font-medium">
-                      Email address
-                    </label>
-                    <div className="relative">
-                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--ink-500)]" strokeWidth={2.2} />
-                      <input
-                        id="forgot-email"
-                        type="email"
-                        autoComplete="email"
-                        disabled={loading}
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="you@domain.com"
-                        className={cn(
-                          "w-full h-12 pl-11 pr-4 rounded-xl bg-[var(--paper)] border text-sm text-[var(--ink-950)] placeholder:text-[var(--ink-400)] outline-none transition-colors",
-                          isEmailValid
-                            ? "border-[var(--border)] focus:border-[var(--accent-600)] focus:bg-white"
-                            : "border-red-300 focus:border-red-500",
-                        )}
-                      />
-                    </div>
-                    {!isEmailValid && (
-                      <p className="mt-1.5 text-xs text-red-600">
-                        Enter a valid email address.
-                      </p>
-                    )}
-                  </div>
-
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    size="lg"
-                    fullWidth
+                <div className="relative">
+                  <Lock className="pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-white/40" strokeWidth={2.2} />
+                  <input
+                    id="pw"
+                    type={show ? "text" : "password"}
+                    value={pw}
                     disabled={loading}
-                    className="mt-2 cursor-pointer"
-                  >
-                    {loading ? "Please wait..." : "Send Reset Link"}
-                    {!loading && <ArrowRight className="w-4 h-4" strokeWidth={2.2} />}
-                  </Button>
-                </form>
-
-                <p className="mt-8 text-xs text-[var(--ink-500)] text-center">
+                    autoComplete={mode === "signin" ? "current-password" : "new-password"}
+                    onChange={(e) => setPw(e.target.value)}
+                    placeholder="At least 8 characters"
+                    className={cn(authField(!isPwValid), "pr-12 pl-11")}
+                  />
                   <button
                     type="button"
-                    onClick={() => { setError(null); setSuccess(null); setMode("signin"); }}
+                    aria-label={show ? "Hide password" : "Show password"}
+                    onClick={() => setShow((s) => !s)}
                     disabled={loading}
-                    className="text-[var(--accent-700)] hover:text-[var(--accent-800)] font-medium cursor-pointer disabled:opacity-50"
+                    className="absolute top-1/2 right-3 grid h-8 w-8 -translate-y-1/2 cursor-pointer place-items-center rounded-full text-white/45 transition-colors hover:text-white"
                   >
-                    Back to Sign In
+                    {show ? <EyeOff className="h-4 w-4" strokeWidth={2.2} /> : <Eye className="h-4 w-4" strokeWidth={2.2} />}
                   </button>
-                </p>
-              </motion.div>
-            ) : (
-              <motion.div
-                key={mode}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <h2 className="font-display text-3xl md:text-4xl text-[var(--ink-950)] leading-[1.05] tracking-tight">
-                  {mode === "signin" ? (
-                    <>Welcome <span className="word-serif">back</span>.</>
-                  ) : (
-                    <>Create your <span className="word-serif">account</span>.</>
-                  )}
-                </h2>
-                <p className="mt-3 text-sm text-[var(--ink-600)] mb-6">
-                  {mode === "signin"
-                    ? "Sign in to access your dashboard, payouts, and challenges."
-                    : "Start your evaluation in minutes. No commitment required."}
-                </p>
-
-                {/* Status messages */}
-                <div className="space-y-3 mb-6">
-                  {error && (
-                    <div className="p-3 text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg">
-                      {error}
-                    </div>
-                  )}
-                  {success && (
-                    <div className="p-3 text-xs text-green-600 bg-green-50 border border-green-200 rounded-lg">
-                      {success}
-                    </div>
-                  )}
                 </div>
+                {!isPwValid && <p className="mt-1.5 text-[12.5px] text-red-300">Password must be at least 8 characters.</p>}
+              </div>
 
-                <form
-                  className="space-y-4"
-                  onSubmit={handleSubmit}
-                >
-                  {/* Email */}
+              {/* Confirm + terms */}
+              {mode === "signup" && (
+                <>
                   <div>
-                    <label htmlFor="email" className="text-xs text-[var(--ink-700)] mb-2 block font-medium">
-                      Email address
+                    <label htmlFor="confirm" className={authLabel}>
+                      Confirm password
                     </label>
                     <div className="relative">
-                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--ink-500)]" strokeWidth={2.2} />
+                      <Lock className="pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-white/40" strokeWidth={2.2} />
                       <input
-                        id="email"
-                        type="email"
-                        autoComplete="email"
-                        disabled={loading}
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="you@domain.com"
-                        className={cn(
-                          "w-full h-12 pl-11 pr-4 rounded-xl bg-[var(--paper)] border text-sm text-[var(--ink-950)] placeholder:text-[var(--ink-400)] outline-none transition-colors",
-                          isEmailValid
-                            ? "border-[var(--border)] focus:border-[var(--accent-600)] focus:bg-white"
-                            : "border-red-300 focus:border-red-500",
-                        )}
-                      />
-                    </div>
-                    {!isEmailValid && (
-                      <p className="mt-1.5 text-xs text-red-600">
-                        Enter a valid email address.
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Password */}
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <label htmlFor="pw" className="text-xs text-[var(--ink-700)] font-medium">
-                        Password
-                      </label>
-                      {mode === "signin" && (
-                        <button
-                          type="button"
-                          onClick={() => { setError(null); setSuccess(null); setMode("forgot"); }}
-                          className="text-xs text-[var(--accent-700)] hover:text-[var(--accent-800)] font-medium cursor-pointer"
-                        >
-                          Forgot password?
-                        </button>
-                      )}
-                    </div>
-                    <div className="relative">
-                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--ink-500)]" strokeWidth={2.2} />
-                      <input
-                        id="pw"
+                        id="confirm"
                         type={show ? "text" : "password"}
-                        value={pw}
+                        value={confirm}
                         disabled={loading}
-                        autoComplete={mode === "signin" ? "current-password" : "new-password"}
-                        onChange={(e) => setPw(e.target.value)}
-                        placeholder="At least 8 characters"
-                        className={cn(
-                          "w-full h-12 pl-11 pr-12 rounded-xl bg-[var(--paper)] border text-sm text-[var(--ink-950)] placeholder:text-[var(--ink-400)] outline-none transition-colors",
-                          isPwValid
-                            ? "border-[var(--border)] focus:border-[var(--accent-600)] focus:bg-white"
-                            : "border-red-300 focus:border-red-500",
-                        )}
+                        onChange={(e) => setConfirm(e.target.value)}
+                        placeholder="Confirm password"
+                        className={cn(authField(!matches), "pr-4 pl-11")}
                       />
-                      <button
-                        type="button"
-                        aria-label={show ? "Hide password" : "Show password"}
-                        onClick={() => setShow((s) => !s)}
-                        disabled={loading}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 grid place-items-center w-8 h-8 rounded-md text-[var(--ink-500)] hover:text-[var(--ink-950)] cursor-pointer"
-                      >
-                        {show ? <EyeOff className="w-4 h-4" strokeWidth={2.2} /> : <Eye className="w-4 h-4" strokeWidth={2.2} />}
-                      </button>
                     </div>
-                    {!isPwValid && (
-                      <p className="mt-1.5 text-xs text-red-600">
-                        Password must be at least 8 characters.
-                      </p>
-                    )}
+                    {!matches && <p className="mt-1.5 text-[12.5px] text-red-300">Passwords don&apos;t match.</p>}
                   </div>
 
-                  {/* Confirm + terms */}
-                  {mode === "signup" && (
-                    <>
-                      <div>
-                        <label htmlFor="confirm" className="text-xs text-[var(--ink-700)] mb-2 block font-medium">
-                          Confirm password
-                        </label>
-                        <div className="relative">
-                          <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--ink-500)]" strokeWidth={2.2} />
-                          <input
-                            id="confirm"
-                            type={show ? "text" : "password"}
-                            value={confirm}
-                            disabled={loading}
-                            onChange={(e) => setConfirm(e.target.value)}
-                            placeholder="Confirm password"
-                            className={cn(
-                              "w-full h-12 pl-11 pr-4 rounded-xl bg-[var(--paper)] border text-sm text-[var(--ink-950)] placeholder:text-[var(--ink-400)] outline-none transition-colors",
-                              matches
-                                ? "border-[var(--border)] focus:border-[var(--accent-600)] focus:bg-white"
-                                : "border-red-300 focus:border-red-500",
-                            )}
-                          />
-                        </div>
-                        {!matches && (
-                          <p className="mt-1.5 text-xs text-red-600">Passwords don&apos;t match.</p>
-                        )}
-                      </div>
+                  <label className="flex cursor-pointer items-start gap-3 pt-1 select-none">
+                    <span
+                      className={cn(
+                        "mt-0.5 grid h-[18px] w-[18px] shrink-0 place-items-center rounded-md ring-1 transition-all",
+                        terms ? "bg-[var(--g-lime)] ring-[var(--g-lime)]" : "bg-white/[0.05] ring-white/20",
+                      )}
+                    >
+                      {terms && <Check className="h-3 w-3 text-[var(--g-ink)]" strokeWidth={3} />}
+                    </span>
+                    <input type="checkbox" checked={terms} disabled={loading} onChange={(e) => setTerms(e.target.checked)} className="sr-only" />
+                    <span className="text-[13px] leading-relaxed text-white/55">
+                      I agree to the{" "}
+                      <Link href={href("terms")} target="_blank" className="text-white underline decoration-white/30 underline-offset-2 hover:decoration-white">
+                        Terms of Service
+                      </Link>{" "}
+                      and{" "}
+                      <Link href={href("risk-disclosure")} target="_blank" className="text-white underline decoration-white/30 underline-offset-2 hover:decoration-white">
+                        Risk Disclosure
+                      </Link>
+                      .
+                    </span>
+                  </label>
+                </>
+              )}
 
-                      <label className="flex items-start gap-3 cursor-pointer select-none pt-1">
-                        <span
-                          className={cn(
-                            "mt-0.5 grid place-items-center w-[18px] h-[18px] rounded-md border transition-all shrink-0",
-                            terms
-                              ? "bg-[var(--ink-950)] border-[var(--ink-950)]"
-                              : "bg-white border-[var(--border-strong)]",
-                          )}
-                        >
-                          {terms && <Check className="w-3 h-3 text-[#D8F26B]" strokeWidth={3} />}
-                        </span>
-                        <input
-                          type="checkbox"
-                          checked={terms}
-                          disabled={loading}
-                          onChange={(e) => setTerms(e.target.checked)}
-                          className="sr-only"
-                        />
-                        <span className="text-xs text-[var(--ink-600)] leading-relaxed">
-                          I agree to the{" "}
-                          <Link href="#" className="text-[var(--ink-950)] underline underline-offset-2">
-                            Terms of Service
-                          </Link>{" "}
-                          and{" "}
-                          <Link href="#" className="text-[var(--ink-950)] underline underline-offset-2">
-                            Risk Disclosure
-                          </Link>
-                          .
-                        </span>
-                      </label>
-                    </>
-                  )}
+              <button type="submit" disabled={loading} className="g-btn g-btn-lime group mt-2 w-full cursor-pointer disabled:opacity-60">
+                {loading ? "Please wait..." : mode === "signin" ? "Sign In" : "Create Account"}
+                {!loading && <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" strokeWidth={2.2} />}
+              </button>
+            </form>
 
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    size="lg"
-                    fullWidth
-                    disabled={loading}
-                    className="mt-2 cursor-pointer"
-                  >
-                    {loading ? "Please wait..." : mode === "signin" ? "Sign In" : "Create Account"}
-                    {!loading && <ArrowRight className="w-4 h-4" strokeWidth={2.2} />}
-                  </Button>
-                </form>
+            {/* Divider */}
+            <div className="my-7 flex items-center gap-4">
+              <div className="h-px flex-1 bg-white/10" />
+              <span className="text-[11.5px] tracking-wider text-white/40 uppercase">or continue with</span>
+              <div className="h-px flex-1 bg-white/10" />
+            </div>
 
-                {/* Divider */}
-                <div className="my-7 flex items-center gap-4">
-                  <div className="flex-1 h-px bg-[var(--border)]" />
-                  <span className="text-xs uppercase tracking-wider text-[var(--ink-500)]">
-                    or continue with
-                  </span>
-                  <div className="flex-1 h-px bg-[var(--border)]" />
-                </div>
+            <button
+              type="button"
+              onClick={async () => {
+                setError(null);
+                setLoading(true);
+                try {
+                  const { error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                      redirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
+                    },
+                  });
+                  if (error) throw error;
+                } catch (err) {
+                  setError(err instanceof Error ? err.message : "An error occurred with Google Sign-In");
+                  setLoading(false);
+                }
+              }}
+              disabled={loading}
+              className="g-btn g-btn-glass w-full cursor-pointer disabled:opacity-50"
+            >
+              <GoogleIcon /> Google
+            </button>
 
-                <div className="grid grid-cols-1 gap-3">
-                  <button 
-                    type="button"
-                    onClick={async () => {
-                      setError(null);
-                      setLoading(true);
-                      try {
-                        const { error } = await supabase.auth.signInWithOAuth({
-                          provider: 'google',
-                          options: {
-                            redirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
-                          },
-                        });
-                        if (error) throw error;
-                      } catch (err) {
-                        setError(err instanceof Error ? err.message : "An error occurred with Google Sign-In");
-                        setLoading(false);
-                      }
-                    }}
-                    disabled={loading} 
-                    className="h-11 rounded-xl border border-[var(--border)] bg-white hover:bg-[var(--paper)] hover:border-[var(--border-strong)] transition-colors flex items-center justify-center gap-2 text-sm text-[var(--ink-950)] font-medium cursor-pointer disabled:opacity-50"
-                  >
-                    <GoogleIcon /> Google
+            <p className="mt-8 text-center text-[13px] text-white/50">
+              {mode === "signin" ? (
+                <>
+                  Don&apos;t have an account?{" "}
+                  <button type="button" onClick={() => setMode("signup")} disabled={loading} className={linkButton}>
+                    Create one
                   </button>
-                </div>
-
-                <p className="mt-8 text-xs text-[var(--ink-500)] text-center">
-                  {mode === "signin" ? (
-                    <>
-                      Don&apos;t have an account?{" "}
-                      <button
-                        type="button"
-                        onClick={() => setMode("signup")}
-                        disabled={loading}
-                        className="text-[var(--accent-700)] hover:text-[var(--accent-800)] font-medium cursor-pointer disabled:opacity-50"
-                      >
-                        Create one
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      Already have an account?{" "}
-                      <button
-                        type="button"
-                        onClick={() => setMode("signin")}
-                        disabled={loading}
-                        className="text-[var(--accent-700)] hover:text-[var(--accent-800)] font-medium cursor-pointer disabled:opacity-50"
-                      >
-                        Sign in
-                      </button>
-                    </>
-                  )}
-                </p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </main>
-    </div>
+                </>
+              ) : (
+                <>
+                  Already have an account?{" "}
+                  <button type="button" onClick={() => setMode("signin")} disabled={loading} className={linkButton}>
+                    Sign in
+                  </button>
+                </>
+              )}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </AuthShell>
   );
 }

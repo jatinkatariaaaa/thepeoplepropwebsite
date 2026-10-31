@@ -157,7 +157,7 @@ export function CareersPage() {
   return (
     <>
       <PageHero
-        art="/v2/pt/page-careers.webp"
+        art="/art/page-careers.webp"
         crumb="Careers"
         eyebrow="Careers"
         icon={Briefcase}

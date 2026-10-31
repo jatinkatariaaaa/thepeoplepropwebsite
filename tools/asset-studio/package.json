@@ -1,7 +1,7 @@
 {
   "name": "tpp-asset-studio",
   "private": true,
-  "description": "Path-traced art for the /v2 landing page (see README.md)",
+  "description": "Path-traced art for the site (see README.md)",
   "scripts": {
     "studio": "node server.mjs ../../public 4517",
     "render": "node run-headless.mjs"

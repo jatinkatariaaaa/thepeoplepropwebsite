@@ -1,5 +1,5 @@
-"""Turn path-traced PNGs in public/v2/pt into the WebPs the page uses, then archive the PNGs.
-usage: python -I pt-optimize.py <public/v2/pt dir> <archive dir>
+"""Turn path-traced PNGs in public/art into the WebPs the page uses, then archive the PNGs.
+usage: python -I pt-optimize.py <public/art dir> <archive dir>
   emblem-hero.png   -> hero-desktop.webp   (opaque plate)
   emblem-mobile.png -> hero-mobile.webp
   noir-hero.png     -> cta-desktop.webp

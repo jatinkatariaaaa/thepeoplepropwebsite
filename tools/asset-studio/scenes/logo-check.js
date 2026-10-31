@@ -3,7 +3,7 @@
 import { traceLogo } from "../lib/logo.js";
 import { save } from "../lib/core.js";
 
-export default async function ({ log, out = "v2/pt" }) {
+export default async function ({ log, out = "art" }) {
   const logo = await traceLogo("/assets/logo.webp", 7.2);
   const W = 3600, S = W / 7.6, H = Math.ceil(logo.height * S + 120);
   const c = document.createElement("canvas");

@@ -1,11 +1,11 @@
 "use client";
 
 /**
- * V2 data layer — every number on the page comes from here, and here only
- * reads the same sources as the main site: Supabase (`tpp_stats`,
- * `tpp_platforms`), the hydrated program catalogue and the static data files.
- * Nothing is invented: when Supabase isn't configured we fall back to the
- * exact defaults the main landing page uses.
+ * Site data layer — every number on the page comes from here, and here only
+ * reads real sources: Supabase (`tpp_stats`, `tpp_platforms`), the hydrated
+ * program catalogue and the static data files. Nothing is invented: when
+ * Supabase isn't configured we fall back to the exact defaults the previous
+ * landing page shipped with.
  */
 
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
@@ -19,7 +19,7 @@ const SUPABASE_READY = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.e
 
 export type Stat = { value: string; label: string; key_name?: string };
 
-/** Same defaults as src/app/page.tsx — editable from the `tpp_stats` table. */
+/** The previous landing page's defaults — editable from the `tpp_stats` table. */
 export const FALLBACK_STATS: Stat[] = [
   { value: "250+", label: "Successful payouts", key_name: "total_payouts" },
   { value: "142+", label: "Countries served", key_name: "countries" },
@@ -60,8 +60,8 @@ export const prettyValue = (v: string) => v.replace(/\*$/, "★");
 
 /* ───────────────────────── platforms ───────────────────────── */
 
-/** A platform as the configurator sells it. `extra` is the absolute USD surcharge from `tpp_platforms.extra_fee_pct`
- *  (the main ChallengeCalculator treats that column as dollars, so we do too). */
+/** A platform as the configurator sells it. `extra` is `tpp_platforms.extra_fee_pct`: a percentage of the base fee,
+ *  as the admin panel labels it and the dashboard checkout charges it. */
 export type PlatformOption = { key: string; label: string; extra: number };
 
 const STATIC_PLATFORM_OPTIONS: PlatformOption[] = staticPlatforms
@@ -125,7 +125,7 @@ export function useCatalogue(programs: Program[]) {
   }, [programs]);
 }
 
-/** Access accounts are "pass first, pay later": $5 today (see ChallengeCalculator). */
+/** Access accounts are "pass first, pay later": $5 today, as the previous landing calculator priced them. */
 export const ACCESS_UPFRONT = 5;
 
 /** Profit-target rows exactly as the main configurator computes them. */

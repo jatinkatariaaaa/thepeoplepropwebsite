@@ -149,7 +149,7 @@ export function RulesPage() {
   return (
     <>
       <PageHero
-        art="/v2/pt/page-rules.webp"
+        art="/art/page-rules.webp"
         crumb="Rules"
         eyebrow="The rulebook"
         icon={ScrollText}

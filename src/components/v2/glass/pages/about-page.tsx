@@ -177,7 +177,7 @@ export function AboutPage() {
   return (
     <>
       <PageHero
-        art="/v2/pt/page-about.webp"
+        art="/art/page-about.webp"
         crumb="About"
         eyebrow="About us"
         icon={Users}

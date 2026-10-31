@@ -117,12 +117,12 @@ export function Why() {
               unit="pips"
               title="Raw spreads"
               body="Tier-1 liquidity, zero markup. Your edge stays yours."
-              img="/v2/pt/prop-candles.webp"
+              img="/art/prop-candles.webp"
               imgClass="-top-10 right-0 w-[58%] max-w-[420px] sm:-top-16"
             />
           </StaggerItem>
           <StaggerItem>
-            <Card stat="∞" unit="Unlimited period" title="No time limit" body="Pass in a day or a year — your pace, your rules." img="/v2/pt/prop-hourglass.webp" imgClass="top-2 right-3 w-36 sm:w-40" />
+            <Card stat="∞" unit="Unlimited period" title="No time limit" body="Pass in a day or a year — your pace, your rules." img="/art/prop-hourglass.webp" imgClass="top-2 right-3 w-36 sm:w-40" />
           </StaggerItem>
           <StaggerItem>
             <Card
@@ -142,13 +142,13 @@ export function Why() {
             />
           </StaggerItem>
           <StaggerItem>
-            <Card stat="NFP" unit="& FOMC" title="News trading allowed" body="Trade high-impact releases on evaluation and funded accounts." img="/v2/pt/prop-stopwatch.webp" imgClass="top-3 right-3 w-36 sm:w-40" />
+            <Card stat="NFP" unit="& FOMC" title="News trading allowed" body="Trade high-impact releases on evaluation and funded accounts." img="/art/prop-stopwatch.webp" imgClass="top-3 right-3 w-36 sm:w-40" />
           </StaggerItem>
           <StaggerItem>
             <Card icon={CalendarClock} title="Weekend & overnight holding" body="Keep positions open through the weekend — no forced flat at Friday's close." />
           </StaggerItem>
           <StaggerItem className="md:col-span-2 lg:col-span-2">
-            <Card tone="ink" stat={String(platforms.length)} unit="platforms" title="Trade on the platform you trust" body="Pick your terminal at checkout. EAs and bots are welcome." img="/v2/pt/prop-tiles.webp" imgClass="-top-10 right-2 w-[46%] max-w-[340px]">
+            <Card tone="ink" stat={String(platforms.length)} unit="platforms" title="Trade on the platform you trust" body="Pick your terminal at checkout. EAs and bots are welcome." img="/art/prop-tiles.webp" imgClass="-top-10 right-2 w-[46%] max-w-[340px]">
               <ul className="mt-6 flex flex-wrap gap-2">
                 {platforms.map((p) => (
                   <li key={p} className="g-hair g-hair-ink inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-[13.5px] font-semibold text-[var(--g-ink)] shadow-[0_8px_20px_-14px_rgba(16,40,34,0.5)]">

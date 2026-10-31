@@ -35,25 +35,29 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-## V2 redesign (glass)
+## Site design (glass)
 
-The new site lives under `/v2`, next to the original pages. The original routes are unchanged.
+Every public page uses the glass design. It was previewed under `/v2`; those URLs now redirect to the same page at the root (see `next.config.ts`).
 
 | Where | What |
 | --- | --- |
-| `src/app/v2/` | Routes: landing page, challenges, rules, faqs, about, contact, careers, leaderboard, heatmap, contest, reviews, blog (+ articles), terms, privacy, cookie, aml-policy, risk-disclosure |
-| `src/app/v2/layout.tsx` | Shared shell: header, footer and data provider |
-| `src/app/v2/glass.css` | Design tokens and glass utilities (loaded by the V2 layout only) |
+| `src/app/(site)/` | Public pages: landing page, challenges, rules, faqs, about, contact, careers, leaderboard, heatmap, contest, reviews, blog (+ articles), help, press, status, certificate check (`verify/[id]`), terms, privacy, cookie, aml-policy, risk-disclosure |
+| `src/app/(site)/layout.tsx` | Shared shell: header, footer and data provider |
+| `src/app/(auth)/login`, `src/app/auth/reset-password` | Sign-in pages, on the same design |
+| `src/app/not-found.tsx` | 404 page |
+| `src/app/glass.css` | Design tokens and glass utilities |
+| `src/app/api/status/` | Live service checks behind the status page |
 | `src/components/v2/glass/` | Landing page sections and shared UI |
 | `src/components/v2/glass/pages/` | One file per inner page |
-| `src/components/v2/glass/routes.ts` | Maps every link to its `/v2` page |
-| `public/v2/pt/` | Path-traced artwork (WebP) |
-| `tools/asset-studio/` | The studio that renders that artwork (see its README) |
+| `src/components/v2/glass/routes.ts` | Every internal link goes through `href()` |
+| `public/art/` | Path-traced artwork (WebP) |
+| `public/brand/` | Logo files offered on the press page |
+| `tools/asset-studio/` | The studio that renders the artwork (see its README) |
 
-Prices, programs and stats come from `src/data/*` and Supabase (`tpp_stats`, `tpp_platforms`, `tpp_faqs`), the same sources as the original site.
+Prices, programs and stats come from `src/data/*` and Supabase (`tpp_stats`, `tpp_platforms`, `tpp_faqs`).
 
 ```bash
 npm install
-npm run dev      # http://localhost:3000/v2
+npm run dev      # http://localhost:3000
 npm run build
 ```

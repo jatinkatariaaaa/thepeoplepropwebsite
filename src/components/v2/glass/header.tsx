@@ -52,7 +52,7 @@ const NAV: Entry[] = [
 
 function isActive(pathname: string, key: PageKey) {
   const h = href(key);
-  return h !== "/v2" && (pathname === h || pathname.startsWith(`${h}/`));
+  return h !== href("home") && (pathname === h || pathname.startsWith(`${h}/`));
 }
 
 function MenuPanel({ items, onPick }: { items: Item[]; onPick: () => void }) {
@@ -82,7 +82,7 @@ function MenuPanel({ items, onPick }: { items: Item[]; onPick: () => void }) {
 }
 
 export function Header() {
-  const pathname = usePathname() ?? "/v2";
+  const pathname = usePathname() ?? href("home");
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [menu, setMenu] = useState<string | null>(null);
@@ -150,7 +150,7 @@ export function Header() {
             scrolled || open || menu ? "g-glass-ink" : "bg-white/[0.04] backdrop-blur-md",
           )}
         >
-          <Link href="/v2" aria-label="The People Prop — home" className="flex items-center gap-3 text-white">
+          <Link href={href("home")} aria-label="The People Prop — home" className="flex items-center gap-3 text-white">
             <TppMark className="h-[21px]" />
             <span className="hidden text-[13.5px] font-medium tracking-[-0.01em] text-white/70 xl:inline">The People Prop</span>
           </Link>

@@ -35,8 +35,8 @@ export function Cta({
     <section ref={ref} id="get-funded" className="relative isolate z-10 -mt-12 overflow-clip rounded-t-[44px] bg-[#0b1110] sm:rounded-t-[56px]">
       <motion.div aria-hidden="true" className="absolute inset-0 -z-20" style={reduce ? undefined : { scale, y }}>
         <picture>
-          <source media="(max-width: 1023px)" srcSet="/v2/pt/cta-mobile.webp" width={1080} height={1600} />
-          <img src="/v2/pt/cta-desktop.webp" width={2400} height={1350} alt="" loading="lazy" decoding="async" className="absolute bottom-0 left-0 h-auto w-full [mask-image:linear-gradient(180deg,transparent,#000_30%)]" />
+          <source media="(max-width: 1023px)" srcSet="/art/cta-mobile.webp" width={1080} height={1600} />
+          <img src="/art/cta-desktop.webp" width={2400} height={1350} alt="" loading="lazy" decoding="async" className="absolute bottom-0 left-0 h-auto w-full [mask-image:linear-gradient(180deg,transparent,#000_30%)]" />
         </picture>
       </motion.div>
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">

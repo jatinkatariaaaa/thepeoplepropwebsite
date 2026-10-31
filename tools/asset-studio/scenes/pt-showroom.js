@@ -64,7 +64,7 @@ const SHOTS = {
   "cta-mobile": { w: 1080, h: 1600, eye: [0.4, 0.7, 19], cx: 0.5, cy: 0.8, fov: 36, yaw: -0.2, f: 2.2 },
 };
 
-export default async function ({ log, variant = "hero", spp = "600", scale = "1", out = "v2/pt", ...q }) {
+export default async function ({ log, variant = "hero", spp = "600", scale = "1", out = "art", ...q }) {
   const shot = { ...SHOTS[variant] };
   for (const k of ["cx", "cy", "fov", "yaw", "f"]) if (q[k] !== undefined) shot[k] = Number(q[k]);
   if (q.eye) shot.eye = q.eye.split(",").map(Number);

@@ -359,7 +359,7 @@ export const PROPS = {
   },
 };
 
-export default async function ({ log, only = "", spp = "500", size = "1000", out = "v2/pt" }) {
+export default async function ({ log, only = "", spp = "500", size = "1000", out = "art" }) {
   const want = (n) => !only || only.split("|").includes(n);
   const logo = await traceLogo("/assets/logo.webp", 4.2);
   const font = null;

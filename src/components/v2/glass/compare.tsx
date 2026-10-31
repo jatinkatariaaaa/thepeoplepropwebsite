@@ -6,7 +6,7 @@ import { Button, Container, Eyebrow, Lede, Section, Title } from "./ui";
 import { Reveal, Stagger, StaggerItem } from "./motion";
 import { TppMark } from "./logo";
 
-/* The matrix from the main landing page, row for row. */
+/* The comparison matrix from the previous landing page, row for row. */
 const ROWS = [
   { icon: Target, cat: "Execution", them: "Marked-up spreads", us: "Raw 0.0 pip spreads" },
   { icon: CalendarOff, cat: "Freedom", them: "30-day deadline", us: "No time limit" },

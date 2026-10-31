@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Instrument_Serif, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/layout/Navbar";
-import { ChromeGate } from "@/components/layout/ChromeGate";
+import "./glass.css";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
 
 const inter = Inter({
@@ -27,10 +26,16 @@ const mono = JetBrains_Mono({
   display: "swap",
 });
 
+const TITLE = "The People Prop — Fund your skills. Trade our capital.";
+const DESCRIPTION =
+  "Transparent rules, raw 0.0 pip spreads, no time limit and payouts processed in under 24 hours. Choose a 1-Step, 2-Step, 3-Step, Instant or Access account and trade with The People Prop.";
+
 export const metadata: Metadata = {
-  title: "The People Prop — Trade Our Capital. Keep the Profits.",
-  description:
-    "TPP is a next-generation prop trading firm. Pass a single fair evaluation, get funded up to $200,000, and keep up to 90% of your profits. Guaranteed free evaluation Prizes on 1 August 2026.",
+  title: {
+    default: TITLE,
+    template: "%s · The People Prop",
+  },
+  description: DESCRIPTION,
   keywords: [
     "prop firm",
     "proprietary trading",
@@ -44,9 +49,9 @@ export const metadata: Metadata = {
     apple: "/images/logo.webp",
   },
   openGraph: {
-    title: "The People Prop — Trade Our Capital. Keep the Profits.",
-    description:
-      "Funded accounts up to $200,000 with 90% profit splits and bi-weekly payouts. Guaranteed free evaluation Prizes on 1 August 2026.",
+    title: TITLE,
+    description: DESCRIPTION,
+    siteName: "The People Prop",
     type: "website",
   },
 };
@@ -62,10 +67,7 @@ export default function RootLayout({
     >
       <body className="flex flex-col text-ink antialiased">
         <SmoothScroll>
-          <ChromeGate>
-            <Navbar />
-          </ChromeGate>
-          <main className="flex-1">{children}</main>
+          <div className="flex-1">{children}</div>
         </SmoothScroll>
       </body>
     </html>

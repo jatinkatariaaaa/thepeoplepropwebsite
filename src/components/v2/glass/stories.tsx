@@ -50,7 +50,7 @@ export function Stories() {
       </div>
       <Parallax speed={0.2} rotate={5} className="pointer-events-none absolute top-16 right-[5%] hidden w-[260px] lg:block xl:right-[9%]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/v2/pt/prop-paid.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" className="g-float w-full drop-shadow-[0_40px_36px_rgba(16,40,34,0.28)]" />
+        <img src="/art/prop-paid.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" className="g-float w-full drop-shadow-[0_40px_36px_rgba(16,40,34,0.28)]" />
       </Parallax>
 
       <Container>

@@ -1,6 +1,6 @@
 # TPP asset studio
 
-Renders every image used by the `/v2` landing page. The scenes are original
+Renders the artwork used across the site. The scenes are original
 Three.js scenes, **path traced** with
 [three-gpu-pathtracer](https://github.com/gkjohnson/three-gpu-pathtracer). That
 means real refraction through the glass, mirror and glossy reflections, caustics
@@ -18,7 +18,7 @@ npm run studio      # http://localhost:4517 — renders are written into ../../p
 
 ## Render
 
-Each URL renders one scene and saves PNGs under `public/v2/pt/`. Open it in
+Each URL renders one scene and saves PNGs under `public/art/`. Open it in
 Chrome, or run it headless:
 
 ```bash
@@ -33,6 +33,7 @@ node run-headless.mjs "http://localhost:4517/?scene=pt-props" 2400
 | `/?scene=pt-showroom&variant=cta-mobile&spp=600` | `noir-mobile.png` (1080×1600) |
 | `/?scene=pt-props&spp=400&size=800` (`&only=coins\|bolt…`) | `prop-*.png`: transparent 3D objects |
 | `/?scene=pt-pages&spp=420` (`&only=challenges\|rules…`) | `page-*.png`: one hero plate per inner page (2200×1100) |
+| `/?scene=pt-pages&only=help\|press\|status\|verify\|not-found&spp=420` | plates for the help, press, status, certificate and 404 pages |
 | `/?scene=logo-check` | `logo-check-test.png`: 2D check of the traced wordmark outline |
 | `/?scene=logosvg` | prints the traced wordmark paths used in `logo.tsx` |
 | `/?scene=pt-debug` | small probe that shows whether path tracing works on this GPU |
@@ -73,7 +74,7 @@ other GPU-heavy apps closed.
 ## Optimise
 
 ```bash
-python optimize.py ../../public/v2/pt ./renders
+python optimize.py ../../public/art ./renders
 ```
 
 This converts the PNGs into the WebPs the page loads:

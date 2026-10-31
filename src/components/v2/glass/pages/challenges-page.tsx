@@ -230,14 +230,14 @@ export function ChallengeFaq() {
   );
 }
 
-/** The whole /v2/challenges page body. */
+/** The whole /challenges page body. */
 export function ChallengesPage() {
   const programs = usePrograms();
   const cat = useCatalogue(programs);
   return (
     <>
       <PageHero
-        art="/v2/pt/page-challenges.webp"
+        art="/art/page-challenges.webp"
         crumb="Challenges"
         eyebrow="Funded accounts"
         icon={Layers}

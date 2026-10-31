@@ -7,7 +7,6 @@ import { TppMark, TppOutline } from "./logo";
 import { Reveal } from "./motion";
 import { APP, href } from "./routes";
 
-/* Glass pages link to /v2, everything else to the current site (see routes.ts). */
 const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
   {
     title: "Platform",
@@ -16,6 +15,7 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
       { label: "Challenges", href: href("challenges") },
       { label: "Heatmap", href: href("heatmap") },
       { label: "Leaderboard", href: href("leaderboard") },
+      { label: "System status", href: href("status") },
     ],
   },
   {
@@ -25,6 +25,7 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
       { label: "FAQ", href: href("faqs") },
       { label: "Blog", href: href("blog") },
       { label: "Contest", href: href("contest") },
+      { label: "Help centre", href: href("help") },
     ],
   },
   {
@@ -34,6 +35,7 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
       { label: "Contact", href: href("contact") },
       { label: "Careers", href: href("careers") },
       { label: "Reviews", href: href("reviews") },
+      { label: "Press", href: href("press") },
     ],
   },
   {
@@ -54,7 +56,7 @@ export function Footer() {
       <Container>
         <div className="g-glass g-hair grid gap-12 rounded-[36px] p-7 sm:p-10 lg:grid-cols-[1fr_1.6fr] lg:p-12">
           <div>
-            <Link href="/v2" aria-label="The People Prop — home" className="inline-flex text-white">
+            <Link href={href("home")} aria-label="The People Prop — home" className="inline-flex text-white">
               <TppMark className="h-7" />
             </Link>
             <p className="mt-5 max-w-sm text-[14.5px] leading-relaxed text-white/55">

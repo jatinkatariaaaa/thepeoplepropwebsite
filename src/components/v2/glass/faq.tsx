@@ -86,7 +86,7 @@ export function Faq() {
 
             <Parallax speed={0.1} className="relative mt-8 hidden lg:block">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/v2/pt/prop-question.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" className="g-float w-[230px] drop-shadow-[0_36px_30px_rgba(16,40,34,0.25)]" />
+              <img src="/art/prop-question.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" className="g-float w-[230px] drop-shadow-[0_36px_30px_rgba(16,40,34,0.25)]" />
             </Parallax>
 
             <Reveal delay={0.15} className="mt-8">

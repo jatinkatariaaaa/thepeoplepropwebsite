@@ -80,7 +80,7 @@ export function LegalPage({ doc }: { doc: LegalKey }) {
 
   return (
     <>
-      <PageHero art={`/v2/pt/page-${doc}.webp`} crumb={m.crumb} eyebrow={m.eyebrow} icon={m.icon} lead={m.lead} fade={m.fade} lede={m.lede}>
+      <PageHero art={`/art/page-${doc}.webp`} crumb={m.crumb} eyebrow={m.eyebrow} icon={m.icon} lead={m.lead} fade={m.fade} lede={m.lede}>
         <p className="g-pill g-hair bg-white/[0.06] text-white/70 backdrop-blur-md">{d.updated}</p>
       </PageHero>
 

@@ -60,7 +60,7 @@ export function BlogIndex() {
   return (
     <>
       <PageHero
-        art="/v2/pt/page-blog.webp"
+        art="/art/page-blog.webp"
         crumb="Blog"
         eyebrow="Blog"
         icon={Newspaper}

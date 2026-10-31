@@ -1,4 +1,4 @@
-// PHOTOREAL — one hero plate per V2 page. Every page gets its own sculpture,
+// PHOTOREAL — one hero plate per page. Every page gets its own sculpture,
 // but all of them stand in the same lacquered "showroom" as the landing hero,
 // so the site reads as one place with a different object in every room.
 //
@@ -430,6 +430,169 @@ const PAGES = {
   },
 };
 
+/* ───────────── pages added when the redesign replaced the old site ───────────── */
+
+/** Scalloped disc: `n` shallow arcs around radius r. */
+function rosette(r = 1.4, n = 22, dip = 0.07) {
+  const s = new THREE.Shape();
+  for (let i = 0; i <= n; i++) {
+    const a = (i * 2 * Math.PI) / n;
+    const x = Math.cos(a) * r * (1 - dip);
+    const y = Math.sin(a) * r * (1 - dip);
+    if (i === 0) s.moveTo(x, y);
+    else {
+      const m = a - Math.PI / n;
+      s.quadraticCurveTo(Math.cos(m) * r * (1 + dip), Math.sin(m) * r * (1 + dip), x, y);
+    }
+  }
+  return s;
+}
+
+Object.assign(PAGES, {
+  // help: a glass lifebuoy hung on a chrome peg
+  help: () => {
+    const g = new THREE.Group();
+    const R = 1.25;
+    const r = 0.42;
+    const y = 2.0;
+    const band = Math.PI / 7;
+    const ring = new THREE.Group();
+    for (let k = 0; k < 4; k++) {
+      const c = Math.PI / 4 + (k * Math.PI) / 2;
+      const lime = new THREE.Mesh(new THREE.TorusGeometry(R, r, 64, 40, band), LIME());
+      lime.rotation.z = c - band / 2;
+      const em = new THREE.Mesh(new THREE.TorusGeometry(R, r, 64, 90, Math.PI / 2 - band), EMERALD());
+      em.rotation.z = c + band / 2;
+      ring.add(lime, em);
+      // chrome seams hide the joins between the glass segments
+      [c - band / 2, c + band / 2].forEach((a) => {
+        const seam = new THREE.Group();
+        const t = new THREE.Mesh(new THREE.TorusGeometry(r + 0.012, 0.026, 16, 96), M.chrome(0.05));
+        t.position.x = R;
+        t.rotation.x = Math.PI / 2;
+        seam.add(t);
+        seam.rotation.z = a;
+        ring.add(seam);
+      });
+    }
+    ring.position.y = y;
+    g.add(ring);
+    const ch = M.chrome(0.06);
+    g.add(at(new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 2.9, 32), ch), 0, 1.45, -0.62));
+    g.add(at(new THREE.Mesh(new THREE.SphereGeometry(0.11, 32, 16), ch), 0, 2.92, -0.62));
+    const peg = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.95, 32), ch);
+    peg.rotation.x = Math.PI / 2;
+    peg.position.set(0, y + R - r - 0.07, -0.18);
+    g.add(peg);
+    g.add(at(new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.9, 0.14, 96), M.chrome(0.12)), 0, 0.07, -0.62));
+    g.rotation.y = -0.38;
+    return { g, cam: { fill: 0.38, azim: -0.18, elev: 0.08 } };
+  },
+
+  // press: a studio microphone wearing a TPP mic flag
+  press: ({ logo }) => {
+    const g = new THREE.Group();
+    const ch = M.chrome(0.05);
+    const mic = new THREE.Group();
+    mic.add(new THREE.Mesh(new THREE.CapsuleGeometry(0.62, 0.9, 24, 96), MINT()));
+    [-0.42, 0, 0.42].forEach((yy) => {
+      const t = new THREE.Mesh(new THREE.TorusGeometry(0.625, 0.03, 16, 128), ch);
+      t.rotation.x = Math.PI / 2;
+      t.position.y = yy;
+      mic.add(t);
+    });
+    mic.add(at(new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.26, 1.3, 64), ch), 0, -1.6, 0));
+    const flag = new THREE.Group();
+    flag.add(box(1.2, 0.9, 1.2, 0.1, M.dark()));
+    const e = new THREE.Group();
+    e.add(new THREE.Mesh(extrude(logo.white, { depth: 0.06, bevel: 0.02 }), M.chrome(0.05)));
+    e.add(new THREE.Mesh(extrude(logo.volt, { depth: 0.06, bevel: 0.02 }), M.lime()));
+    e.scale.setScalar(0.92 / logo.width);
+    e.position.z = 0.61;
+    flag.add(e);
+    flag.position.y = -1.72;
+    mic.add(flag);
+    mic.position.y = 3.45;
+    mic.rotation.z = -0.12;
+    g.add(mic);
+    g.add(at(new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 1.4, 32), ch), 0.22, 0.7, 0));
+    g.add(at(new THREE.Mesh(new THREE.CylinderGeometry(0.85, 0.95, 0.16, 96), M.chrome(0.12)), 0.22, 0.08, 0));
+    g.rotation.y = -0.3;
+    return { g, cam: { fill: 0.19, azim: -0.16, elev: 0.08 } };
+  },
+
+  // status: a lime beacon broadcasting through three glass arcs
+  status: () => {
+    const g = new THREE.Group();
+    const y = 1.15;
+    g.add(at(new THREE.Mesh(new THREE.SphereGeometry(0.36, 96, 48), LIME()), 0, y, 0));
+    const mats = [EMERALD(), MINT(), EMERALD()];
+    [1.0, 1.72, 2.44].forEach((R, i) => {
+      const tube = 0.17 - i * 0.015;
+      const arc = new THREE.Mesh(new THREE.TorusGeometry(R, tube, 48, 180, Math.PI / 2), mats[i]);
+      arc.rotation.z = Math.PI / 4;
+      arc.position.y = y;
+      g.add(arc);
+      // chrome caps close the open ends of each arc
+      [Math.PI / 4, (3 * Math.PI) / 4].forEach((a) => g.add(at(new THREE.Mesh(new THREE.SphereGeometry(tube + 0.02, 48, 24), M.chrome(0.05)), Math.cos(a) * R, y + Math.sin(a) * R, 0)));
+    });
+    g.add(at(new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, y - 0.3, 32), M.chrome(0.06)), 0, (y - 0.3) / 2 + 0.06, 0));
+    g.add(at(new THREE.Mesh(new THREE.CylinderGeometry(0.75, 0.85, 0.14, 96), M.chrome(0.12)), 0, 0.07, 0));
+    g.rotation.y = -0.32;
+    return { g, cam: { fill: 0.36, azim: -0.15, elev: 0.08, cy: 0.46 } };
+  },
+
+  // certificate check: a scalloped glass seal with a chrome tick and two ribbon tails
+  verify: () => {
+    const g = new THREE.Group();
+    const y = 2.35;
+    const seal = extrudeShape(rosette(1.3), 0.3, 0.08, LIME());
+    seal.position.set(0, y, 0);
+    g.add(seal);
+    const rim = new THREE.Mesh(new THREE.TorusGeometry(0.98, 0.04, 24, 200), M.chrome(0.05));
+    rim.position.set(0, y, 0.24);
+    g.add(rim);
+    const tick = new THREE.Mesh(shape(CHECK, 0.14, 0.05), M.chrome(0.04));
+    tick.scale.setScalar(1.6);
+    tick.position.set(0, y, 0.3);
+    g.add(tick);
+    const tail = new THREE.Shape();
+    tail.moveTo(-0.38, 0);
+    tail.lineTo(0.38, 0);
+    tail.lineTo(0.38, -1.9);
+    tail.lineTo(0, -1.55);
+    tail.lineTo(-0.38, -1.9);
+    tail.closePath();
+    [-1, 1].forEach((sx) => {
+      const t = extrudeShape(tail, 0.14, 0.04, EMERALD(), 4);
+      t.geometry.translate(0, -0.95, 0);
+      t.position.set(sx * 0.5, y - 0.35, -0.45);
+      t.rotation.z = sx * 0.32;
+      g.add(t);
+    });
+    g.add(at(new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, y, 32), M.chrome(0.06)), 0, y / 2, -0.62));
+    g.add(at(new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.9, 0.14, 96), M.chrome(0.12)), 0, 0.07, -0.62));
+    g.rotation.y = -0.3;
+    return { g, cam: { fill: 0.3, azim: -0.16, elev: 0.08 } };
+  },
+
+  // 404: the zero is a TPP coin standing between two glass fours
+  "not-found": ({ logo }) => {
+    const g = new THREE.Group();
+    const a = glyph("4", 2.4, 0.7, EMERALD(), 0.09);
+    a.position.x = -2.1;
+    a.rotation.y = 0.22;
+    const c = glyph("4", 2.4, 0.7, LIME(), 0.09);
+    c.position.x = 2.1;
+    c.rotation.y = -0.22;
+    const zero = coin(logo, 1.12, 0.36);
+    zero.position.set(0, 1.12, -0.2);
+    zero.rotation.y = -0.18;
+    g.add(a, zero, c);
+    return { g, cam: { fill: 0.5, azim: -0.14, elev: 0.08 } };
+  },
+});
+
 /** Shift-lens framing (verticals stay straight): fit the group, then slide it to (cx, cy). */
 function frameGroup(camera, group, w, h, { fill = 0.42, azim = -0.2, elev = 0.08, cx = 0.7, cy = 0.5, fov = 24 }) {
   const b = new THREE.Box3().setFromObject(group);
@@ -447,7 +610,7 @@ function frameGroup(camera, group, w, h, { fill = 0.42, azim = -0.2, elev = 0.08
   return { center, dist, dir };
 }
 
-export default async function ({ log, only = "", spp = "420", scale = "1", out = "v2/pt", ...q }) {
+export default async function ({ log, only = "", spp = "420", scale = "1", out = "art", ...q }) {
   const want = (n) => !only || only.split("|").includes(n);
   const logo = await traceLogo("/assets/logo.webp", 4.2);
   const k = Number(scale);

@@ -82,7 +82,7 @@ export function HeatmapPage() {
   return (
     <>
       <PageHero
-        art="/v2/pt/page-heatmap.webp"
+        art="/art/page-heatmap.webp"
         crumb="Heatmap"
         eyebrow="Market overview"
         icon={Grid3x3}

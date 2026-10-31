@@ -9,11 +9,11 @@ import { Reveal, Stagger, StaggerItem } from "../motion";
 import { PageHero } from "../page-hero";
 import { Cta } from "../cta";
 import { usd, usePrograms } from "../data";
-import { href } from "../routes";
+import { APP, href } from "../routes";
 
 type Entry = { id: string; referral_code: string; referral_count: number; target: number; claimed: boolean };
 
-const LOGIN = "/login?redirect=/v2/contest";
+const LOGIN = `${APP.login}?redirect=${href("contest")}`;
 
 const STEPS = [
   { icon: Link2, title: "Sign up & get your link", body: "Create a free account on The People Prop. We'll instantly generate your unique contest referral link — ready to share in seconds." },
@@ -294,7 +294,7 @@ export function ContestPage() {
   return (
     <>
       <PageHero
-        art="/v2/pt/page-contest.webp"
+        art="/art/page-contest.webp"
         crumb="Contest"
         eyebrow="Limited time contest"
         icon={Trophy}

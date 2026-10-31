@@ -9,6 +9,13 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  // The redesign was previewed under /v2 before it replaced the old pages.
+  async redirects() {
+    return [
+      { source: "/v2", destination: "/", permanent: true },
+      { source: "/v2/:path*", destination: "/:path*", permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;

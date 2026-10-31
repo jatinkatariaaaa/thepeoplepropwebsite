@@ -196,7 +196,7 @@ export function ReviewsPage() {
   return (
     <>
       <PageHero
-        art="/v2/pt/page-reviews.webp"
+        art="/art/page-reviews.webp"
         crumb="Reviews"
         eyebrow="Trader reviews"
         icon={Star}
