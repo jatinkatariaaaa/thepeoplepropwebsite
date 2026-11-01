@@ -60,13 +60,13 @@ export function FaqItem({ item, open, onToggle }: { item: Pick<FAQItem, "q" | "a
   );
 }
 
-export function Faq() {
+export function Faq({ className }: { className?: string } = {}) {
   const [tab, setTab] = useState<(typeof TABS)[number]["key"]>("all");
   const [open, setOpen] = useState<string | null>(faq[0]?.q ?? null);
   const items = useMemo(() => (tab === "all" ? faq.slice(0, 8) : faq.filter((f) => f.category === tab)), [tab]);
 
   return (
-    <section id="faq" className="relative isolate scroll-mt-24 bg-white pt-16 pb-40 text-[var(--g-ink)] sm:pt-24 sm:pb-48">
+    <section id="faq" className={cn("relative isolate scroll-mt-24 bg-white pt-16 pb-40 text-[var(--g-ink)] sm:pt-24 sm:pb-48", className)}>
       <Container>
         <div className="grid gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
           <div className="min-w-0 lg:sticky lg:top-28 lg:self-start">

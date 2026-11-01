@@ -248,6 +248,20 @@ html:has(.v2-scope) body {
   animation-play-state: paused;
 }
 
+/* vertical marquee: columns of cards that drift up (or down with .g-marquee-rev) */
+@keyframes g-marquee-y {
+  to {
+    transform: translate3d(0, -50%, 0);
+  }
+}
+.g-marquee-y {
+  animation: g-marquee-y var(--g-dur, 60s) linear infinite;
+  will-change: transform;
+}
+.g-pause:hover .g-marquee-y {
+  animation-play-state: paused;
+}
+
 @keyframes g-float {
   0%,
   100% {
@@ -294,6 +308,10 @@ html:has(.v2-scope) body {
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
   mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
 }
+.g-fade-y {
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent);
+}
 .g-noscroll {
   scrollbar-width: none;
 }
@@ -329,6 +347,7 @@ html:has(.v2-scope) body {
 
 @media (prefers-reduced-motion: reduce) {
   .g-marquee,
+  .g-marquee-y,
   .g-float,
   .g-drift,
   .g-step-pulse {

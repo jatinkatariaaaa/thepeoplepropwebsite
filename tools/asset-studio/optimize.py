@@ -4,6 +4,8 @@ usage: python -I pt-optimize.py <public/art dir> <archive dir>
   emblem-mobile.png -> hero-mobile.webp
   noir-hero.png     -> cta-desktop.webp
   noir-mobile.png   -> cta-mobile.webp
+  ascent-hero.png   -> ascent-hero.webp   (landing preview at /v2)
+  ascent-mobile.png -> ascent-mobile.webp
   page-*.png        -> page-*.webp         (inner-page hero plates)
   prop-*.png        -> prop-*.webp         (transparent cut-outs)
   *-test.png        -> archived only"""
@@ -16,6 +18,8 @@ MAP = {
     "emblem-mobile.png": ("hero-mobile.webp", 1080, 86, False),
     "noir-hero.png": ("cta-desktop.webp", 2400, 86, False),
     "noir-mobile.png": ("cta-mobile.webp", 1080, 86, False),
+    "ascent-hero.png": ("ascent-hero.webp", 2560, 86, False),
+    "ascent-mobile.png": ("ascent-mobile.webp", 1080, 86, False),
 }
 os.makedirs(archive, exist_ok=True)
 tin = tout = 0

@@ -9,12 +9,11 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
-  // The redesign was previewed under /v2 before it replaced the old pages.
+  // /v2 previews the next landing page. Older /v2/<page> links, from when every
+  // glass page was previewed there, go to the live page. Temporary (307) so
+  // browsers don't cache it and /v2 can keep hosting previews.
   async redirects() {
-    return [
-      { source: "/v2", destination: "/", permanent: true },
-      { source: "/v2/:path*", destination: "/:path*", permanent: true },
-    ];
+    return [{ source: "/v2/:path+", destination: "/:path+", permanent: false }];
   },
 };
 

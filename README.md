@@ -37,12 +37,13 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## Site design (glass)
 
-Every public page uses the glass design. It was previewed under `/v2`; those URLs now redirect to the same page at the root (see `next.config.ts`).
+Every public page uses the glass design. `/v2` previews the next landing page and is kept out of search; other `/v2/*` URLs redirect to the live pages (see `next.config.ts`).
 
 | Where | What |
 | --- | --- |
 | `src/app/(site)/` | Public pages: landing page, challenges, rules, faqs, about, contact, careers, leaderboard, heatmap, contest, reviews, blog (+ articles), help, press, status, certificate check (`verify/[id]`), terms, privacy, cookie, aml-policy, risk-disclosure |
 | `src/app/(site)/layout.tsx` | Shared shell: header, footer and data provider |
+| `src/app/(site)/v2/page.tsx` | Landing page preview, built from `src/components/v2/glass/home/` |
 | `src/app/(auth)/login`, `src/app/auth/reset-password` | Sign-in pages, on the same design |
 | `src/app/not-found.tsx` | 404 page |
 | `src/app/glass.css` | Design tokens and glass utilities |

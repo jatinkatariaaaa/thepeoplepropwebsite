@@ -27,8 +27,10 @@ node run-headless.mjs "http://localhost:4517/?scene=pt-props" 2400
 
 | URL | Output |
 | --- | --- |
-| `/?scene=pt-showroom&variant=hero&spp=700&tiles=10` | `emblem-hero.png`: desktop hero plate (2560×1600) |
-| `/?scene=pt-showroom&variant=mobile&spp=700` | `emblem-mobile.png`: phone hero plate (1080×1920) |
+| `/?scene=pt-ascent&variant=hero&spp=700&tiles=10` | `ascent-hero.png`: hero of the landing preview at `/v2`, glass candles climbing to a lime breakout (2560×1600) |
+| `/?scene=pt-ascent&variant=mobile&spp=700&tiles=8` | `ascent-mobile.png`: phone hero of the landing preview (1080×1920) |
+| `/?scene=pt-showroom&variant=hero&spp=700&tiles=10` | `emblem-hero.png`: TPP wordmark plate, the live landing hero (2560×1600) |
+| `/?scene=pt-showroom&variant=mobile&spp=700` | `emblem-mobile.png`: TPP wordmark plate for phones; also used by the sign-in pages (1080×1920) |
 | `/?scene=pt-showroom&variant=cta&spp=600&tiles=10` | `noir-hero.png`: closing call-to-action plate (2400×1350) |
 | `/?scene=pt-showroom&variant=cta-mobile&spp=600` | `noir-mobile.png` (1080×1600) |
 | `/?scene=pt-props&spp=400&size=800` (`&only=coins\|bolt…`) | `prop-*.png`: transparent 3D objects |
