@@ -17,6 +17,7 @@ const searchTargets = [
   { label: "Calendar", href: "/dashboard/calendar", keywords: "calendar economic events news" },
   { label: "Affiliate", href: "/dashboard/affiliate", keywords: "affiliate referral commission" },
   { label: "Payouts", href: "/dashboard/payouts", keywords: "payouts withdraw money" },
+  { label: "Certificates", href: "/dashboard/certificates", keywords: "certificates certificate award funded payout verify" },
   { label: "Settings", href: "/dashboard/settings", keywords: "settings profile account kyc password" },
   { label: "New Challenge", href: "/dashboard/new-challenge", keywords: "new challenge buy start evaluation" },
 ];

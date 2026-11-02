@@ -1,4 +1,4 @@
-import { supabaseAdmin } from "@/lib/supabase";
+import { listCertificates } from "@/lib/certificates/data";
 import { CertificatesClient } from "./CertificatesClient";
 import { PageTitle } from "@/components/dashboard/glass";
 import { cookies } from "next/headers";
@@ -26,19 +26,15 @@ export default async function CertificatesPage() {
     return null;
   }
 
-  // Fetch passed and funded accounts
-  const { data: accounts } = await supabaseAdmin
-    .from("accounts")
-    .select("*")
-    .eq("user_id", user.id)
-    .in("status", ["passed", "funded"])
-    .order("created_at", { ascending: false });
+  // Funding certificates for passed and funded accounts, payout certificates for paid
+  // payouts, and highest-payout awards (see src/lib/certificates/data.ts).
+  const certificates = await listCertificates(user.id);
 
   return (
     <div className="mx-auto max-w-6xl">
       <PageTitle lead="My Certificates" lede="View and share your well-earned trading certificates." />
 
-      <CertificatesClient accounts={accounts || []} />
+      <CertificatesClient certificates={certificates} />
     </div>
   );
 }
