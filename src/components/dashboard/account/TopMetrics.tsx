@@ -1,4 +1,5 @@
 import { Wallet, TrendingUp, CalendarClock } from "lucide-react";
+import { Stat } from "../glass";
 
 type AccountSummary = {
   equity?: number | string | null;
@@ -19,21 +20,10 @@ export function TopMetrics({ account }: { account: AccountSummary }) {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6">
-      {metrics.map((m, i) => {
-        const Icon = m.icon;
-        return (
-          <div key={i} className="bg-white rounded-2xl border border-[var(--border)] p-6 shadow-sm">
-            <div className="flex items-center gap-2 text-[var(--ink-500)] mb-3">
-              <Icon className="w-4 h-4" />
-              <span className="text-[13px] font-medium">{m.label}</span>
-            </div>
-            <div className="text-[24px] font-display font-bold text-[var(--ink-950)]">
-              {m.value}
-            </div>
-          </div>
-        );
-      })}
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 lg:gap-4 mb-6">
+      {metrics.map((m, i) => (
+        <Stat key={i} label={m.label} value={m.value} icon={m.icon} />
+      ))}
     </div>
   );
 }

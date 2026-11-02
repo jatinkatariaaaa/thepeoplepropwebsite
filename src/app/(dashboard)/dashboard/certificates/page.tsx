@@ -1,5 +1,6 @@
 import { supabaseAdmin } from "@/lib/supabase";
 import { CertificatesClient } from "./CertificatesClient";
+import { PageTitle } from "@/components/dashboard/glass";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 
@@ -34,11 +35,8 @@ export default async function CertificatesPage() {
     .order("created_at", { ascending: false });
 
   return (
-    <div className="max-w-6xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
-      <div className="mb-8">
-        <h1 className="text-2xl font-display font-bold text-[var(--ink-950)] mb-2">My Certificates</h1>
-        <p className="text-[var(--ink-500)]">View and share your well-earned trading certificates.</p>
-      </div>
+    <div className="mx-auto max-w-6xl">
+      <PageTitle lead="My Certificates" lede="View and share your well-earned trading certificates." />
 
       <CertificatesClient accounts={accounts || []} />
     </div>

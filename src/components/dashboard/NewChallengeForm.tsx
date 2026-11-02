@@ -15,6 +15,7 @@ import {
   type ProgramKey,
 } from "@/data/programs";
 import { useHydratedPrograms } from "@/hooks/useHydratedPrograms";
+import { Panel, SectionTitle, btn, field, fieldLabel } from "./glass";
 
 type PlatformOption = {
   id: string | number;
@@ -29,13 +30,13 @@ function RadioCircle({ selected }: { selected: boolean }) {
     <span
       aria-hidden
       className={cn(
-        "shrink-0 flex items-center justify-center w-[18px] h-[18px] rounded-full border-2 transition-all",
-        selected ? "border-[var(--teal-900)] bg-white" : "border-[var(--ink-300)] bg-white"
+        "shrink-0 flex items-center justify-center w-[18px] h-[18px] rounded-full ring-1 transition-all",
+        selected ? "bg-[var(--g-ink)] ring-[var(--g-ink)]" : "bg-white ring-black/20"
       )}
     >
       <span
         className={cn(
-          "w-2 h-2 rounded-full bg-[var(--teal-900)] transition-transform",
+          "w-2 h-2 rounded-full bg-[var(--g-lime)] transition-transform",
           selected ? "scale-100" : "scale-0"
         )}
       />
@@ -44,21 +45,18 @@ function RadioCircle({ selected }: { selected: boolean }) {
 }
 
 function SectionHeading({ title, subtitle }: { title: string; subtitle?: string }) {
-  return (
-    <div className="mb-4">
-      <h3 className="font-display font-bold text-[18px] text-[var(--ink-950)] tracking-tight">{title}</h3>
-      {subtitle && <p className="text-[13px] text-[var(--ink-500)] mt-0.5">{subtitle}</p>}
-    </div>
-  );
+  return <SectionTitle as="h3" title={title} sub={subtitle} />;
 }
 
 const selectableCard = (selected: boolean) =>
   cn(
-    "rounded-2xl border transition-all text-left cursor-pointer",
+    "rounded-[18px] text-left cursor-pointer ring-1 transition-all",
     selected
-      ? "bg-[var(--lime-tint)] border-[var(--teal-800)] shadow-[0_2px_12px_-4px_rgba(18,43,40,0.18)]"
-      : "bg-white border-[var(--border)] hover:border-[var(--ink-300)] shadow-sm"
+      ? "bg-[var(--g-lime)]/[0.14] ring-2 ring-[var(--g-ink)] shadow-[0_14px_30px_-18px_rgba(16,40,34,0.45)]"
+      : "bg-white/55 ring-black/[0.07] hover:bg-white/85 hover:ring-black/15"
   );
+
+const skeleton = "animate-pulse w-full rounded-[18px] bg-white/55 ring-1 ring-black/[0.05]";
 
 export function NewChallengeForm() {
   const router = useRouter();
@@ -298,7 +296,7 @@ export function NewChallengeForm() {
     setIsCheckingOut(false);
   };
 
-  const inputClasses = "w-full bg-white border border-[var(--border)] rounded-xl h-11 px-4 text-[14px] focus:outline-none focus:border-[var(--teal-800)] focus:ring-2 focus:ring-[var(--teal-800)]/10 transition-all";
+  const inputClasses = field();
 
   return (
     <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_minmax(360px,420px)] gap-6 lg:gap-10 pb-16 sm:pb-20">
@@ -310,7 +308,7 @@ export function NewChallengeForm() {
         <section>
           <SectionHeading title="Challenge Type" subtitle="Choose the type of challenge you want to take" />
           {isLoadingPrograms ? (
-            <div className="animate-pulse bg-white h-20 rounded-2xl border border-[var(--border)] w-full" />
+            <div className={cn(skeleton, "h-20")} />
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {livePrograms.map(prog => {
@@ -323,13 +321,10 @@ export function NewChallengeForm() {
                   >
                     <span className="mt-0.5"><RadioCircle selected={selected} /></span>
                     <span className="min-w-0">
-                      <span className={cn(
-                        "block text-[14px] font-bold leading-tight",
-                        selected ? "text-[var(--teal-900)]" : "text-[var(--ink-950)]"
-                      )}>
+                      <span className="block text-[14px] font-semibold leading-tight text-[var(--g-ink)]">
                         {prog.shortLabel}
                       </span>
-                      <span className="block text-[12px] text-[var(--ink-500)] mt-1 leading-snug line-clamp-2">
+                      <span className="block text-[12px] text-[var(--g-muted-ink)] mt-1 leading-snug line-clamp-2">
                         {prog.tagline}
                       </span>
                     </span>
@@ -344,7 +339,7 @@ export function NewChallengeForm() {
         <section>
           <SectionHeading title="Account Size" subtitle="Choose your preferred account size" />
           {isLoadingPrograms ? (
-            <div className="animate-pulse bg-white h-24 rounded-2xl border border-[var(--border)] w-full" />
+            <div className={cn(skeleton, "h-24")} />
           ) : (
             <div className="grid grid-cols-1 min-[420px]:grid-cols-2 md:grid-cols-3 gap-3">
               {Object.keys(program.fees)
@@ -361,13 +356,10 @@ export function NewChallengeForm() {
                     >
                       <RadioCircle selected={selected} />
                       <span className="min-w-0">
-                        <span className={cn(
-                          "block text-[15px] font-display font-bold tabular-nums leading-tight",
-                          selected ? "text-[var(--teal-900)]" : "text-[var(--ink-950)]"
-                        )}>
+                        <span className="g-num block text-[16px] font-semibold leading-tight text-[var(--g-ink)]">
                           {formatAccSize(s)}
                         </span>
-                        <span className="block text-[12px] text-[var(--ink-500)] mt-0.5 tabular-nums">
+                        <span className="g-num block text-[12px] text-[var(--g-muted-ink)] mt-0.5">
                           {formatCurrency(fee)}
                         </span>
                       </span>
@@ -408,8 +400,8 @@ export function NewChallengeForm() {
 
               return (
                 <div key={addon.key}>
-                  <div className="text-[14px] font-bold text-[var(--ink-950)]">{addon.label}</div>
-                  <p className="text-[12px] text-[var(--ink-500)] mt-0.5 mb-2.5">{addon.description}</p>
+                  <div className="text-[14px] font-semibold text-[var(--g-ink)]">{addon.label}</div>
+                  <p className="text-[12px] text-[var(--g-muted-ink)] mt-0.5 mb-2.5">{addon.description}</p>
                   <div className="grid grid-cols-1 min-[420px]:grid-cols-2 gap-3">
                     <button
                       onClick={() => isActive && toggleAddOn(addon.key)}
@@ -417,11 +409,11 @@ export function NewChallengeForm() {
                     >
                       <span className="flex items-center gap-3 min-w-0">
                         <RadioCircle selected={!isActive} />
-                        <span className={cn("text-[13px] font-bold truncate", !isActive ? "text-[var(--teal-900)]" : "text-[var(--ink-950)]")}>
+                        <span className="text-[13px] font-semibold truncate text-[var(--g-ink)]">
                           {noLabel}
                         </span>
                       </span>
-                      <span className="shrink-0 text-[var(--ink-400)] text-[12px]">{noSub}</span>
+                      <span className="shrink-0 text-black/40 text-[12px]">{noSub}</span>
                     </button>
                     <button
                       onClick={() => !isActive && toggleAddOn(addon.key)}
@@ -429,11 +421,11 @@ export function NewChallengeForm() {
                     >
                       <span className="flex items-center gap-3 min-w-0">
                         <RadioCircle selected={isActive} />
-                        <span className={cn("text-[13px] font-bold truncate", isActive ? "text-[var(--teal-900)]" : "text-[var(--ink-950)]")}>
+                        <span className="text-[13px] font-semibold truncate text-[var(--g-ink)]">
                           {yesLabel}
                         </span>
                       </span>
-                      <span className="shrink-0 text-emerald-600 font-bold text-[12px]">{extraCost === 0 ? "Free" : `+${formatCurrency(extraCost)}`}</span>
+                      <span className="g-num shrink-0 text-[var(--g-emerald)] font-semibold text-[12px]">{extraCost === 0 ? "Free" : `+${formatCurrency(extraCost)}`}</span>
                     </button>
                   </div>
                 </div>
@@ -441,7 +433,7 @@ export function NewChallengeForm() {
             })}
 
             {addOns.filter(a => a.appliesTo.includes(programKey)).length === 0 && (
-              <div className="text-[13px] text-[var(--ink-500)] p-4 border border-[var(--border)] rounded-2xl bg-white">
+              <div className="text-[13px] text-[var(--g-muted-ink)] p-4 rounded-[18px] bg-white/55 ring-1 ring-black/[0.07]">
                 No customisations available for this challenge type.
               </div>
             )}
@@ -467,7 +459,7 @@ export function NewChallengeForm() {
                   className={cn(selectableCard(selected), "flex items-center justify-center gap-2.5 min-h-11 py-2.5 px-4 sm:px-5")}
                 >
                   <RadioCircle selected={selected} />
-                  <span className={cn("text-[13px] font-bold", selected ? "text-[var(--teal-900)]" : "text-[var(--ink-950)]")}>
+                  <span className="text-[13px] font-semibold text-[var(--g-ink)]">
                     <span className="mr-1.5">{c.flag}</span>{c.id}
                   </span>
                 </button>
@@ -480,7 +472,7 @@ export function NewChallengeForm() {
         <section>
           <SectionHeading title="Trading Platform" subtitle="Choose your preferred trading platform" />
           {isLoadingPrograms ? (
-            <div className="animate-pulse bg-white h-14 rounded-2xl border border-[var(--border)] w-full" />
+            <div className={cn(skeleton, "h-14")} />
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {livePlatforms.map(plat => {
@@ -494,11 +486,11 @@ export function NewChallengeForm() {
                   >
                     <span className="flex items-center gap-3 min-w-0">
                       <RadioCircle selected={selected} />
-                      <span className={cn("text-[13px] font-bold truncate", selected ? "text-[var(--teal-900)]" : "text-[var(--ink-950)]")}>
+                      <span className="text-[13px] font-semibold truncate text-[var(--g-ink)]">
                         {plat.name}
                       </span>
                     </span>
-                    <span className={cn("shrink-0 text-[12px]", extraCost === 0 ? "text-emerald-600 font-bold" : "text-[var(--ink-400)]")}>
+                    <span className={cn("g-num shrink-0 text-[12px]", extraCost === 0 ? "text-[var(--g-emerald)] font-semibold" : "text-[var(--g-muted-ink)]")}>
                       {extraCost === 0 ? "Free" : `+${formatCurrency(extraCost)}`}
                     </span>
                   </button>
@@ -511,10 +503,10 @@ export function NewChallengeForm() {
         {/* Personal Information */}
         <section>
           <SectionHeading title="Personal Information" subtitle="Please enter your billing and contact details" />
-          <div className="bg-white rounded-2xl border border-[var(--border)] p-4 sm:p-6 shadow-sm">
+          <Panel className="p-4 sm:p-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">First Name</label>
+                <label className={fieldLabel}>First Name</label>
                 <input
                   type="text"
                   value={personalInfo.firstName}
@@ -524,7 +516,7 @@ export function NewChallengeForm() {
                 />
               </div>
               <div>
-                <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Last Name</label>
+                <label className={fieldLabel}>Last Name</label>
                 <input
                   type="text"
                   value={personalInfo.lastName}
@@ -534,7 +526,7 @@ export function NewChallengeForm() {
                 />
               </div>
               <div>
-                <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Phone Number</label>
+                <label className={fieldLabel}>Phone Number</label>
                 <input
                   type="tel"
                   value={personalInfo.phone}
@@ -544,7 +536,7 @@ export function NewChallengeForm() {
                 />
               </div>
               <div>
-                <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Zip/Postal Code</label>
+                <label className={fieldLabel}>Zip/Postal Code</label>
                 <input
                   type="text"
                   value={personalInfo.zipCode}
@@ -554,7 +546,7 @@ export function NewChallengeForm() {
                 />
               </div>
               <div className="sm:col-span-2">
-                <label className="block text-[12px] font-bold text-[var(--ink-700)] mb-1.5">Billing Address</label>
+                <label className={fieldLabel}>Billing Address</label>
                 <input
                   type="text"
                   value={personalInfo.address}
@@ -564,7 +556,7 @@ export function NewChallengeForm() {
                 />
               </div>
             </div>
-          </div>
+          </Panel>
         </section>
 
         {/* Payment Gateway */}
@@ -584,7 +576,7 @@ export function NewChallengeForm() {
               return (
                 <label
                   key={method.id}
-                  className={cn(selectableCard(selected), "flex items-center justify-between gap-3 px-4 py-3.5 min-h-[52px]")}
+                  className={cn(selectableCard(selected), "flex items-center justify-between gap-3 px-4 py-3.5 min-h-[52px] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[var(--g-emerald)]")}
                 >
                   <div className="min-w-0 flex items-center gap-3">
                     <input
@@ -599,12 +591,12 @@ export function NewChallengeForm() {
                       className="sr-only"
                     />
                     <RadioCircle selected={selected} />
-                    <span className={cn("min-w-0 text-[13px] font-bold flex items-center gap-2 truncate", selected ? "text-[var(--teal-900)]" : "text-[var(--ink-950)]")}>
+                    <span className="min-w-0 text-[13px] font-semibold flex items-center gap-2 truncate text-[var(--g-ink)]">
                       {method.id}
-                      {method.fee && <span className="text-[11px] font-medium text-[var(--ink-400)]">{method.fee}</span>}
+                      {method.fee && <span className="text-[11px] font-medium text-[var(--g-muted-ink)]">{method.fee}</span>}
                     </span>
                   </div>
-                  <div className="shrink-0 text-right text-[11px] sm:text-[12px] font-bold text-[var(--ink-900)] opacity-60">
+                  <div className="shrink-0 text-right text-[11px] sm:text-[12px] font-bold text-[var(--g-ink)] opacity-45">
                     {method.logo} {method.rightLogo && <span>{method.rightLogo}</span>}
                   </div>
                 </label>
@@ -613,7 +605,7 @@ export function NewChallengeForm() {
           </div>
 
           {isFirstTpp && paymentMethod !== "Crypto" && (
-            <div className="mt-4 p-3 bg-red-50 border-l-4 border-red-500 rounded-r-xl text-[12px] font-bold text-red-700 shadow-sm">
+            <div className="mt-4 rounded-[14px] bg-red-500/10 p-3 text-[12px] font-semibold text-red-700 ring-1 ring-red-500/20">
               Promo code applied only on crypto payments
             </div>
           )}
@@ -635,38 +627,38 @@ export function NewChallengeForm() {
                 value={promoInput}
                 onChange={e => setPromoInput(e.target.value)}
                 placeholder="ENTER COUPON CODE"
-                className="min-w-0 flex-1 bg-white border border-[var(--border)] rounded-xl h-12 px-4 text-[13px] font-medium uppercase tracking-wide placeholder:text-[var(--ink-400)] focus:outline-none focus:border-[var(--teal-800)] focus:ring-2 focus:ring-[var(--teal-800)]/10 transition-all shadow-sm"
+                className={cn(inputClasses, "min-w-0 flex-1 text-[13px] font-medium uppercase tracking-wide")}
               />
               <button
                 onClick={handleApplyPromo}
-                className="h-12 px-6 bg-[var(--teal-900)] hover:bg-[var(--teal-800)] text-white text-[13px] font-bold rounded-xl transition-all shadow-sm"
+                className={btn.ink}
               >
                 Apply
               </button>
             </div>
-            {promoError && <p className="text-red-500 text-[12px] font-medium mt-2 px-1">{promoError}</p>}
-            {appliedPromo && <p className="text-emerald-600 text-[12px] font-bold mt-2 px-1">Coupon &quot;{appliedPromo}&quot; applied successfully!</p>}
+            {promoError && <p className="text-red-600 text-[12px] font-medium mt-2 px-1">{promoError}</p>}
+            {appliedPromo && <p className="text-[var(--g-emerald)] text-[12px] font-semibold mt-2 px-1">Coupon &quot;{appliedPromo}&quot; applied successfully!</p>}
           </section>
 
           {/* Order Summary Card */}
-          <div className="bg-white rounded-2xl border border-[var(--border)] shadow-md overflow-hidden">
+          <Panel className="overflow-hidden">
 
-            <div className="p-5 sm:p-6 border-b border-[var(--border)]">
-              <h3 className="font-display font-bold text-[18px] text-[var(--ink-950)] tracking-tight">Order Summary</h3>
+            <div className="p-5 sm:p-6 border-b border-black/[0.06]">
+              <h3 className="font-semibold text-[18px] text-[var(--g-ink)] tracking-[-0.02em]">Order Summary</h3>
             </div>
 
-            <div className="p-5 sm:p-6 border-b border-[var(--border)]">
+            <div className="p-5 sm:p-6 border-b border-black/[0.06]">
               <div className="space-y-3">
-                <div className="flex justify-between items-start gap-4 text-[13px] font-medium text-[var(--ink-700)]">
+                <div className="flex justify-between items-start gap-4 text-[13px] font-medium text-[var(--g-ink)]">
                   <span className="min-w-0 break-words">{formatAccSize(effectiveSize)} — {program.shortLabel}</span>
-                  <span className="shrink-0 font-bold text-[var(--ink-950)] tabular-nums">{formatCurrency(base ?? 0)}</span>
+                  <span className="g-num shrink-0 font-semibold">{formatCurrency(base ?? 0)}</span>
                 </div>
-                <div className="flex justify-between items-start gap-4 text-[13px] font-medium text-[var(--ink-500)]">
+                <div className="flex justify-between items-start gap-4 text-[13px] font-medium text-[var(--g-muted-ink)]">
                   <span className="min-w-0 break-words">Platform: {platform}</span>
                   {platformExtras > 0 ? (
-                    <span className="shrink-0 tabular-nums">+{formatCurrency(platformExtras)}</span>
+                    <span className="g-num shrink-0">+{formatCurrency(platformExtras)}</span>
                   ) : (
-                    <span className="shrink-0 text-emerald-600 font-bold">Free</span>
+                    <span className="shrink-0 text-[var(--g-emerald)] font-semibold">Free</span>
                   )}
                 </div>
 
@@ -676,9 +668,9 @@ export function NewChallengeForm() {
                   let cost = (base ?? 0) * (addOnDef.feePct / 100);
                   if (isFirstTpp && key === "free-retry") cost = 0;
                   return (
-                    <div key={key} className="flex justify-between items-start gap-4 text-[13px] font-medium text-[var(--ink-500)]">
+                    <div key={key} className="flex justify-between items-start gap-4 text-[13px] font-medium text-[var(--g-muted-ink)]">
                       <span className="min-w-0 break-words">{addOnDef.label}</span>
-                      <span className={cn("shrink-0 tabular-nums", cost === 0 ? "text-emerald-600 font-bold" : "")}>
+                      <span className={cn("g-num shrink-0", cost === 0 ? "text-[var(--g-emerald)] font-semibold" : "")}>
                         {cost === 0 ? "Free" : `+${formatCurrency(cost)}`}
                       </span>
                     </div>
@@ -686,25 +678,25 @@ export function NewChallengeForm() {
                 })}
 
                 {promoDiscountAmt > 0 && (
-                  <div className="flex justify-between items-center text-[13px] font-bold text-emerald-600 pt-2 border-t border-[var(--border)]">
+                  <div className="flex justify-between items-center text-[13px] font-semibold text-[var(--g-emerald)] pt-2 border-t border-black/[0.06]">
                     <span>Coupon ({appliedPromo.toUpperCase()})</span>
-                    <span className="tabular-nums">-{formatCurrency(promoDiscountAmt)}</span>
+                    <span className="g-num">-{formatCurrency(promoDiscountAmt)}</span>
                   </div>
                 )}
 
                 {paymentFeePct > 0 && (
-                  <div className="flex justify-between items-center text-[13px] font-medium text-amber-600">
+                  <div className="flex justify-between items-center text-[13px] font-medium text-amber-700">
                     <span>Payment Gateway Fee</span>
                     <span>+{paymentFeePct}%</span>
                   </div>
                 )}
               </div>
 
-              <div className="flex justify-between items-end gap-4 mt-5 pt-4 border-t border-[var(--border)]">
-                <span className="font-bold text-[15px] text-[var(--ink-950)]">Total</span>
+              <div className="flex justify-between items-end gap-4 mt-5 pt-4 border-t border-black/[0.06]">
+                <span className="font-semibold text-[15px] text-[var(--g-ink)]">Total</span>
                 <span className="min-w-0 text-right">
-                  <span className="block text-[28px] sm:text-[32px] font-display font-bold text-[var(--ink-950)] leading-none break-words tabular-nums">{formatCurrency(finalTotal)}</span>
-                  <span className="block text-[11px] font-bold uppercase tracking-wider text-[var(--ink-400)] mt-1">{currency}</span>
+                  <span className="g-num block text-[28px] sm:text-[32px] font-semibold text-[var(--g-ink)] leading-none break-words">{formatCurrency(finalTotal)}</span>
+                  <span className="block text-[11px] font-semibold uppercase tracking-wider text-[var(--g-muted-ink)] mt-1">{currency}</span>
                 </span>
               </div>
             </div>
@@ -718,13 +710,13 @@ export function NewChallengeForm() {
                     onChange={(e) => setAgreed(e.target.checked)}
                     className="peer sr-only"
                   />
-                  <div className="w-4 h-4 rounded border border-[var(--ink-300)] bg-white peer-checked:bg-[var(--teal-900)] peer-checked:border-[var(--teal-900)] transition-colors" />
-                  <Check className="w-3 h-3 text-white absolute opacity-0 peer-checked:opacity-100 transition-opacity" />
+                  <div className="w-[18px] h-[18px] rounded-md bg-white ring-1 ring-black/20 transition-colors peer-checked:bg-[var(--g-ink)] peer-checked:ring-[var(--g-ink)] peer-focus-visible:ring-2 peer-focus-visible:ring-[var(--g-emerald)]" />
+                  <Check className="w-3 h-3 text-[var(--g-lime)] absolute opacity-0 peer-checked:opacity-100 transition-opacity" strokeWidth={3} />
                 </div>
-                <div className="text-[12px] text-[var(--ink-600)] leading-relaxed flex-1 select-none">
-                  <span className="block font-bold text-[var(--ink-950)] mb-1.5">I agree with all the following terms:</span>
+                <div className="text-[12px] text-[var(--g-muted-ink)] leading-relaxed flex-1 select-none">
+                  <span className="block font-semibold text-[var(--g-ink)] mb-1.5">I agree with all the following terms:</span>
                   <ul className="list-disc pl-4 space-y-1">
-                    <li>I have read and agreed to the <span className="text-[var(--ink-950)] font-medium underline underline-offset-2">Trading Objectives</span> and <span className="text-[var(--ink-950)] font-medium underline underline-offset-2">Terms &amp; Conditions</span>.</li>
+                    <li>I have read and agreed to the <span className="text-[var(--g-ink)] font-medium underline underline-offset-2">Trading Objectives</span> and <span className="text-[var(--g-ink)] font-medium underline underline-offset-2">Terms &amp; Conditions</span>.</li>
                     <li>All information provided is correct and matches government-issued ID.</li>
                     <li>I confirm that I am not a U.S. citizen or resident.</li>
                   </ul>
@@ -734,19 +726,19 @@ export function NewChallengeForm() {
               <button
                 onClick={handleCheckout}
                 disabled={!agreed || (isFirstTpp && paymentMethod !== "Crypto") || isCheckingOut}
-                className="w-full mt-6 h-13 min-h-12 flex items-center justify-center gap-2.5 bg-[var(--teal-900)] hover:bg-[var(--teal-800)] text-white font-bold rounded-xl disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-[0_10px_26px_-10px_rgba(18,43,40,0.55)] active:scale-[0.98]"
+                className={cn(btn.lime, "w-full mt-6")}
               >
                 <CreditCard className="w-4.5 h-4.5" />
                 {isCheckingOut ? "Processing..." : "Proceed to Payment"}
               </button>
               {checkoutMessage && (
-                <div className="mt-4 text-center text-[13px] font-bold text-emerald-600">
+                <div className="mt-4 text-center text-[13px] font-semibold text-[var(--g-emerald)]">
                   {checkoutMessage}
                 </div>
               )}
             </div>
 
-          </div>
+          </Panel>
         </div>
       </div>
 

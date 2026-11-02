@@ -1,0 +1,21 @@
+/*
+ * The dashboard is the light side of the glass system. .v2-scope (glass.css)
+ * is set up for the dark site, so this flips what utility classes can't reach:
+ * color scheme, canvas and text color, the focus ring and the page scrollbar.
+ */
+
+:global(.v2-scope).light {
+  color-scheme: light;
+  background: var(--g-pearl);
+  color: var(--g-ink);
+}
+
+:global(.v2-scope).light :global(:focus-visible) {
+  outline-color: var(--g-emerald);
+}
+
+:global(html):has(:global(.v2-scope).light),
+:global(html):has(:global(.v2-scope).light) :global(body) {
+  background: #f3f5f4;
+  scrollbar-color: rgba(14, 17, 16, 0.28) transparent;
+}

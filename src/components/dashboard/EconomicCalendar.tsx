@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { Panel } from "./glass";
 
 export function EconomicCalendar() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -18,7 +19,7 @@ export function EconomicCalendar() {
     script.innerHTML = `
       {
         "colorTheme": "light",
-        "isTransparent": false,
+        "isTransparent": true,
         "width": "100%",
         "height": "100%",
         "locale": "en",
@@ -33,16 +34,16 @@ export function EconomicCalendar() {
   }, []);
 
   return (
-    <div className="bg-white rounded-[24px] border border-[var(--border)] shadow-sm overflow-hidden w-full h-[800px] p-2 relative">
+    <Panel className="h-[800px] w-full overflow-hidden p-2">
       <div className="tradingview-widget-container w-full h-full" ref={containerRef}>
         <div className="tradingview-widget-container__widget w-full h-[calc(100%-32px)]"></div>
         <div className="tradingview-widget-copyright text-center text-[11px] mt-2">
-          <a href="https://www.tradingview.com/economic-calendar/" rel="noopener nofollow" target="_blank" className="text-[var(--accent)] hover:underline">
+          <a href="https://www.tradingview.com/economic-calendar/" rel="noopener nofollow" target="_blank" className="font-medium text-[var(--g-emerald)] hover:underline">
             Economic Calendar
           </a>
-          <span className="text-[var(--ink-500)] ml-1">by TradingView</span>
+          <span className="ml-1 text-[var(--g-muted-ink)]">by TradingView</span>
         </div>
       </div>
-    </div>
+    </Panel>
   );
 }

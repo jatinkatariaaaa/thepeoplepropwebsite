@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
+import { Chip, Empty, Meter, PageTitle, Panel, PanelHead, Stat, btn, table } from "@/components/dashboard/glass";
 
 /* ---------- types ---------- */
 interface ContestEntry {
@@ -141,16 +142,16 @@ export function ContestDashboard() {
   /* --- loading skeleton --- */
   if (loading) {
     return (
-      <div className="max-w-5xl mx-auto animate-in fade-in duration-500">
+      <div className="mx-auto max-w-5xl">
         <div className="mb-8">
-          <div className="h-8 w-48 bg-[var(--border)] rounded-lg animate-pulse" />
-          <div className="h-5 w-80 bg-[var(--border)] rounded-lg animate-pulse mt-3" />
+          <div className="h-9 w-48 animate-pulse rounded-[12px] bg-black/[0.06]" />
+          <div className="mt-3 h-5 w-80 max-w-full animate-pulse rounded-[10px] bg-black/[0.05]" />
         </div>
         <div className="space-y-6">
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="bg-white rounded-2xl border border-[var(--border)] shadow-sm h-40 animate-pulse"
+              className="h-40 animate-pulse rounded-[28px] bg-white/55 ring-1 ring-black/[0.05]"
             />
           ))}
         </div>
@@ -161,20 +162,27 @@ export function ContestDashboard() {
   /* --- error fallback --- */
   if (error && !entry) {
     return (
-      <div className="max-w-5xl mx-auto animate-in fade-in duration-500">
-        <div className="bg-white rounded-2xl border border-red-200 shadow-sm p-8 text-center">
-          <Gift className="w-12 h-12 text-red-400 mx-auto mb-4" />
-          <h2 className="text-[18px] font-bold text-[var(--ink-950)] mb-2">
-            Unable to load contest
-          </h2>
-          <p className="text-[14px] text-[var(--ink-500)]">{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="mt-5 bg-[var(--accent)] hover:bg-[var(--accent-700)] text-white rounded-xl px-5 py-2.5 font-medium text-[14px] transition-colors"
+      <div className="mx-auto max-w-5xl">
+        <Panel>
+          <Empty
+            visual={
+              <span className="mb-4 grid h-14 w-14 place-items-center rounded-full bg-red-500/10 text-red-600 ring-1 ring-red-500/20">
+                <Gift className="h-6 w-6" />
+              </span>
+            }
+            title="Unable to load contest"
+            action={
+              <button
+                onClick={() => window.location.reload()}
+                className={cn(btn.ink, btn.sm)}
+              >
+                Try Again
+              </button>
+            }
           >
-            Try Again
-          </button>
-        </div>
+            {error}
+          </Empty>
+        </Panel>
       </div>
     );
   }
@@ -183,169 +191,84 @@ export function ContestDashboard() {
      MAIN RENDER
      ============================================================ */
   return (
-    <div className="max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+    <div className="mx-auto max-w-5xl">
       {/* ---- claimed banner ---- */}
       {entry?.claimed && (
-        <div className="mb-6 bg-emerald-50 border border-emerald-200 rounded-2xl px-6 py-4 flex items-center gap-3">
+        <div className="mb-6 flex flex-wrap items-center gap-3 rounded-[22px] bg-[var(--g-emerald)]/10 px-5 py-4 ring-1 ring-[var(--g-emerald)]/20 sm:px-6">
           <span className="text-2xl">🎉</span>
-          <div className="flex-1">
-            <p className="text-[14px] font-semibold text-emerald-800">
+          <div className="min-w-0 flex-1">
+            <p className="text-[14px] font-semibold text-[var(--g-ink)]">
               You claimed your free 10K 3-Step account!
             </p>
-            <p className="text-[13px] text-emerald-600 mt-0.5">
+            <p className="mt-0.5 text-[13px] text-[var(--g-muted-ink)]">
               Check your accounts page to view it.
             </p>
           </div>
           <a
             href="/dashboard"
-            className="flex items-center gap-1.5 text-[13px] font-medium text-emerald-700 hover:text-emerald-900 transition-colors"
+            className="flex items-center gap-1.5 text-[13px] font-semibold text-[var(--g-emerald)] transition-colors hover:text-[var(--g-ink)]"
           >
-            View Accounts <ArrowRight className="w-4 h-4" />
+            View Accounts <ArrowRight className="h-4 w-4" />
           </a>
         </div>
       )}
 
       {/* ---- page header ---- */}
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 rounded-xl bg-[var(--accent)]/10 flex items-center justify-center">
-            <Gift className="w-5 h-5 text-[var(--accent)]" />
-          </div>
-          <h1 className="text-2xl font-display font-bold text-[var(--ink-950)]">
-            Contest
-          </h1>
-        </div>
-        <p className="text-[14px] text-[var(--ink-500)]">
-          Invite 10 friends and claim your free 10K account
-        </p>
-      </div>
+      <PageTitle lead="Contest" lede="Invite 10 friends and claim your free 10K account" />
 
       {/* ---- progress section ---- */}
-      <div className="bg-white rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden mb-6">
-        <div className="p-6 border-b border-[var(--border)]">
-          <h2 className="text-[16px] font-bold text-[var(--ink-950)]">
-            Your Progress
-          </h2>
-        </div>
-        <div className="p-6">
+      <Panel className="mb-6">
+        <PanelHead title="Your Progress" />
+        <div className="p-5 sm:p-6">
           {/* step circles removed */}
 
           {/* label */}
-          <p className="text-center text-[14px] font-medium text-[var(--ink-600)] mb-4">
-            {count} of {target} referrals completed
+          <p className="mb-4 text-center text-[14px] font-medium text-[var(--g-muted-ink)]">
+            <span className="g-num font-semibold text-[var(--g-ink)]">{count}</span> of {target} referrals completed
           </p>
 
           {/* progress bar */}
-          <div className="h-2 rounded-full bg-[var(--border)] overflow-hidden">
-            <div
-              className="h-full rounded-full bg-[var(--accent)] transition-all duration-700 ease-out"
-              style={{ width: `${pct}%` }}
-            />
-          </div>
+          <Meter value={pct} className="h-2.5" />
         </div>
-      </div>
+      </Panel>
 
       {/* ---- stats grid ---- */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        {/* total referrals */}
-        <div className="bg-white rounded-2xl p-6 border border-[var(--border)] shadow-sm">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center">
-              <Users className="w-6 h-6 text-blue-600" />
-            </div>
-            <div>
-              <p className="text-[13px] font-medium text-[var(--ink-500)]">
-                Total Referrals
-              </p>
-              <p className="text-[32px] font-bold text-[var(--ink-950)] leading-tight mt-0.5">
-                {count}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* remaining */}
-        <div className="bg-white rounded-2xl p-6 border border-[var(--border)] shadow-sm">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center">
-              <Clock className="w-6 h-6 text-amber-600" />
-            </div>
-            <div>
-              <p className="text-[13px] font-medium text-[var(--ink-500)]">
-                Remaining
-              </p>
-              <p className="text-[32px] font-bold text-[var(--ink-950)] leading-tight mt-0.5">
-                {remaining}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* status */}
-        <div className="bg-white rounded-2xl p-6 border border-[var(--border)] shadow-sm">
-          <div className="flex items-center gap-4">
-            <div
+      <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <Stat label="Total Referrals" value={count} icon={Users} />
+        <Stat label="Remaining" value={remaining} icon={Clock} />
+        <Stat
+          label="Status"
+          value={
+            <span
               className={cn(
-                "w-12 h-12 rounded-xl flex items-center justify-center",
+                "text-[18px]",
                 entry?.claimed
-                  ? "bg-emerald-50"
+                  ? "text-[var(--g-emerald)]"
                   : canClaim
-                    ? "bg-[var(--accent)]/10"
-                    : "bg-purple-50"
+                    ? "text-[#4d7a0c]"
+                    : "text-[var(--g-ink)]"
               )}
             >
-              <Trophy
-                className={cn(
-                  "w-6 h-6",
-                  entry?.claimed
-                    ? "text-emerald-600"
-                    : canClaim
-                      ? "text-[var(--accent)]"
-                      : "text-purple-600"
-                )}
-              />
-            </div>
-            <div>
-              <p className="text-[13px] font-medium text-[var(--ink-500)]">
-                Status
-              </p>
-              <p
-                className={cn(
-                  "text-[16px] font-bold leading-tight mt-0.5",
-                  entry?.claimed
-                    ? "text-emerald-600"
-                    : canClaim
-                      ? "text-[var(--accent)]"
-                      : "text-[var(--ink-950)]"
-                )}
-              >
-                {entry?.claimed
-                  ? "Claimed ✅"
-                  : canClaim
-                    ? "Ready to Claim!"
-                    : "In Progress"}
-              </p>
-            </div>
-          </div>
-        </div>
+              {entry?.claimed
+                ? "Claimed ✅"
+                : canClaim
+                  ? "Ready to Claim!"
+                  : "In Progress"}
+            </span>
+          }
+          icon={Trophy}
+        />
       </div>
 
       {/* ---- referral link ---- */}
-      <div className="bg-white rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden mb-6">
-        <div className="p-6 border-b border-[var(--border)]">
-          <h2 className="text-[16px] font-bold text-[var(--ink-950)]">
-            Your Referral Link
-          </h2>
-          <p className="text-[13px] text-[var(--ink-500)] mt-1">
-            Share this link with friends to earn referrals
-          </p>
-        </div>
-        <div className="p-6 bg-[var(--paper-2)]">
+      <Panel className="mb-6">
+        <PanelHead title="Your Referral Link" sub="Share this link with friends to earn referrals" />
+        <div className="p-5 sm:p-6">
           {/* link + copy */}
-          <div className="flex flex-col sm:flex-row gap-3 mb-5">
-            <div className="flex-1 bg-white border border-[var(--border)] rounded-xl h-12 flex items-center px-4 overflow-hidden">
-              <Link2 className="w-4 h-4 text-[var(--ink-400)] shrink-0 mr-2" />
-              <span className="text-[14px] font-mono text-[var(--ink-600)] truncate">
+          <div className="mb-5 flex flex-col gap-3 sm:flex-row">
+            <div className="flex h-12 min-w-0 flex-1 items-center overflow-hidden rounded-[16px] bg-white/70 px-4 ring-1 ring-black/[0.08]">
+              <Link2 className="mr-2 h-4 w-4 shrink-0 text-black/40" />
+              <span className="g-num truncate text-[14.5px] text-[var(--g-ink)]">
                 {link || "Loading..."}
               </span>
             </div>
@@ -353,20 +276,19 @@ export function ContestDashboard() {
               onClick={() => handleCopy()}
               disabled={!link}
               className={cn(
-                "h-12 px-6 rounded-xl font-bold text-[14px] flex items-center justify-center gap-2 transition-all shrink-0",
+                "shrink-0",
                 copied
-                  ? "bg-emerald-100 text-emerald-700 border border-emerald-200"
-                  : "bg-[var(--ink-950)] hover:bg-[var(--ink-800)] text-white shadow-md active:scale-[0.98]",
-                !link && "opacity-50 cursor-not-allowed"
+                  ? "g-btn bg-[var(--g-emerald)]/10 text-[var(--g-emerald)] ring-1 ring-[var(--g-emerald)]/25"
+                  : btn.ink
               )}
             >
               {copied ? (
                 <>
-                  <Check className="w-4 h-4" /> Copied!
+                  <Check className="h-4 w-4" /> Copied!
                 </>
               ) : (
                 <>
-                  <Copy className="w-4 h-4" /> Copy Link
+                  <Copy className="h-4 w-4" /> Copy Link
                 </>
               )}
             </button>
@@ -378,93 +300,72 @@ export function ContestDashboard() {
               href={shareLinks.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-medium bg-[#25D366] hover:bg-[#20bd5a] text-white transition-colors"
+              className={cn(btn.light, btn.sm)}
             >
-              <Share2 className="w-4 h-4" />
+              <Share2 className="h-4 w-4 text-[#1da851]" />
               WhatsApp
             </a>
             <a
               href={shareLinks.telegram}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-medium bg-[#0088CC] hover:bg-[#007ab8] text-white transition-colors"
+              className={cn(btn.light, btn.sm)}
             >
-              <Share2 className="w-4 h-4" />
+              <Share2 className="h-4 w-4 text-[#0088cc]" />
               Telegram
             </a>
             <a
               href={shareLinks.twitter}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-medium bg-[var(--ink-900)] hover:bg-[var(--ink-800)] text-white transition-colors"
+              className={cn(btn.light, btn.sm)}
             >
-              <ExternalLink className="w-4 h-4" />
+              <ExternalLink className="h-4 w-4" />
               Twitter / X
             </a>
             <button
               onClick={() => handleCopy()}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-medium bg-white border border-[var(--border)] hover:bg-[var(--paper-2)] text-[var(--ink-700)] transition-colors"
+              className={cn(btn.light, btn.sm)}
             >
-              <Copy className="w-4 h-4" />
+              <Copy className="h-4 w-4" />
               Copy Link
             </button>
           </div>
         </div>
-      </div>
+      </Panel>
 
       {/* ---- referrals table ---- */}
-      <div className="bg-white rounded-2xl border border-[var(--border)] shadow-sm overflow-hidden mb-6">
-        <div className="p-6 border-b border-[var(--border)]">
-          <h2 className="text-[16px] font-bold text-[var(--ink-950)]">
-            Your Referrals
-          </h2>
-        </div>
+      <Panel className="mb-6 overflow-hidden">
+        <PanelHead title="Your Referrals" />
 
         {referrals.length === 0 ? (
-          <div className="p-6">
-            <div className="text-center py-10">
-              <Users className="w-10 h-10 text-[var(--ink-300)] mx-auto mb-3" />
-              <p className="text-[14px] font-medium text-[var(--ink-950)]">
-                No referrals yet
-              </p>
-              <p className="text-[13px] text-[var(--ink-500)] mt-1">
-                Share your link to start getting referrals
-              </p>
-            </div>
-          </div>
+          <Empty icon={Users} title="No referrals yet">
+            Share your link to start getting referrals
+          </Empty>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-[13px]">
+          <div className={table.scroll}>
+            <table className="w-full text-[13.5px]">
               <thead>
-                <tr className="border-b border-[var(--border)]">
-                  <th className="text-left px-6 py-3 text-[var(--ink-500)] font-medium uppercase tracking-wider text-[11px]">
-                    Email
-                  </th>
-                  <th className="text-left px-6 py-3 text-[var(--ink-500)] font-medium uppercase tracking-wider text-[11px]">
-                    Signed Up
-                  </th>
-                  <th className="text-left px-6 py-3 text-[var(--ink-500)] font-medium uppercase tracking-wider text-[11px]">
-                    Status
-                  </th>
+                <tr className={table.headRow}>
+                  <th className={table.th}>Email</th>
+                  <th className={table.th}>Signed Up</th>
+                  <th className={table.th}>Status</th>
                 </tr>
               </thead>
               <tbody>
                 {referrals.map((ref) => (
-                  <tr
-                    key={ref.id}
-                    className="border-b border-[var(--border)] last:border-0 hover:bg-[var(--paper-2)] transition-colors"
-                  >
-                    <td className="px-6 py-4 text-[var(--ink-700)] font-mono">
+                  <tr key={ref.id} className={table.row}>
+                    <td className={cn(table.td, "g-num text-[var(--g-ink)]")}>
                       {maskEmail(ref.email)}
                     </td>
-                    <td className="px-6 py-4 text-[var(--ink-600)]">
+                    <td className={cn(table.td, "text-[var(--g-muted-ink)]")}>
                       {formatDate(ref.created_at)}
                     </td>
-                    <td className="px-6 py-4">
-                      <span className="inline-flex items-center gap-1 text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full text-[12px] font-medium">
-                        <CheckCircle className="w-3.5 h-3.5" />
+                    <td className={table.td}>
+                      <Chip tone="emerald">
+                        <CheckCircle className="h-3.5 w-3.5" />
                         Verified
-                      </span>
+                      </Chip>
                     </td>
                   </tr>
                 ))}
@@ -472,35 +373,30 @@ export function ContestDashboard() {
             </table>
           </div>
         )}
-      </div>
+      </Panel>
 
       {/* ---- claim section ---- */}
       {canClaim && !claimSuccess && (
-        <div className="bg-white rounded-2xl border-2 border-[var(--accent)] shadow-sm overflow-hidden mb-6 relative">
+        <div className="g-card-dark g-hair relative mb-6 overflow-hidden rounded-[28px]">
           {/* subtle confetti-like accent */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent)]/5 via-transparent to-[var(--accent)]/5 pointer-events-none" />
-          <div className="p-8 text-center relative">
-            <span className="text-4xl mb-4 block">🎉</span>
-            <h2 className="text-[20px] font-bold text-[var(--ink-950)] mb-2">
+          <div aria-hidden="true" className="pointer-events-none absolute -top-24 left-1/2 h-72 w-[36rem] max-w-full -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(203,251,69,0.22),transparent)]" />
+          <div className="relative p-8 text-center">
+            <span className="mb-4 block text-4xl">🎉</span>
+            <h2 className="mb-2 text-[20px] font-semibold tracking-[-0.02em] text-white">
               Congratulations! You&apos;ve completed all {target} referrals!
             </h2>
-            <p className="text-[14px] text-[var(--ink-500)] mb-6">
+            <p className="mb-6 text-[14px] text-white/60">
               Click below to claim your free 10K 3-Step trading account
             </p>
             <button
               onClick={handleClaim}
               disabled={claiming}
-              className={cn(
-                "inline-flex items-center gap-2 px-8 py-3.5 rounded-xl font-bold text-[16px] transition-all shadow-lg",
-                claiming
-                  ? "bg-[var(--accent)]/60 text-white cursor-wait"
-                  : "bg-[var(--accent)] hover:bg-[var(--accent-700)] text-white hover:shadow-xl active:scale-[0.98]"
-              )}
+              className={cn(btn.lime, claiming && "cursor-wait")}
             >
               {claiming ? (
                 <>
                   <svg
-                    className="animate-spin w-5 h-5"
+                    className="h-5 w-5 animate-spin"
                     viewBox="0 0 24 24"
                     fill="none"
                   >
@@ -522,7 +418,7 @@ export function ContestDashboard() {
                 </>
               ) : (
                 <>
-                  <Trophy className="w-5 h-5" />
+                  <Trophy className="h-5 w-5" />
                   Claim Your Free 10K Account
                 </>
               )}
@@ -533,50 +429,48 @@ export function ContestDashboard() {
 
       {/* ---- already claimed (came back to page) ---- */}
       {entry?.claimed && !claimSuccess && (
-        <div className="bg-emerald-50 rounded-2xl border border-emerald-200 shadow-sm p-6 mb-6">
-          <div className="flex items-center gap-3">
-            <CheckCircle className="w-6 h-6 text-emerald-600 shrink-0" />
-            <div>
-              <p className="text-[14px] font-semibold text-emerald-800">
-                You&apos;ve already claimed your free account
-              </p>
-              <p className="text-[13px] text-emerald-600 mt-0.5">
-                Head to your accounts page to start trading.
-              </p>
-            </div>
-            <a
-              href="/dashboard"
-              className="ml-auto flex items-center gap-1.5 text-[13px] font-medium text-emerald-700 hover:text-emerald-900 transition-colors shrink-0"
-            >
-              View Accounts <ArrowRight className="w-4 h-4" />
-            </a>
+        <div className="mb-6 flex flex-wrap items-center gap-3 rounded-[22px] bg-[var(--g-emerald)]/10 p-5 ring-1 ring-[var(--g-emerald)]/20 sm:p-6">
+          <CheckCircle className="h-6 w-6 shrink-0 text-[var(--g-emerald)]" />
+          <div className="min-w-0 flex-1">
+            <p className="text-[14px] font-semibold text-[var(--g-ink)]">
+              You&apos;ve already claimed your free account
+            </p>
+            <p className="mt-0.5 text-[13px] text-[var(--g-muted-ink)]">
+              Head to your accounts page to start trading.
+            </p>
           </div>
+          <a
+            href="/dashboard"
+            className="flex shrink-0 items-center gap-1.5 text-[13px] font-semibold text-[var(--g-emerald)] transition-colors hover:text-[var(--g-ink)]"
+          >
+            View Accounts <ArrowRight className="h-4 w-4" />
+          </a>
         </div>
       )}
 
       {/* ---- just claimed success ---- */}
       {claimSuccess && (
-        <div className="bg-emerald-50 rounded-2xl border border-emerald-200 shadow-sm p-8 mb-6 text-center">
-          <span className="text-4xl mb-3 block">🎉</span>
-          <h2 className="text-[20px] font-bold text-emerald-800 mb-2">
+        <Panel className="mb-6 p-8 text-center">
+          <span className="mb-3 block text-4xl">🎉</span>
+          <h2 className="mb-2 text-[20px] font-semibold tracking-[-0.02em] text-[var(--g-ink)]">
             Your free 10K account has been claimed!
           </h2>
-          <p className="text-[14px] text-emerald-600 mb-5">
+          <p className="mb-5 text-[14px] text-[var(--g-muted-ink)]">
             Check your accounts page to view and start trading on your new
             account.
           </p>
           <a
             href="/dashboard"
-            className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-6 py-3 font-medium text-[14px] transition-colors"
+            className={btn.ink}
           >
-            Go to Accounts <ArrowRight className="w-4 h-4" />
+            Go to Accounts <ArrowRight className="h-4 w-4" />
           </a>
-        </div>
+        </Panel>
       )}
 
       {/* ---- inline error toast ---- */}
       {error && entry && (
-        <div className="bg-red-50 border border-red-200 rounded-2xl px-6 py-4 mb-6">
+        <div className="mb-6 rounded-[18px] bg-red-500/10 px-5 py-4 ring-1 ring-red-500/20">
           <p className="text-[13px] text-red-700">{error}</p>
         </div>
       )}

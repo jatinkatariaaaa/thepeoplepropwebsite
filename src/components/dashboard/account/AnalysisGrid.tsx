@@ -24,6 +24,7 @@ import {
 } from "recharts";
 import type { AccountMetrics, DirectionStats } from "@/lib/account-metrics";
 import { cn } from "@/lib/utils";
+import { Panel } from "../glass";
 
 type TooltipEntry = {
   dataKey?: string | number;
@@ -32,12 +33,30 @@ type TooltipEntry = {
 };
 
 const COLORS = {
-  win: "#059669",
+  win: "#1d6656",
   loss: "#dc2626",
-  flat: "#94a3b8",
-  dark: "#0f172a",
-  accent: "#65a30d",
+  flat: "#b9c2bf",
+  dark: "#0e1110",
+  accent: "#8fc21d",
 };
+
+/* Recharts' built-in tooltip, dressed as light glass to match ChartTooltip. */
+const glassTooltip = {
+  contentStyle: {
+    background: "rgba(255,255,255,0.82)",
+    border: "none",
+    borderRadius: 16,
+    boxShadow: "inset 0 0 0 1px rgba(14,17,16,0.08), 0 24px 48px -28px rgba(16,40,34,0.35)",
+    backdropFilter: "blur(20px)",
+    padding: "10px 14px",
+  },
+  labelStyle: { color: "#5d6764", fontSize: 12, fontWeight: 600, marginBottom: 4 },
+  itemStyle: { color: "#0e1110", fontSize: 13, fontWeight: 600 },
+  cursor: { fill: "rgba(14,17,16,0.04)" },
+};
+
+const axisTick = { fontSize: 12, fill: "#5d6764" };
+const gridStroke = "rgba(14,17,16,0.08)";
 
 const money = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -75,10 +94,10 @@ function ChartTooltip({
   if (!active || !payload?.length) return null;
 
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-white px-4 py-3 shadow-lg">
-      <p className="mb-1 text-[12px] font-bold text-[var(--ink-500)]">{label}</p>
+    <div className="g-glass-light g-hair g-hair-ink rounded-[16px] px-4 py-3">
+      <p className="mb-1 text-[12px] font-semibold text-[var(--g-muted-ink)]">{label}</p>
       {payload.map((entry) => (
-        <p key={entry.dataKey || entry.name} className="text-[13px] font-bold text-[var(--ink-950)]">
+        <p key={entry.dataKey || entry.name} className="g-num text-[13px] font-semibold text-[var(--g-ink)]">
           {entry.name}: {typeof entry.value === "number" ? formatMoney(entry.value) : entry.value}
         </p>
       ))}
@@ -90,33 +109,33 @@ function DirectionPanel({ title, stats }: { title: string; stats: DirectionStats
   const isPositive = stats.netPnl >= 0;
 
   return (
-    <div className="bg-white border border-[var(--border)] rounded-2xl shadow-sm flex flex-col">
-      <div className="p-5 border-b border-[var(--border)]">
-        <h4 className="font-bold text-[15px] text-[var(--ink-950)]">{title}</h4>
+    <Panel className="flex flex-col">
+      <div className="p-5 border-b border-black/[0.06]">
+        <h4 className="font-semibold text-[15px] text-[var(--g-ink)]">{title}</h4>
       </div>
-      <div className="p-6 flex-1 flex flex-col items-center justify-center text-center border-b border-[var(--border)] min-h-[190px]">
-        <div className={cn("text-[30px] font-display font-bold mb-1", isPositive ? "text-emerald-600" : "text-red-600")}>
+      <div className="p-6 flex-1 flex flex-col items-center justify-center text-center border-b border-black/[0.06] min-h-[190px]">
+        <div className={cn("g-num text-[30px] font-semibold mb-1", isPositive ? "text-[var(--g-emerald)]" : "text-red-600")}>
           {formatSignedMoney(stats.netPnl)}
         </div>
-        <div className="text-[13px] text-[var(--ink-500)]">
+        <div className="text-[13px] text-[var(--g-muted-ink)]">
           {stats.trades} trades / {stats.volume.toLocaleString()} lots
         </div>
       </div>
-      <div className="grid grid-cols-3 p-4 text-center divide-x divide-[var(--border)]">
-        <div>
-          <div className="text-[11px] font-bold text-[var(--ink-500)] mb-1">Wins ({stats.wins})</div>
-          <div className="text-[14px] font-bold text-[var(--ink-950)]">{formatMoney(stats.grossProfit)}</div>
+      <div className="grid grid-cols-3 p-4 text-center divide-x divide-black/[0.06]">
+        <div className="min-w-0 px-1">
+          <div className="text-[11px] font-semibold text-[var(--g-muted-ink)] mb-1">Wins ({stats.wins})</div>
+          <div className="g-num text-[14px] font-semibold text-[var(--g-ink)] break-words">{formatMoney(stats.grossProfit)}</div>
         </div>
-        <div>
-          <div className="text-[11px] font-bold text-[var(--ink-500)] mb-1">Win Rate</div>
-          <div className="text-[14px] font-bold text-[var(--ink-950)]">{formatPct(stats.winRate)}</div>
+        <div className="min-w-0 px-1">
+          <div className="text-[11px] font-semibold text-[var(--g-muted-ink)] mb-1">Win Rate</div>
+          <div className="g-num text-[14px] font-semibold text-[var(--g-ink)] break-words">{formatPct(stats.winRate)}</div>
         </div>
-        <div>
-          <div className="text-[11px] font-bold text-[var(--ink-500)] mb-1">Losses ({stats.losses})</div>
-          <div className="text-[14px] font-bold text-[var(--ink-950)]">{formatMoney(stats.grossLoss)}</div>
+        <div className="min-w-0 px-1">
+          <div className="text-[11px] font-semibold text-[var(--g-muted-ink)] mb-1">Losses ({stats.losses})</div>
+          <div className="g-num text-[14px] font-semibold text-[var(--g-ink)] break-words">{formatMoney(stats.grossLoss)}</div>
         </div>
       </div>
-    </div>
+    </Panel>
   );
 }
 
@@ -142,12 +161,12 @@ export function AnalysisGrid({ metrics }: { metrics?: AccountMetrics | null }) {
         ].map((stat) => {
           const Icon = stat.icon;
           return (
-            <div key={stat.label} className="bg-white border border-[var(--border)] rounded-2xl p-5 shadow-sm">
-              <div className="flex items-center gap-2 text-[13px] font-medium text-[var(--ink-500)] mb-2">
-                <Icon className="w-4 h-4" /> {stat.label}
+            <Panel key={stat.label} className="rounded-[22px] p-4 sm:p-5">
+              <div className="flex items-center gap-2 text-[13px] font-medium text-[var(--g-muted-ink)] mb-2">
+                <Icon className="w-4 h-4 shrink-0 text-[var(--g-emerald)]" /> {stat.label}
               </div>
-              <div className="text-[20px] font-display font-bold text-[var(--ink-950)]">{stat.value}</div>
-            </div>
+              <div className="g-num text-[20px] font-semibold text-[var(--g-ink)] break-words">{stat.value}</div>
+            </Panel>
           );
         })}
       </div>
@@ -162,12 +181,12 @@ export function AnalysisGrid({ metrics }: { metrics?: AccountMetrics | null }) {
         ].map((stat) => {
           const Icon = stat.icon;
           return (
-            <div key={stat.label} className="bg-white border border-[var(--border)] rounded-2xl p-5 shadow-sm">
-              <div className="flex items-center gap-2 text-[12px] font-medium text-[var(--ink-500)] mb-2">
-                <Icon className="w-3.5 h-3.5" /> {stat.label}
+            <Panel key={stat.label} className="rounded-[22px] p-4 sm:p-5">
+              <div className="flex items-center gap-2 text-[12px] font-medium text-[var(--g-muted-ink)] mb-2">
+                <Icon className="w-3.5 h-3.5 shrink-0 text-[var(--g-emerald)]" /> {stat.label}
               </div>
-              <div className="text-[18px] font-display font-bold text-[var(--ink-950)]">{stat.value}</div>
-            </div>
+              <div className="g-num text-[18px] font-semibold text-[var(--g-ink)] break-words">{stat.value}</div>
+            </Panel>
           );
         })}
       </div>
@@ -187,11 +206,11 @@ export function AnalysisGrid({ metrics }: { metrics?: AccountMetrics | null }) {
           volume: 0,
         }} />
 
-        <div className="bg-white border border-[var(--border)] rounded-2xl shadow-sm flex flex-col">
-          <div className="p-5 border-b border-[var(--border)]">
-            <h4 className="font-bold text-[15px] text-[var(--ink-950)]">Profitability</h4>
+        <Panel className="flex flex-col">
+          <div className="p-5 border-b border-black/[0.06]">
+            <h4 className="font-semibold text-[15px] text-[var(--g-ink)]">Profitability</h4>
           </div>
-          <div className="p-6 flex-1 flex flex-col items-center justify-center text-center border-b border-[var(--border)] min-h-[190px]">
+          <div className="p-6 flex-1 flex flex-col items-center justify-center text-center border-b border-black/[0.06] min-h-[190px]">
             {hasProfitabilityData ? (
               <ResponsiveContainer width="100%" height={160}>
                 <PieChart>
@@ -200,31 +219,31 @@ export function AnalysisGrid({ metrics }: { metrics?: AccountMetrics | null }) {
                       <Cell key={entry.name} fill={entry.fill} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip {...glassTooltip} />
                 </PieChart>
               </ResponsiveContainer>
             ) : (
               <>
-                <PieChartIcon className="w-8 h-8 text-[var(--ink-400)] mb-3" />
-                <div className="text-[14px] font-medium text-[var(--ink-600)]">Start trading to see analysis</div>
+                <PieChartIcon className="w-8 h-8 text-black/30 mb-3" />
+                <div className="text-[14px] font-medium text-[var(--g-muted-ink)]">Start trading to see analysis</div>
               </>
             )}
           </div>
-          <div className="grid grid-cols-3 p-4 text-center divide-x divide-[var(--border)]">
+          <div className="grid grid-cols-3 p-4 text-center divide-x divide-black/[0.06]">
             <div>
-              <div className="text-[11px] font-bold text-[var(--ink-500)] mb-1">Wins</div>
-              <div className="text-[14px] font-bold text-[var(--ink-950)]">{metrics?.wins || 0}</div>
+              <div className="text-[11px] font-semibold text-[var(--g-muted-ink)] mb-1">Wins</div>
+              <div className="g-num text-[14px] font-semibold text-[var(--g-ink)]">{metrics?.wins || 0}</div>
             </div>
             <div>
-              <div className="text-[11px] font-bold text-[var(--ink-500)] mb-1">Win Rate</div>
-              <div className="text-[14px] font-bold text-[var(--ink-950)]">{formatPct(metrics?.winRate)}</div>
+              <div className="text-[11px] font-semibold text-[var(--g-muted-ink)] mb-1">Win Rate</div>
+              <div className="g-num text-[14px] font-semibold text-[var(--g-ink)]">{formatPct(metrics?.winRate)}</div>
             </div>
             <div>
-              <div className="text-[11px] font-bold text-[var(--ink-500)] mb-1">Losses</div>
-              <div className="text-[14px] font-bold text-[var(--ink-950)]">{metrics?.losses || 0}</div>
+              <div className="text-[11px] font-semibold text-[var(--g-muted-ink)] mb-1">Losses</div>
+              <div className="g-num text-[14px] font-semibold text-[var(--g-ink)]">{metrics?.losses || 0}</div>
             </div>
           </div>
-        </div>
+        </Panel>
 
         <DirectionPanel title="Long Analysis" stats={metrics?.longStats ?? {
           direction: "buy",
@@ -242,47 +261,47 @@ export function AnalysisGrid({ metrics }: { metrics?: AccountMetrics | null }) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white border border-[var(--border)] rounded-2xl shadow-sm p-6">
-          <h4 className="font-bold text-[15px] text-[var(--ink-950)] mb-6">PnL Distribution by Duration</h4>
+        <Panel className="p-5 sm:p-6">
+          <h4 className="font-semibold text-[15px] text-[var(--g-ink)] mb-6">PnL Distribution by Duration</h4>
           {hasDurationData ? (
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={durationData} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
-                <CartesianGrid stroke="#eef2f7" strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#6c6a68" }} />
-                <YAxis axisLine={false} tickLine={false} width={70} tick={{ fontSize: 12, fill: "#6c6a68" }} tickFormatter={(value) => `$${Number(value).toLocaleString()}`} />
-                <Tooltip content={<ChartTooltip />} />
+                <CartesianGrid stroke={gridStroke} strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="label" axisLine={false} tickLine={false} tick={axisTick} />
+                <YAxis axisLine={false} tickLine={false} width={70} tick={axisTick} tickFormatter={(value) => `$${Number(value).toLocaleString()}`} />
+                <Tooltip content={<ChartTooltip />} cursor={glassTooltip.cursor} />
                 <Bar dataKey="pnl" name="PnL" fill={COLORS.dark} radius={[6, 6, 0, 0]} maxBarSize={48} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
             <div className="flex flex-col items-center justify-center min-h-[200px] text-center">
-              <BarChart3 className="w-8 h-8 text-[var(--ink-400)] mb-3" />
-              <div className="text-[14px] font-bold text-[var(--ink-950)] mb-1">No trading data available</div>
-              <div className="text-[13px] text-[var(--ink-500)]">Closed trades will populate this distribution.</div>
+              <BarChart3 className="w-8 h-8 text-black/30 mb-3" />
+              <div className="text-[14px] font-semibold text-[var(--g-ink)] mb-1">No trading data available</div>
+              <div className="text-[13px] text-[var(--g-muted-ink)]">Closed trades will populate this distribution.</div>
             </div>
           )}
-        </div>
+        </Panel>
 
-        <div className="bg-white border border-[var(--border)] rounded-2xl shadow-sm p-6">
-          <h4 className="font-bold text-[15px] text-[var(--ink-950)] mb-6">Trade Count by Duration</h4>
+        <Panel className="p-5 sm:p-6">
+          <h4 className="font-semibold text-[15px] text-[var(--g-ink)] mb-6">Trade Count by Duration</h4>
           {hasDurationData ? (
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={durationData} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
-                <CartesianGrid stroke="#eef2f7" strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#6c6a68" }} />
-                <YAxis allowDecimals={false} axisLine={false} tickLine={false} width={40} tick={{ fontSize: 12, fill: "#6c6a68" }} />
-                <Tooltip />
+                <CartesianGrid stroke={gridStroke} strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="label" axisLine={false} tickLine={false} tick={axisTick} />
+                <YAxis allowDecimals={false} axisLine={false} tickLine={false} width={40} tick={axisTick} />
+                <Tooltip {...glassTooltip} />
                 <Bar dataKey="trades" name="Trades" fill={COLORS.accent} radius={[6, 6, 0, 0]} maxBarSize={48} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
             <div className="flex flex-col items-center justify-center min-h-[200px] text-center">
-              <Activity className="w-8 h-8 text-[var(--ink-400)] mb-3" />
-              <div className="text-[14px] font-bold text-[var(--ink-950)] mb-1">No duration data available</div>
-              <div className="text-[13px] text-[var(--ink-500)]">Open and close trades to build this view.</div>
+              <Activity className="w-8 h-8 text-black/30 mb-3" />
+              <div className="text-[14px] font-semibold text-[var(--g-ink)] mb-1">No duration data available</div>
+              <div className="text-[13px] text-[var(--g-muted-ink)]">Open and close trades to build this view.</div>
             </div>
           )}
-        </div>
+        </Panel>
       </div>
     </div>
   );

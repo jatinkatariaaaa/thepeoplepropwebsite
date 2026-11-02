@@ -1,5 +1,7 @@
+import { Info } from "lucide-react";
 import { LeaderboardHighlights } from "@/components/dashboard/LeaderboardHighlights";
 import { LeaderboardTable } from "@/components/dashboard/LeaderboardTable";
+import { PageTitle } from "@/components/dashboard/glass";
 
 // Re-render at most every hour so the leaderboard picks up the new
 // daily data shortly after the UTC date changes.
@@ -7,16 +9,15 @@ export const revalidate = 3600;
 
 export default function LeaderboardPage() {
   return (
-    <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
-      <div className="mb-8">
-        <h1 className="text-2xl lg:text-3xl font-display font-bold text-[var(--ink-950)] tracking-tight">
-          Hall of Fame
-        </h1>
-        <p className="text-[14px] text-[var(--ink-500)] mt-1 font-medium">
-          Top performing traders from our global community.
+    <div className="mx-auto max-w-7xl">
+      <PageTitle lead="Hall of" fade="Fame" lede="Top performing traders from our global community.">
+        {/* The board comes from the date-seeded generator in src/lib/daily-leaderboard.ts, so say so, as the public leaderboard does. */}
+        <p className="inline-flex items-center gap-2 rounded-full bg-white/60 px-3.5 py-1.5 text-[12.5px] text-[var(--g-muted-ink)] ring-1 ring-black/[0.07]">
+          <Info className="h-3.5 w-3.5 shrink-0 text-[var(--g-emerald)]" />
+          Sample rankings — live account data is not connected yet
         </p>
-      </div>
-      
+      </PageTitle>
+
       <LeaderboardHighlights />
       <LeaderboardTable />
     </div>

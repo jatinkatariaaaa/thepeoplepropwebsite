@@ -5,6 +5,8 @@ import { Bell, Plus, Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { cn } from "@/lib/utils";
+import { btn } from "./glass";
 
 const searchTargets = [
   { label: "Home", href: "/dashboard", keywords: "home overview dashboard accounts" },
@@ -87,26 +89,26 @@ export function DashboardHeader() {
   };
 
   return (
-    <header className="mt-16 lg:mt-0 flex w-full items-center justify-between gap-3 px-4 pt-5 sm:px-6 lg:px-8 lg:pt-7">
+    <header className="mt-16 flex w-full items-center justify-between gap-3 px-4 pt-5 sm:px-6 lg:mt-0 lg:px-8 lg:pt-7">
       {/* Greeting */}
       <div className="flex min-w-0 items-center gap-3">
-        <div className="hidden sm:flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#0c0c0c] text-[15px] font-bold text-white">
+        <div className="g-card-dark g-hair hidden h-11 w-11 shrink-0 place-items-center rounded-full text-[15px] font-semibold text-white sm:grid">
           {initials || "?"}
         </div>
         <div className="min-w-0">
-          <h1 className="truncate text-lg sm:text-xl font-bold tracking-tight text-[var(--ink-950)]">
+          <h1 className="truncate text-[20px] font-semibold tracking-[-0.03em] text-[var(--g-ink)] sm:text-[22px]">
             Hi, {displayName || "..."}
           </h1>
-          <p className="text-[12px] font-medium text-[var(--ink-400)]">
+          <p className="text-[12.5px] text-[var(--g-muted-ink)]">
             Welcome back to your dashboard
           </p>
         </div>
       </div>
 
       {/* Search */}
-      <div ref={searchRef} className="relative hidden md:block flex-1 max-w-xs">
-        <div className="flex items-center gap-2 rounded-full bg-white px-4 py-2.5 shadow-sm">
-          <Search className="h-4 w-4 shrink-0 text-[var(--ink-400)]" />
+      <div ref={searchRef} className="relative hidden max-w-xs flex-1 md:block">
+        <div className="flex h-11 items-center gap-2.5 rounded-full bg-white/65 px-4 ring-1 ring-black/[0.08] backdrop-blur-md transition-shadow focus-within:ring-2 focus-within:ring-[var(--g-emerald)]/60">
+          <Search className="h-4 w-4 shrink-0 text-black/40" />
           <input
             type="search"
             value={query}
@@ -126,27 +128,29 @@ export function DashboardHeader() {
               }
             }}
             placeholder="Search anything..."
-            className="w-full bg-transparent text-[13px] font-medium text-[var(--ink-950)] placeholder:text-[var(--ink-400)] outline-none"
+            className="w-full bg-transparent text-[13.5px] text-[var(--g-ink)] outline-none! placeholder:text-black/40"
           />
         </div>
         {searchOpen && query.trim() && (
-          <div className="absolute left-0 right-0 top-full z-40 mt-2 overflow-hidden rounded-2xl bg-white p-1.5 shadow-lg border border-[var(--border)]">
-            {results.length > 0 ? (
-              results.map((r) => (
-                <button
-                  key={r.href}
-                  onClick={() => goTo(r.href)}
-                  className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-[13px] font-semibold text-[var(--ink-950)] transition-colors hover:bg-[#cbfb45]"
-                >
-                  <Search className="h-3.5 w-3.5 text-[var(--ink-400)]" />
-                  {r.label}
-                </button>
-              ))
-            ) : (
-              <p className="px-3 py-2 text-[13px] font-medium text-[var(--ink-400)]">
-                No results found
-              </p>
-            )}
+          <div className="absolute top-full right-0 left-0 z-40 mt-2">
+            <div className="g-glass-light g-hair g-hair-ink rounded-[20px] p-1.5">
+              {results.length > 0 ? (
+                results.map((r) => (
+                  <button
+                    key={r.href}
+                    onClick={() => goTo(r.href)}
+                    className="flex w-full cursor-pointer items-center gap-2.5 rounded-[14px] px-3 py-2.5 text-left text-[13.5px] font-medium text-[var(--g-ink)] transition-colors hover:bg-[var(--g-lime)]"
+                  >
+                    <Search className="h-3.5 w-3.5 text-black/40" />
+                    {r.label}
+                  </button>
+                ))
+              ) : (
+                <p className="px-3 py-2.5 text-[13px] text-[var(--g-muted-ink)]">
+                  No results found
+                </p>
+              )}
+            </div>
           </div>
         )}
       </div>
@@ -157,46 +161,48 @@ export function DashboardHeader() {
           <button
             aria-label="Notifications"
             onClick={() => setBellOpen(!bellOpen)}
-            className="relative flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm text-[var(--ink-500)] transition-colors hover:text-[var(--ink-950)]"
+            className="relative grid h-10 w-10 cursor-pointer place-items-center rounded-full bg-white/65 text-[var(--g-muted-ink)] ring-1 ring-black/[0.08] backdrop-blur-md transition-colors hover:bg-white hover:text-[var(--g-ink)]"
           >
             <Bell className="h-[18px] w-[18px]" />
-            <span className="absolute top-2.5 right-2.5 h-2 w-2 rounded-full bg-[#cbfb45] ring-2 ring-white" />
+            <span className="absolute top-2 right-2 h-2.5 w-2.5 rounded-full bg-[var(--g-lime)] ring-2 ring-[var(--g-ink)]" />
           </button>
           {bellOpen && (
-            <div className="absolute right-0 top-full z-40 mt-2 w-72 overflow-hidden rounded-2xl bg-white shadow-lg border border-[var(--border)]">
-              <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)]">
-                <p className="text-[13px] font-bold text-[var(--ink-950)]">
-                  Notifications
-                </p>
-                <span className="rounded-full bg-[#cbfb45] px-2 py-0.5 text-[10px] font-bold text-[#0c0c0c] uppercase tracking-wider">
-                  New
-                </span>
-              </div>
-              <div className="p-2">
-                <Link
-                  href="/dashboard/contest"
-                  onClick={() => setBellOpen(false)}
-                  className="block rounded-xl px-3 py-2.5 transition-colors hover:bg-[var(--paper-2)]"
-                >
-                  <p className="text-[13px] font-semibold text-[var(--ink-950)]">
-                    Contest is live
+            <div className="absolute top-full right-0 z-40 mt-2 w-72 max-w-[calc(100vw-2rem)]">
+              <div className="g-glass-light g-hair g-hair-ink overflow-hidden rounded-[20px]">
+                <div className="flex items-center justify-between border-b border-black/[0.06] px-4 py-3">
+                  <p className="text-[13.5px] font-semibold text-[var(--g-ink)]">
+                    Notifications
                   </p>
-                  <p className="text-[12px] text-[var(--ink-400)]">
-                    Join the giveaway contest and win prizes
-                  </p>
-                </Link>
-                <Link
-                  href="/dashboard/new-challenge"
-                  onClick={() => setBellOpen(false)}
-                  className="block rounded-xl px-3 py-2.5 transition-colors hover:bg-[var(--paper-2)]"
-                >
-                  <p className="text-[13px] font-semibold text-[var(--ink-950)]">
-                    Start a new challenge
-                  </p>
-                  <p className="text-[12px] text-[var(--ink-400)]">
-                    Get funded up to $200,000 today
-                  </p>
-                </Link>
+                  <span className="rounded-full bg-[var(--g-lime)] px-2 py-0.5 text-[10px] font-bold tracking-wider text-[var(--g-ink)] uppercase">
+                    New
+                  </span>
+                </div>
+                <div className="p-1.5">
+                  <Link
+                    href="/dashboard/contest"
+                    onClick={() => setBellOpen(false)}
+                    className="block rounded-[14px] px-3 py-2.5 transition-colors hover:bg-black/[0.04]"
+                  >
+                    <p className="text-[13.5px] font-semibold text-[var(--g-ink)]">
+                      Contest is live
+                    </p>
+                    <p className="mt-0.5 text-[12.5px] text-[var(--g-muted-ink)]">
+                      Join the giveaway contest and win prizes
+                    </p>
+                  </Link>
+                  <Link
+                    href="/dashboard/new-challenge"
+                    onClick={() => setBellOpen(false)}
+                    className="block rounded-[14px] px-3 py-2.5 transition-colors hover:bg-black/[0.04]"
+                  >
+                    <p className="text-[13.5px] font-semibold text-[var(--g-ink)]">
+                      Start a new challenge
+                    </p>
+                    <p className="mt-0.5 text-[12.5px] text-[var(--g-muted-ink)]">
+                      Get funded up to $200,000 today
+                    </p>
+                  </Link>
+                </div>
               </div>
             </div>
           )}
@@ -204,9 +210,10 @@ export function DashboardHeader() {
 
         <Link
           href="/dashboard/new-challenge"
-          className="flex h-10 w-10 sm:w-auto items-center justify-center gap-2 rounded-full bg-[#0c0c0c] sm:px-5 text-white transition-colors hover:bg-[#262626] text-[13px] font-bold"
+          aria-label="New Challenge"
+          className={cn(btn.lime, btn.sm, "w-10! px-0! sm:w-auto! sm:px-5!")}
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="h-4 w-4" strokeWidth={2.4} />
           <span className="hidden sm:inline">New Challenge</span>
         </Link>
       </div>
