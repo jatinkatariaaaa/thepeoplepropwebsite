@@ -1,5 +1,7 @@
 import { Trophy } from "lucide-react";
 import { getDailyLeaderboard } from "@/lib/daily-leaderboard";
+import { cn } from "@/lib/utils";
+import { Panel, PanelHead, table } from "./glass";
 
 export async function LeaderboardTable() {
   const rawLeaderboardData = getDailyLeaderboard(20);
@@ -15,97 +17,94 @@ export async function LeaderboardTable() {
   }));
 
   return (
-    <div className="bg-white rounded-[24px] border border-[var(--border)] overflow-hidden shadow-sm">
-      <div className="flex items-center gap-3 px-6 py-5 border-b border-[var(--border)]">
-        <Trophy className="w-5 h-5 text-[var(--accent-600)]" />
-        <h2 className="text-[18px] font-display font-bold text-[var(--ink-950)]">Global Rankings</h2>
-      </div>
-      
-      <div className="overflow-x-auto">
+    <Panel className="overflow-hidden">
+      <PanelHead title="Global Rankings" icon={Trophy} />
+
+      <div className={table.scroll}>
         <table className="w-full text-left whitespace-nowrap">
           <thead>
-            <tr className="bg-[var(--paper-2)]/50 text-[11px] font-bold text-[var(--ink-500)] tracking-wider uppercase border-b border-[var(--border)]">
-              <th className="px-6 py-4 font-bold">Rank</th>
-              <th className="px-6 py-4 font-bold">Trader</th>
-              <th className="px-6 py-4 font-bold">Country</th>
-              <th className="px-6 py-4 font-bold">Account Size</th>
-              <th className="px-6 py-4 font-bold">Profit</th>
-              <th className="px-6 py-4 font-bold">Profit %</th>
-              <th className="px-6 py-4 font-bold">Win Ratio</th>
-              <th className="px-6 py-4 font-bold">Pair</th>
-              <th className="px-6 py-4 font-bold">Avg. Win</th>
-              <th className="px-6 py-4 font-bold">Avg. Loss</th>
-              <th className="px-6 py-4 font-bold">Avg. Duration</th>
-              <th className="px-6 py-4 font-bold">Trades</th>
-              <th className="px-6 py-4 font-bold text-center">Losing Streak</th>
+            <tr className={table.headRow}>
+              <th className={table.th}>Rank</th>
+              <th className={table.th}>Trader</th>
+              <th className={table.th}>Country</th>
+              <th className={table.th}>Account Size</th>
+              <th className={table.th}>Profit</th>
+              <th className={table.th}>Profit %</th>
+              <th className={table.th}>Win Ratio</th>
+              <th className={table.th}>Pair</th>
+              <th className={table.th}>Avg. Win</th>
+              <th className={table.th}>Avg. Loss</th>
+              <th className={table.th}>Avg. Duration</th>
+              <th className={table.th}>Trades</th>
+              <th className={cn(table.th, "text-center")}>Losing Streak</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[var(--border)] text-[13.5px] font-medium text-[var(--ink-950)]">
+          <tbody className="text-[13.5px] font-medium text-[var(--g-ink)]">
             {leaderboardData.map((row) => (
-              <tr key={row.rank} className="hover:bg-[var(--paper-2)]/50 transition-colors group">
-                <td className="px-6 py-4">
+              <tr key={row.rank} className={table.row}>
+                <td className={table.td}>
                   <div className="flex items-center gap-2">
                     {row.rank === 1 && (
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-200 to-yellow-500 flex items-center justify-center shadow-sm">
-                        <span className="text-yellow-900 font-bold text-xs">#1</span>
+                      <div className="grid h-8 w-8 place-items-center rounded-full bg-[var(--g-lime)] shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]">
+                        <span className="text-xs font-bold text-[var(--g-ink)]">#1</span>
                       </div>
                     )}
                     {row.rank === 2 && (
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-slate-200 to-slate-400 flex items-center justify-center shadow-sm">
-                        <span className="text-slate-800 font-bold text-xs">#2</span>
+                      <div className="grid h-8 w-8 place-items-center rounded-full bg-[linear-gradient(160deg,#ffffff_0%,#c9d1ce_100%)] ring-1 ring-black/10">
+                        <span className="text-xs font-bold text-[var(--g-ink)]">#2</span>
                       </div>
                     )}
                     {row.rank === 3 && (
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-200 to-orange-400 flex items-center justify-center shadow-sm">
-                        <span className="text-orange-900 font-bold text-xs">#3</span>
+                      <div className="grid h-8 w-8 place-items-center rounded-full bg-[linear-gradient(160deg,#f6e7d8_0%,#c99c73_100%)] ring-1 ring-black/10">
+                        <span className="text-xs font-bold text-[#4a2f17]">#3</span>
                       </div>
                     )}
                     {row.rank > 3 && (
-                      <div className="w-8 h-8 rounded-full bg-[var(--paper-2)] border border-[var(--border)] flex items-center justify-center">
-                        <span className="text-[var(--ink-500)] text-xs">{row.rank}</span>
+                      <div className="grid h-8 w-8 place-items-center rounded-full bg-black/[0.04] ring-1 ring-black/[0.06]">
+                        <span className="g-num text-xs text-[var(--g-muted-ink)]">{row.rank}</span>
                       </div>
                     )}
                   </div>
                 </td>
-                <td className="px-6 py-4">{row.trader}</td>
-                <td className="px-6 py-4 text-xl">{row.country}</td>
-                <td className="px-6 py-4">
-                  <span className="px-2.5 py-1 rounded-md bg-[var(--ink-100)] text-[var(--ink-700)] font-bold text-[12px]">
+                <td className={table.td}>{row.trader}</td>
+                <td className={cn(table.td, "text-xl")}>{row.country}</td>
+                <td className={table.td}>
+                  <span className="rounded-full bg-black/[0.04] px-2.5 py-1 text-[12px] font-semibold text-[var(--g-ink)] ring-1 ring-black/[0.06]">
                     {row.account_size}
                   </span>
                 </td>
-                <td className="px-6 py-4">
-                  <span className="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-600 font-bold">
+                <td className={table.td}>
+                  <span className="g-num rounded-full bg-[var(--g-emerald)]/10 px-2.5 py-1 font-semibold text-[var(--g-emerald)]">
                     {row.profitStr}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-emerald-600 font-bold">{row.profitPercentStr}</td>
-                <td className="px-6 py-4">
+                <td className={cn(table.td, "g-num font-semibold text-[var(--g-emerald)]")}>{row.profitPercentStr}</td>
+                <td className={table.td}>
                   <div className="flex items-center gap-2">
-                    <div className="w-1.5 h-4 rounded-full bg-[var(--border)] overflow-hidden flex flex-col justify-end">
-                      <div 
-                        className="w-full bg-emerald-500 rounded-full" 
+                    <div className="flex h-4 w-1.5 flex-col justify-end overflow-hidden rounded-full bg-black/[0.08]">
+                      <div
+                        className="w-full rounded-full bg-[var(--g-emerald)]"
                         style={{ height: row.winRatioStr }}
                       />
                     </div>
-                    {row.winRatioStr}
+                    <span className="g-num">{row.winRatioStr}</span>
                   </div>
                 </td>
-                <td className="px-6 py-4">
-                  <span className="px-2 py-1 rounded-md bg-[var(--ink-100)] text-[12px] font-bold text-[var(--ink-700)]">
+                <td className={table.td}>
+                  <span className="rounded-full bg-black/[0.04] px-2.5 py-1 text-[12px] font-semibold text-[var(--g-ink)] ring-1 ring-black/[0.06]">
                     {row.pair}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-emerald-600">{row.avgWinStr}</td>
-                <td className="px-6 py-4 text-rose-600">{row.avgLossStr}</td>
-                <td className="px-6 py-4 text-[var(--ink-600)]">{row.duration}</td>
-                <td className="px-6 py-4">{row.trades}</td>
-                <td className="px-6 py-4 text-center text-rose-600 font-bold">{row.losing_streak}</td>
+                <td className={cn(table.td, "g-num text-[var(--g-emerald)]")}>{row.avgWinStr}</td>
+                <td className={cn(table.td, "g-num text-red-600")}>{row.avgLossStr}</td>
+                <td className={cn(table.td, "text-[var(--g-muted-ink)]")}>{row.duration}</td>
+                <td className={cn(table.td, "g-num")}>{row.trades}</td>
+                <td className={cn(table.td, "g-num text-center font-semibold text-red-600")}>{row.losing_streak}</td>
               </tr>
             ))}
             {leaderboardData.length === 0 && (
               <tr>
-                <td colSpan={13} className="px-6 py-8 text-center text-[var(--ink-500)] italic">
+                <td colSpan={13} className="px-6 py-8 text-center text-[var(--g-muted-ink)] italic">
                   Leaderboard is currently being updated. Check back soon.
                 </td>
               </tr>
@@ -113,6 +112,6 @@ export async function LeaderboardTable() {
           </tbody>
         </table>
       </div>
-    </div>
+    </Panel>
   );
 }

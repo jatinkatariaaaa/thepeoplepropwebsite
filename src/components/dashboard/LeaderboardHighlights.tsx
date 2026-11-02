@@ -1,5 +1,4 @@
 import { Trophy, CalendarDays, Coins, Crown } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { getDailyLeaderboard } from "@/lib/daily-leaderboard";
 
 export async function LeaderboardHighlights() {
@@ -13,7 +12,6 @@ export async function LeaderboardHighlights() {
       trader: traders && traders[0] ? traders[0].trader : "-",
       country: traders && traders[0] ? traders[0].country : "-",
       icon: Trophy,
-      gradient: "from-[var(--accent-700)] to-[var(--ink-950)]"
     },
     {
       title: "Longest Funded Duration",
@@ -21,7 +19,6 @@ export async function LeaderboardHighlights() {
       trader: traders && traders[1] ? traders[1].trader : "-",
       country: traders && traders[1] ? traders[1].country : "-",
       icon: CalendarDays,
-      gradient: "from-[var(--accent-700)] to-[var(--ink-950)]"
     },
     {
       title: "Highest Single Profit",
@@ -29,7 +26,6 @@ export async function LeaderboardHighlights() {
       trader: traders && traders[2] ? traders[2].trader : "-",
       country: traders && traders[2] ? traders[2].country : "-",
       icon: Coins,
-      gradient: "from-[var(--accent-700)] to-[var(--ink-950)]"
     },
     {
       title: "Most Payouts Received",
@@ -37,48 +33,41 @@ export async function LeaderboardHighlights() {
       trader: traders && traders[3] ? traders[3].trader : "-",
       country: traders && traders[3] ? traders[3].country : "-",
       icon: Crown,
-      gradient: "from-[var(--accent-700)] to-[var(--ink-950)]"
     }
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">
+    <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:gap-5 xl:grid-cols-4">
       {highlights.map((item, idx) => {
         const Icon = item.icon;
         return (
-          <div 
+          <div
             key={idx}
-            className={cn(
-              "relative overflow-hidden rounded-[24px] p-6 text-white shadow-md transition-transform hover:-translate-y-1",
-              "bg-gradient-to-br", item.gradient
-            )}
+            className="g-card-dark g-hair relative overflow-hidden rounded-[24px] p-6 text-white transition-transform duration-500 [transition-timing-function:var(--g-out)] hover:-translate-y-1"
           >
             {/* Background Icon Watermark */}
-            <Icon className="absolute -bottom-6 -right-6 w-32 h-32 text-white opacity-5" strokeWidth={1} />
-            
-            <div className="relative z-10 flex flex-col h-full justify-between">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm border border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]">
-                  <Icon className="w-5 h-5 text-[#FDE047]" />
+            <Icon className="absolute -right-6 -bottom-6 h-32 w-32 text-white opacity-[0.06]" strokeWidth={1} />
+
+            <div className="relative z-10 flex h-full flex-col justify-between">
+              <div className="mb-4 flex items-center gap-3">
+                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/10 ring-1 ring-white/15">
+                  <Icon className="h-5 w-5 text-[var(--g-lime)]" />
                 </div>
-                <h3 className="text-[11px] font-bold uppercase tracking-widest text-blue-100 opacity-90 max-w-[120px] leading-tight">
+                <h3 className="max-w-[140px] text-[11px] leading-tight font-medium tracking-[0.12em] text-white/55 uppercase">
                   {item.title}
                 </h3>
               </div>
-              
+
               <div>
-                <p className="text-[32px] font-display font-bold tracking-tight mb-1">
+                <p className="g-num mb-1 text-[28px] leading-tight font-semibold text-white">
                   {item.value}
                 </p>
-                <div className="flex items-center gap-2 text-[14px] text-blue-100/80 font-medium">
+                <div className="flex items-center gap-2 text-[14px] font-medium text-white/60">
                   <span>{item.trader}</span>
                   <span className="text-[16px]">{item.country}</span>
                 </div>
               </div>
             </div>
-            
-            {/* Glossy top edge */}
-            <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent" />
           </div>
         );
       })}

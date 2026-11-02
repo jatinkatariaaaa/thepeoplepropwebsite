@@ -1,107 +1,132 @@
 "use client";
 
 import { useState } from "react";
-import { Download, ExternalLink, Award, Share2 } from "lucide-react";
+import { Award, Check, CircleDollarSign, Download, Share2, Trophy, type LucideIcon } from "lucide-react";
 import Image from "next/image";
-import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import { certificateImagePath, certificateTitle, type Certificate, type CertificateKind } from "@/lib/certificates/types";
+import { Empty, Panel, Prop, btn } from "@/components/dashboard/glass";
 
-export function CertificatesClient({ accounts }: { accounts: any[] }) {
-  const [selectedAccountId, setSelectedAccountId] = useState(accounts[0]?.id || null);
+const ICON: Record<CertificateKind, LucideIcon> = { funded: Award, payout: CircleDollarSign, highest: Trophy };
 
-  const selectedAccount = accounts.find(a => a.id === selectedAccountId);
+const keyOf = (c: Certificate) => `${c.kind}:${c.id}`;
+
+/** The headline figure and the line under it in the list. */
+function summary(c: Certificate) {
+  if (c.kind === "funded") return { figure: `${c.accountSize} Account`, meta: c.status === "funded" ? "Funded" : "Passed" };
+  if (c.kind === "highest") return { figure: c.amount ?? "", meta: c.period ?? "" };
+  return { figure: c.amount ?? "", meta: "Paid" };
+}
+
+export function CertificatesClient({ certificates }: { certificates: Certificate[] }) {
+  const [selectedKey, setSelectedKey] = useState(certificates[0] ? keyOf(certificates[0]) : null);
+  const [copied, setCopied] = useState(false);
+
+  const selected = certificates.find((c) => keyOf(c) === selectedKey);
 
   const handleCopyLink = () => {
-    if (!selectedAccount) return;
-    const url = `${window.location.origin}/verify/${selectedAccount.id}`;
-    navigator.clipboard.writeText(url);
-    toast.success("Verification link copied to clipboard!");
+    if (!selected) return;
+    navigator.clipboard.writeText(`${window.location.origin}/verify/${selected.id}`);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
-  if (accounts.length === 0) {
+  if (certificates.length === 0) {
     return (
-      <div className="bg-white rounded-2xl border border-[var(--border)] shadow-sm flex flex-col items-center justify-center text-center p-12 min-h-[300px]">
-        <div className="w-16 h-16 rounded-full bg-[var(--paper-2)] flex items-center justify-center mb-4">
-          <Award className="w-8 h-8 text-[var(--ink-400)]" strokeWidth={1.5} />
-        </div>
-        <h3 className="text-xl font-bold text-[var(--ink-950)] mb-2">No Certificates Yet</h3>
-        <p className="text-base text-[var(--ink-500)] max-w-md">
-          Pass your evaluation or get funded to unlock your first certificate. Keep trading!
-        </p>
-      </div>
+      <Panel className="flex min-h-[300px] flex-col items-center justify-center">
+        <Empty
+          visual={<Prop src="/art/prop-rules.webp" width={733} height={810} className="mb-5 h-auto w-24 drop-shadow-[0_24px_22px_rgba(16,40,34,0.22)]" />}
+          title="No Certificates Yet"
+        >
+          Pass your evaluation or receive a payout to unlock your first certificate. Keep trading!
+        </Empty>
+      </Panel>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-4 lg:gap-8">
       {/* Sidebar List */}
-      <div className="lg:col-span-1 space-y-3">
-        <h3 className="text-sm font-bold text-[var(--ink-500)] uppercase tracking-wider mb-4">Your Achievements</h3>
-        {accounts.map(acc => (
-          <button
-            key={acc.id}
-            onClick={() => setSelectedAccountId(acc.id)}
-            className={`w-full text-left p-4 rounded-xl border transition-all ${
-              selectedAccountId === acc.id 
-                ? "bg-[var(--brand-50)] border-[var(--brand-500)] shadow-sm ring-1 ring-[var(--brand-500)]" 
-                : "bg-white border-[var(--border)] hover:bg-[var(--paper-2)]"
-            }`}
-          >
-            <div className="font-bold text-[var(--ink-950)] flex items-center gap-2">
-              <Award className={`w-4 h-4 ${selectedAccountId === acc.id ? "text-[var(--brand-500)]" : "text-[var(--ink-400)]"}`} />
-              ${acc.starting_balance.toLocaleString()} Account
-            </div>
-            <div className="text-xs text-[var(--ink-500)] mt-1.5 flex items-center justify-between">
-              <span className="capitalize">{acc.status}</span>
-              <span>{new Date(acc.updated_at).toLocaleDateString()}</span>
-            </div>
-          </button>
-        ))}
+      <div className="space-y-3 lg:col-span-1">
+        <h3 className="mb-4 text-[12px] font-medium tracking-[0.12em] text-[var(--g-muted-ink)] uppercase">Your Achievements</h3>
+        {certificates.map((c) => {
+          const Icon = ICON[c.kind];
+          const active = keyOf(c) === selectedKey;
+          const { figure, meta } = summary(c);
+          return (
+            <button
+              key={keyOf(c)}
+              onClick={() => setSelectedKey(keyOf(c))}
+              className={cn(
+                "w-full cursor-pointer rounded-[18px] p-4 text-left ring-1 transition-all",
+                active
+                  ? "bg-white ring-[var(--g-ink)] shadow-[0_16px_32px_-20px_rgba(16,40,34,0.5)]"
+                  : "bg-white/55 ring-black/[0.06] hover:bg-white/80"
+              )}
+            >
+              <div className="flex items-center gap-2 text-[12px] font-medium text-[var(--g-muted-ink)]">
+                <span
+                  className={cn(
+                    "grid h-6 w-6 shrink-0 place-items-center rounded-full",
+                    c.kind === "highest" ? "bg-[var(--g-ink)] text-[var(--g-lime)]" : "bg-[var(--g-emerald)]/10 text-[var(--g-emerald)]"
+                  )}
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                </span>
+                {certificateTitle[c.kind]}
+              </div>
+              <div className="g-num mt-2 text-[17px] font-semibold text-[var(--g-ink)]">{figure}</div>
+              <div className="mt-1 flex items-center justify-between gap-3 text-xs text-[var(--g-muted-ink)]">
+                <span>{meta}</span>
+                <span>{c.issuedOn}</span>
+              </div>
+            </button>
+          );
+        })}
       </div>
 
       {/* Main View */}
       <div className="lg:col-span-3">
-        {selectedAccount && (
-          <div className="bg-white rounded-3xl border border-[var(--border)] shadow-sm overflow-hidden p-3">
-            <div className="relative aspect-[1.41] w-full rounded-2xl overflow-hidden bg-[var(--paper-2)]">
+        {selected && (
+          <Panel className="overflow-hidden p-3">
+            <div className="relative aspect-[1.6] w-full overflow-hidden rounded-[20px] bg-[#0b0f0e]">
               {/* Fallback loading state while image loads */}
-              <div className="absolute inset-0 flex items-center justify-center text-[var(--ink-400)]">
+              <div className="absolute inset-0 flex items-center justify-center text-white/45">
                 Loading certificate...
               </div>
-              <Image 
-                src={`/api/certificate/${selectedAccount.id}`}
-                alt="Trading Certificate"
+              <Image
+                key={keyOf(selected)}
+                src={certificateImagePath(selected.kind, selected.id)}
+                alt={`${certificateTitle[selected.kind]} for ${selected.traderName}`}
                 fill
-                className="object-contain relative z-10"
+                className="relative z-10 object-contain"
                 unoptimized
               />
             </div>
-            
-            <div className="p-6 flex flex-wrap items-center justify-between gap-4 border-t border-[var(--border)] mt-3">
+
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-4 border-t border-black/[0.06] p-4 sm:p-6">
               <div>
-                <h3 className="text-lg font-bold text-[var(--ink-950)]">Certificate of Funding</h3>
-                <p className="text-sm text-[var(--ink-500)]">ID: {selectedAccount.id.split("-")[0].toUpperCase()}</p>
+                <h3 className="text-lg font-semibold tracking-[-0.02em] text-[var(--g-ink)]">{certificateTitle[selected.kind]}</h3>
+                <p className="text-sm text-[var(--g-muted-ink)]">No. {selected.number}</p>
               </div>
-              <div className="flex items-center gap-3">
-                <button 
-                  onClick={handleCopyLink}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm border border-[var(--border)] bg-white text-[var(--ink-700)] hover:bg-[var(--paper-2)] transition-colors"
-                >
-                  <Share2 className="w-4 h-4" />
-                  Share Link
+              <div className="flex flex-wrap items-center gap-3">
+                <button onClick={handleCopyLink} className={cn(btn.light, btn.sm)}>
+                  {copied ? <Check className="h-4 w-4 text-[var(--g-emerald)]" /> : <Share2 className="h-4 w-4" />}
+                  {copied ? "Link copied" : "Share Link"}
                 </button>
-                <a 
-                  href={`/api/certificate/${selectedAccount.id}`}
-                  download={`TPP_Certificate_${selectedAccount.id.split("-")[0]}.png`}
+                <a
+                  href={certificateImagePath(selected.kind, selected.id)}
+                  download={`TPP_${certificateTitle[selected.kind].replace(/ /g, "_")}_${selected.number}.png`}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm bg-[var(--ink-950)] text-white hover:bg-[var(--ink-800)] transition-colors"
+                  className={cn(btn.ink, btn.sm)}
                 >
-                  <Download className="w-4 h-4" />
+                  <Download className="h-4 w-4" />
                   Download PNG
                 </a>
               </div>
             </div>
-          </div>
+          </Panel>
         )}
       </div>
     </div>

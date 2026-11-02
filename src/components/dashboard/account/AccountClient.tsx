@@ -11,6 +11,7 @@ import { DailySummary } from "./DailySummary";
 import { AnalysisGrid } from "./AnalysisGrid";
 import { supabase } from "@/lib/supabase";
 import type { AccountMetrics } from "@/lib/account-metrics";
+import { Panel, Spinner } from "../glass";
 
 type DashboardAccount = Record<string, unknown> & {
   id?: string;
@@ -129,22 +130,24 @@ export function AccountClient({ accountId }: { accountId: string }) {
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto flex justify-center py-20">
-        <div className="w-12 h-12 rounded-full border-4 border-[var(--accent)] border-t-transparent animate-spin"></div>
+        <Spinner className="h-12 w-12 border-[3px]" />
       </div>
     );
   }
 
   if (!account) {
     return (
-      <div className="max-w-7xl mx-auto py-20 text-center">
-        <h2 className="text-2xl font-bold mb-2">Account Not Found</h2>
-        <p className="text-[var(--ink-500)]">The account you are looking for does not exist or you do not have permission to view it.</p>
+      <div className="max-w-7xl mx-auto py-10">
+        <Panel className="py-8 text-center">
+          <h2 className="mb-2 text-[24px] font-semibold tracking-[-0.03em] text-[var(--g-ink)]">Account Not Found</h2>
+          <p className="mx-auto max-w-md px-6 text-[14.5px] text-[var(--g-muted-ink)]">The account you are looking for does not exist or you do not have permission to view it.</p>
+        </Panel>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out pb-20">
+    <div className="max-w-7xl mx-auto pb-20">
       <AccountHeader account={account} />
       <TopMetrics account={account} />
       <PerformanceCharts account={account} metrics={metrics} />

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Trophy, Calendar, Eye, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Chip, Empty, Panel, PanelHead, Prop, Spinner, btn, segment } from "./glass";
 
 type DashboardAccount = {
   id: string;
@@ -57,202 +58,198 @@ export function ActiveAccounts({
 
   if (loading) {
     return (
-      <div className="rounded-[28px] bg-white p-5 sm:p-7 shadow-sm">
-        <h2 className="mb-5 text-lg font-bold tracking-tight text-[var(--ink-950)]">
-          Active Accounts
-        </h2>
-        <div className="flex justify-center rounded-2xl bg-[#f4f4f2] p-12">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[var(--ink-200)] border-t-[var(--ink-950)]" />
+      <Panel>
+        <PanelHead title="Active Accounts" />
+        <div className="flex justify-center p-12">
+          <Spinner />
         </div>
-      </div>
+      </Panel>
     );
   }
 
   return (
-    <div className="rounded-[28px] bg-white p-5 sm:p-7 shadow-sm">
+    <Panel>
       {/* Header + functional filter tabs */}
-      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-lg font-bold tracking-tight text-[var(--ink-950)]">
-          Active Accounts
-        </h2>
-        <div className="flex items-center gap-1 text-[12px] font-semibold">
+      <PanelHead title="Active Accounts">
+        <div className={segment.wrap}>
           {filters.map((f) => (
             <button
               key={f.key}
+              type="button"
+              aria-pressed={filter === f.key}
               onClick={() => setFilter(f.key)}
-              className={cn(
-                "rounded-full px-4 py-1.5 transition-colors",
-                filter === f.key
-                  ? "bg-[#0c0c0c] text-white"
-                  : "text-[var(--ink-400)] hover:text-[var(--ink-950)]"
-              )}
+              className={segment.item(filter === f.key)}
             >
               {f.label}
             </button>
           ))}
         </div>
-      </div>
+      </PanelHead>
 
-      {accounts.length === 0 ? (
-        <div className="rounded-2xl bg-[#f4f4f2] p-8 sm:p-12 text-center">
-          <p className="text-[14px] font-medium text-[var(--ink-500)]">
-            You don&apos;t have any active accounts yet.
-          </p>
-          <Link
-            href="/dashboard/new-challenge"
-            className="mt-5 inline-flex h-11 items-center justify-center rounded-full bg-[#0c0c0c] px-6 text-[13px] font-bold text-white transition-colors hover:bg-[#262626]"
-          >
-            Start a New Challenge
-          </Link>
-        </div>
-      ) : filteredAccounts.length === 0 ? (
-        <div className="rounded-2xl bg-[#f4f4f2] p-8 sm:p-12 text-center">
-          <p className="text-[14px] font-medium text-[var(--ink-500)]">
-            No {filter === "ongoing" ? "ongoing" : "passed"} accounts found.
-          </p>
-          <button
-            onClick={() => setFilter("all")}
-            className="mt-4 text-[13px] font-bold text-[var(--ink-950)] underline underline-offset-4 hover:no-underline"
-          >
-            Show all accounts
-          </button>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-          {filteredAccounts.map((account) => {
-            let startedDate = "Unknown";
-            if (account.created_at) {
-              startedDate = new Date(account.created_at).toLocaleDateString(
-                "en-US",
-                { month: "short", day: "numeric", year: "numeric" }
-              );
+      <div className="p-4 sm:p-6">
+        {accounts.length === 0 ? (
+          <Empty
+            visual={<Prop src="/art/prop-bolt.webp" width={513} height={565} className="mb-5 h-auto w-24 drop-shadow-[0_24px_22px_rgba(16,40,34,0.22)]" />}
+            title={<>You don&apos;t have any active accounts yet.</>}
+            action={
+              <Link href="/dashboard/new-challenge" className={btn.lime}>
+                Start a New Challenge
+              </Link>
             }
-            const status = account.status || "active";
-
-            return (
-              <div
-                key={account.id}
-                className="rounded-2xl bg-[#f4f4f2] overflow-hidden transition-colors hover:bg-[var(--ink-100)]/70"
+          />
+        ) : filteredAccounts.length === 0 ? (
+          <Empty
+            title={`No ${filter === "ongoing" ? "ongoing" : "passed"} accounts found.`}
+            action={
+              <button
+                type="button"
+                onClick={() => setFilter("all")}
+                className="cursor-pointer text-[13.5px] font-semibold text-[var(--g-emerald)] underline underline-offset-4 hover:no-underline"
               >
-                {/* Header */}
-                <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="mb-1.5 flex items-center gap-2.5">
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm">
-                        <Trophy className="h-4 w-4 text-[var(--ink-950)]" />
+                Show all accounts
+              </button>
+            }
+          />
+        ) : (
+          <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+            {filteredAccounts.map((account) => {
+              let startedDate = "Unknown";
+              if (account.created_at) {
+                startedDate = new Date(account.created_at).toLocaleDateString(
+                  "en-US",
+                  { month: "short", day: "numeric", year: "numeric" }
+                );
+              }
+              const status = account.status || "active";
+
+              return (
+                <div
+                  key={account.id}
+                  className="flex flex-col overflow-hidden rounded-[22px] bg-white/55 ring-1 ring-black/[0.06] transition-colors hover:bg-white/80"
+                >
+                  {/* Header */}
+                  <div className="flex flex-col justify-between gap-3 p-4 sm:flex-row sm:items-start sm:p-5">
+                    <div className="min-w-0">
+                      <div className="mb-1.5 flex items-center gap-2.5">
+                        <div className="grid h-9 w-9 shrink-0 place-items-center rounded-[12px] bg-[var(--g-ink)] text-[var(--g-lime)] shadow-[inset_0_1px_0_rgba(255,255,255,0.14)]">
+                          <Trophy className="h-4 w-4" />
+                        </div>
+                        <h3 className="min-w-0 truncate text-[15px] font-semibold tracking-[-0.01em] text-[var(--g-ink)]">
+                          {account.label || "Trading Account"}
+                        </h3>
                       </div>
-                      <h3 className="min-w-0 truncate text-[15px] font-bold text-[var(--ink-950)]">
-                        {account.label || "Trading Account"}
-                      </h3>
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[12px] text-[var(--g-muted-ink)]">
+                        <span>ID: {account.id.substring(0, 8)}...</span>
+                        <span className="h-1 w-1 rounded-full bg-black/20" />
+                        <span className="flex items-center gap-1">
+                          <Calendar className="h-3.5 w-3.5" />
+                          {startedDate}
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[12px] font-medium text-[var(--ink-500)]">
-                      <span>ID: {account.id.substring(0, 8)}...</span>
-                      <span className="h-1 w-1 rounded-full bg-[var(--ink-300)]" />
-                      <span className="flex items-center gap-1">
-                        <Calendar className="h-3.5 w-3.5" />
-                        {startedDate}
-                      </span>
+                    <div className="flex flex-wrap items-center gap-2 self-start sm:justify-end">
+                      <Chip className="tracking-wide uppercase">
+                        {account.tpp_platforms?.name || "TPP"}
+                      </Chip>
+                      <Chip
+                        tone={
+                          status === "active"
+                            ? "emerald"
+                            : status === "breached"
+                              ? "red"
+                              : status === "passed"
+                                ? "lime"
+                                : "amber"
+                        }
+                        className="tracking-wide uppercase"
+                      >
+                        {status === "active" && (
+                          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--g-emerald)]" />
+                        )}
+                        {status}
+                      </Chip>
                     </div>
                   </div>
-                  <div className="flex flex-wrap items-center gap-2 self-start sm:justify-end">
-                    <span className="rounded-full bg-white px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-[var(--ink-700)] shadow-sm">
-                      {account.tpp_platforms?.name || "TPP"}
-                    </span>
-                    <span
-                      className={cn(
-                        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide",
-                        status === "active"
-                          ? "bg-emerald-50 text-emerald-700"
-                          : status === "breached"
-                            ? "bg-red-50 text-red-700"
-                            : status === "passed"
-                              ? "bg-blue-50 text-blue-700"
-                              : "bg-amber-50 text-amber-700"
-                      )}
+
+                  {/* Metrics */}
+                  <div className="grid grid-cols-1 gap-2.5 px-4 pb-4 min-[520px]:grid-cols-3 sm:px-5">
+                    <div className="rounded-[16px] bg-black/[0.03] p-3 ring-1 ring-black/[0.04]">
+                      <p className="mb-0.5 text-[10.5px] font-medium tracking-[0.08em] text-black/45 uppercase">
+                        Starting Balance
+                      </p>
+                      <p className="g-num text-[16px] font-semibold break-words text-[var(--g-ink)]">
+                        {formatMoney(account.starting_balance)}
+                      </p>
+                    </div>
+                    <div className="rounded-[16px] bg-black/[0.03] p-3 ring-1 ring-black/[0.04]">
+                      <p className="mb-0.5 text-[10.5px] font-medium tracking-[0.08em] text-black/45 uppercase">
+                        Current Equity
+                      </p>
+                      <p className="g-num text-[16px] font-semibold break-words text-[var(--g-ink)]">
+                        {formatMoney(account.equity)}
+                      </p>
+                    </div>
+                    <div className="rounded-[16px] bg-black/[0.03] p-3 ring-1 ring-black/[0.04]">
+                      <p className="mb-0.5 text-[10.5px] font-medium tracking-[0.08em] text-black/45 uppercase">
+                        Phase
+                      </p>
+                      <p className="text-[16px] font-semibold tracking-[-0.02em] break-words text-[var(--g-ink)] capitalize">
+                        {formatPhase(account.phase)}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="mt-auto flex flex-col gap-2.5 px-4 pb-4 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-end sm:px-5 sm:pb-5">
+                    <Link
+                      className="w-full min-[420px]:w-auto"
+                      href={`https://trade.thepeopleprop.live/?accountId=${account.terminal_account_id || account.id}`}
+                      target="_blank"
                     >
-                      {status === "active" && (
-                        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
-                      )}
-                      {status}
-                    </span>
+                      <span className={cn(btn.light, btn.sm, "w-full")}>
+                        Open Terminal
+                      </span>
+                    </Link>
+                    <Link
+                      className="w-full min-[420px]:w-auto"
+                      href={`/dashboard/account/${account.id}`}
+                    >
+                      <span className={cn(btn.ink, btn.sm, "w-full")}>
+                        <Eye className="h-4 w-4" />
+                        View Metrics
+                      </span>
+                    </Link>
                   </div>
                 </div>
+              );
+            })}
 
-                {/* Metrics */}
-                <div className="grid grid-cols-1 gap-2.5 px-4 sm:px-5 pb-4 min-[520px]:grid-cols-3">
-                  <div className="rounded-xl bg-white p-3 shadow-sm">
-                    <p className="mb-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--ink-400)]">
-                      Starting Balance
-                    </p>
-                    <p className="text-[16px] font-bold tracking-tight text-[var(--ink-950)] break-words">
-                      {formatMoney(account.starting_balance)}
-                    </p>
-                  </div>
-                  <div className="rounded-xl bg-white p-3 shadow-sm">
-                    <p className="mb-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--ink-400)]">
-                      Current Equity
-                    </p>
-                    <p className="text-[16px] font-bold tracking-tight text-[var(--ink-950)] break-words">
-                      {formatMoney(account.equity)}
-                    </p>
-                  </div>
-                  <div className="rounded-xl bg-white p-3 shadow-sm">
-                    <p className="mb-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--ink-400)]">
-                      Phase
-                    </p>
-                    <p className="text-[16px] font-bold capitalize tracking-tight text-[var(--ink-950)] break-words">
-                      {formatPhase(account.phase)}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Actions */}
-                <div className="flex flex-col gap-2.5 px-4 sm:px-5 pb-4 sm:pb-5 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-end">
-                  <Link
-                    className="w-full min-[420px]:w-auto"
-                    href={`https://trade.thepeopleprop.live/?accountId=${account.terminal_account_id || account.id}`}
-                    target="_blank"
-                  >
-                    <span className="flex h-10 w-full items-center justify-center rounded-full bg-white px-5 text-[13px] font-bold text-[var(--ink-950)] shadow-sm transition-colors hover:bg-[var(--ink-100)]">
-                      Open Terminal
-                    </span>
-                  </Link>
-                  <Link
-                    className="w-full min-[420px]:w-auto"
-                    href={`/dashboard/account/${account.id}`}
-                  >
-                    <span className="flex h-10 w-full items-center justify-center gap-2 rounded-full bg-[#0c0c0c] px-5 text-[13px] font-bold text-white transition-colors hover:bg-[#262626]">
-                      <Eye className="h-4 w-4" />
-                      View Metrics
-                    </span>
-                  </Link>
-                </div>
-              </div>
-            );
-          })}
-
-          {/* New account CTA card */}
-          <Link
-            href="/dashboard/new-challenge"
-            className="group flex min-h-[240px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[var(--ink-200)] p-6 text-center transition-colors hover:border-[#0c0c0c] hover:bg-[#cbfb45]/20 sm:p-10"
-          >
-            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#f4f4f2] transition-colors group-hover:bg-[#cbfb45]">
-              <Trophy className="h-6 w-6 text-[var(--ink-400)] transition-colors group-hover:text-[#0c0c0c]" />
-            </div>
-            <h3 className="mb-1.5 text-[15px] font-bold text-[var(--ink-950)]">
-              Ready for a new challenge?
-            </h3>
-            <p className="max-w-sm text-[13px] text-[var(--ink-500)]">
-              Prove your skills and get funded up to $200,000. Start your
-              evaluation today.
-            </p>
-            <span className="mt-5 flex items-center text-[13px] font-bold text-[var(--ink-950)]">
-              Browse Programs
-              <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </span>
-          </Link>
-        </div>
-      )}
-    </div>
+            {/* New account CTA card */}
+            <Link
+              href="/dashboard/new-challenge"
+              className="group flex min-h-[240px] cursor-pointer flex-col items-center justify-center rounded-[22px] border border-dashed border-black/15 p-6 text-center transition-colors hover:border-[var(--g-emerald)]/40 hover:bg-white/50 sm:p-10"
+            >
+              <Prop
+                src="/art/prop-bolt.webp"
+                width={513}
+                height={565}
+                className="mb-3 h-auto w-20 drop-shadow-[0_20px_18px_rgba(16,40,34,0.2)] transition-transform duration-500 [transition-timing-function:var(--g-out)] group-hover:-translate-y-1"
+              />
+              <h3 className="mb-1.5 text-[15px] font-semibold text-[var(--g-ink)]">
+                Ready for a new challenge?
+              </h3>
+              <p className="max-w-sm text-[13px] leading-relaxed text-[var(--g-muted-ink)]">
+                Prove your skills and get funded up to $200,000. Start your
+                evaluation today.
+              </p>
+              <span className="mt-5 flex items-center text-[13px] font-semibold text-[var(--g-emerald)]">
+                Browse Programs
+                <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </span>
+            </Link>
+          </div>
+        )}
+      </div>
+    </Panel>
   );
 }

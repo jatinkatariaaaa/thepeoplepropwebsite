@@ -1,5 +1,6 @@
 import { supabaseAdmin } from "@/lib/supabase";
 import { PayoutsClient } from "./PayoutsClient";
+import { PageTitle } from "@/components/dashboard/glass";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 
@@ -41,11 +42,8 @@ export default async function PayoutsPage() {
     .order("created_at", { ascending: false });
 
   return (
-    <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
-      <div className="mb-8">
-        <h1 className="text-2xl font-display font-bold text-[var(--ink-950)] mb-2">Payouts</h1>
-        <p className="text-[var(--ink-500)]">Request profit withdrawals from your funded accounts.</p>
-      </div>
+    <div className="mx-auto max-w-4xl">
+      <PageTitle lead="Payouts" lede="Request profit withdrawals from your funded accounts." />
 
       <PayoutsClient 
         fundedAccounts={accounts || []} 

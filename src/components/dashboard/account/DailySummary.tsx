@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { AccountMetrics, DailyPnlPoint } from "@/lib/account-metrics";
+import { Panel, SectionTitle } from "../glass";
 
 const money = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -77,47 +78,45 @@ export function DailySummary({ metrics }: { metrics?: AccountMetrics | null }) {
 
   return (
     <div className="mb-8">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-bold text-[16px] text-[var(--ink-950)]">Daily Summary</h3>
-      </div>
+      <SectionTitle as="h3" title="Daily Summary" />
 
       <div className="flex flex-col lg:flex-row gap-6">
-        
+
         {/* Calendar Box */}
-        <div className="flex-1 bg-white border border-[var(--border)] rounded-[24px] shadow-sm p-6">
+        <Panel className="flex-1 min-w-0 p-4 sm:p-6">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-2">
               <button
-                className="w-9 h-9 flex items-center justify-center rounded-lg border border-[var(--border)] text-[var(--ink-500)] hover:bg-[var(--paper-2)]"
+                className="grid h-9 w-9 cursor-pointer place-items-center rounded-full bg-white/65 text-[var(--g-muted-ink)] ring-1 ring-black/[0.08] transition-colors hover:bg-white hover:text-[var(--g-ink)]"
                 onClick={() => setMonthOffset((value) => value - 1)}
                 aria-label="Previous month"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <div className="px-4 text-[15px] font-bold text-[var(--ink-950)]">{formatMonth(visibleMonth)}</div>
+              <div className="px-2 text-[15px] font-semibold tracking-[-0.01em] text-[var(--g-ink)] sm:px-3">{formatMonth(visibleMonth)}</div>
               <button
-                className="w-9 h-9 flex items-center justify-center rounded-lg border border-[var(--border)] text-[var(--ink-500)] hover:bg-[var(--paper-2)]"
+                className="grid h-9 w-9 cursor-pointer place-items-center rounded-full bg-white/65 text-[var(--g-muted-ink)] ring-1 ring-black/[0.08] transition-colors hover:bg-white hover:text-[var(--g-ink)]"
                 onClick={() => setMonthOffset((value) => value + 1)}
                 aria-label="Next month"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
               <button
-                className="flex items-center gap-2 ml-2 px-3 py-1.5 border border-[var(--border)] rounded-lg text-[13px] font-medium text-[var(--ink-700)] hover:bg-[var(--paper-2)]"
+                className="ml-1 flex h-9 cursor-pointer items-center gap-2 rounded-full bg-white/65 px-3.5 text-[13px] font-medium text-[var(--g-ink)] ring-1 ring-black/[0.08] transition-colors hover:bg-white"
                 onClick={() => setMonthOffset(todayOffset)}
               >
                 <CalendarIcon className="w-4 h-4" /> Today
               </button>
             </div>
-            <div className="flex items-center gap-4 text-[13px] font-bold">
-              <span className="text-[var(--ink-500)]">Total PnL: <span className="text-[var(--ink-950)]">{money.format(metrics?.totalPnL || 0)}</span></span>
-              <span className="text-[var(--ink-500)]">Active Days: <span className="text-[var(--ink-950)]">{metrics?.dailyPnL?.length || 0}</span></span>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] font-semibold">
+              <span className="text-[var(--g-muted-ink)]">Total PnL: <span className="g-num text-[var(--g-ink)]">{money.format(metrics?.totalPnL || 0)}</span></span>
+              <span className="text-[var(--g-muted-ink)]">Active Days: <span className="g-num text-[var(--g-ink)]">{metrics?.dailyPnL?.length || 0}</span></span>
             </div>
           </div>
 
-          <div className="grid grid-cols-7 gap-2">
+          <div className="grid grid-cols-7 gap-1 sm:gap-2">
             {days.map(d => (
-              <div key={d} className="text-center text-[12px] font-bold text-[var(--ink-400)] mb-2">
+              <div key={d} className="text-center text-[11px] sm:text-[12px] font-semibold text-black/40 mb-2">
                 {d}
               </div>
             ))}
@@ -125,22 +124,22 @@ export function DailySummary({ metrics }: { metrics?: AccountMetrics | null }) {
               const pnl = cell.data?.pnl ?? 0;
               const hasActivity = Boolean(cell.data);
               return (
-              <div 
-                key={cell.key} 
+              <div
+                key={cell.key}
                 className={cn(
-                  "aspect-square rounded-xl border border-[var(--border)] p-2 text-[12px] font-medium transition-colors",
-                  !cell.day && "border-dashed bg-[var(--paper-2)] border-transparent text-[var(--ink-300)]",
-                  cell.day && !hasActivity && "text-[var(--ink-400)] bg-white",
-                  pnl > 0 && "border-emerald-200 bg-emerald-50 text-emerald-700",
-                  pnl < 0 && "border-red-200 bg-red-50 text-red-700",
-                  pnl === 0 && hasActivity && "border-[var(--border)] bg-[var(--paper-2)] text-[var(--ink-700)]"
+                  "aspect-square min-w-0 rounded-[10px] sm:rounded-[12px] p-1 sm:p-2 text-[11px] sm:text-[12px] font-medium ring-1 transition-colors",
+                  !cell.day && "bg-transparent ring-transparent text-black/20",
+                  cell.day && !hasActivity && "bg-white/55 ring-black/[0.05] text-black/40",
+                  pnl > 0 && "bg-[var(--g-lime)]/30 ring-[#8fc21d]/40 text-[#3b5410]",
+                  pnl < 0 && "bg-red-500/10 ring-red-500/25 text-red-700",
+                  pnl === 0 && hasActivity && "bg-black/[0.04] ring-black/[0.08] text-[var(--g-ink)]"
                 )}
               >
                 {cell.day && (
                   <div className="flex h-full flex-col justify-between">
                     <span>{cell.day}</span>
                     {hasActivity && (
-                      <span className="truncate text-[10px] font-bold">
+                      <span className="g-num truncate text-[9px] sm:text-[10px] font-semibold">
                         {pnl >= 0 ? "+" : ""}{money.format(pnl)}
                       </span>
                     )}
@@ -150,30 +149,30 @@ export function DailySummary({ metrics }: { metrics?: AccountMetrics | null }) {
               );
             })}
           </div>
-        </div>
+        </Panel>
 
         {/* Weekly Summary */}
         <div className="w-full lg:w-[320px] shrink-0">
-          <h4 className="text-[14px] font-medium text-[var(--ink-500)] mb-4">Weekly Summary</h4>
+          <h4 className="text-[14px] font-medium text-[var(--g-muted-ink)] mb-4">Weekly Summary</h4>
           <div className="space-y-3">
             {weeklyRows.length > 0 ? weeklyRows.map((week) => (
-              <div key={week.weekStart} className="bg-white border border-[var(--border)] rounded-xl p-4 shadow-sm">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="font-bold text-[14px] text-[var(--ink-950)]">
+              <Panel key={week.weekStart} className="rounded-[20px] p-4">
+                <div className="flex justify-between items-center gap-3 mb-2">
+                  <span className={cn("g-num font-semibold text-[14px]", week.pnl < 0 ? "text-red-700" : "text-[var(--g-ink)]")}>
                     {money.format(week.pnl)}
                   </span>
-                  <span className="text-[12px] text-[var(--ink-500)]">
+                  <span className="text-[12px] text-[var(--g-muted-ink)]">
                     {formatShortDate(week.weekStart)} - {formatShortDate(week.weekEnd)}
                   </span>
                 </div>
-                <div className="text-[13px] text-[var(--ink-500)]">
+                <div className="text-[13px] text-[var(--g-muted-ink)]">
                   {week.trades} trades / {week.wins} wins / {week.losses} losses
                 </div>
-              </div>
+              </Panel>
             )) : (
-              <div className="bg-white border border-[var(--border)] rounded-xl p-4 shadow-sm">
-                <div className="text-[13px] text-[var(--ink-500)]">No closed trades</div>
-              </div>
+              <Panel className="rounded-[20px] p-4">
+                <div className="text-[13px] text-[var(--g-muted-ink)]">No closed trades</div>
+              </Panel>
             )}
           </div>
         </div>
