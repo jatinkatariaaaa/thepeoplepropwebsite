@@ -116,7 +116,7 @@ export function Challenges({ className }: { className?: string } = {}) {
     { icon: ShieldAlert, label: "Max. overall loss", value: program.maxDrawdown },
     { icon: CalendarDays, label: "Min. trading days", value: program.key === "instant" ? `${program.minTradingDays} on funded` : `${program.minTradingDays} per phase` },
     { icon: Percent, label: "Profit split", value: active.includes("split-100") ? "100%" : `${program.profitSplit}%` },
-    { icon: FileText, label: "Payout cycle", value: active.includes("payout-on-demand") ? "First payout on demand" : program.payoutCycle },
+    { icon: FileText, label: "Payout cycle", value: program.payoutCycle },
     { icon: Scale, label: "Consistency rule", value: program.consistencyRule },
     { icon: Bot, label: "EAs, news & weekend holds", value: "Allowed" },
   ];
