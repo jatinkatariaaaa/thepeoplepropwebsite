@@ -81,9 +81,9 @@ export function ContestDashboard() {
         // 2. Fetch referral rows from supabase (contest_referrals table)
         const { data: refs } = await supabase
           .from("contest_referrals")
-          .select("id, email, created_at")
+          .select("id, email:referred_email, created_at:signed_up_at")
           .eq("contest_entry_id", joinData.entry.id)
-          .order("created_at", { ascending: false });
+          .order("signed_up_at", { ascending: false });
 
         if (refs) setReferrals(refs);
       } catch {

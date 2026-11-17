@@ -21,7 +21,9 @@ import {
   FileText,
   HelpCircle,
   BarChart3,
-  Mail,
+  Coins,
+  RotateCcw,
+  Sparkles,
   Shield,
   TrendingUp,
   ScrollText,
@@ -65,6 +67,7 @@ const sections: NavSection[] = [
       { icon: Users, label: "Users", href: "/admin/users" },
       { icon: CreditCard, label: "Purchases", href: "/admin/purchases" },
       { icon: DollarSign, label: "Payouts", href: "/admin/payouts" },
+      { icon: Coins, label: "Stipends & Rewards", href: "/admin/rewards" },
       { icon: Network, label: "Affiliates", href: "/admin/affiliates" },
     ],
   },
@@ -80,6 +83,7 @@ const sections: NavSection[] = [
     items: [
       { icon: Activity, label: "Risk Dashboard", href: "/admin/trading/dashboard" },
       { icon: Wallet, label: "Trading Accounts", href: "/admin/trading/accounts" },
+      { icon: RotateCcw, label: "Resets & Activations", href: "/admin/resets" },
       { icon: Scale, label: "Rule Engine", href: "/admin/trading/rules" },
       { icon: Boxes, label: "Platforms & API", href: "/admin/trading/platforms" },
     ],
@@ -96,8 +100,9 @@ const sections: NavSection[] = [
     title: "CONTENT",
     items: [
       { icon: MessageSquare, label: "Support Tickets", href: "/admin/tickets" },
-      { icon: FileText, label: "CMS", href: "/admin/cms" },
+      { icon: Sparkles, label: "Assistant Log", href: "/admin/assistant" },
       { icon: HelpCircle, label: "FAQs", href: "/admin/faqs" },
+      { icon: FileText, label: "CMS", href: "/admin/cms" },
       { icon: BarChart3, label: "Stats", href: "/admin/stats" },
     ],
   },
@@ -111,7 +116,6 @@ const sections: NavSection[] = [
   {
     title: "SYSTEM",
     items: [
-      { icon: Mail, label: "Email", href: "/admin/email" },
       { icon: Shield, label: "Roles & Permissions", href: "/admin/roles" },
       { icon: TrendingUp, label: "Reports", href: "/admin/reports" },
       { icon: Activity, label: "API Logs", href: "/admin/api-logs" },
@@ -193,7 +197,7 @@ export function AdminSidebar({ role = "super_admin" }: AdminSidebarProps) {
   return (
     <>
       {/* Mobile Toggle */}
-      <div className="lg:hidden fixed top-0 left-0 w-full h-16 bg-[#0c0c0c] z-40 flex items-center justify-between px-4">
+      <div className="lg:hidden fixed top-0 left-0 w-full h-16 bg-[#0e1110] z-40 flex items-center justify-between px-4">
         <div className="flex items-center gap-2.5">
           <img
             src="/images/logo.webp"
@@ -226,7 +230,7 @@ export function AdminSidebar({ role = "super_admin" }: AdminSidebarProps) {
       {/* Sidebar Content — dark floating panel */}
       <aside
         className={cn(
-          "fixed z-50 flex flex-col bg-[#0c0c0c] transform transition-transform duration-300 ease-in-out",
+          "fixed z-50 flex flex-col bg-[linear-gradient(185deg,#1a1f1e_0%,#141817_45%,#0e1110_100%)] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.07),0_30px_60px_-30px_rgba(0,0,0,0.6)] transform transition-transform duration-300 ease-in-out",
           "inset-y-0 left-0 w-[260px] lg:inset-y-3 lg:left-3 lg:w-[248px] lg:rounded-[28px] lg:translate-x-0",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
@@ -253,7 +257,7 @@ export function AdminSidebar({ role = "super_admin" }: AdminSidebarProps) {
 
           <Link
             href="/dashboard"
-            className="mt-4 flex w-fit items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-white/60 transition-colors hover:bg-[#cbfb45] hover:text-[#0c0c0c] hover:border-transparent"
+            className="mt-4 flex w-fit items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-white/60 transition-colors hover:bg-[#cbfb45] hover:text-[#0e1110] hover:border-transparent"
           >
             User Dashboard <ArrowUpRight className="w-3.5 h-3.5" />
           </Link>
