@@ -111,20 +111,23 @@ export async function POST(request: Request) {
     let maxDailyDrawdownPct = 0.05;
     let maxOverallDrawdownPct = 0.10;
     let profitTargetPct = terminalPhase === "funded" ? 0 : 0.08;
-    
+    let minTradingDays = 0;
+
     if (rule_id) {
       const { data: ruleData } = await supabaseAdmin
         .from("trading_rules")
-        .select("max_daily_drawdown_pct, max_overall_drawdown_pct, profit_target_pct")
+        .select("max_daily_drawdown_pct, max_overall_drawdown_pct, profit_target_pct, min_trading_days")
         .eq("id", rule_id)
         .single();
-        
+
       if (ruleData) {
         maxDailyDrawdownPct = pctToDecimal(ruleData.max_daily_drawdown_pct, 0.05);
         maxOverallDrawdownPct = pctToDecimal(ruleData.max_overall_drawdown_pct, 0.10);
         profitTargetPct = terminalPhase === "funded" ? 0 : pctToDecimal(ruleData.profit_target_pct, 0.08);
+        minTradingDays = terminalPhase === "funded" ? 0 : Number(ruleData.min_trading_days) || 0;
       }
     }
+    const accountLeverage = Math.min(500, Math.max(1, Math.round(Number(leverage) || 100)));
 
     // 2. Retry a few times in case of an account_number collision.
     let createdTradingAccount: any = null;
@@ -140,7 +143,7 @@ export async function POST(request: Request) {
         user_id,
         platform_id,
         rule_id: rule_id || null,
-        leverage: leverage ? Number(leverage) : 100,
+        leverage: accountLeverage,
         phase: crmPhase,
         phase_group_id: crmAccountId,
         phase_index: PHASE_INDEX[crmPhase],
@@ -191,6 +194,8 @@ export async function POST(request: Request) {
         max_daily_drawdown: maxDailyDrawdownPct,
         max_overall_drawdown: maxOverallDrawdownPct,
         profit_target: profitTargetPct,
+        min_trading_days: minTradingDays,
+        leverage: accountLeverage,
         business_account_id: createdTradingAccount.id
       })
       .select()

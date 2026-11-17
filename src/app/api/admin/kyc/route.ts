@@ -1,34 +1,15 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { requireRole } from "@/lib/admin-auth";
 
 async function verifyAdmin(request: Request) {
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-      },
-    }
-  );
-
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { error: "Unauthorized", status: 401 };
-
-  const { data: profile } = await supabaseAdmin
-    .from("profiles")
-    .select("is_admin")
-    .eq("id", user.id)
-    .single();
-
-  if (!profile?.is_admin) return { error: "Forbidden", status: 403 };
-
-  return { user };
+  try {
+    const admin = await requireRole(request, ["super_admin", "finance", "support"]);
+    return { user: admin.user };
+  } catch (e) {
+    const m = (e as Error).message;
+    return { error: m, status: m === "Unauthorized" ? 401 : 403 };
+  }
 }
 
 export async function GET(request: Request) {

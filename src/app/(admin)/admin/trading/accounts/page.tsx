@@ -23,7 +23,7 @@ import {
   deleteTradingAccount,
 } from "@/lib/trading-client";
 
-type DialogKind = "reset" | "disable" | "enable" | "delete" | null;
+type DialogKind = "reset" | "disable" | "enable" | "pass" | "breach" | "delete" | null;
 
 export default function TradingAccountsPage() {
   const [accounts, setAccounts] = useState<any[]>([]);
@@ -130,19 +130,22 @@ export default function TradingAccountsPage() {
         removeAccount(confirmTarget.id);
         toast.success("Account deleted");
       } else {
-        const actionMap: Record<string, string> = {
-          reset: "reset_challenge",
-          disable: "disable",
-          enable: "enable",
+        const payload: Record<string, { action: string; status?: string }> = {
+          reset: { action: "reset_challenge" },
+          disable: { action: "disable" },
+          enable: { action: "enable" },
+          pass: { action: "change_status", status: "passed" },
+          breach: { action: "change_status", status: "breached" },
         };
-        const { account } = await accountAction(confirmTarget.id, {
-          action: actionMap[confirmKind],
-        });
-        upsertAccount(account);
+        const { account } = await accountAction(confirmTarget.id, payload[confirmKind]);
+        if (confirmKind === "reset" || confirmKind === "pass") await loadAccounts();
+        else upsertAccount(account);
         const msg: Record<string, string> = {
-          reset: "Challenge reset",
-          disable: "Account disabled",
-          enable: "Account enabled",
+          reset: "Account reset",
+          disable: "Trading suspended",
+          enable: "Trading re-enabled",
+          pass: "Phase passed. The next account has been issued.",
+          breach: "Account closed as breached",
         };
         toast.success(msg[confirmKind]);
       }
@@ -175,30 +178,44 @@ export default function TradingAccountsPage() {
     { title: string; message: string; confirmLabel: string; destructive: boolean }
   > = {
     reset: {
-      title: "Reset Challenge",
+      title: "Reset account",
       message:
-        "This resets balance, equity and drawdown counters back to the starting balance and sets the account to active / phase 1. Continue?",
-      confirmLabel: "Reset Challenge",
+        "The trader gets a fresh account at the same phase, size and rules. Open positions on this one are closed at market and it stops trading. Continue?",
+      confirmLabel: "Reset account",
       destructive: false,
     },
     disable: {
-      title: "Disable Account",
+      title: "Suspend trading",
       message:
-        "The customer will no longer be able to trade on this account until it is re-enabled. Continue?",
-      confirmLabel: "Disable Account",
+        "Open positions are closed at the current price, pending orders are cancelled and the trader cannot trade until you re-enable the account. Continue?",
+      confirmLabel: "Suspend",
       destructive: false,
     },
     enable: {
-      title: "Enable Account",
-      message: "Re-enable trading on this account?",
-      confirmLabel: "Enable Account",
+      title: "Re-enable trading",
+      message: "Let the trader trade on this account again?",
+      confirmLabel: "Re-enable",
       destructive: false,
     },
-    delete: {
-      title: "Delete Account",
+    pass: {
+      title: "Mark phase passed",
       message:
-        "This permanently deletes the trading account. This action cannot be undone. Continue?",
-      confirmLabel: "Delete Account",
+        "Open positions are closed at market, this phase is marked passed and the next account is issued (for Access, the trader is asked to pay the fee). Continue?",
+      confirmLabel: "Mark passed",
+      destructive: false,
+    },
+    breach: {
+      title: "Close as breached",
+      message:
+        "Use this for a rule violation. Open positions are closed at market and the account is closed. No free reset is offered. Continue?",
+      confirmLabel: "Close account",
+      destructive: true,
+    },
+    delete: {
+      title: "Delete account",
+      message:
+        "Trading stops and the account is hidden from the trader. Its trades, payouts and audit history are kept. Continue?",
+      confirmLabel: "Delete account",
       destructive: true,
     },
   };
@@ -269,7 +286,8 @@ export default function TradingAccountsPage() {
             s === "breached" ? "bg-red-50 text-red-700" :
             s === "passed" ? "bg-blue-50 text-blue-700" :
             s === "suspended" ? "bg-amber-50 text-amber-700" :
-            s === "disabled" ? "bg-gray-200 text-gray-700" :
+            s === "funded" ? "bg-lime-100 text-lime-800" :
+            s === "deleted" ? "bg-gray-200 text-gray-500" :
             "bg-gray-100 text-gray-700"
           )}>
             {s}
@@ -293,6 +311,8 @@ export default function TradingAccountsPage() {
             onAssignChallenge: () => setAssignTarget(row.original),
             onEnable: () => openConfirm("enable", row.original),
             onDisable: () => openConfirm("disable", row.original),
+            onPass: () => openConfirm("pass", row.original),
+            onBreach: () => openConfirm("breach", row.original),
             onChangeLeverage: () => setLeverageTarget(row.original),
             onDelete: () => openConfirm("delete", row.original),
           }}
@@ -338,7 +358,8 @@ export default function TradingAccountsPage() {
             <option value="breached">Breached</option>
             <option value="passed">Passed</option>
             <option value="suspended">Suspended</option>
-            <option value="disabled">Disabled</option>
+            <option value="funded">Funded</option>
+            <option value="deleted">Deleted</option>
           </select>
         </div>
       </div>
