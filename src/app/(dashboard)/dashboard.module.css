@@ -133,3 +133,9 @@
 :global(html[data-dash="dark"]) .light :global([class*="text-emerald-7"]) {
   color: #6ee7b7;
 }
+
+/* lime surfaces always carry dark text */
+:global(html[data-dash="dark"]) .light :global(.g-btn-lime),
+:global(html[data-dash="dark"]) .light :global([class~="bg-[var(--g-lime)]"]) {
+  color: #0e1110;
+}
