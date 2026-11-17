@@ -9,7 +9,22 @@ export function AdminFaqsClient({ initialFaqs }: { initialFaqs: any[] }) {
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  const [form, setForm] = useState({ question: "", answer: "", category: "General", sort_order: 0, is_active: true });
+  const [form, setForm] = useState<{ question: string; answer: string; category: string; sort_order: number; is_active: boolean; program_key?: string | null }>({ question: "", answer: "", category: "General", sort_order: 0, is_active: true, program_key: null });
+  const [syncing, setSyncing] = useState(false);
+
+  async function handleSync() {
+    if (!confirm("Replace every FAQ with the questions from the catalogue (general plus one set per account type)? Edits made here will be overwritten.")) return;
+    setSyncing(true);
+    try {
+      const res = await fetch("/api/admin/faqs/sync", { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Sync failed");
+      window.location.reload();
+    } catch (err) {
+      alert((err as Error).message);
+      setSyncing(false);
+    }
+  }
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -49,7 +64,14 @@ export function AdminFaqsClient({ initialFaqs }: { initialFaqs: any[] }) {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-end">
+      <div className="flex flex-wrap items-center justify-end gap-2">
+        <button
+          onClick={handleSync}
+          disabled={syncing}
+          className="rounded-lg border border-[var(--border)] bg-white px-4 py-2 font-semibold text-[var(--ink-950)] disabled:opacity-50"
+        >
+          {syncing ? "Syncing…" : "Sync from catalogue"}
+        </button>
         <button
           onClick={() => {
             setForm({ question: "", answer: "", category: "General", sort_order: faqs.length + 1, is_active: true });

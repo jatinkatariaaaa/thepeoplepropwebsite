@@ -10,6 +10,8 @@ import {
   Gauge,
   Trash2,
   Eye,
+  BadgeCheck,
+  Ban,
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -19,6 +21,8 @@ export interface AccountActionHandlers {
   onAssignChallenge: () => void;
   onEnable: () => void;
   onDisable: () => void;
+  onPass: () => void;
+  onBreach: () => void;
   onChangeLeverage: () => void;
   onDelete: () => void;
 }
@@ -47,7 +51,9 @@ export function AccountActionsMenu({ account, handlers }: AccountActionsMenuProp
     return () => document.removeEventListener("mousedown", onClickOutside);
   }, [open]);
 
-  const isDisabled = account.status === "disabled";
+  const isSuspended = account.status === "suspended";
+  const isOpen = account.status === "active" || account.status === "funded";
+  const canPass = isOpen && account.phase !== "funded";
 
   function run(fn: () => void) {
     setOpen(false);
@@ -88,15 +94,25 @@ export function AccountActionsMenu({ account, handlers }: AccountActionsMenuProp
 
           <div className="my-1 border-t border-[var(--border)]" />
 
-          {isDisabled ? (
+          {isSuspended ? (
             <button className={itemClass} onClick={() => run(handlers.onEnable)}>
-              <Power className="w-4 h-4 text-emerald-500" /> Enable Account
+              <Power className="w-4 h-4 text-emerald-500" /> Re-enable trading
             </button>
-          ) : (
+          ) : isOpen ? (
             <button className={itemClass} onClick={() => run(handlers.onDisable)}>
-              <PowerOff className="w-4 h-4 text-amber-600" /> Disable Account
+              <PowerOff className="w-4 h-4 text-amber-600" /> Suspend trading
             </button>
-          )}
+          ) : null}
+          {canPass ? (
+            <button className={itemClass} onClick={() => run(handlers.onPass)}>
+              <BadgeCheck className="w-4 h-4 text-emerald-600" /> Mark phase passed
+            </button>
+          ) : null}
+          {isOpen || isSuspended ? (
+            <button className={itemClass} onClick={() => run(handlers.onBreach)}>
+              <Ban className="w-4 h-4 text-red-500" /> Close as breached
+            </button>
+          ) : null}
 
           <button
             className={cn(itemClass, "text-red-600 hover:bg-red-50")}

@@ -371,7 +371,26 @@ export function KycClient({ initialDocuments, statusCounts }: KycClientProps) {
               </div>
             </div>
 
-            {/* No Images Required */}
+            {/* Documents: signed links from the private bucket, valid for one hour */}
+            {(selectedDoc.front_image_url || selectedDoc.back_image_url || selectedDoc.selfie_image_url) ? (
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                {([
+                  ["Front", selectedDoc.front_image_url],
+                  ["Back", selectedDoc.back_image_url],
+                  ["Selfie", selectedDoc.selfie_image_url],
+                ] as const).map(([label, url]) =>
+                  url ? (
+                    <a key={label} href={url} target="_blank" rel="noreferrer" className="group block overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--paper-2)]">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={url} alt={`${label} of document`} className="h-40 w-full object-cover transition-transform group-hover:scale-[1.02]" />
+                      <span className="block px-3 py-2 text-xs font-semibold text-[var(--ink-700)]">{label} · open full size</span>
+                    </a>
+                  ) : null,
+                )}
+              </div>
+            ) : (
+              <p className="rounded-xl bg-[var(--paper-2)] p-4 text-sm text-[var(--ink-500)]">This submission has no document images. Ask the trader to submit again from Settings.</p>
+            )}
 
             {/* Admin Notes */}
             {selectedDoc.admin_notes && (

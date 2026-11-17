@@ -5,6 +5,8 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { supabaseAdmin } from "@/lib/supabase";
 import { Toaster } from "sonner";
+import { cn } from "@/lib/utils";
+import styles from "../../(dashboard)/dashboard.module.css";
 import {
   AdminRoleProvider,
   type AdminRole,
@@ -61,7 +63,14 @@ export default async function AdminLayout({
   const role: AdminRole = (adminRole?.role as AdminRole) ?? "super_admin";
 
   return (
-    <div className="min-h-screen bg-[#e8e8e6]">
+    // Same glass system and pearl canvas as the trader dashboard. The --ink-* variables the admin
+    // pages were written with are remapped in globals.css (.admin-scope) to the glass palette.
+    <div className={cn("v2-scope admin-scope relative isolate min-h-screen overflow-x-clip antialiased", styles.light)}>
+      <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,#e4ebe8_0%,#f1f4f3_40%,#f7f9f8_100%)]" />
+        <div className="absolute -top-[30vh] -right-[12vw] h-[85vh] w-[70vw] rounded-full bg-[radial-gradient(closest-side,rgba(169,220,207,0.45),transparent)]" />
+        <div className="absolute -bottom-[38vh] -left-[6vw] h-[80vh] w-[60vw] rounded-full bg-[radial-gradient(closest-side,rgba(220,251,146,0.3),transparent)]" />
+      </div>
       <AdminRoleProvider role={role}>
         <AdminSidebar role={role} />
         <div className="lg:pl-[272px] flex flex-col min-h-screen">

@@ -106,7 +106,7 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: any[]
         const kyc = row.original.kyc_status || "none";
         return (
           <span className={`inline-flex px-2 py-1 rounded-full text-[11px] font-bold uppercase ${
-            kyc === "verified" ? "bg-emerald-50 text-emerald-700" :
+            kyc === "approved" || kyc === "verified" ? "bg-emerald-50 text-emerald-700" :
             kyc === "pending" ? "bg-amber-50 text-amber-700" :
             kyc === "rejected" ? "bg-red-50 text-red-700" :
             "bg-[var(--ink-100)] text-[var(--ink-600)]"

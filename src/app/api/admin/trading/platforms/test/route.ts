@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { supabaseAdmin } from "@/lib/supabase";
+import { requireRole } from "@/lib/admin-auth";
 import { pingTerminal } from "@/lib/terminal-api";
 
 export async function POST(req: Request) {
@@ -11,47 +11,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Platform ID is required" }, { status: 400 });
     }
 
-    const cookieStore = await cookies();
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll() {
-            return cookieStore.getAll();
-          },
-        },
-      }
-    );
-
-    // Verify Admin authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    try {
+      await requireRole(req, ["super_admin"]);
+    } catch (e) {
+      const m = (e as Error).message;
+      return NextResponse.json({ error: m }, { status: m === "Unauthorized" ? 401 : 403 });
     }
 
-    // Check if user is admin
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("is_admin")
-      .eq("id", user.id)
-      .single();
-
-    if (!profile?.is_admin) {
-      // Check admin roles
-      const { data: adminRole } = await supabase
-        .from("admin_roles")
-        .select("role")
-        .eq("user_id", user.id)
-        .single();
-        
-      if (!adminRole) {
-         return NextResponse.json({ error: "Forbidden: Admins only" }, { status: 403 });
-      }
-    }
-
-    // Fetch the platform details
-    const { data: platform, error: platformError } = await supabase
+    // Fetch the platform details (the API key is readable only server-side)
+    const { data: platform, error: platformError } = await supabaseAdmin
       .from("tpp_platforms")
       .select("api_url, api_key")
       .eq("id", platformId)

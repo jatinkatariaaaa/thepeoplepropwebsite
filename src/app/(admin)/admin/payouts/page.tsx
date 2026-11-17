@@ -6,7 +6,7 @@ export const revalidate = 0;
 export default async function AdminPayoutsPage() {
   const [ { data: payouts }, { data: profiles }, { data: accounts } ] = await Promise.all([
     supabaseAdmin.from("payouts").select("*").order("created_at", { ascending: false }),
-    supabaseAdmin.from("profiles").select("id, email, display_name"),
+    supabaseAdmin.from("profiles").select("id, email, display_name, kyc_status"),
     supabaseAdmin.from("accounts").select("id, label, balance, equity, starting_balance")
   ]);
 
@@ -23,6 +23,7 @@ export default async function AdminPayoutsPage() {
   const enrichedPayouts = (payouts || []).map(payout => ({
     ...payout,
     profiles: profilesMap[payout.user_id] || null,
+    kyc_status: profilesMap[payout.user_id]?.kyc_status ?? null,
     accounts: accountsMap[payout.account_id] || null,
     profit: payout.profit ?? 0,
     profit_split: payout.profit_split ?? 0,

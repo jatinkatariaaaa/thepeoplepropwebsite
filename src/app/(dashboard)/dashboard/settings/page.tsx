@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { KycPanel } from "@/components/dashboard/KycPanel";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 import { User, Lock } from "lucide-react";
@@ -26,12 +27,6 @@ export default function SettingsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState("");
-
-  const [kycForm, setKycForm] = useState({
-    documentType: "national_id",
-    documentNumber: "",
-    country: "",
-  });
 
   // Security tab state
   const [currentPassword, setCurrentPassword] = useState("");
@@ -358,122 +353,8 @@ export default function SettingsPage() {
               </div>
             </Panel>
 
-            {/* Identity Verification (KYC) */}
-            <Panel>
-              <PanelHead title="Identity Verification (KYC)" sub="Verify your identity to unlock payouts and funded accounts." />
-
-              <div className="p-5 sm:p-6 lg:p-8">
-                <div className="flex flex-col gap-4 rounded-[20px] bg-black/[0.025] p-4 ring-1 ring-black/[0.05] sm:p-5">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="mb-1 flex flex-wrap items-center gap-2">
-                        <span className="text-[14px] font-semibold text-[var(--g-ink)]">Current Status:</span>
-                        <Chip
-                          tone={
-                            formData.kycStatus === 'verified' ? "emerald" :
-                            formData.kycStatus === 'pending' ? "amber" :
-                            formData.kycStatus === 'rejected' ? "red" :
-                            "neutral"
-                          }
-                          className="tracking-wider uppercase"
-                        >
-                          {formData.kycStatus || 'unverified'}
-                        </Chip>
-                      </div>
-                      <p className="text-[13px] text-[var(--g-muted-ink)]">
-                        {formData.kycStatus === 'verified' && "Your identity has been successfully verified."}
-                        {formData.kycStatus === 'pending' && "Your verification request is currently under review by our team."}
-                        {formData.kycStatus === 'rejected' && "Your previous verification request was rejected. Please try again."}
-                        {(!formData.kycStatus || formData.kycStatus === 'none') && "Please submit your KYC details to get verified."}
-                      </p>
-                    </div>
-                  </div>
-
-                  {(!formData.kycStatus || formData.kycStatus === 'none' || formData.kycStatus === 'rejected') && (
-                    <div className="mt-2 space-y-4 border-t border-black/[0.06] pt-5">
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                          <label className={fieldLabel}>Document Type *</label>
-                          <div className="relative">
-                            <select
-                              value={kycForm.documentType}
-                              onChange={(e) => setKycForm({ ...kycForm, documentType: e.target.value })}
-                              className={cn(field(), selectField)}
-                            >
-                              <option value="national_id">National ID</option>
-                              <option value="passport">Passport</option>
-                              <option value="driving_license">Driving License</option>
-                            </select>
-                            <SelectChevron />
-                          </div>
-                        </div>
-                        <div>
-                          <label className={fieldLabel}>Document Number *</label>
-                          <input
-                            type="text"
-                            placeholder="Enter ID Number"
-                            value={kycForm.documentNumber}
-                            onChange={(e) => setKycForm({ ...kycForm, documentNumber: e.target.value })}
-                            className={field()}
-                          />
-                        </div>
-                        <div>
-                          <label className={fieldLabel}>Issuing Country *</label>
-                          <input
-                            type="text"
-                            placeholder="e.g. United States"
-                            value={kycForm.country}
-                            onChange={(e) => setKycForm({ ...kycForm, country: e.target.value })}
-                            className={field()}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="flex justify-end">
-                        <button
-                          onClick={async () => {
-                            if (!kycForm.documentNumber || !kycForm.country) {
-                              alert("Please fill in all KYC fields.");
-                              return;
-                            }
-                            if(confirm("Are you sure you want to submit your KYC request? Make sure your profile details match your ID.")){
-                              try {
-                                const { data: { session } } = await supabase.auth.getSession();
-                                const res = await fetch("/api/user/settings", {
-                                  method: "POST",
-                                  headers: {
-                                    "Content-Type": "application/json",
-                                    ...(session?.access_token && { "Authorization": `Bearer ${session.access_token}` })
-                                  },
-                                  body: JSON.stringify({
-                                    action: "submit_kyc",
-                                    documentType: kycForm.documentType,
-                                    documentNumber: kycForm.documentNumber,
-                                    country: kycForm.country
-                                  }),
-                                });
-                                if(res.ok){
-                                  setFormData({...formData, kycStatus: 'pending'});
-                                  alert("KYC Request Submitted Successfully!");
-                                } else {
-                                  const data = await res.json();
-                                  alert("Failed to submit KYC: " + data.error);
-                                }
-                              } catch {
-                                alert("Error submitting KYC");
-                              }
-                            }
-                          }}
-                          className={cn(btn.ink, btn.sm)}
-                        >
-                          Submit KYC
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </Panel>
+            {/* Identity verification: documents upload to private storage */}
+            <KycPanel status={formData.kycStatus} onSubmitted={() => setFormData({ ...formData, kycStatus: "pending" })} />
 
             <div className="flex flex-wrap items-center justify-end gap-4 pt-2">
               {message && <span className={cn("text-[13px] font-medium", message.includes("success") ? "text-[var(--g-emerald)]" : "text-red-600")}>{message}</span>}

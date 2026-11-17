@@ -12,6 +12,11 @@ import { href } from "@/components/v2/glass/routes";
 
 type Mode = "signin" | "signup" | "forgot";
 
+/** Only same-site paths: "?redirect=https://elsewhere" or "//elsewhere" falls back to the dashboard. */
+function safeRedirect(wanted: string | null): string {
+  return wanted && wanted.startsWith("/") && !wanted.startsWith("//") && !wanted.startsWith("/\\") ? wanted : "/dashboard";
+}
+
 function GoogleIcon() {
   return (
     <svg viewBox="0 0 48 48" width={16} height={16} aria-hidden="true">
@@ -41,16 +46,20 @@ export default function LoginPage() {
   const isPwValid = pw.length === 0 || pw.length >= 8;
   const matches = mode === "signup" ? confirm.length === 0 || confirm === pw : true;
 
-  // Auto-redirect if already logged in
+  // Auto-redirect if already logged in (same-site paths only, never an outside URL)
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         const urlParams = new URLSearchParams(window.location.search);
-        const redirect = urlParams.get("redirect") || "/dashboard";
-        router.push(redirect);
+        router.push(safeRedirect(urlParams.get("redirect")));
       }
     });
   }, [router]);
+
+  // Links from the terminal and the site can open straight on "Create account".
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("mode") === "signup") setMode("signup");
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,7 +93,7 @@ export default function LoginPage() {
         });
         if (signInError) throw signInError;
         const urlParams = new URLSearchParams(window.location.search);
-        const redirect = urlParams.get("redirect") || "/dashboard";
+        const redirect = safeRedirect(urlParams.get("redirect"));
         router.push(redirect);
       } else {
         // Read affiliate cookie if exists
@@ -123,7 +132,7 @@ export default function LoginPage() {
             }
           }
           const urlParams = new URLSearchParams(window.location.search);
-          const redirect = urlParams.get("redirect") || "/dashboard";
+          const redirect = safeRedirect(urlParams.get("redirect"));
           router.push(redirect);
         } else {
           setSuccess("Registration successful! Please check your email to verify your account.");

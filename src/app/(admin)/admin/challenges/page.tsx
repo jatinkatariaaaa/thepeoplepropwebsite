@@ -5,8 +5,6 @@ import { createBrowserClient } from "@supabase/ssr";
 import { Button } from "@/components/ui/Button";
 import { Plus, Edit2, X, Trash2 } from "lucide-react";
 
-const RISK_ONLY_PROGRAM_KEYS = new Set(["instant", "access"]);
-
 const DEFAULT_RULE_FLAGS = {
   is_news_trading_allowed: true,
   is_weekend_holding_allowed: true,
@@ -16,10 +14,6 @@ const DEFAULT_RULE_FLAGS = {
   is_martingale_allowed: false,
   is_grid_trading_allowed: false,
 };
-
-function isRiskOnlyProgramKey(key: string) {
-  return RISK_ONLY_PROGRAM_KEYS.has(key.toLowerCase());
-}
 
 function parsePercent(value: string, fallback = 0) {
   const match = String(value || "").match(/-?\d+(\.\d+)?/);
@@ -116,7 +110,8 @@ export default function ChallengesAdminPage() {
       profit_target: prog.profit_target || "",
       max_drawdown: prog.max_drawdown || "",
       daily_drawdown: prog.daily_drawdown || "",
-      phases: Number(prog.phases) || 1,
+      // 0 is a real value (no evaluation, e.g. Instant); only a missing value defaults to 1
+      phases: prog.phases == null || prog.phases === "" ? 1 : Number(prog.phases),
       profit_split: prog.profit_split || 80,
       is_active: prog.is_active,
       phase_1_rule_id: prog.phase_1_rule_id || "",
@@ -139,7 +134,9 @@ export default function ChallengesAdminPage() {
 
     // Save Program
     const progKey = formData.key;
-    const isRiskOnly = isRiskOnlyProgramKey(progKey);
+    // A program with no evaluation phases is funded from the first trade (Instant).
+    // Access has two phases, so it is an evaluation even though it is paid after passing.
+    const isRiskOnly = Number(formData.phases) === 0;
     const normalizedFormData = {
       ...formData,
       phases: isRiskOnly ? 0 : Number(formData.phases),
@@ -210,7 +207,7 @@ export default function ChallengesAdminPage() {
       if (isRiskOnly) {
         const riskRuleId = await ensureProgramRule(
           normalizedFormData.funded_rule_id || normalizedFormData.phase_1_rule_id,
-          "Risk Only",
+          "Funded",
           0
         );
         normalizedFormData.phase_1_rule_id = riskRuleId;
