@@ -5,8 +5,9 @@ import { cookies } from 'next/headers';
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get('code');
-  // if "next" is in param, use it as the redirect URL
-  const next = searchParams.get('next') ?? '/dashboard';
+  // "next" may only be a path on this site: "@evil.com" or "//evil.com" would turn the redirect into an outside URL.
+  const wanted = searchParams.get('next') ?? '';
+  const next = /^\/(?![\/\\])/.test(wanted) ? wanted : '/dashboard';
 
   if (code) {
     const cookieStore = await cookies();
