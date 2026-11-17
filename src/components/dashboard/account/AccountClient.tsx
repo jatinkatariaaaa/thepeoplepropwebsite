@@ -9,6 +9,7 @@ import { AccountBalanceChart } from "./AccountBalanceChart";
 import { TradingObjectives } from "./TradingObjectives";
 import { DailySummary } from "./DailySummary";
 import { AnalysisGrid } from "./AnalysisGrid";
+import { AccountOffers } from "./AccountOffers";
 import { supabase } from "@/lib/supabase";
 import type { AccountMetrics } from "@/lib/account-metrics";
 import { Panel, Spinner } from "../glass";
@@ -149,6 +150,7 @@ export function AccountClient({ accountId }: { accountId: string }) {
   return (
     <div className="max-w-7xl mx-auto pb-20">
       <AccountHeader account={account} />
+      <AccountOffers account={account} />
       <TopMetrics account={account} />
       <PerformanceCharts account={account} metrics={metrics} />
       <AccountBalanceChart metrics={metrics} />
