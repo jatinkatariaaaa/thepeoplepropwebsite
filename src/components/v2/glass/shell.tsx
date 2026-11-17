@@ -1,6 +1,7 @@
 import { Header } from "./header";
 import { Footer } from "./footer";
 import { V2DataProvider } from "./data";
+import { AssistantWidget } from "@/components/assistant/assistant-widget";
 
 /** The frame every public page sits in: shared data, header and footer. */
 export function SiteShell({ children }: { children: React.ReactNode }) {
@@ -10,6 +11,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         <Header />
         <main id="content">{children}</main>
         <Footer />
+        <AssistantWidget />
       </V2DataProvider>
     </div>
   );

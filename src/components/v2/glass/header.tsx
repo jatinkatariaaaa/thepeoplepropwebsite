@@ -8,51 +8,67 @@ import {
   ArrowRight,
   BarChart3,
   Briefcase,
+  Calculator,
   ChevronDown,
+  CreditCard,
+  Footprints,
   Grid3x3,
+  Layers,
   Mail,
   Menu,
   Newspaper,
+  Repeat2,
   Star,
+  Timer,
   Trophy,
   Users,
   X,
+  Zap,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { PERKS, PROGRAM_ORDER, programDetails } from "@/data/catalogue";
+import type { ProgramKey } from "@/data/programs";
 import { TppMark } from "./logo";
 import { EASE } from "./motion";
 import { ACCESS_UPFRONT } from "./data";
-import { APP, href, type PageKey } from "./routes";
+import { APP, href, programHref } from "./routes";
 
-type Item = { key: PageKey; label: string; note: string; icon: LucideIcon };
-type Entry = { label: string; key: PageKey } | { label: string; items: Item[] };
+type Item = { to: string; label: string; note: string; icon: LucideIcon };
+type Entry = { label: string; to: string } | { label: string; items: Item[]; wide?: boolean };
+
+const PROGRAM_ICON: Record<ProgramKey, LucideIcon> = { "1-step": Zap, "2-step": Repeat2, "3-step": Footprints, instant: Timer, access: CreditCard };
+
+const ACCOUNTS: Item[] = [
+  ...PROGRAM_ORDER.map((k) => ({ to: programHref(k), label: programDetails[k].name, note: programDetails[k].motto, icon: PROGRAM_ICON[k] })),
+  { to: href("challenges"), label: "Compare all accounts", note: "Prices, sizes and the three perks", icon: Layers },
+];
 
 const COMMUNITY: Item[] = [
-  { key: "leaderboard", label: "Leaderboard", note: "Who is leading right now", icon: BarChart3 },
-  { key: "heatmap", label: "Heatmap", note: "Live market heatmap", icon: Grid3x3 },
-  { key: "contest", label: "Contest", note: "Trading competitions", icon: Trophy },
-  { key: "reviews", label: "Reviews", note: "What traders say about us", icon: Star },
-  { key: "blog", label: "Blog", note: "Guides and market notes", icon: Newspaper },
+  { to: href("leaderboard"), label: "Leaderboard", note: "Who is leading right now", icon: BarChart3 },
+  { to: href("heatmap"), label: "Heatmap", note: "Live market heatmap", icon: Grid3x3 },
+  { to: href("contest"), label: "Contest", note: "Trading competitions", icon: Trophy },
+  { to: href("reviews"), label: "Reviews", note: "What traders say about us", icon: Star },
+  { to: href("blog"), label: "Blog", note: "Guides and market notes", icon: Newspaper },
+  { to: href("tools"), label: "Tools", note: "Position and loss-limit calculators", icon: Calculator },
 ];
 
 const COMPANY: Item[] = [
-  { key: "about", label: "About us", note: "Built by traders, for traders", icon: Users },
-  { key: "careers", label: "Careers", note: "Join the team", icon: Briefcase },
-  { key: "contact", label: "Contact", note: "Talk to our support team", icon: Mail },
+  { to: href("about"), label: "About us", note: "Built by traders, for traders", icon: Users },
+  { to: href("careers"), label: "Careers", note: "Join the team", icon: Briefcase },
+  { to: href("contact"), label: "Contact", note: "Talk to our support team", icon: Mail },
 ];
 
 const NAV: Entry[] = [
-  { label: "Challenges", key: "challenges" },
-  { label: "Rules", key: "rules" },
+  { label: "Accounts", items: ACCOUNTS },
+  { label: "Rules", to: href("rules") },
   { label: "Community", items: COMMUNITY },
   { label: "Company", items: COMPANY },
-  { label: "FAQ", key: "faqs" },
+  { label: "Help", to: href("faqs") },
 ];
 
-function isActive(pathname: string, key: PageKey) {
-  const h = href(key);
-  return h !== href("home") && (pathname === h || pathname.startsWith(`${h}/`));
+function isActive(pathname: string, to: string) {
+  return to !== href("home") && (pathname === to || pathname.startsWith(`${to}/`));
 }
 
 function MenuPanel({ items, onPick }: { items: Item[]; onPick: () => void }) {
@@ -62,11 +78,11 @@ function MenuPanel({ items, onPick }: { items: Item[]; onPick: () => void }) {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 6, scale: 0.98 }}
       transition={{ duration: 0.28, ease: EASE }}
-      className="absolute top-full left-1/2 z-50 w-[440px] -translate-x-1/2 pt-3"
+      className="absolute top-full left-1/2 z-50 w-[460px] -translate-x-1/2 pt-3"
     >
       <div className="g-glass-ink g-hair grid grid-cols-2 gap-1 rounded-[24px] p-2">
-        {items.map(({ key, label, note, icon: Icon }) => (
-          <Link key={key} href={href(key)} onClick={onPick} className="group flex items-start gap-3 rounded-[18px] p-3 transition-colors duration-300 hover:bg-white/[0.06]">
+        {items.map(({ to, label, note, icon: Icon }) => (
+          <Link key={to} href={to} onClick={onPick} className="group flex items-start gap-3 rounded-[18px] p-3 transition-colors duration-300 hover:bg-white/[0.06]">
             <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[12px] bg-white/[0.06] text-[var(--g-lime)] ring-1 ring-white/10 transition-colors group-hover:bg-[var(--g-lime)] group-hover:text-[var(--g-ink)]">
               <Icon className="h-[18px] w-[18px]" strokeWidth={1.9} />
             </span>
@@ -128,10 +144,10 @@ export function Header() {
         <div className="mx-auto flex h-10 max-w-[1312px] items-center justify-center gap-3 px-5">
           <span className="hidden h-1.5 w-1.5 rounded-full bg-[var(--g-lime)] sm:block" />
           <span className="truncate">
-            <span className="font-semibold text-white">Pass first, pay later.</span> Start an Access account for ${ACCESS_UPFRONT}.
+            <span className="font-semibold text-white">{PERKS.stipend.ratePct}% stipend every month.</span> First {PERKS.onDemandPayouts} payouts on demand. Start from ${ACCESS_UPFRONT}.
           </span>
           <Link href={href("challenges")} className="group hidden items-center gap-1 font-semibold text-[var(--g-lime)] sm:inline-flex">
-            See challenges
+            See accounts
             <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
           </Link>
         </div>
@@ -157,12 +173,12 @@ export function Header() {
 
           <nav aria-label="Primary" className="hidden items-center gap-0.5 lg:flex">
             {NAV.map((n) => {
-              if ("key" in n) {
-                const on = isActive(pathname, n.key);
+              if ("to" in n) {
+                const on = isActive(pathname, n.to);
                 return (
                   <Link
                     key={n.label}
-                    href={href(n.key)}
+                    href={n.to}
                     aria-current={on ? "page" : undefined}
                     className={cn("relative isolate rounded-full px-4 py-2 text-[14px] font-medium transition-colors duration-300", on ? "text-white" : "text-white/60 hover:text-white")}
                   >
@@ -171,7 +187,7 @@ export function Header() {
                   </Link>
                 );
               }
-              const on = n.items.some((i) => isActive(pathname, i.key));
+              const on = n.items.some((i) => isActive(pathname, i.to));
               const shown = menu === n.label;
               return (
                 <div key={n.label} className="relative" onPointerEnter={() => enter(n.label)} onPointerLeave={leave}>
@@ -228,12 +244,12 @@ export function Header() {
           >
             <nav aria-label="Mobile" className="flex flex-col">
               {[
-                { key: "challenges" as const, label: "Challenges" },
-                { key: "rules" as const, label: "Trading rules" },
-                { key: "faqs" as const, label: "FAQ" },
+                { to: href("challenges"), label: "Accounts" },
+                { to: href("rules"), label: "Trading rules" },
+                { to: href("faqs"), label: "Help centre" },
               ].map((n, i) => (
-                <motion.div key={n.key} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.04 + i * 0.05, ease: EASE }}>
-                  <Link href={href(n.key)} onClick={closeAll} className="flex items-center justify-between border-b border-white/10 py-4 text-[26px] font-semibold tracking-[-0.03em] text-white">
+                <motion.div key={n.to} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.04 + i * 0.05, ease: EASE }}>
+                  <Link href={n.to} onClick={closeAll} className="flex items-center justify-between border-b border-white/10 py-4 text-[26px] font-semibold tracking-[-0.03em] text-white">
                     {n.label}
                     <ArrowRight className="h-5 w-5 text-[var(--g-lime)]" />
                   </Link>
@@ -241,6 +257,7 @@ export function Header() {
               ))}
             </nav>
             {[
+              { title: "Account types", items: ACCOUNTS.slice(0, 5) },
               { title: "Community", items: COMMUNITY },
               { title: "Company", items: COMPANY },
             ].map((group, gi) => (
@@ -253,8 +270,8 @@ export function Header() {
               >
                 <p className="text-[12.5px] font-medium tracking-wide text-white/40 uppercase">{group.title}</p>
                 <div className="mt-3 grid grid-cols-2 gap-2">
-                  {group.items.map(({ key, label, icon: Icon }) => (
-                    <Link key={key} href={href(key)} onClick={closeAll} className="flex items-center gap-3 rounded-[16px] bg-white/[0.05] p-3 text-[15px] font-medium text-white ring-1 ring-white/10">
+                  {group.items.map(({ to, label, icon: Icon }) => (
+                    <Link key={to} href={to} onClick={closeAll} className="flex items-center gap-3 rounded-[16px] bg-white/[0.05] p-3 text-[15px] font-medium text-white ring-1 ring-white/10">
                       <Icon className="h-4 w-4 text-[var(--g-lime)]" strokeWidth={1.9} />
                       {label}
                     </Link>

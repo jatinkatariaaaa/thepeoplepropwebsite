@@ -101,8 +101,8 @@ export const CONDITIONS = {
   instruments: [
     {
       group: "Forex",
-      count: 19,
-      examples: "EURUSD, GBPUSD, USDJPY, AUDUSD, USDCAD, EURJPY, GBPJPY and 12 more majors, minors and exotics",
+      count: 18,
+      examples: "EURUSD, GBPUSD, USDJPY, AUDUSD, USDCAD, EURJPY, GBPJPY and 11 more majors, minors and exotics",
       spread: "1.2 pips",
       hours: "Sunday 22:00 to Friday 22:00 UTC",
     },
@@ -303,7 +303,7 @@ const faqCommon = (name: string): QA[] => [
   },
   {
     q: "Which platform and instruments can I trade?",
-    a: `All accounts trade on ${CONDITIONS.platform}, our own web terminal for desktop and mobile. You can trade 19 forex pairs, gold (XAUUSD), BTC/USD and ETH/USD at ${CONDITIONS.leverage} leverage. Commission is ${CONDITIONS.commission} and there are no swaps.`,
+    a: `All accounts trade on ${CONDITIONS.platform}, our own web terminal for desktop and mobile. You can trade 18 forex pairs, gold (XAUUSD), BTC/USD and ETH/USD at ${CONDITIONS.leverage} leverage. Commission is ${CONDITIONS.commission} and there are no swaps.`,
     category: "Platform",
   },
   {

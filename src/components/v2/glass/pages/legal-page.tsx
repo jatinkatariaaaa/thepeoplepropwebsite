@@ -2,7 +2,7 @@
 
 import { Fragment, useEffect, useState } from "react";
 import Link from "next/link";
-import { Cookie, FileText, Lock, ShieldCheck, TriangleAlert, type LucideIcon } from "lucide-react";
+import { BadgeDollarSign, Cookie, FileText, HandCoins, Lock, ShieldCheck, TriangleAlert, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Container } from "../ui";
 import { Reveal } from "../motion";
@@ -17,9 +17,11 @@ const META: Record<LegalKey, { crumb: string; eyebrow: string; icon: LucideIcon;
   cookie: { crumb: "Cookies", eyebrow: "Legal", icon: Cookie, lead: "Cookie", fade: "policy.", lede: "How we use cookies and similar technologies, and how you can control them." },
   "aml-policy": { crumb: "AML policy", eyebrow: "Compliance", icon: ShieldCheck, lead: "Anti-money", fade: "laundering policy.", lede: "How we verify identities and monitor activity to keep the platform clean." },
   "risk-disclosure": { crumb: "Risk disclosure", eyebrow: "Compliance", icon: TriangleAlert, lead: "Risk", fade: "disclosure.", lede: "Trading involves significant risk. Please read this before using our services." },
+  "payout-policy": { crumb: "Payout policy", eyebrow: "Policies", icon: HandCoins, lead: "Payout", fade: "policy.", lede: "When you can withdraw, how much you receive, the checks we run and how you are paid." },
+  "refund-policy": { crumb: "Refund policy", eyebrow: "Policies", icon: BadgeDollarSign, lead: "Refund", fade: "policy.", lede: "When a fee can be returned, and how the evaluation fee comes back with your first payout." },
 };
 
-const ORDER: LegalKey[] = ["terms", "privacy", "cookie", "aml-policy", "risk-disclosure"];
+const ORDER: LegalKey[] = ["terms", "payout-policy", "refund-policy", "privacy", "cookie", "aml-policy", "risk-disclosure"];
 const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
 /** Renders the original **bold** spans as <strong>. */
@@ -80,7 +82,7 @@ export function LegalPage({ doc }: { doc: LegalKey }) {
 
   return (
     <>
-      <PageHero art={`/art/page-${doc}.webp`} crumb={m.crumb} eyebrow={m.eyebrow} icon={m.icon} lead={m.lead} fade={m.fade} lede={m.lede}>
+      <PageHero art={doc === "payout-policy" || doc === "refund-policy" ? "/art/page-terms.webp" : `/art/page-${doc}.webp`} crumb={m.crumb} eyebrow={m.eyebrow} icon={m.icon} lead={m.lead} fade={m.fade} lede={m.lede}>
         <p className="g-pill g-hair bg-white/[0.06] text-white/70 backdrop-blur-md">{d.updated}</p>
       </PageHero>
 
