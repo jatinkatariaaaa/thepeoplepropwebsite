@@ -80,7 +80,16 @@ export async function POST(request: Request) {
 
     // Check if the user wants to submit KYC
     if (body.action === 'submit_kyc') {
-      const { documentType, documentNumber, country } = body;
+      const { documentType, documentNumber, country, frontPath, backPath, selfiePath } = body;
+
+      // Files are uploaded by the browser into the trader's own folder of the private bucket.
+      const own = (path: unknown) => typeof path === "string" && path.startsWith(`${user.id}/`) && !path.includes("..");
+      if (!["passport", "national_id", "driving_license"].includes(documentType)) {
+        return NextResponse.json({ error: "Choose a document type." }, { status: 400 });
+      }
+      if (!own(frontPath) || !own(selfiePath) || (backPath != null && !own(backPath))) {
+        return NextResponse.json({ error: "Upload the front of your document and a selfie first." }, { status: 400 });
+      }
       
       if (!documentType || !documentNumber || !country) {
         return NextResponse.json({ error: "Missing required KYC fields" }, { status: 400 });
@@ -92,8 +101,11 @@ export async function POST(request: Request) {
         .insert({
           user_id: user.id,
           document_type: documentType,
-          document_number: documentNumber,
-          country: country,
+          document_number: String(documentNumber).slice(0, 60),
+          country: String(country).slice(0, 80),
+          front_image_url: frontPath,
+          back_image_url: backPath ?? null,
+          selfie_image_url: selfiePath,
           status: "pending"
         });
         
@@ -106,6 +118,14 @@ export async function POST(request: Request) {
         .eq("id", user.id);
         
       if (error) throw error;
+      await supabaseAdmin.from("admin_notifications").insert({
+        type: "kyc_submission",
+        severity: "info",
+        title: "New identity documents",
+        message: `${user.email} submitted documents for review.`,
+        entity_type: "kyc",
+        user_id: user.id,
+      });
       return NextResponse.json({ success: true, message: "KYC submitted successfully" });
     }
 

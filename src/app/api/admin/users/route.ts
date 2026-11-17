@@ -114,7 +114,7 @@ export async function PATCH(request: Request) {
         auditAction = "unsuspend_user";
         break;
       case "verify_kyc":
-        updateData = { kyc_status: "verified" };
+        updateData = { kyc_status: "approved" };
         auditAction = "verify_kyc";
         break;
       case "reject_kyc":

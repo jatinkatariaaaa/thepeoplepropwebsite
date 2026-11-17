@@ -109,6 +109,17 @@ export async function PATCH(request: Request) {
       new_value: updateData,
     });
 
+    // The trader's profile follows the decision; payouts check profiles.kyc_status.
+    const profileStatus = status === "approved" ? "approved" : ["rejected", "reupload_requested", "expired"].includes(status) ? "rejected" : "pending";
+    await supabaseAdmin.from("profiles").update({ kyc_status: profileStatus }).eq("id", doc.user_id);
+    await supabaseAdmin.from("user_notifications").insert({
+      user_id: doc.user_id,
+      type: "kyc",
+      title: profileStatus === "approved" ? "Identity verified" : profileStatus === "rejected" ? "Identity check needs attention" : "Identity check updated",
+      body: profileStatus === "approved" ? "Your identity is verified. Payouts can now be sent to you." : rejectionReason ? `Reason: ${rejectionReason}` : "Please check your documents in Settings.",
+      link: "/dashboard/settings",
+    });
+
     // Update KYC session status
     const { data: session } = await supabaseAdmin
       .from("kyc_verification_sessions")

@@ -18,8 +18,22 @@ export default async function AdminKycPage() {
     return acc;
   }, {});
 
+  // Stored values are paths in the private kyc-documents bucket; turn them into one-hour signed links.
+  const paths = (documents || [])
+    .flatMap((d: any) => [d.front_image_url, d.back_image_url, d.selfie_image_url])
+    .filter((p: unknown): p is string => typeof p === "string" && p.length > 0 && !p.startsWith("http"));
+  const signed = new Map<string, string>();
+  if (paths.length) {
+    const { data } = await supabaseAdmin.storage.from("kyc-documents").createSignedUrls(paths, 3600);
+    for (const row of data ?? []) if (row.path && row.signedUrl) signed.set(row.path, row.signedUrl);
+  }
+  const link = (p: string | null) => (p ? (p.startsWith("http") ? p : (signed.get(p) ?? null)) : null);
+
   const enrichedDocs = (documents || []).map((d: any) => ({
     ...d,
+    front_image_url: link(d.front_image_url),
+    back_image_url: link(d.back_image_url),
+    selfie_image_url: link(d.selfie_image_url),
     profiles: d.profiles || profilesMap[d.user_id] || null,
   }));
 
