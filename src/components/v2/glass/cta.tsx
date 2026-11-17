@@ -13,7 +13,7 @@ type Action = { label: string; href: string };
 /** The closing showroom. Inner pages pass their own line and actions; the landing page uses the defaults. */
 export function Cta({
   title,
-  lede = "Your first payout is available 14 days after your first funded trade.",
+  lede = "Your first five payouts are on demand, and every active account earns a 1% stipend each month.",
   primary = { label: "Start your challenge", href: APP.newChallenge },
   secondary = { label: "Read the rules", href: href("rules") },
   size = "lg",

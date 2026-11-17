@@ -1,96 +1,87 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { getSessionUser } from "@/lib/api-auth";
+import { checkPayout } from "@/lib/payouts";
 
+const METHODS = new Set(["usdt_trc20", "usdt_erc20", "usdt_bep20", "bank_transfer"]);
+const money = (n: number) => Math.round(n * 100) / 100;
+
+/** Request a payout from a funded account. */
 export async function POST(request: Request) {
   try {
-    const cookieStore = await cookies();
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll() {
-            return cookieStore.getAll();
-          },
-        },
-      }
-    );
+    const user = await getSessionUser(request);
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const { data: { user } } = await supabase.auth.getUser();
+    const body = await request.json();
+    const accountRef = String(body.accountId || "");
+    const method = METHODS.has(body.paymentMethod) ? String(body.paymentMethod) : "usdt_trc20";
+    const details = String(body.paymentDetails || body.cryptoAddress || "").trim().slice(0, 500);
+    if (!accountRef || !details) return NextResponse.json({ error: "Choose an account and enter where the payout should be sent." }, { status: 400 });
 
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const check = await checkPayout(user.id, accountRef);
+    if (check.blockers.length) return NextResponse.json({ error: check.blockers[0], blockers: check.blockers }, { status: 400 });
+
+    // `amount` is the profit to take out of the account; empty means all of it.
+    const requested = body.amount == null || body.amount === "" ? check.profit : Number(body.amount);
+    if (!Number.isFinite(requested) || requested <= 0) return NextResponse.json({ error: "Enter a valid amount." }, { status: 400 });
+    const gross = money(Math.min(requested, check.profit));
+    const traderShare = money((gross * check.splitPct) / 100);
+    if (traderShare < check.minPayout) {
+      return NextResponse.json({ error: `The minimum payout is $${check.minPayout} after the ${check.splitPct}% split.` }, { status: 400 });
     }
 
-    const { accountId, amount, paymentMethod, paymentDetails, cryptoAddress } = await request.json();
+    // Debit the account first; the function re-checks ownership, positions and profit under a row lock.
+    const { error: debitError } = await supabaseAdmin.rpc("payout_debit", { p_terminal_account_id: check.terminalAccountId, p_user_id: user.id, p_amount: gross });
+    if (debitError) return NextResponse.json({ error: debitError.message }, { status: 400 });
 
-    // Support both old (cryptoAddress) and new (paymentMethod + paymentDetails) formats
-    const resolvedMethod = paymentMethod || "usdt_trc20";
-    const resolvedDetails = paymentDetails || cryptoAddress || "";
+    const stipend = check.settings.stipendRelease === "with_payout" ? check.stipendBalance : 0;
+    const total = money(traderShare + stipend + check.feeRefund);
 
-    if (!accountId || !amount || !resolvedDetails) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-    }
-
-    // Verify account belongs to user and is funded
-    const { data: account } = await supabaseAdmin
-      .from("accounts")
-      .select("*")
-      .eq("id", accountId)
-      .eq("user_id", user.id)
-      .eq("status", "funded")
-      .single();
-
-    if (!account) {
-      return NextResponse.json({ error: "Invalid account or not funded" }, { status: 400 });
-    }
-
-    const maxProfit = Math.max(0, account.balance - account.starting_balance);
-    if (amount > maxProfit) {
-      return NextResponse.json({ error: "Requested amount exceeds maximum withdrawable profit" }, { status: 400 });
-    }
-
-    if (amount <= 0) {
-      return NextResponse.json({ error: "Invalid amount" }, { status: 400 });
-    }
-
-    // Deduct from balance
-    const newBalance = account.balance - amount;
-    const newEquity = account.equity - amount; // Also reduce equity to keep it synced
-
-    const { error: updateError } = await supabaseAdmin
-      .from("accounts")
-      .update({ balance: newBalance, equity: newEquity })
-      .eq("id", account.id);
-
-    if (updateError) {
-      throw updateError;
-    }
-
-    // Insert payout record
     const { data: payout, error: insertError } = await supabaseAdmin
       .from("payouts")
       .insert({
         user_id: user.id,
-        account_id: account.id,
-        amount,
-        crypto_address: resolvedDetails,
-        payment_method: resolvedMethod,
-        payment_details: resolvedDetails,
-        status: "pending"
+        account_id: check.terminalAccountId,
+        trading_account_id: check.accountId,
+        amount: total,
+        profit: gross,
+        gross_profit: gross,
+        profit_split: check.splitPct,
+        trader_share: traderShare,
+        stipend_amount: stipend,
+        fee_refund_amount: check.feeRefund,
+        sequence_no: check.sequenceNo,
+        on_demand: check.onDemand,
+        crypto_address: details,
+        payment_method: method,
+        payment_details: details,
+        status: "pending",
       })
       .select()
       .single();
 
-    if (insertError) {
-      throw insertError;
+    if (insertError || !payout) {
+      await supabaseAdmin.rpc("payout_credit", { p_terminal_account_id: check.terminalAccountId, p_amount: gross });
+      throw insertError ?? new Error("Could not record the payout request.");
     }
 
+    if (stipend > 0) {
+      await supabaseAdmin.from("stipend_accruals").update({ status: "released", payout_id: payout.id, released_at: new Date().toISOString() }).eq("user_id", user.id).eq("status", "accrued");
+    }
+
+    await supabaseAdmin.from("admin_notifications").insert({
+      type: "new_payout",
+      severity: "info",
+      title: "New payout request",
+      message: `${user.email} requested $${total.toLocaleString("en-US")} (payout #${check.sequenceNo}${check.onDemand ? ", on demand" : ""}).`,
+      entity_type: "payout",
+      entity_id: payout.id,
+      user_id: user.id,
+    });
+
     return NextResponse.json({ success: true, payout });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Payout error:", error);
-    return NextResponse.json({ error: error.message || "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: (error as Error).message || "Internal server error" }, { status: 500 });
   }
 }

@@ -1,14 +1,11 @@
 /**
- * TPP challenge programs — full pricing matrix.
- * Inspired by Atlas Funded's structure (1-Step, 2-Step, 3-Step, Instant, Access)
- * but with TPP's own pricing, naming, and rules. NOT copied verbatim.
+ * TPP challenge programs: the pricing matrix and the short facts the cards show.
+ * The long-form detail for each program (phases, guidelines, terms, FAQ) lives
+ * in ./catalogue.ts and is keyed by the same ProgramKey.
  *
- * All fees are USD one-time, all percentages are of the starting balance,
- * and every program ships with the same TPP-wide guarantees:
- *   - Unlimited trading period
- *   - EAs / bots / news trading allowed
- *   - Weekend holds allowed (no opening trades on Sat/Sun)
- *   - Fee refund on first qualifying payout
+ * Fees are one-time USD amounts. Percentages are of the starting balance.
+ * Live values come from Supabase (tpp_programs, tpp_program_fees) and override
+ * these defaults; the checkout prices orders on the server from the same tables.
  */
 
 export type ProgramKey = "1-step" | "2-step" | "3-step" | "instant" | "access";
@@ -62,16 +59,16 @@ export const programs: Program[] = [
     phases: 1,
     profitSplit: 80,
     profitSplitMax: 100,
-    payoutCycle: "Bi-weekly",
+    payoutCycle: "First 5 on demand, then bi-weekly",
     profitTarget: "10%",
     dailyDrawdown: "4%",
     maxDrawdown: "7%",
-    minTradingDays: 5,
-    consistencyRule: "30%",
+    minTradingDays: 3,
+    consistencyRule: "40% on payouts",
     highlights: [
       "One phase, one target",
-      "100% split add-on available",
-      "Free retry on first breach",
+      "First 5 payouts on demand",
+      "1% monthly stipend",
     ],
     fees: {
       5_000: 59,
@@ -90,16 +87,16 @@ export const programs: Program[] = [
     phases: 2,
     profitSplit: 80,
     profitSplitMax: 100,
-    payoutCycle: "Bi-weekly",
+    payoutCycle: "First 5 on demand, then bi-weekly",
     profitTarget: "8% + 5%",
     dailyDrawdown: "5%",
     maxDrawdown: "10%",
-    minTradingDays: 5,
-    consistencyRule: "30%",
+    minTradingDays: 3,
+    consistencyRule: "40% on payouts",
     highlights: [
       "Lower fee, more headroom",
-      "5% daily / 10% overall drawdown",
-      "Optional on-demand payouts",
+      "5% daily / 10% overall loss limit",
+      "First 5 payouts on demand",
     ],
     fees: {
       5_000: 39,
@@ -119,16 +116,16 @@ export const programs: Program[] = [
     phases: 3,
     profitSplit: 80,
     profitSplitMax: 100,
-    payoutCycle: "Bi-weekly",
+    payoutCycle: "First 5 on demand, then bi-weekly",
     profitTarget: "6% × 3",
     dailyDrawdown: "4%",
     maxDrawdown: "8%",
-    minTradingDays: 4,
-    consistencyRule: "30%",
+    minTradingDays: 3,
+    consistencyRule: "40% on payouts",
     highlights: [
       "Three 6% phases — easy pacing",
       "Cheapest entry in our line-up",
-      "Scalping add-on supported",
+      "1% monthly stipend",
     ],
     fees: {
       5_000: 29,
@@ -143,21 +140,21 @@ export const programs: Program[] = [
     key: "instant",
     label: "Instant Funded",
     shortLabel: "Instant",
-    tagline: "Skip evaluation. Trade real allocation today.",
+    tagline: "Skip the evaluation. Trade a funded account today.",
     badge: "No Evaluation",
     phases: 0,
     profitSplit: 80,
     profitSplitMax: 100,
-    payoutCycle: "First at 28d, then 14d",
+    payoutCycle: "First 5 on demand, then bi-weekly",
     profitTarget: "—",
     dailyDrawdown: "3%",
-    maxDrawdown: "5% trailing",
-    minTradingDays: 5,
-    consistencyRule: "20%",
+    maxDrawdown: "5%",
+    minTradingDays: 0,
+    consistencyRule: "25% on payouts",
     highlights: [
-      "No evaluation, direct funded",
-      "Trailing drawdown locks at breakeven",
-      "Weekly payout add-on available",
+      "No evaluation, funded from day one",
+      "Static 5% loss limit, no trailing",
+      "First 5 payouts on demand",
     ],
     fees: {
       5_000: 59,
@@ -173,24 +170,24 @@ export const programs: Program[] = [
     key: "access",
     label: "Access Account",
     shortLabel: "Access",
-    tagline: "Trade with loss limits only. No evaluation target.",
+    tagline: "Pass first, pay later. Start for $5.",
     badge: "New",
-    phases: 0,
+    phases: 2,
     profitSplit: 80,
     profitSplitMax: 100,
-    payoutCycle: "Bi-weekly",
-    profitTarget: "None",
+    payoutCycle: "First 5 on demand, then bi-weekly",
+    profitTarget: "8% + 5%",
     dailyDrawdown: "5%",
     maxDrawdown: "10%",
-    minTradingDays: 2,
-    consistencyRule: "30%",
+    minTradingDays: 3,
+    consistencyRule: "40% on payouts",
     highlights: [
-      "No evaluation profit target",
-      "5% daily / 10% overall drawdown",
-      "72-hour reset window if breached",
+      "$5 to start the evaluation",
+      "Pay the fee only after you pass",
+      "5% daily / 10% overall loss limit",
     ],
     fees: {
-      // shown as the post-pass funded fee
+      // the fee due within 48 hours of passing; $5 is charged at checkout
       5_000: 69,
       10_000: 129,
       25_000: 269,
@@ -216,12 +213,7 @@ export const formatSizeLong = (n: AccountSize) =>
 
 /* ─── Add-ons ──────────────────────────────────────────────────── */
 
-export type AddOnKey =
-  | "split-100"
-  | "payout-on-demand"
-  | "no-min-days"
-  | "scalping"
-  | "free-retry";
+export type AddOnKey = "split-100" | "no-min-days" | "free-retry";
 
 export interface AddOn {
   key: AddOnKey;
@@ -237,43 +229,29 @@ export const addOns: AddOn[] = [
   {
     key: "split-100",
     label: "100% Profit Split",
-    description: "Upgrade your split from 80% to 100% from day one.",
+    description: "Keep 100% of your profit instead of 80%, from your first payout.",
     feePct: 20,
-    appliesTo: ["1-step", "2-step", "3-step", "instant", "access"],
-  },
-  {
-    key: "payout-on-demand",
-    label: "First Payout on Demand",
-    description: "Your first payout can be requested at any time. Subsequent payouts follow standard cycle.",
-    feePct: 0,
     appliesTo: ["1-step", "2-step", "3-step", "instant", "access"],
   },
   {
     key: "no-min-days",
-    label: "No Min Trading Days",
-    description: "Remove the minimum-day requirement on the evaluation.",
-    feePct: 20,
+    label: "No Minimum Trading Days",
+    description: "Pass a phase the moment you hit the target. No three-day minimum.",
+    feePct: 15,
     appliesTo: ["1-step", "2-step", "3-step", "access"],
-  },
-  {
-    key: "scalping",
-    label: "Scalping Pack",
-    description: "Tighter spreads + sub-second hold allowance for scalpers.",
-    feePct: 25,
-    appliesTo: ["3-step", "instant"],
   },
   {
     key: "free-retry",
     label: "Free Retry",
-    description: "One free re-attempt on the same account if you breach during evaluation.",
-    feePct: 25,
+    description: "One free reset of the same account if you breach during the evaluation, at any time.",
+    feePct: 20,
     appliesTo: ["1-step", "2-step", "3-step"],
   },
 ];
 
 /* ─── Platforms ────────────────────────────────────────────────── */
 
-export type PlatformKey = "tppdashboard" | "mt5" | "tradelocker" | "matchtrader";
+export type PlatformKey = "tppterminal";
 
 export interface Platform {
   key: PlatformKey;
@@ -284,10 +262,7 @@ export interface Platform {
 }
 
 export const platforms: Platform[] = [
-  { key: "tppdashboard", label: "TPP Dashboard", sub: "Built-in web platform", status: "live" },
-  { key: "mt5", label: "MetaTrader 5", sub: "Industry standard", status: "live" },
-  { key: "tradelocker", label: "TradeLocker", sub: "Web-first, no install", status: "live" },
-  { key: "matchtrader", label: "Match-Trader", sub: "Modern UI, fast fills", status: "live" },
+  { key: "tppterminal", label: "TPP Terminal", sub: "Web and mobile, nothing to install", status: "live" },
 ];
 
 /* ─── Helpers ──────────────────────────────────────────────────── */

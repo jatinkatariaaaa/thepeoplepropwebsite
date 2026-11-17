@@ -3,11 +3,13 @@
  * (src/app/{terms,privacy,cookie,aml-policy,risk-disclosure}/page.tsx) so the
  * glass versions render the same words. **bold** marks the original <strong>.
  */
+import { policies } from "@/data/catalogue";
+
 export type LegalBlock = { type: "p"; text: string } | { type: "list"; items: string[] };
 export type LegalDoc = { title: string; updated: string; intro: LegalBlock[]; sections: { heading: string; blocks: LegalBlock[] }[] };
-export type LegalKey = "terms" | "privacy" | "cookie" | "aml-policy" | "risk-disclosure";
+export type LegalKey = "terms" | "privacy" | "cookie" | "aml-policy" | "risk-disclosure" | "payout-policy" | "refund-policy";
 
-export const LEGAL: Record<LegalKey, LegalDoc> = {
+const STATIC_LEGAL: Record<Exclude<LegalKey, "payout-policy" | "refund-policy">, LegalDoc> = {
   "terms": {
     "title": "Terms of Service",
     "updated": "Last Updated: June 2026",
@@ -404,4 +406,21 @@ export const LEGAL: Record<LegalKey, LegalDoc> = {
       }
     ]
   }
+};
+
+/** The payout and refund policies are written once, in the catalogue, next to the numbers they quote. */
+const fromPolicy = (key: "payout-policy" | "refund-policy"): LegalDoc => {
+  const doc = policies.find((p) => p.key === key)!;
+  return {
+    title: doc.title,
+    updated: doc.updated,
+    intro: [{ type: "p", text: doc.intro }],
+    sections: doc.sections.map((s) => ({ heading: s.heading, blocks: [{ type: "list", items: s.body }] })),
+  };
+};
+
+export const LEGAL: Record<LegalKey, LegalDoc> = {
+  ...STATIC_LEGAL,
+  "payout-policy": fromPolicy("payout-policy"),
+  "refund-policy": fromPolicy("refund-policy"),
 };

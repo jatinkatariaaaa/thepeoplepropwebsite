@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { StatCards } from "./StatCards";
 import { ActiveAccounts } from "./ActiveAccounts";
+import { PerksStrip } from "./PerksStrip";
 import { supabase } from "@/lib/supabase";
 
 type DashboardAccount = Record<string, unknown> & {
@@ -85,6 +86,7 @@ export function DashboardClient() {
   return (
     <div className="w-full max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
       <StatCards accounts={accounts} totalPayouts={totalPayouts} />
+      <PerksStrip accounts={accounts} />
       <ActiveAccounts accounts={accounts} loading={loading} />
     </div>
   );
