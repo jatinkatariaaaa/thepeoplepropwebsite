@@ -11,7 +11,7 @@ import { Chip, Empty, Notice, PageTitle, Panel, PanelHead, SelectChevron, Spinne
 type Row = Certificate & { email: string | null; note: string | null; createdAt: string };
 type Trader = { id: string; email: string | null; name: string | null };
 type Candidates = {
-  accounts: { id: string; label: string; phase: string; status: string; funded: boolean; passed: boolean; passedOn: string | null; phaseCertificate: string | null; fundedCertificate: string | null }[];
+  accounts: { id: string; source: "dashboard" | "terminal"; label: string; phase: string; status: string; funded: boolean; passed: boolean; passedOn: string | null; phaseCertificate: { id: string; number: string } | null; fundedCertificate: { id: string; number: string } | null }[];
   terminalAccounts: { id: string; label: string; status: string }[];
   payouts: { id: string; amount: number; status: string; paidOn: string; method: string | null; reference: string | null; payoutCertificate: string | null; highestCertificate: string | null }[];
 };
@@ -34,6 +34,7 @@ function detail(c: Certificate) {
 
 const EMPTY_FORM = {
   accountId: "",
+  accountSource: "dashboard" as "dashboard" | "terminal",
   payoutId: "",
   periodType: "month" as "month" | "year",
   title: "",
@@ -227,7 +228,7 @@ function IssuePanel({ onIssued }: { onIssued: (c: Certificate) => void }) {
     switch (kind) {
       case "phase_pass":
       case "funded":
-        return { ...common, tradingAccountId: f.accountId };
+        return f.accountSource === "terminal" ? { ...common, accountId: f.accountId } : { ...common, tradingAccountId: f.accountId };
       case "payout":
         return f.payoutMode === "outside"
           ? { ...common, manualPayout: { accountId: f.manualAccountId, amount: Number(f.manualAmount), method: f.manualMethod, reference: f.manualReference, paidAt: f.manualDate } }
@@ -336,30 +337,12 @@ function IssuePanel({ onIssued }: { onIssued: (c: Certificate) => void }) {
         ) : (
           <>
             {kind === "phase_pass" || kind === "funded" ? (
-              <label className="block">
-                <span className={fieldLabel}>{kind === "funded" ? "Funded account" : "Passed phase"}</span>
-                <span className="relative block">
-                <select value={f.accountId} onChange={(e) => set({ accountId: e.target.value })} className={cn(field(), selectField)}>
-                  <option value="">Choose…</option>
-                  {accounts
-                    .filter((a) => (kind === "funded" ? a.funded : a.passed))
-                    .map((a) => {
-                      const has = kind === "funded" ? a.fundedCertificate : a.phaseCertificate;
-                      return (
-                        <option key={a.id} value={a.id} disabled={Boolean(has)}>
-                          {a.label} · {a.phase}
-                          {a.passedOn ? ` · passed ${a.passedOn}` : ""}
-                          {has ? ` · has ${has}` : ""}
-                        </option>
-                      );
-                    })}
-                </select>
-                <SelectChevron />
-                </span>
-                {accounts.filter((a) => (kind === "funded" ? a.funded : a.passed)).length === 0 ? (
-                  <span className="mt-2 block text-[12.5px] text-[var(--g-muted-ink)]">{kind === "funded" ? "This trader has no funded account." : "No passed phase yet. Mark a phase passed in Trading Accounts and its certificate is issued automatically."}</span>
-                ) : null}
-              </label>
+              <AccountPicker
+                kind={kind}
+                accounts={accounts.filter((a) => (kind === "funded" ? a.funded : !a.funded))}
+                value={f.accountId}
+                onPick={(a) => set({ accountId: a.id, accountSource: a.source })}
+              />
             ) : null}
 
             {kind === "payout" ? (
@@ -496,11 +479,13 @@ function IssuePanel({ onIssued }: { onIssued: (c: Certificate) => void }) {
                     <span className="relative block">
                     <select value={f.accountId} onChange={(e) => set({ accountId: e.target.value })} className={cn(field(), selectField)}>
                       <option value="">None</option>
-                      {accounts.map((a) => (
-                        <option key={a.id} value={a.id}>
-                          {a.label} · {a.phase}
-                        </option>
-                      ))}
+                      {accounts
+                        .filter((a) => a.source === "dashboard")
+                        .map((a) => (
+                          <option key={a.id} value={a.id}>
+                            {a.label} · {a.phase}
+                          </option>
+                        ))}
                     </select>
                     <SelectChevron />
                     </span>
@@ -543,6 +528,90 @@ function IssuePanel({ onIssued }: { onIssued: (c: Certificate) => void }) {
         )}
       </form>
     </Panel>
+  );
+}
+
+/**
+ * Every phase (or funded account) the trader has, with why it can or can't be certified:
+ * passed and not yet certified → pick it; already certified → open that certificate;
+ * not passed → pass it in Trading Accounts, which issues the certificate by itself.
+ */
+function AccountPicker({ kind, accounts, value, onPick }: { kind: "phase_pass" | "funded"; accounts: Candidates["accounts"]; value: string; onPick: (a: Candidates["accounts"][number]) => void }) {
+  if (accounts.length === 0) {
+    return (
+      <div>
+        <span className={fieldLabel}>{kind === "funded" ? "Funded account" : "Phase"}</span>
+        <p className="rounded-[16px] bg-black/[0.03] px-4 py-3 text-[13px] text-[var(--g-muted-ink)]">{kind === "funded" ? "This trader has no funded account yet." : "This trader has no evaluation phase yet."}</p>
+      </div>
+    );
+  }
+  const STATUS: Record<string, string> = { active: "In progress", breached: "Breached", passed: "Passed", funded: "Funded", suspended: "Paused" };
+  return (
+    <div>
+      <span className={fieldLabel}>{kind === "funded" ? "Funded account" : "Phase"}</span>
+      <ul className="grid gap-2">
+        {accounts.map((a) => {
+          const existing = kind === "funded" ? a.fundedCertificate : a.phaseCertificate;
+          const eligible = kind === "funded" ? a.funded : a.passed;
+          const selectable = eligible && !existing;
+          const on = value === a.id;
+          return (
+            <li key={`${a.source}-${a.id}`}>
+              <div
+                role={selectable ? "button" : undefined}
+                tabIndex={selectable ? 0 : undefined}
+                onClick={() => selectable && onPick(a)}
+                onKeyDown={(e) => selectable && (e.key === "Enter" || e.key === " ") && (e.preventDefault(), onPick(a))}
+                className={cn(
+                  "flex items-start gap-3 rounded-[16px] px-4 py-3 ring-1 transition-colors",
+                  selectable ? "cursor-pointer" : "cursor-default",
+                  on ? "bg-[var(--g-ink)] text-white ring-[var(--g-ink)]" : selectable ? "bg-white/70 ring-black/[0.08] hover:bg-white" : "bg-black/[0.025] ring-black/[0.05]",
+                )}
+              >
+                <span className={cn("mt-1 grid h-4 w-4 shrink-0 place-items-center rounded-full ring-2", on ? "ring-[var(--g-lime)]" : selectable ? "ring-black/25" : "ring-black/10")}>
+                  {on ? <span className="h-2 w-2 rounded-full bg-[var(--g-lime)]" /> : null}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className={cn("block truncate text-[13.5px] font-semibold", on ? "text-white" : selectable ? "text-[var(--g-ink)]" : "text-[var(--g-muted-ink)]")}>
+                    {a.phase} · {a.label}
+                  </span>
+                  <span className={cn("mt-0.5 block text-[12px]", on ? "text-white/65" : "text-[var(--g-muted-ink)]")}>
+                    {existing ? (
+                      <>
+                        Certificate {existing.number} already issued.{" "}
+                        <a href={`/verify/${existing.id}`} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} className="font-semibold text-[var(--g-emerald)] hover:underline">
+                          View it
+                        </a>{" "}
+                        · revoke it first to issue a new one.
+                      </>
+                    ) : eligible ? (
+                      kind === "funded" ? "Funded account, ready to certify." : `Passed${a.passedOn ? ` on ${a.passedOn}` : ""}, ready to certify.`
+                    ) : a.status === "breached" ? (
+                      "Breached before passing, so there is nothing to certify."
+                    ) : (
+                      <>
+                        Not passed yet.{" "}
+                        {a.source === "dashboard" ? (
+                          <a href={`/admin/trading/accounts/${a.id}`} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} className="font-semibold text-[var(--g-emerald)] hover:underline">
+                            Mark it passed in Trading Accounts
+                          </a>
+                        ) : (
+                          "Mark it passed in Trading Accounts"
+                        )}{" "}
+                        and the certificate is issued automatically.
+                      </>
+                    )}
+                  </span>
+                </span>
+                <Chip tone={existing ? "emerald" : eligible ? "lime" : a.status === "breached" ? "red" : "neutral"} className="shrink-0">
+                  {existing ? "Issued" : STATUS[a.status] ?? a.status}
+                </Chip>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }
 

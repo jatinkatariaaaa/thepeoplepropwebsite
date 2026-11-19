@@ -15,6 +15,8 @@ export type IssueInput = {
   kind: CertificateKind;
   userId: string;
   tradingAccountId?: string | null;
+  /** A terminal account with no dashboard record (older accounts), for phase-passed and funded certificates. */
+  accountId?: string | null;
   payoutId?: string | null;
   periodType?: "month" | "year";
   title?: string;
@@ -90,12 +92,31 @@ export async function buildDraft(input: IssueInput): Promise<{ draft: Draft; man
     return data;
   };
 
+  // Older accounts that exist only in the terminal: certify them from the terminal row.
+  if ((input.kind === "phase_pass" || input.kind === "funded") && !input.tradingAccountId && input.accountId) {
+    if (!isUuid(input.accountId)) throw new IssueError("Pick the account.");
+    const { data: t } = await supabaseAdmin.from("accounts").select("id, user_id, phase, status, program_key, starting_balance, updated_at, created_at").eq("id", input.accountId).maybeSingle();
+    if (!t || t.user_id !== input.userId) throw new IssueError("That account does not belong to this trader.");
+    const { count: linked } = await supabaseAdmin.from("trading_accounts").select("id", { count: "exact", head: true }).eq("terminal_account_id", t.id);
+    if (linked) throw new IssueError("This account has a dashboard record; pick it from the list instead.");
+    if (input.kind === "phase_pass" && t.status !== "passed") throw new IssueError("This account has not passed. Mark it passed in Trading Accounts first.");
+    if (input.kind === "funded" && t.phase !== "funded") throw new IssueError("That account is not a funded account.");
+    const { data: dup } = await supabaseAdmin.from("certificates").select("number").eq("account_id", t.id).eq("kind", input.kind).eq("status", "active").is("trading_account_id", null).limit(1);
+    if (dup?.[0]) throw new IssueError(`This account already has certificate ${dup[0].number}.`);
+    return {
+      draft: { ...base, kind: input.kind, account_id: t.id, program_key: t.program_key, account_size: Number(t.starting_balance), issued_at: input.kind === "phase_pass" ? t.updated_at : t.created_at },
+      manual: null,
+    };
+  }
+
   switch (input.kind) {
     case "phase_pass": {
       const a = await crmAccount();
       if (a.phase === "funded") throw new IssueError("That is a funded account. Issue a Certificate of Funding instead.");
       const { count } = await supabaseAdmin.from("trading_accounts").select("id", { count: "exact", head: true }).eq("previous_account_id", a.id);
-      if (!a.passed_at && a.status !== "passed" && !count) throw new IssueError("This phase has not been passed. Mark it passed in Trading Accounts first; the certificate is then issued automatically.");
+      // A pass the terminal recorded but the dashboard record missed (a failed sync) counts too.
+      const { data: term } = a.terminal_account_id ? await supabaseAdmin.from("accounts").select("status").eq("id", a.terminal_account_id).maybeSingle() : { data: null };
+      if (!a.passed_at && a.status !== "passed" && !count && term?.status !== "passed") throw new IssueError("This phase has not been passed. Mark it passed in Trading Accounts first; the certificate is then issued automatically.");
       const dup = await activeExists({ trading_account_id: a.id }, "phase_pass");
       if (dup) throw new IssueError(`This phase already has certificate ${dup.number}.`);
       return {
@@ -264,29 +285,53 @@ export async function certificateCandidates(userId: string) {
       .select("id, login, phase, phase_index, status, passed_at, program_key, starting_balance, terminal_account_id, created_at")
       .eq("user_id", userId)
       .order("created_at", { ascending: false }),
-    supabaseAdmin.from("accounts").select("id, label, status, starting_balance, program_key, created_at").eq("user_id", userId).order("created_at", { ascending: false }),
+    supabaseAdmin.from("accounts").select("id, label, phase, status, starting_balance, program_key, updated_at, created_at").eq("user_id", userId).order("created_at", { ascending: false }),
     supabaseAdmin.from("payouts").select("id, amount, status, processed_at, created_at, account_id, payment_method, tx_reference").eq("user_id", userId).order("created_at", { ascending: false }),
-    supabaseAdmin.from("certificates").select("id, number, kind, status, trading_account_id, payout_id").eq("user_id", userId).eq("status", "active"),
+    supabaseAdmin.from("certificates").select("id, number, kind, status, account_id, trading_account_id, payout_id").eq("user_id", userId).eq("status", "active"),
   ]);
   const { data: next } = (accounts ?? []).length
     ? await supabaseAdmin.from("trading_accounts").select("previous_account_id").in("previous_account_id", (accounts ?? []).map((a) => a.id))
     : { data: [] as { previous_account_id: string }[] };
   const advanced = new Set((next ?? []).map((n) => n.previous_account_id));
-  const certOf = (kind: CertificateKind, key: "trading_account_id" | "payout_id", id: string) => (certs ?? []).find((c) => c.kind === kind && c[key] === id)?.number ?? null;
+  const terminalPassed = new Set((terminal ?? []).filter((t) => t.status === "passed").map((t) => t.id));
+  const money = (n: number | string) => Number(n).toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+  const cert = (match: (c: NonNullable<typeof certs>[number]) => boolean) => {
+    const c = (certs ?? []).find(match);
+    return c ? { id: c.id, number: c.number } : null;
+  };
+
+  const linkedTerminal = new Set((accounts ?? []).map((a) => a.terminal_account_id).filter(Boolean));
+  const dashboard = (accounts ?? []).map((a) => ({
+    id: a.id,
+    source: "dashboard" as const,
+    label: `${money(a.starting_balance)} ${programLabel(a.program_key) ?? ""}`.trim(),
+    phase: a.phase === "funded" ? "Funded" : a.phase_index && a.phase_index !== 99 ? `Phase ${a.phase_index}` : "Evaluation",
+    status: a.status as string,
+    funded: a.phase === "funded",
+    passed: a.phase !== "funded" && (Boolean(a.passed_at) || a.status === "passed" || advanced.has(a.id) || (Boolean(a.terminal_account_id) && terminalPassed.has(a.terminal_account_id as string))),
+    passedOn: a.passed_at ? longDate(a.passed_at) : null,
+    phaseCertificate: cert((c) => c.kind === "phase_pass" && c.trading_account_id === a.id),
+    fundedCertificate: cert((c) => c.kind === "funded" && c.trading_account_id === a.id),
+  }));
+  // Accounts that exist only in the terminal (no dashboard record), e.g. older ones.
+  const terminalOnly = (terminal ?? [])
+    .filter((t) => !linkedTerminal.has(t.id))
+    .map((t) => ({
+      id: t.id,
+      source: "terminal" as const,
+      label: `${money(t.starting_balance)} ${t.label || programLabel(t.program_key) || "account"}`.trim(),
+      phase: t.phase === "funded" ? "Funded" : "Evaluation",
+      status: t.status as string,
+      funded: t.phase === "funded",
+      passed: t.phase !== "funded" && t.status === "passed",
+      passedOn: t.status === "passed" ? longDate(t.updated_at) : null,
+      phaseCertificate: cert((c) => c.kind === "phase_pass" && c.account_id === t.id && !c.trading_account_id),
+      fundedCertificate: cert((c) => c.kind === "funded" && c.account_id === t.id && !c.trading_account_id),
+    }));
 
   return {
-    accounts: (accounts ?? []).map((a) => ({
-      id: a.id,
-      label: `${Number(a.starting_balance).toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 })} ${programLabel(a.program_key) ?? ""}`.trim(),
-      phase: a.phase === "funded" ? "Funded" : a.phase_index && a.phase_index !== 99 ? `Phase ${a.phase_index}` : "Evaluation",
-      status: a.status,
-      funded: a.phase === "funded",
-      passed: a.phase !== "funded" && (Boolean(a.passed_at) || a.status === "passed" || advanced.has(a.id)),
-      passedOn: a.passed_at ? longDate(a.passed_at) : null,
-      phaseCertificate: certOf("phase_pass", "trading_account_id", a.id),
-      fundedCertificate: certOf("funded", "trading_account_id", a.id),
-    })),
-    terminalAccounts: (terminal ?? []).map((a) => ({ id: a.id, label: `${Number(a.starting_balance).toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 })} · ${a.label || programLabel(a.program_key) || "account"}`, status: a.status })),
+    accounts: [...dashboard, ...terminalOnly],
+    terminalAccounts: (terminal ?? []).map((a) => ({ id: a.id, label: `${money(a.starting_balance)} · ${a.label || programLabel(a.program_key) || "account"}`, status: a.status })),
     payouts: (payouts ?? []).map((p) => ({
       id: p.id,
       amount: Number(p.amount),
@@ -294,8 +339,8 @@ export async function certificateCandidates(userId: string) {
       paidOn: longDate(p.processed_at || p.created_at),
       method: p.payment_method,
       reference: p.tx_reference,
-      payoutCertificate: certOf("payout", "payout_id", p.id),
-      highestCertificate: certOf("highest_payout", "payout_id", p.id),
+      payoutCertificate: cert((c) => c.kind === "payout" && c.payout_id === p.id)?.number ?? null,
+      highestCertificate: cert((c) => c.kind === "highest_payout" && c.payout_id === p.id)?.number ?? null,
     })),
   };
 }
