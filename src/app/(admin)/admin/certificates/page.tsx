@@ -7,10 +7,12 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { certificateImagePath, certificateTitle, KIND_LABEL, type Certificate, type CertificateKind } from "@/lib/certificates/types";
 import { Chip, Empty, Notice, PageTitle, Panel, PanelHead, SelectChevron, Spinner, Stat, btn, field, fieldLabel, segment, selectField, table } from "@/components/dashboard/glass";
+import { programs } from "@/data/programs";
 
 type Row = Certificate & { email: string | null; note: string | null; createdAt: string };
 type Trader = { id: string; email: string | null; name: string | null };
 type Candidates = {
+  isStaff: boolean;
   accounts: { id: string; source: "dashboard" | "terminal"; label: string; phase: string; status: string; funded: boolean; passed: boolean; passedOn: string | null; phaseCertificate: { id: string; number: string } | null; fundedCertificate: { id: string; number: string } | null }[];
   terminalAccounts: { id: string; label: string; status: string }[];
   payouts: { id: string; amount: number; status: string; paidOn: string; method: string | null; reference: string | null; payoutCertificate: string | null; highestCertificate: string | null }[];
@@ -50,6 +52,12 @@ const EMPTY_FORM = {
   manualMethod: "Bank transfer",
   manualReference: "",
   manualDate: "",
+  test: false,
+  testProgram: "2-step",
+  testSize: "100000",
+  testPhase: "1",
+  testAmount: "",
+  testPeriod: "",
 };
 
 export default function AdminCertificatesPage() {
@@ -155,7 +163,7 @@ export default function AdminCertificatesPage() {
                             <span className="min-w-0">
                               <span className="block truncate text-[13.5px] font-semibold text-[var(--g-ink)]">{certificateTitle(r)}</span>
                               <span className="block text-[12px] text-[var(--g-muted-ink)]">
-                                <span className="g-num">{r.number}</span> · {r.source === "admin" ? "by admin" : "auto"}
+                                <span className="g-num">{r.number}</span> · {r.isTest ? <span className="font-bold text-amber-700">TEST</span> : r.source === "admin" ? "by admin" : "auto"}
                               </span>
                             </span>
                           </div>
@@ -225,6 +233,18 @@ function IssuePanel({ onIssued }: { onIssued: (c: Certificate) => void }) {
   const payload = useMemo(() => {
     if (!trader) return null;
     const common = { kind, userId: trader.id, traderName: f.traderName || undefined, note: f.note || undefined };
+    if (f.test && cands?.isStaff) {
+      return {
+        ...common,
+        test: true,
+        issuedAt: f.issuedAt || undefined,
+        title: f.title,
+        statement: f.statement,
+        highlightLabel: f.highlightLabel,
+        highlightValue: f.highlightValue,
+        testDetails: { programKey: f.testProgram || undefined, accountSize: Number(f.testSize) || undefined, phaseIndex: Number(f.testPhase), amount: Number(f.testAmount) || undefined, periodLabel: f.testPeriod || undefined },
+      };
+    }
     switch (kind) {
       case "phase_pass":
       case "funded":
@@ -238,7 +258,7 @@ function IssuePanel({ onIssued }: { onIssued: (c: Certificate) => void }) {
       case "award":
         return { ...common, tradingAccountId: f.accountId || null, title: f.title, statement: f.statement, highlightLabel: f.highlightLabel, highlightValue: f.highlightValue, issuedAt: f.issuedAt || undefined };
     }
-  }, [trader, kind, f]);
+  }, [trader, kind, f, cands?.isStaff]);
 
   const preview = async () => {
     if (!payload) return;
@@ -316,7 +336,7 @@ function IssuePanel({ onIssued }: { onIssued: (c: Certificate) => void }) {
                 <button
                   key={k.key}
                   type="button"
-                  onClick={() => { setKind(k.key); setF((v) => ({ ...EMPTY_FORM, traderName: v.traderName, note: v.note })); setPreviewUrl(null); }}
+                  onClick={() => { setKind(k.key); setF((v) => ({ ...EMPTY_FORM, traderName: v.traderName, note: v.note, test: v.test, testProgram: v.testProgram, testSize: v.testSize })); setPreviewUrl(null); }}
                   className={cn("flex cursor-pointer flex-col items-start gap-1.5 rounded-[16px] p-3 text-left ring-1 transition-all", on ? "bg-[var(--g-ink)] text-white ring-[var(--g-ink)]" : "bg-white/60 text-[var(--g-ink)] ring-black/[0.08] hover:bg-white")}
                 >
                   <Icon className={cn("h-4 w-4", on ? "text-[var(--g-lime)]" : "text-[var(--g-emerald)]")} />
@@ -336,7 +356,74 @@ function IssuePanel({ onIssued }: { onIssued: (c: Certificate) => void }) {
           </div>
         ) : (
           <>
-            {kind === "phase_pass" || kind === "funded" ? (
+            {cands.isStaff ? (
+              <label className={cn("flex cursor-pointer items-start gap-3 rounded-[16px] px-4 py-3 ring-1", f.test ? "bg-amber-400/15 ring-amber-500/40" : "bg-black/[0.03] ring-black/[0.06]")}>
+                <input type="checkbox" checked={f.test} onChange={(e) => { set({ test: e.target.checked }); setPreviewUrl(null); }} className="mt-1 h-4 w-4 accent-[var(--g-ink)]" />
+                <span>
+                  <span className="block text-[13.5px] font-semibold text-[var(--g-ink)]">Test certificate</span>
+                  <span className="block text-[12.5px] leading-snug text-[var(--g-muted-ink)]">Staff account: any details, for trying designs and the dashboard. It carries a TEST mark and its verification page says it is a test.</span>
+                </span>
+              </label>
+            ) : null}
+
+            {f.test && cands.isStaff ? (
+              <div className="grid gap-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <label className="block">
+                    <span className={fieldLabel}>Program</span>
+                    <span className="relative block">
+                      <select value={f.testProgram} onChange={(e) => set({ testProgram: e.target.value })} className={cn(field(), selectField)}>
+                        <option value="">None</option>
+                        {programs.map((p) => (
+                          <option key={p.key} value={p.key}>
+                            {p.label}
+                          </option>
+                        ))}
+                      </select>
+                      <SelectChevron />
+                    </span>
+                  </label>
+                  <label>
+                    <span className={fieldLabel}>Account size (USD)</span>
+                    <input type="number" min={0} step={1000} value={f.testSize} onChange={(e) => set({ testSize: e.target.value })} className={cn(field(), "g-num")} />
+                  </label>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  {kind === "phase_pass" ? (
+                    <label className="block">
+                      <span className={fieldLabel}>Phase</span>
+                      <span className="relative block">
+                        <select value={f.testPhase} onChange={(e) => set({ testPhase: e.target.value })} className={cn(field(), selectField)}>
+                          <option value="1">Phase 1</option>
+                          <option value="2">Phase 2</option>
+                          <option value="3">Phase 3</option>
+                        </select>
+                        <SelectChevron />
+                      </span>
+                    </label>
+                  ) : kind === "payout" || kind === "highest_payout" ? (
+                    <label>
+                      <span className={fieldLabel}>Amount (USD)</span>
+                      <input type="number" min={0} step="0.01" value={f.testAmount} onChange={(e) => set({ testAmount: e.target.value })} className={cn(field(), "g-num")} />
+                    </label>
+                  ) : (
+                    <span />
+                  )}
+                  <label>
+                    <span className={fieldLabel}>Date</span>
+                    <input type="date" value={f.issuedAt} onChange={(e) => set({ issuedAt: e.target.value })} className={field()} />
+                  </label>
+                </div>
+                {kind === "highest_payout" ? (
+                  <label>
+                    <span className={fieldLabel}>Period</span>
+                    <input value={f.testPeriod} onChange={(e) => set({ testPeriod: e.target.value })} maxLength={30} placeholder="October 2026" className={field()} />
+                  </label>
+                ) : null}
+              </div>
+            ) : null}
+
+            {!f.test && (kind === "phase_pass" || kind === "funded") ? (
               <AccountPicker
                 kind={kind}
                 accounts={accounts.filter((a) => (kind === "funded" ? a.funded : !a.funded))}
@@ -345,7 +432,7 @@ function IssuePanel({ onIssued }: { onIssued: (c: Certificate) => void }) {
               />
             ) : null}
 
-            {kind === "payout" ? (
+            {!f.test && kind === "payout" ? (
               <div className="grid gap-3">
                 <div className={segment.wrap}>
                   <button type="button" onClick={() => set({ payoutMode: "dashboard" })} className={segment.item(f.payoutMode === "dashboard")}>
@@ -421,7 +508,7 @@ function IssuePanel({ onIssued }: { onIssued: (c: Certificate) => void }) {
               </div>
             ) : null}
 
-            {kind === "highest_payout" ? (
+            {!f.test && kind === "highest_payout" ? (
               <div className="grid gap-3">
                 <label className="block">
                   <span className={fieldLabel}>Payout to award</span>
@@ -473,6 +560,7 @@ function IssuePanel({ onIssued }: { onIssued: (c: Certificate) => void }) {
                     <input value={f.highlightValue} onChange={(e) => set({ highlightValue: e.target.value })} maxLength={24} placeholder="+18.4%" className={field()} />
                   </label>
                 </div>
+                {f.test ? null : (
                 <div className="grid grid-cols-2 gap-3">
                   <label className="block">
                     <span className={fieldLabel}>Account (optional)</span>
@@ -495,6 +583,7 @@ function IssuePanel({ onIssued }: { onIssued: (c: Certificate) => void }) {
                     <input type="date" value={f.issuedAt} onChange={(e) => set({ issuedAt: e.target.value })} className={field()} />
                   </label>
                 </div>
+                )}
               </div>
             ) : null}
 
@@ -678,7 +767,25 @@ function Viewer({ row, onClose, onChanged }: { row: Row; onClose: () => void; on
               <button type="button" onClick={() => setMode("rename")} className={cn(btn.light, btn.sm)}>
                 <Pencil className="h-4 w-4" /> Correct the name
               </button>
-              {row.status === "active" ? (
+              {row.isTest ? (
+                <button
+                  type="button"
+                  disabled={busy}
+                  onClick={async () => {
+                    if (!window.confirm(`Delete test certificate ${row.number}?`)) return;
+                    setBusy(true);
+                    const res = await fetch(`/api/admin/certificates/${row.id}`, { method: "DELETE" });
+                    const data = await res.json();
+                    setBusy(false);
+                    if (!res.ok) return toast.error(data.error || "Could not delete it");
+                    toast.success("Test certificate deleted");
+                    onChanged();
+                  }}
+                  className={cn(btn.light, btn.sm, "text-red-700!")}
+                >
+                  <Ban className="h-4 w-4" /> Delete test certificate
+                </button>
+              ) : row.status === "active" ? (
                 <button type="button" onClick={() => setMode("revoke")} className={cn(btn.light, btn.sm, "text-red-700!")}>
                   <Ban className="h-4 w-4" /> Revoke
                 </button>

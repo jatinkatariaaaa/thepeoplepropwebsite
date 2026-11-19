@@ -42,10 +42,11 @@ export async function GET(request: Request) {
     const { data: profiles } = ids.length ? await supabaseAdmin.from("profiles").select("id, email").in("id", ids) : { data: [] };
     const emailOf = new Map((profiles ?? []).map((p) => [p.id, p.email]));
 
-    const { data: counts } = await supabaseAdmin.from("certificates").select("kind, status");
-    const tally: Record<string, number> = { total: 0, revoked: 0 };
+    const { data: counts } = await supabaseAdmin.from("certificates").select("kind, status, is_test");
+    const tally: Record<string, number> = { total: 0, revoked: 0, test: 0 };
     for (const c of counts ?? []) {
-      if (c.status === "revoked") tally.revoked += 1;
+      if (c.is_test) tally.test += 1;
+      else if (c.status === "revoked") tally.revoked += 1;
       else {
         tally.total += 1;
         tally[c.kind] = (tally[c.kind] ?? 0) + 1;

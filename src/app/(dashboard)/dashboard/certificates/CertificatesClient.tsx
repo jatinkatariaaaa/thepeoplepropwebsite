@@ -90,6 +90,7 @@ export function CertificatesClient({ certificates }: { certificates: Certificate
                   <Icon className="h-3.5 w-3.5" />
                 </span>
                 <span className="truncate">{certificateTitle(c)}</span>
+                {c.isTest ? <span className="ml-auto shrink-0 rounded-full bg-amber-400/20 px-2 py-0.5 text-[10.5px] font-bold text-amber-800">TEST</span> : null}
               </div>
               <div className="g-num mt-2 truncate text-[17px] font-semibold text-[var(--g-ink)]">{figure}</div>
               <div className="mt-1 flex items-center justify-between gap-3 text-xs text-[var(--g-muted-ink)]">

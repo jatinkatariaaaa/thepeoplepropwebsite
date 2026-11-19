@@ -34,5 +34,6 @@ export function present(row: CertificateRow): Certificate {
     highlightLabel: row.highlight_label,
     highlightValue: row.highlight_value,
     source: row.source,
+    isTest: Boolean(row.is_test),
   };
 }
