@@ -28,6 +28,9 @@ export type IssueInput = {
   note?: string;
   /** A payout already sent outside the dashboard: recorded as a paid payout first. */
   manualPayout?: { accountId: string; amount: number; method: string; reference: string; paidAt: string } | null;
+  /** Staff test certificate: any details, staff accounts only, marked TEST everywhere. */
+  test?: boolean;
+  testDetails?: { programKey?: string; accountSize?: number; phaseIndex?: number; amount?: number; periodLabel?: string } | null;
 };
 
 type Draft = Omit<CertificateRow, "id" | "number" | "status" | "revoked_reason" | "revoked_at" | "created_at" | "source" | "issued_by">;
@@ -39,6 +42,15 @@ async function profileName(userId: string) {
   if (!data) throw new IssueError("Trader not found.");
   const name = data.display_name?.trim() || [data.first_name, data.last_name].filter(Boolean).join(" ").trim() || "Valued Trader";
   return { name, email: data.email as string | null };
+}
+
+/** Admins and staff: profiles.is_admin or a row in admin_roles. */
+export async function isStaff(userId: string) {
+  const [{ data: profile }, { data: role }] = await Promise.all([
+    supabaseAdmin.from("profiles").select("is_admin").eq("id", userId).maybeSingle(),
+    supabaseAdmin.from("admin_roles").select("role").eq("user_id", userId).maybeSingle(),
+  ]);
+  return Boolean(profile?.is_admin || role);
 }
 
 async function activeExists(filter: Record<string, string>, kind: CertificateKind) {
@@ -79,7 +91,40 @@ export async function buildDraft(input: IssueInput): Promise<{ draft: Draft; man
     highlight_value: null as string | null,
     issued_at: new Date().toISOString(),
     note: text(input.note, 300) || null,
+    is_test: false,
   };
+
+  // Test certificates for design and dashboard checks: any details, staff accounts only.
+  if (input.test) {
+    if (!(await isStaff(input.userId))) throw new IssueError("Test certificates can only go to staff accounts. Pick your own admin account.");
+    const d = input.testDetails ?? {};
+    const issued = input.issuedAt ? new Date(input.issuedAt) : new Date();
+    if (Number.isNaN(issued.getTime())) throw new IssueError("Enter a valid date.");
+    const kind = input.kind;
+    const amount = Math.round(Number(d.amount) * 100) / 100;
+    const size = Number(d.accountSize) > 0 ? Number(d.accountSize) : null;
+    const paid = kind === "payout" || kind === "highest_payout";
+    if (paid && !(amount > 0)) throw new IssueError("Enter an amount for the test certificate.");
+    if (kind === "award" && text(input.title, 60).length < 3) throw new IssueError("Give the award a title.");
+    return {
+      draft: {
+        ...base,
+        kind,
+        is_test: true,
+        program_key: d.programKey && programLabel(d.programKey) ? d.programKey : null,
+        account_size: size,
+        phase_index: kind === "phase_pass" ? Math.min(3, Math.max(1, Number(d.phaseIndex) || 1)) : null,
+        amount: paid ? amount : null,
+        period_label: kind === "highest_payout" ? text(d.periodLabel, 30) || monthLabel(issued.toISOString()) : null,
+        title: kind === "award" ? text(input.title, 60) : null,
+        statement: kind === "award" ? text(input.statement, 220) || null : null,
+        highlight_label: kind === "award" ? text(input.highlightLabel, 24) || null : null,
+        highlight_value: kind === "award" ? text(input.highlightValue, 24) || null : null,
+        issued_at: issued.toISOString(),
+      },
+      manual: null,
+    };
+  }
 
   const crmAccount = async () => {
     if (!isUuid(input.tradingAccountId || "")) throw new IssueError("Pick the account.");
@@ -266,6 +311,7 @@ export async function issueCertificate(input: IssueInput, adminId: string): Prom
   const { data, error } = await supabaseAdmin.from("certificates").insert({ ...draft, source: "admin", issued_by: adminId }).select("*").single();
   if (error || !data) throw new IssueError(error?.code === "23505" ? "This record already has a live certificate." : error?.message || "Could not issue the certificate.");
   const cert = present(data as CertificateRow);
+  if (cert.isTest) return cert;
   await supabaseAdmin.from("user_notifications").insert({
     user_id: input.userId,
     type: "certificate",
@@ -330,6 +376,7 @@ export async function certificateCandidates(userId: string) {
     }));
 
   return {
+    isStaff: await isStaff(userId),
     accounts: [...dashboard, ...terminalOnly],
     terminalAccounts: (terminal ?? []).map((a) => ({ id: a.id, label: `${money(a.starting_balance)} · ${a.label || programLabel(a.program_key) || "account"}`, status: a.status })),
     payouts: (payouts ?? []).map((p) => ({

@@ -33,6 +33,7 @@ export type CertificateRow = {
   revoked_reason: string | null;
   revoked_at: string | null;
   note: string | null;
+  is_test: boolean;
   created_at: string;
 };
 
@@ -63,6 +64,8 @@ export type Certificate = {
   highlightLabel: string | null;
   highlightValue: string | null;
   source: "system" | "admin";
+  /** Staff test certificate: rendered with a TEST mark, not a real result. */
+  isTest: boolean;
 };
 
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://thepeopleprop.live").replace(/\/$/, "");

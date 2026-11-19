@@ -270,10 +270,16 @@ function CertificateArt({ c, plate, preview }: { c: Certificate; plate: string; 
           <div style={{ width: 1, height: 24, backgroundColor: "rgba(255,255,255,0.25)", marginLeft: 20, marginRight: 20 }} />
           <div style={{ fontSize: 19, fontWeight: 500, color: "rgba(255,255,255,0.84)", letterSpacing: -0.2 }}>The People Prop</div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", height: 40, paddingLeft: 16, paddingRight: 18, borderRadius: 999, backgroundColor: "rgba(4,8,7,0.55)", border: "1px solid rgba(255,255,255,0.16)" }}>
-          <div style={{ fontSize: 12, fontWeight: 500, color: "rgba(255,255,255,0.5)", letterSpacing: 2.2, textTransform: "uppercase", marginRight: 10 }}>Certificate No.</div>
-          <div style={{ fontSize: 17, fontWeight: 600, color: "rgba(255,255,255,0.94)", letterSpacing: 0.6 }}>{c.number}</div>
-        </div>
+        {c.isTest ? (
+          <div style={{ display: "flex", alignItems: "center", height: 40, paddingLeft: 16, paddingRight: 18, borderRadius: 999, backgroundColor: "rgba(245,158,11,0.18)", border: "1px solid rgba(245,158,11,0.6)" }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "#fbbf24", letterSpacing: 2.4 }}>{"TEST CERTIFICATE · NOT VALID"}</div>
+          </div>
+        ) : (
+          <div style={{ display: "flex", alignItems: "center", height: 40, paddingLeft: 16, paddingRight: 18, borderRadius: 999, backgroundColor: "rgba(4,8,7,0.55)", border: "1px solid rgba(255,255,255,0.16)" }}>
+            <div style={{ fontSize: 12, fontWeight: 500, color: "rgba(255,255,255,0.5)", letterSpacing: 2.2, textTransform: "uppercase", marginRight: 10 }}>Certificate No.</div>
+            <div style={{ fontSize: 17, fontWeight: 600, color: "rgba(255,255,255,0.94)", letterSpacing: 0.6 }}>{c.number}</div>
+          </div>
+        )}
       </div>
 
       {/* type column */}
@@ -323,6 +329,11 @@ function CertificateArt({ c, plate, preview }: { c: Certificate; plate: string; 
         </div>
       </div>
 
+      {c.isTest ? (
+        <div style={{ position: "absolute", left: 0, top: 0, width: CERTIFICATE_WIDTH, height: CERTIFICATE_HEIGHT, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ display: "flex", transform: "rotate(-18deg)", fontSize: 360, fontWeight: 700, letterSpacing: 40, color: "rgba(251,191,36,0.09)" }}>TEST</div>
+        </div>
+      ) : null}
       {c.status === "revoked" ? (
         <>
           <Fill style={{ backgroundColor: "rgba(6,11,9,0.55)" }} />

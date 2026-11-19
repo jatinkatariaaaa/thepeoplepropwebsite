@@ -48,3 +48,21 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     return fail(error);
   }
 }
+
+/** Delete a test certificate. Real certificates are never deleted, only revoked. */
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const admin = await requireRole(request, ["super_admin", "finance"]);
+    const { id } = await params;
+    if (!isUuid(id)) return NextResponse.json({ error: "Certificate not found." }, { status: 404 });
+    const { data: cert } = await supabaseAdmin.from("certificates").select("id, number, is_test").eq("id", id).maybeSingle();
+    if (!cert) return NextResponse.json({ error: "Certificate not found." }, { status: 404 });
+    if (!cert.is_test) return NextResponse.json({ error: "Only test certificates can be deleted. Revoke a real one instead." }, { status: 400 });
+    const { error } = await supabaseAdmin.from("certificates").delete().eq("id", id).eq("is_test", true);
+    if (error) throw error;
+    await logAudit({ adminId: admin.user.id, adminEmail: admin.email, action: "certificate_test_deleted", entityType: "certificate", entityId: id, oldValue: { number: cert.number }, request });
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    return fail(error);
+  }
+}

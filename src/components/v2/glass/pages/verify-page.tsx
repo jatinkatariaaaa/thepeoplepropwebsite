@@ -70,20 +70,23 @@ export function VerifyPage({ certificate }: { certificate: Certificate | null })
     );
 
   const revoked = certificate.status === "revoked";
+  const test = certificate.isTest;
 
   return (
     <>
       <PageHero
         art="/art/page-verify.webp"
         crumb="Certificate"
-        eyebrow={revoked ? `Revoked · ${certificateTitle(certificate)}` : `Verified · ${certificateTitle(certificate)}`}
-        icon={revoked ? ShieldAlert : ShieldCheck}
-        lead="Certificate"
-        fade={revoked ? "revoked." : "verified."}
+        eyebrow={test ? `Test · ${certificateTitle(certificate)}` : revoked ? `Revoked · ${certificateTitle(certificate)}` : `Verified · ${certificateTitle(certificate)}`}
+        icon={test || revoked ? ShieldAlert : ShieldCheck}
+        lead={test ? "Test" : "Certificate"}
+        fade={test ? "certificate." : revoked ? "revoked." : "verified."}
         lede={
-          revoked
-            ? `The People Prop withdrew this certificate${certificate.revokedReason ? ` (${certificate.revokedReason.replace(/\.$/, "")})` : ""}. It is no longer valid.`
-            : lede(certificate)
+          test
+            ? "This is a test certificate made by The People Prop staff to check the design. It does not certify a real result."
+            : revoked
+              ? `The People Prop withdrew this certificate${certificate.revokedReason ? ` (${certificate.revokedReason.replace(/\.$/, "")})` : ""}. It is no longer valid.`
+              : lede(certificate)
         }
       >
         <Button href="#certificate">View certificate</Button>
