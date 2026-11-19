@@ -35,6 +35,7 @@ import {
   Bell,
   Trophy,
   type LucideIcon,
+  FileBadge,
 } from "lucide-react";
 import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
@@ -67,6 +68,7 @@ const sections: NavSection[] = [
       { icon: Users, label: "Users", href: "/admin/users" },
       { icon: CreditCard, label: "Purchases", href: "/admin/purchases" },
       { icon: DollarSign, label: "Payouts", href: "/admin/payouts" },
+      { icon: FileBadge, label: "Certificates", href: "/admin/certificates" },
       { icon: Coins, label: "Stipends & Rewards", href: "/admin/rewards" },
       { icon: Network, label: "Affiliates", href: "/admin/affiliates" },
     ],

@@ -1,5 +1,5 @@
-import { getFundedCertificate } from "@/lib/certificates/data";
+import { findCertificate } from "@/lib/certificates/data";
 import { certificateRoute } from "@/lib/certificates/route";
 
-// Certificate of Funding for a terminal account that passed or is funded.
-export const GET = certificateRoute(getFundedCertificate);
+// Any certificate by its id. Older links that carry an account or payout id still resolve.
+export const GET = certificateRoute(findCertificate);
