@@ -26,13 +26,12 @@ export default async function CertificatesPage() {
     return null;
   }
 
-  // Funding certificates for passed and funded accounts, payout certificates for paid
-  // payouts, and highest-payout awards (see src/lib/certificates/data.ts).
+  // Issued certificates: phases passed, funded accounts, paid payouts and awards.
   const certificates = await listCertificates(user.id);
 
   return (
     <div className="mx-auto max-w-6xl">
-      <PageTitle lead="My Certificates" lede="View and share your well-earned trading certificates." />
+      <PageTitle lead="My Certificates" lede="Every certificate carries a QR code and a public link anyone can use to confirm it is genuine." />
 
       <CertificatesClient certificates={certificates} />
     </div>

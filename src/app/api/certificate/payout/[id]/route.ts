@@ -1,5 +1,5 @@
-import { getPayoutCertificate } from "@/lib/certificates/data";
+import { findByPayout } from "@/lib/certificates/data";
 import { certificateRoute } from "@/lib/certificates/route";
 
-// Payout Certificate for a paid payout.
-export const GET = certificateRoute(getPayoutCertificate);
+// Older payout links: the payout certificate recorded for a payout id.
+export const GET = certificateRoute((id) => findByPayout(id, "payout"));

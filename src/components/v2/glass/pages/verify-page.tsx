@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Calendar, CircleDollarSign, ShieldAlert, ShieldCheck, Trophy, User, type LucideIcon } from "lucide-react";
+import { Award, Calendar, CircleDollarSign, ShieldAlert, ShieldCheck, Trophy, User, type LucideIcon } from "lucide-react";
 import { certificateImagePath, certificateTitle, type Certificate } from "@/lib/certificates/types";
 import { Button, Container, Section } from "../ui";
 import { Reveal, Stagger, StaggerItem } from "../motion";
@@ -10,26 +10,40 @@ import { Cta } from "../cta";
 import { href } from "../routes";
 
 function lede(c: Certificate) {
-  if (c.kind === "payout") return `This certifies that ${c.traderName} received a ${c.amount} payout from The People Prop on ${c.issuedOn}.`;
-  if (c.kind === "highest") return `This certifies that ${c.traderName} received the largest single payout The People Prop made in ${c.period}: ${c.amount}.`;
-  return `This certifies that ${c.traderName} has passed The People Prop evaluation and met all required trading objectives.`;
+  const of = c.program ? ` of the ${c.program}` : "";
+  const on = c.accountSize ? ` on a ${c.accountSize} account` : "";
+  switch (c.kind) {
+    case "phase_pass":
+      return `This certifies that ${c.traderName} passed ${c.phase ?? "the evaluation"}${of}${on} on ${c.issuedOn}.`;
+    case "funded":
+      return `This certifies that ${c.traderName} was issued a ${c.accountSize ?? ""} funded account${c.program ? ` (${c.program})` : ""} on ${c.issuedOn}.`;
+    case "payout":
+      return `This certifies that ${c.traderName} received a ${c.amount} payout from The People Prop on ${c.issuedOn}.`;
+    case "highest_payout":
+      return `This certifies that ${c.traderName} received the largest single payout The People Prop made in ${c.period}: ${c.amount}.`;
+    case "award":
+      return `This certifies that The People Prop presented ${c.traderName} with the ${c.title ?? "award"} on ${c.issuedOn}.`;
+  }
 }
 
 function details(c: Certificate): { icon: LucideIcon; label: string; value: string }[] {
-  if (c.kind === "funded")
-    return [
-      { icon: User, label: "Trader name", value: c.traderName },
-      { icon: Trophy, label: "Account size", value: c.accountSize },
-      { icon: Calendar, label: "Issue date", value: c.issuedOn },
-    ];
-  return [
-    { icon: User, label: "Trader name", value: c.traderName },
-    { icon: CircleDollarSign, label: c.kind === "highest" ? `Highest payout · ${c.period}` : "Amount paid", value: c.amount ?? "" },
-    { icon: Calendar, label: "Paid on", value: c.issuedOn },
-  ];
+  const name = { icon: User, label: "Trader name", value: c.traderName };
+  const date = { icon: Calendar, label: c.kind === "payout" || c.kind === "highest_payout" ? "Paid on" : "Issued on", value: c.issuedOn };
+  switch (c.kind) {
+    case "phase_pass":
+      return [name, { icon: Trophy, label: c.phase ? `${c.phase} passed` : "Evaluation passed", value: c.accountSize ?? c.program ?? "—" }, date];
+    case "funded":
+      return [name, { icon: Trophy, label: "Funded account", value: c.accountSize ?? "—" }, date];
+    case "payout":
+      return [name, { icon: CircleDollarSign, label: "Amount paid", value: c.amount ?? "—" }, date];
+    case "highest_payout":
+      return [name, { icon: CircleDollarSign, label: `Highest payout · ${c.period ?? ""}`, value: c.amount ?? "—" }, date];
+    case "award":
+      return [name, { icon: Award, label: c.highlightLabel || "Award", value: c.highlightValue || c.title || "—" }, date];
+  }
 }
 
-/** Public certificate check. `certificate` is null when the id matches no passed account or paid payout. */
+/** Public certificate check. `certificate` is null when no certificate matches the id. */
 export function VerifyPage({ certificate }: { certificate: Certificate | null }) {
   if (!certificate)
     return (
@@ -41,7 +55,7 @@ export function VerifyPage({ certificate }: { certificate: Certificate | null })
           icon={ShieldAlert}
           lead="Certificate"
           fade="not found."
-          lede="This certificate is invalid, or the account or payout it refers to doesn't qualify for one."
+          lede="No certificate matches this link. Check the address, or contact support and quote the certificate number."
           className="pb-16"
         >
           <div className="flex flex-wrap gap-3">
@@ -55,16 +69,22 @@ export function VerifyPage({ certificate }: { certificate: Certificate | null })
       </>
     );
 
+  const revoked = certificate.status === "revoked";
+
   return (
     <>
       <PageHero
         art="/art/page-verify.webp"
         crumb="Certificate"
-        eyebrow={`Verified · ${certificateTitle[certificate.kind]}`}
-        icon={ShieldCheck}
+        eyebrow={revoked ? `Revoked · ${certificateTitle(certificate)}` : `Verified · ${certificateTitle(certificate)}`}
+        icon={revoked ? ShieldAlert : ShieldCheck}
         lead="Certificate"
-        fade="verified."
-        lede={lede(certificate)}
+        fade={revoked ? "revoked." : "verified."}
+        lede={
+          revoked
+            ? `The People Prop withdrew this certificate${certificate.revokedReason ? ` (${certificate.revokedReason.replace(/\.$/, "")})` : ""}. It is no longer valid.`
+            : lede(certificate)
+        }
       >
         <Button href="#certificate">View certificate</Button>
       </PageHero>
@@ -75,8 +95,8 @@ export function VerifyPage({ certificate }: { certificate: Certificate | null })
             <div className="g-glass g-hair mx-auto max-w-5xl rounded-[32px] p-2 sm:p-3">
               <div className="relative aspect-[1.6] w-full overflow-hidden rounded-[26px] bg-[#0b0d0c]">
                 <Image
-                  src={certificateImagePath(certificate.kind, certificate.id)}
-                  alt={`${certificateTitle[certificate.kind]} for ${certificate.traderName}`}
+                  src={certificateImagePath(certificate.id)}
+                  alt={`${certificateTitle(certificate)} for ${certificate.traderName}`}
                   fill
                   className="object-contain"
                   priority
@@ -101,7 +121,7 @@ export function VerifyPage({ certificate }: { certificate: Certificate | null })
             ))}
           </Stagger>
           <p className="mx-auto mt-5 max-w-5xl text-[12.5px] text-white/40">
-            Certificate ID <span className="g-num break-all text-white/60">{certificate.id}</span>
+            Certificate No. <span className="g-num text-white/60">{certificate.number}</span> · ID <span className="g-num break-all text-white/60">{certificate.id}</span>
           </p>
         </Container>
       </Section>

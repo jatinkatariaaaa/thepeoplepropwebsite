@@ -1,5 +1,5 @@
-import { getHighestPayoutCertificate } from "@/lib/certificates/data";
+import { findByPayout } from "@/lib/certificates/data";
 import { certificateRoute } from "@/lib/certificates/route";
 
-// Highest Payout award for the largest paid payout of a finished month.
-export const GET = certificateRoute(getHighestPayoutCertificate);
+// Older highest-payout links: only awards an admin actually issued for that payout.
+export const GET = certificateRoute((id) => findByPayout(id, "highest_payout"));

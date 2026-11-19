@@ -18,6 +18,6 @@ export default async function VerifyCertificatePage({
   const { id } = await params;
   preload("/art/page-verify.webp", { as: "image", fetchPriority: "high" });
 
-  // Funding certificates carry the account id, payout and highest-payout certificates the payout id.
+  // Certificate ids, plus the account or payout ids printed on certificates issued before they had their own rows.
   return <VerifyPage certificate={await findCertificate(id)} />;
 }
