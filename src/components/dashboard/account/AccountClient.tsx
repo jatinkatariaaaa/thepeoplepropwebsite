@@ -10,6 +10,7 @@ import { TradingObjectives } from "./TradingObjectives";
 import { DailySummary } from "./DailySummary";
 import { AnalysisGrid } from "./AnalysisGrid";
 import { AccountOffers } from "./AccountOffers";
+import { CreateTradeRecord } from "./CreateTradeRecord";
 import { supabase } from "@/lib/supabase";
 import type { AccountMetrics } from "@/lib/account-metrics";
 import { Panel, Spinner } from "../glass";
@@ -28,6 +29,8 @@ export function AccountClient({ accountId }: { accountId: string }) {
   const [account, setAccount] = useState<DashboardAccount | null>(null);
   const [metrics, setMetrics] = useState<AccountMetrics | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [showCreateTrade, setShowCreateTrade] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -41,6 +44,14 @@ export function AccountClient({ accountId }: { accountId: string }) {
         router.replace("/login");
         return null;
       }
+
+      // Check if user is admin
+      const { data: adminProfile } = await supabase
+        .from("profiles")
+        .select("is_admin")
+        .eq("id", session.user.id)
+        .single();
+      if (adminProfile?.is_admin && alive) setIsAdmin(true);
 
       const { data } = await supabase
         .from("trading_accounts")
@@ -150,6 +161,30 @@ export function AccountClient({ accountId }: { accountId: string }) {
   return (
     <div className="max-w-7xl mx-auto pb-20">
       <AccountHeader account={account} />
+
+      {isAdmin && (
+        <div className="mb-4 flex justify-end">
+          <button
+            onClick={() => setShowCreateTrade(true)}
+            className="flex items-center gap-2 px-4 py-2.5 bg-[var(--g-ink)] hover:opacity-90 text-[var(--g-lime)] text-sm font-semibold rounded-[14px] transition-all shadow-sm active:scale-[0.97] cursor-pointer"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14m-7-7h14"/></svg>
+            Create Trade Record
+          </button>
+        </div>
+      )}
+
+      {showCreateTrade && (
+        <CreateTradeRecord
+          accountId={accountId}
+          onClose={() => setShowCreateTrade(false)}
+          onSuccess={() => {
+            setShowCreateTrade(false);
+            window.location.reload();
+          }}
+        />
+      )}
+
       <AccountOffers account={account} />
       <TopMetrics account={account} />
       <PerformanceCharts account={account} metrics={metrics} />
