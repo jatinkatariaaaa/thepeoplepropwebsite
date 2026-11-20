@@ -8,8 +8,11 @@ import { format } from "date-fns";
 import { ShoppingCart, Eye, RefreshCw, FileText } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
+import { useAdminRole } from "@/lib/admin-context";
 
 export default function AdminOrdersPage() {
+  const { role } = useAdminRole();
+  const canRefund = role === "super_admin" || role === "finance";
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("");
@@ -210,7 +213,7 @@ export default function AdminOrdersPage() {
             )}
 
             <div className="flex gap-3 pt-4 border-t border-[var(--border)]">
-              {selectedOrder.payment_status === "paid" && (
+              {canRefund && selectedOrder.payment_status === "paid" && (
                 <button
                   onClick={() => setIsRefundModalOpen(true)}
                   className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-xl font-bold hover:bg-red-100 transition-colors"

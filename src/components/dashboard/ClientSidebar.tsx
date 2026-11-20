@@ -13,6 +13,7 @@ import {
   Gift,
   History,
   Home,
+  Handshake,
   LifeBuoy,
   ListOrdered,
   LogOut,
@@ -30,7 +31,7 @@ import { supabase } from "@/lib/supabase";
 import { LogoTile, btn } from "./glass";
 import { ThemeToggle } from "./theme";
 
-type NavItem = { icon: LucideIcon; label: string; href: string; badge?: string };
+type NavItem = { icon: LucideIcon; label: string; href: string; badge?: string; partnerOnly?: boolean };
 
 const navGroups: { title: string; items: NavItem[] }[] = [
   {
@@ -48,6 +49,7 @@ const navGroups: { title: string; items: NavItem[] }[] = [
       { icon: DollarSign, label: "Payouts", href: "/dashboard/payouts" },
       { icon: Award, label: "Certificates", href: "/dashboard/certificates" },
       { icon: Users, label: "Affiliate", href: "/dashboard/affiliate" },
+      { icon: Handshake, label: "Partner desk", href: "/partner-desk", partnerOnly: true },
       { icon: History, label: "Transactions", href: "/dashboard/transactions" },
     ],
   },
@@ -68,7 +70,7 @@ const navGroups: { title: string; items: NavItem[] }[] = [
   },
 ];
 
-export function ClientSidebar() {
+export function ClientSidebar({ hasPartnerDesk = false }: { hasPartnerDesk?: boolean }) {
   const pathname = usePathname();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
@@ -158,7 +160,7 @@ export function ClientSidebar() {
               <div key={group.title}>
                 <p className="px-3 pt-4 pb-1.5 text-[11px] font-medium tracking-[0.14em] text-black/35 uppercase">{group.title}</p>
                 <div className="space-y-0.5">
-                  {group.items.map((item) => {
+                  {group.items.filter(item => !item.partnerOnly || hasPartnerDesk).map((item) => {
                     const Icon = item.icon;
                     const isActive = item.href === "/dashboard" ? pathname === "/dashboard" || pathname.startsWith("/dashboard/account") : pathname.startsWith(item.href);
                     return (

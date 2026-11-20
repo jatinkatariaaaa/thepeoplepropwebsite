@@ -48,15 +48,17 @@ export default async function AdminLayout({
     .single();
 
   // Check admin_roles table for a specific role
-  const { data: adminRole } = await supabaseAdmin
+  const { data: adminRole, error: roleError } = await supabaseAdmin
     .from("admin_roles")
     .select("role")
     .eq("user_id", user.id)
-    .single();
+    .maybeSingle();
+  if (roleError) throw new Error("Unable to verify admin role");
 
   // Must be flagged as admin OR have an entry in admin_roles
   if (!profile?.is_admin && !adminRole) {
-    redirect("/dashboard");
+    const { data: hasDesk } = await supabaseAdmin.rpc("partner_desk_eligible", { p_user_id: user.id });
+    redirect(hasDesk === true ? "/partner-desk" : "/dashboard");
   }
 
   // Resolve the role: admin_roles table takes precedence, fallback to super_admin for is_admin users

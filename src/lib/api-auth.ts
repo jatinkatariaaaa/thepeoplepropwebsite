@@ -4,8 +4,8 @@ import type { User } from "@supabase/supabase-js";
 import { supabaseAdmin } from "@/lib/supabase";
 
 /** The signed-in trader for an API route: a Bearer token if one is sent, otherwise the session cookie. */
-export async function getSessionUser(request: Request): Promise<User | null> {
-  const token = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "").trim();
+export async function getSessionUser(request?: Request): Promise<User | null> {
+  const token = request?.headers.get("authorization")?.replace(/^Bearer\s+/i, "").trim();
   if (token) {
     const { data } = await supabaseAdmin.auth.getUser(token);
     if (data.user) return data.user;

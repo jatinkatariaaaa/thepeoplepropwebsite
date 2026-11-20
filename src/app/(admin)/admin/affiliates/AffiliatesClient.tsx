@@ -151,7 +151,7 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
       setAffiliates((prev) =>
         prev.map((a) =>
           a.user_id === selectedAffiliate.user_id
-            ? { ...a, pending_payout: Math.max(0, a.pending_payout - payoutAmount) }
+            ? { ...a, pending_payout: Number(data.newPending) }
             : a
         )
       );

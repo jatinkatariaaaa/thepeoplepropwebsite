@@ -4,17 +4,21 @@ import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { DASH_THEME_SCRIPT } from "@/components/dashboard/theme";
 import { AssistantWidget } from "@/components/assistant/assistant-widget";
 import { cn } from "@/lib/utils";
+import { getSessionUser } from "@/lib/api-auth";
+import { supabaseAdmin } from "@/lib/supabase";
 import styles from "./dashboard.module.css";
 
 export const viewport: Viewport = {
   themeColor: "#f3f5f4",
 };
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const user = await getSessionUser();
+  const eligibility = user ? await supabaseAdmin.rpc("partner_desk_eligible", { p_user_id: user.id }) : null;
   return (
     // .v2-scope switches on the glass system (src/app/glass.css); styles.light turns it to the light side.
     // <html data-dash="dark"> (set by the theme toggle) turns the same markup dark: see dashboard.module.css.
@@ -35,7 +39,7 @@ export default function DashboardLayout({
         <div className="absolute -bottom-[38vh] -left-[6vw] h-[80vh] w-[60vw] rounded-full bg-[radial-gradient(closest-side,rgba(203,251,69,0.07),transparent)]" />
       </div>
 
-      <ClientSidebar />
+      <ClientSidebar hasPartnerDesk={eligibility?.data === true} />
       <div className="flex min-h-screen flex-col lg:pl-[272px]">
         <DashboardHeader />
         <main className="flex-1 px-4 pt-7 pb-24 sm:px-6 lg:px-8 lg:pt-8">

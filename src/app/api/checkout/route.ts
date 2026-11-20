@@ -55,7 +55,8 @@ export async function POST(request: Request) {
 
     // Fully discounted orders have nothing to pay: issue the account now.
     if (quote.dueToday <= 0) {
-      await supabaseAdmin.from("purchases").update({ payment_status: "paid", paid_at: new Date().toISOString() }).eq("id", purchase.id);
+      const { error: paymentError } = await supabaseAdmin.from("purchases").update({ payment_status: "paid", paid_at: new Date().toISOString() }).eq("id", purchase.id);
+      if (paymentError) throw paymentError;
       const provisioning = await provisionTradingAccountForPurchase({ ...purchase, user_id: user.id, email: user.email });
       await redeemCoupon(quote.couponCode);
       return NextResponse.json({ success: true, orderId, account: provisioning.account, invoice_url: `${siteUrl()}/dashboard?success=true`, message: "Your account is ready." });
