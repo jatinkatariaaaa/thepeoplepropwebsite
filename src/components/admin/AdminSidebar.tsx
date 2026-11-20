@@ -36,6 +36,7 @@ import {
   Trophy,
   type LucideIcon,
   FileBadge,
+  Handshake,
 } from "lucide-react";
 import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
@@ -49,6 +50,7 @@ interface NavItem {
   icon: LucideIcon;
   label: string;
   href: string;
+  superAdminOnly?: boolean;
 }
 
 interface NavSection {
@@ -71,6 +73,7 @@ const sections: NavSection[] = [
       { icon: FileBadge, label: "Certificates", href: "/admin/certificates" },
       { icon: Coins, label: "Stipends & Rewards", href: "/admin/rewards" },
       { icon: Network, label: "Affiliates", href: "/admin/affiliates" },
+      { icon: Handshake, label: "Partner Program", href: "/admin/partners", superAdminOnly: true },
     ],
   },
   {
@@ -174,7 +177,7 @@ function filterSections(
   return allSections
     .map((section) => ({
       ...section,
-      items: section.items.filter((item) => allowed.has(item.href)),
+      items: section.items.filter((item) => !item.superAdminOnly && allowed.has(item.href)),
     }))
     .filter((section) => section.items.length > 0);
 }
