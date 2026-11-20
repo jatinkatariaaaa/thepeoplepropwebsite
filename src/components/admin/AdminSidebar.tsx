@@ -36,7 +36,6 @@ import {
   Trophy,
   type LucideIcon,
   FileBadge,
-  Handshake,
 } from "lucide-react";
 import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
@@ -97,7 +96,6 @@ const sections: NavSection[] = [
       { icon: Target, label: "Challenges", href: "/admin/challenges" },
       { icon: Ticket, label: "Coupons", href: "/admin/coupons" },
       { icon: Trophy, label: "Contest Referrals", href: "/admin/contest" },
-      { icon: Handshake, label: "Partner Program", href: "/admin/partners" },
     ],
   },
   {
