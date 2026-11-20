@@ -17,15 +17,13 @@ export async function GET(request: Request) {
 
     let query = supabaseAdmin
       .from("purchases")
-      .select(`
-        *,
-        user:profiles!purchases_user_id_fkey(display_name, email)
-      `, { count: "exact" });
+      .select("*", { count: "exact" });
 
     if (status) query = query.eq("payment_status", status);
     if (program) query = query.ilike("program_key", `%${program}%`);
     if (search) {
-      query = query.or(`order_id.ilike.%${search}%,user_email.ilike.%${search}%`);
+      const pattern = JSON.stringify(`%${search}%`);
+      query = query.or(`order_id.ilike.${pattern},email.ilike.${pattern}`);
     }
 
     const { data: orders, count, error } = await query

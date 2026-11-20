@@ -276,3 +276,50 @@ revoke all on function public.partner_account_id(text), public.set_staff_member(
 grant execute on function public.partner_account_id(text), public.set_staff_member(uuid,text,text[],integer,boolean,timestamptz),
   public.set_partner_link(uuid,uuid,integer,boolean,boolean), public.attribute_partner_link(uuid,text), public.debit_affiliate_payout(uuid,numeric)
   to service_role;
+
+-- One order may have several gateway payment attempts. Remember an early
+-- refund so a delayed "finished" event for that attempt cannot settle it.
+create table private.gateway_payment_refunds (
+  purchase_id uuid not null references public.purchases(id) on delete cascade,
+  payment_id text not null,
+  primary key (purchase_id, payment_id)
+);
+revoke all on private.gateway_payment_refunds from public, anon, authenticated, service_role;
+
+create function public.record_gateway_payment(p_order_id text, p_payment_id text, p_status text,
+  p_invoice_amount numeric, p_currency text) returns text
+language plpgsql security definer set search_path = '' as $$
+declare
+  purchase public.purchases%rowtype;
+begin
+  if nullif(p_payment_id, '') is null or p_status is null or p_status not in ('finished', 'refunded') then
+    raise exception 'Invalid payment event' using errcode = '22023';
+  end if;
+  select * into purchase from public.purchases where order_id = p_order_id for update;
+  if not found then return 'missing'; end if;
+  if purchase.payment_status = 'refunded' then return 'ignored'; end if;
+  if p_status = 'refunded' then
+    insert into private.gateway_payment_refunds values (purchase.id, p_payment_id) on conflict do nothing;
+    if purchase.payment_status = 'paid' and purchase.payment_id = p_payment_id then
+      update public.purchases set payment_status = 'refunded' where id = purchase.id;
+    end if;
+    return 'ignored';
+  end if;
+  if exists (select 1 from private.gateway_payment_refunds where purchase_id = purchase.id and payment_id = p_payment_id) then
+    return 'ignored';
+  end if;
+  if purchase.payment_status = 'paid' then
+    return case when purchase.payment_id = p_payment_id then 'paid' else 'ignored' end;
+  end if;
+  if lower(p_currency) is distinct from 'usd' or p_invoice_amount is null or round(p_invoice_amount, 2) < round(purchase.price_amount, 2) then
+    update public.purchases set payment_status = 'underpaid' where id = purchase.id;
+    return 'amount_mismatch';
+  end if;
+  update public.purchases set payment_status = 'paid', paid_at = clock_timestamp(), payment_id = p_payment_id where id = purchase.id;
+  if purchase.promo_code is not null then
+    update public.tpp_coupons set current_uses = coalesce(current_uses, 0) + 1 where code = purchase.promo_code;
+  end if;
+  return 'paid';
+end $$;
+revoke all on function public.record_gateway_payment(text,text,text,numeric,text) from public, anon, authenticated, service_role;
+grant execute on function public.record_gateway_payment(text,text,text,numeric,text) to service_role;
