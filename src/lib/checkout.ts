@@ -1,7 +1,8 @@
 import { supabaseAdmin } from "@/lib/supabase";
-import { buildQuote, type CouponInfo, type Quote } from "@/lib/pricing";
+import { buildQuote, type CouponInfo } from "@/lib/pricing";
 import { isProgramKey } from "@/data/catalogue";
 import type { ProgramKey } from "@/data/programs";
+import { couponAccountMismatch, couponAppliesToAccount } from "@/lib/coupon-eligibility";
 
 /**
  * Server-side pricing for an order. Everything that affects the amount is read
@@ -24,7 +25,7 @@ export interface OrderRequest {
   promoCode?: string | null;
 }
 
-export async function loadCoupon(code: unknown, programKey: string): Promise<CouponInfo | null> {
+async function loadCoupon(code: unknown, programKey: string, size: number): Promise<CouponInfo | null> {
   const couponCode = String(code || "").trim().toUpperCase();
   if (!couponCode) return null;
 
@@ -33,18 +34,22 @@ export async function loadCoupon(code: unknown, programKey: string): Promise<Cou
   if (coupon.expires_at && new Date(coupon.expires_at).getTime() < Date.now()) throw new CheckoutError("That promo code has expired.");
   if (coupon.max_uses != null && Number(coupon.current_uses || 0) >= Number(coupon.max_uses)) throw new CheckoutError("That promo code has reached its usage limit.");
 
-  const scoped = coupon.challenge_specific || coupon.challenge_key;
-  if (scoped && scoped !== programKey) throw new CheckoutError("That promo code does not apply to this account type.");
+  const eligibility = {
+    programKey: coupon.challenge_specific || coupon.challenge_key || null,
+    accounts: coupon.eligible_accounts ?? null,
+  };
+  if (!couponAppliesToAccount(eligibility, programKey, size)) throw new CheckoutError(couponAccountMismatch);
 
   return {
     code: couponCode,
     discountPct: Math.max(0, Math.min(100, Number(coupon.discount_pct) || 0)),
     freeEvaluation: Boolean(coupon.free_evaluation) && Number(coupon.discount_pct) >= 100,
     grantsAddons: Array.isArray(coupon.grants_addons) ? coupon.grants_addons.map(String) : [],
+    eligibility,
   };
 }
 
-export async function quoteOrder(req: OrderRequest): Promise<{ quote: Quote; program: Record<string, any>; platformName: string | null }> {
+export async function quoteOrder(req: OrderRequest) {
   if (!isProgramKey(req.programKey)) throw new CheckoutError("Unknown account type.");
   const size = Number(req.accountSize);
   if (!Number.isFinite(size) || size <= 0) throw new CheckoutError("Choose an account size.");
@@ -64,7 +69,7 @@ export async function quoteOrder(req: OrderRequest): Promise<{ quote: Quote; pro
     platformName = chosen.name;
   }
 
-  const coupon = await loadCoupon(req.promoCode, req.programKey);
+  const coupon = await loadCoupon(req.promoCode, req.programKey, size);
   const quote = buildQuote({
     programKey: req.programKey as ProgramKey,
     size,
@@ -75,7 +80,7 @@ export async function quoteOrder(req: OrderRequest): Promise<{ quote: Quote; pro
     payAfterPass: Boolean(program.pay_after_pass),
     upfrontFee: program.upfront_fee,
   });
-  return { quote, program, platformName };
+  return { quote, program, platformName, coupon };
 }
 
 export async function redeemCoupon(code: string | null) {
