@@ -5,14 +5,14 @@ import { CheckoutError, quoteOrder } from "@/lib/checkout";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { quote, platformName } = await quoteOrder({
+    const { quote, platformName, coupon } = await quoteOrder({
       programKey: String(body.programKey || ""),
       accountSize: Number(body.accountSize),
       addOns: Array.isArray(body.addOns) ? body.addOns : [],
       platform: body.platform ?? null,
       promoCode: body.promoCode ?? null,
     });
-    return NextResponse.json({ quote, platform: platformName });
+    return NextResponse.json({ quote, platform: platformName, coupon });
   } catch (err) {
     if (err instanceof CheckoutError) return NextResponse.json({ error: err.message }, { status: err.status });
     console.error("Quote error:", err);

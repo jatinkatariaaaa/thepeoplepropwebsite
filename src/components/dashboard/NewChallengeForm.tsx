@@ -10,6 +10,7 @@ import { ALL_SIZES, addOns, programs, type AccountSize, type AddOnKey, type Prog
 import { PERKS, isProgramKey, programDetails } from "@/data/catalogue";
 import { useHydratedPrograms } from "@/hooks/useHydratedPrograms";
 import { buildQuote, type CouponInfo } from "@/lib/pricing";
+import { couponAccountMismatch, couponAppliesToAccount } from "@/lib/coupon-eligibility";
 import { Panel, SectionTitle, btn, field, fieldLabel } from "./glass";
 
 type PlatformOption = { id: string; name: string; extra_fee_pct?: number | null };
@@ -48,7 +49,7 @@ export function NewChallengeForm() {
   const [agreed, setAgreed] = useState(false);
 
   const [promoInput, setPromoInput] = useState("");
-  const [coupon, setCoupon] = useState<CouponInfo | null>(null);
+  const [appliedCoupon, setAppliedCoupon] = useState<CouponInfo | null>(null);
   const [promoError, setPromoError] = useState("");
   const [promoBusy, setPromoBusy] = useState(false);
 
@@ -82,6 +83,10 @@ export function NewChallengeForm() {
   const effectiveSize = sizes.includes(size) ? size : (sizes.filter((s) => s <= size).pop() ?? sizes[0]);
   const base = program.fees[effectiveSize] ?? 0;
   const platformExtraPct = Number(platforms.find((p) => p.name === platform)?.extra_fee_pct ?? 0);
+  const coupon = appliedCoupon && couponAppliesToAccount(appliedCoupon.eligibility, program.key, effectiveSize)
+    ? appliedCoupon
+    : null;
+  const couponBlocked = appliedCoupon !== null && coupon === null;
 
   const quote = useMemo(
     () => buildQuote({ programKey: program.key, size: effectiveSize, base, addOnKeys: selected, platformExtraPct, coupon, payAfterPass: isAccess, upfrontFee: PERKS.accessUpfront }),
@@ -94,7 +99,7 @@ export function NewChallengeForm() {
   const applyPromo = async () => {
     setPromoError("");
     const code = promoInput.trim().toUpperCase();
-    if (!code) return setCoupon(null);
+    if (!code) return setAppliedCoupon(null);
     setPromoBusy(true);
     try {
       const res = await fetch("/api/checkout/quote", {
@@ -103,14 +108,11 @@ export function NewChallengeForm() {
         body: JSON.stringify({ programKey: program.key, accountSize: effectiveSize, addOns: selected, platform, promoCode: code }),
       });
       const data = await res.json();
-      if (!res.ok) {
-        setCoupon(null);
+      if (!res.ok || !data.coupon) {
+        setAppliedCoupon(null);
         setPromoError(data.error || "That promo code is not valid.");
       } else {
-        const q = data.quote as { base: number; discount: number; couponCode: string | null; addOns: { key: string; free?: boolean }[] };
-        const grants = q.addOns.filter((a) => a.free).map((a) => a.key);
-        const whole = q.discount >= q.base;
-        setCoupon({ code, discountPct: whole ? 100 : Math.round((q.discount / q.base) * 100), freeEvaluation: whole, grantsAddons: grants });
+        setAppliedCoupon(data.coupon);
       }
     } catch {
       setPromoError("Could not check that code. Try again.");
@@ -150,7 +152,7 @@ export function NewChallengeForm() {
     setBusy(false);
   };
 
-  const canPay = agreed && info.firstName.trim() && info.lastName.trim() && !busy;
+  const canPay = agreed && info.firstName.trim() && info.lastName.trim() && !busy && !promoBusy && !couponBlocked;
   const perksLine = [
     { icon: Coins, text: `${PERKS.stipend.ratePct}% monthly stipend: ${usd(Math.round((effectiveSize * PERKS.stipend.ratePct) / 100))} a month` },
     { icon: Zap, text: `First ${PERKS.onDemandPayouts} payouts on demand` },
@@ -311,13 +313,27 @@ export function NewChallengeForm() {
           <section>
             <SectionTitle as="h3" title="Promo code" />
             <div className="flex flex-col gap-2.5 min-[420px]:flex-row">
-              <input type="text" value={promoInput} onChange={(e) => setPromoInput(e.target.value)} placeholder="Enter code" aria-label="Promo code" className={cn(field(), "min-w-0 flex-1 text-[13px] font-medium tracking-wide uppercase")} />
+              <input type="text" value={promoInput} onChange={(e) => setPromoInput(e.target.value)} disabled={promoBusy} placeholder="Enter code" aria-label="Promo code" className={cn(field(), "min-w-0 flex-1 text-[13px] font-medium tracking-wide uppercase")} />
               <button type="button" onClick={applyPromo} disabled={promoBusy} className={btn.ink}>
                 {promoBusy ? "Checking…" : "Apply"}
               </button>
             </div>
-            {promoError ? <p className="mt-2 px-1 text-[12px] font-medium text-red-600">{promoError}</p> : null}
-            {coupon ? <p className="mt-2 px-1 text-[12px] font-semibold text-[var(--g-emerald)]">{coupon.code} applied.</p> : null}
+            {(promoError || couponBlocked) && (
+              <p role="alert" className="mt-2 px-1 text-[12px] font-medium text-red-600">{promoError || couponAccountMismatch}</p>
+            )}
+            {appliedCoupon && (
+              <div className="mt-2 flex items-center gap-2 px-1 text-[12px] font-semibold">
+                {coupon && <span role="status" className="text-[var(--g-emerald)]">{coupon.code} applied.</span>}
+                <button
+                  type="button"
+                  onClick={() => { setAppliedCoupon(null); setPromoInput(""); setPromoError(""); }}
+                  disabled={promoBusy}
+                  className="text-[var(--g-ink)] underline underline-offset-2"
+                >
+                  Remove promo code
+                </button>
+              </div>
+            )}
           </section>
 
           <Panel className="overflow-hidden">

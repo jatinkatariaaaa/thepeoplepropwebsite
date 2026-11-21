@@ -1,4 +1,5 @@
 import { addOns, type AddOnKey, type ProgramKey } from "@/data/programs";
+import type { CouponEligibility } from "@/lib/coupon-eligibility";
 
 /**
  * Order pricing. Pure and shared: the checkout form calls it to show the
@@ -13,6 +14,7 @@ export interface CouponInfo {
   freeEvaluation: boolean;
   /** Add-ons this coupon includes at no charge. */
   grantsAddons: string[];
+  eligibility: CouponEligibility;
 }
 
 export interface QuoteLine {

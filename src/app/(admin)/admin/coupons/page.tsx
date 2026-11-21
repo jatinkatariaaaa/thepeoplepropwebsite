@@ -1,15 +1,33 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useCallback, useState, useEffect, type FormEvent } from "react";
 import { AdminTable } from "@/components/admin/AdminTable";
 import { AdminModal } from "@/components/admin/AdminModal";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { Ticket, Plus, Trash2, Power, PowerOff } from "lucide-react";
+import { Ticket, Plus, Trash2, Power, PowerOff, X } from "lucide-react";
 import { toast } from "sonner";
+import { couponAccountKey, type CouponAccount, type CouponProgram } from "@/lib/coupon-eligibility";
+
+type CouponRow = {
+  id: string;
+  code: string;
+  discount_pct: number | null;
+  current_uses: number | null;
+  max_uses: number | null;
+  expires_at: string | null;
+  is_active: boolean;
+  challenge_specific: string | null;
+  challenge_key: string | null;
+  eligible_accounts?: CouponAccount[] | null;
+};
+
+const sizeLabel = (size: number) => size >= 1000 ? `$${size / 1000}K` : `$${size}`;
+const selectStyle = "w-full rounded-xl border border-[var(--border)] bg-white px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--ink-950)]";
 
 export default function AdminCouponsPage() {
-  const [coupons, setCoupons] = useState<any[]>([]);
+  const [coupons, setCoupons] = useState<CouponRow[]>([]);
+  const [programs, setPrograms] = useState<CouponProgram[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,28 +35,47 @@ export default function AdminCouponsPage() {
   const [discountPercent, setDiscountPercent] = useState("");
   const [maxUses, setMaxUses] = useState("");
   const [expiresAt, setExpiresAt] = useState("");
-  const [challengeSpecific, setChallengeSpecific] = useState("");
+  const [appliesTo, setAppliesTo] = useState<"all" | "selected">("all");
+  const [selectedProgramKey, setSelectedProgramKey] = useState("");
+  const [selectedAccounts, setSelectedAccounts] = useState<CouponAccount[]>([]);
+  const [creating, setCreating] = useState(false);
 
-  const fetchCoupons = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/admin/coupons");
-      const data = await res.json();
-      if (data.coupons) setCoupons(data.coupons);
-    } catch (error) {
-      toast.error("Failed to fetch coupons");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const selectedProgram = programs.find((program) => program.key === selectedProgramKey);
+  const programLabel = (key: string) => programs.find((program) => program.key === key)?.label ?? key;
+  const accountLabel = (account: CouponAccount) => `${programLabel(account.programKey)} · ${sizeLabel(account.accountSize)}`;
+  const selectedKeys = new Set(selectedAccounts.map(couponAccountKey));
+  const hasValidScope = appliesTo === "all" || selectedAccounts.length > 0;
 
-  useEffect(() => {
-    fetchCoupons();
+  function toggleAccount(account: CouponAccount) {
+    const key = couponAccountKey(account);
+    setSelectedAccounts((current) => current.some((item) => couponAccountKey(item) === key)
+      ? current.filter((item) => couponAccountKey(item) !== key)
+      : [...current, account]);
+  }
+
+  const fetchCoupons = useCallback((signal?: AbortSignal) => {
+    return fetch("/api/admin/coupons", { signal })
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Failed to fetch coupons");
+        const data = await response.json();
+        setCoupons(data.coupons ?? []);
+        setPrograms(data.programs ?? []);
+      })
+      .catch(() => { if (!signal?.aborted) toast.error("Failed to fetch coupons"); })
+      .finally(() => { if (!signal?.aborted) setLoading(false); });
   }, []);
 
-  const handleCreate = async () => {
-    if (!code || !discountPercent) return toast.error("Code and discount are required");
-    
+  useEffect(() => {
+    const controller = new AbortController();
+    void fetchCoupons(controller.signal);
+    return () => controller.abort();
+  }, [fetchCoupons]);
+
+  const handleCreate = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (creating || !hasValidScope) return;
+    setCreating(true);
+
     try {
       const res = await fetch("/api/admin/coupons", {
         method: "POST",
@@ -48,11 +85,11 @@ export default function AdminCouponsPage() {
           discount_percentage: parseInt(discountPercent),
           max_uses: maxUses ? parseInt(maxUses) : null,
           expires_at: expiresAt ? new Date(expiresAt).toISOString() : null,
-          challenge_specific: challengeSpecific || null
+          eligible_accounts: appliesTo === "selected" ? selectedAccounts : null,
         }),
       });
       const data = await res.json();
-      if (data.error) throw new Error(data.error);
+      if (!res.ok) throw new Error(data.error || "Could not create the coupon.");
       
       toast.success("Coupon created successfully");
       setIsModalOpen(false);
@@ -60,10 +97,14 @@ export default function AdminCouponsPage() {
       setDiscountPercent("");
       setMaxUses("");
       setExpiresAt("");
-      setChallengeSpecific("");
+      setAppliesTo("all");
+      setSelectedProgramKey("");
+      setSelectedAccounts([]);
       fetchCoupons();
-    } catch (e: any) {
-      toast.error(e.message);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not create the coupon.");
+    } finally {
+      setCreating(false);
     }
   };
 
@@ -78,8 +119,8 @@ export default function AdminCouponsPage() {
       if (data.error) throw new Error(data.error);
       toast.success(currentStatus ? "Coupon deactivated" : "Coupon activated");
       fetchCoupons();
-    } catch (e: any) {
-      toast.error(e.message);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not update the coupon.");
     }
   };
 
@@ -91,12 +132,12 @@ export default function AdminCouponsPage() {
       if (data.error) throw new Error(data.error);
       toast.success("Coupon deleted");
       fetchCoupons();
-    } catch (e: any) {
-      toast.error(e.message);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not delete the coupon.");
     }
   };
 
-  const columns: ColumnDef<any>[] = [
+  const columns: ColumnDef<CouponRow>[] = [
     {
       accessorKey: "code",
       header: "Code",
@@ -105,15 +146,39 @@ export default function AdminCouponsPage() {
       ),
     },
     {
-      accessorKey: "discount_percentage",
+      accessorKey: "discount_pct",
       header: "Discount",
-      cell: ({ row }) => <span className="font-bold text-emerald-600">{row.original.discount_percentage}% OFF</span>,
+      cell: ({ row }) => <span className="font-bold text-emerald-600">{row.original.discount_pct ?? 0}% OFF</span>,
     },
     {
-      accessorKey: "uses",
+      id: "scope",
+      header: "Applies to",
+      cell: ({ row }) => {
+        const coupon = row.original;
+        const legacyProgram = coupon.challenge_specific || coupon.challenge_key;
+        const accounts = coupon.eligible_accounts;
+        if (accounts && accounts.length > 1) {
+          return (
+            <details className="text-[12px]">
+              <summary className="cursor-pointer font-medium">{accounts.length} selected accounts</summary>
+              <ul className="mt-1 space-y-1">
+                {accounts.map((account) => <li key={couponAccountKey(account)}>{accountLabel(account)}</li>)}
+              </ul>
+            </details>
+          );
+        }
+        return (
+          <span className="text-[12px] font-medium">
+            {accounts?.[0] ? accountLabel(accounts[0]) : legacyProgram ? `${programLabel(legacyProgram)} · All sizes` : "All accounts"}
+          </span>
+        );
+      },
+    },
+    {
+      accessorKey: "current_uses",
       header: "Usage",
       cell: ({ row }) => {
-        const uses = row.original.uses;
+        const uses = row.original.current_uses ?? 0;
         const max = row.original.max_uses;
         return (
           <div className="text-[12px]">
@@ -201,15 +266,17 @@ export default function AdminCouponsPage() {
 
       <AdminModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => { if (!creating) setIsModalOpen(false); }}
         title="Create Discount Coupon"
       >
-        <div className="space-y-4">
+        <form onSubmit={handleCreate} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold mb-1">Coupon Code</label>
+              <label htmlFor="coupon-code" className="block text-sm font-semibold mb-1">Coupon Code</label>
               <input
+                id="coupon-code"
                 type="text"
+                required
                 value={code}
                 onChange={(e) => setCode(e.target.value.toUpperCase())}
                 className="w-full border border-[var(--border)] rounded-xl p-2.5 outline-none focus:border-[var(--ink-950)] font-mono uppercase"
@@ -217,9 +284,11 @@ export default function AdminCouponsPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold mb-1">Discount %</label>
+              <label htmlFor="coupon-discount" className="block text-sm font-semibold mb-1">Discount %</label>
               <input
+                id="coupon-discount"
                 type="number"
+                required
                 min="1"
                 max="100"
                 value={discountPercent}
@@ -231,8 +300,9 @@ export default function AdminCouponsPage() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold mb-1">Max Uses (Optional)</label>
+              <label htmlFor="coupon-uses" className="block text-sm font-semibold mb-1">Max Uses (Optional)</label>
               <input
+                id="coupon-uses"
                 type="number"
                 min="1"
                 value={maxUses}
@@ -242,8 +312,9 @@ export default function AdminCouponsPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold mb-1">Expiry Date (Optional)</label>
+              <label htmlFor="coupon-expiry" className="block text-sm font-semibold mb-1">Expiry Date (Optional)</label>
               <input
+                id="coupon-expiry"
                 type="date"
                 value={expiresAt}
                 onChange={(e) => setExpiresAt(e.target.value)}
@@ -252,21 +323,78 @@ export default function AdminCouponsPage() {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-semibold mb-1">Restrict to Challenge (Optional)</label>
-            <input
-              type="text"
-              value={challengeSpecific}
-              onChange={(e) => setChallengeSpecific(e.target.value)}
-              className="w-full border border-[var(--border)] rounded-xl p-2.5 outline-none focus:border-[var(--ink-950)]"
-              placeholder="e.g. standard_100k (Leave empty for all)"
-            />
-            <p className="text-[11px] text-[var(--ink-500)] mt-1">If specified, coupon will only work for this specific program key.</p>
+            <label htmlFor="coupon-scope" className="block text-sm font-semibold mb-1">Applies to</label>
+            <select
+              id="coupon-scope"
+              value={appliesTo}
+              onChange={(event) => setAppliesTo(event.target.value === "selected" ? "selected" : "all")}
+              className={selectStyle}
+            >
+              <option value="all">All accounts</option>
+              <option value="selected">Selected accounts</option>
+            </select>
           </div>
+          {appliesTo === "selected" && (
+            <div className="space-y-3 rounded-xl border border-[var(--border)] bg-[var(--paper-2)] p-3">
+              <div>
+                <label htmlFor="coupon-program" className="block text-sm font-semibold mb-1">Program</label>
+                <select
+                  id="coupon-program"
+                  value={selectedProgramKey}
+                  onChange={(event) => setSelectedProgramKey(event.target.value)}
+                  className={selectStyle}
+                  disabled={!programs.length}
+                >
+                  <option value="">{programs.length ? "Choose a program" : "No programs available"}</option>
+                  {programs.map((program) => <option key={program.key} value={program.key}>{program.label}</option>)}
+                </select>
+              </div>
+              {selectedProgram && (
+                <fieldset>
+                  <legend className="mb-1.5 text-sm font-semibold">Account sizes</legend>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedProgram.accountSizes.map((accountSize) => {
+                      const account = { programKey: selectedProgram.key, accountSize };
+                      return (
+                        <label key={accountSize} className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-[var(--border)] bg-white px-3 py-2 text-sm font-medium has-checked:border-emerald-500 has-checked:bg-emerald-50">
+                          <input
+                            type="checkbox"
+                            checked={selectedKeys.has(couponAccountKey(account))}
+                            onChange={() => toggleAccount(account)}
+                            className="size-4 accent-emerald-700"
+                          />
+                          {sizeLabel(accountSize)}
+                        </label>
+                      );
+                    })}
+                  </div>
+                </fieldset>
+              )}
+              {selectedAccounts.length > 0 && (
+                <ul aria-label="Selected accounts" className="flex flex-wrap gap-2 border-t border-[var(--border)] pt-2.5">
+                  {selectedAccounts.map((account) => (
+                    <li key={couponAccountKey(account)}>
+                      <button
+                        type="button"
+                        className="flex items-center gap-1.5 rounded-lg bg-white px-2 py-1.5 text-xs font-medium hover:bg-emerald-50"
+                        aria-label={`Remove ${accountLabel(account)}`}
+                        onClick={() => toggleAccount(account)}
+                      >
+                        {accountLabel(account)} <X aria-hidden="true" className="size-3" />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
           <div className="flex justify-end gap-3 mt-6">
-            <button onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-[var(--ink-500)] font-semibold">Cancel</button>
-            <button onClick={handleCreate} className="px-4 py-2 bg-[var(--ink-950)] text-white rounded-xl font-bold">Create Coupon</button>
+            <button type="button" disabled={creating} onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-[var(--ink-500)] font-semibold">Cancel</button>
+            <button type="submit" disabled={creating || !hasValidScope} className="px-4 py-2 bg-[var(--ink-950)] text-white rounded-xl font-bold disabled:opacity-50">
+              {creating ? "Creating…" : "Create Coupon"}
+            </button>
           </div>
-        </div>
+        </form>
       </AdminModal>
     </div>
   );
