@@ -1,5 +1,4 @@
 -- Keep trading data private and expose aggregate reports via server-only calls.
-revoke execute on function public.list_public_platforms() from public, anon, authenticated;
 
 create or replace function public.public_payout_summary()
 returns table(paid_count bigint, paid_total numeric, highest_paid numeric)

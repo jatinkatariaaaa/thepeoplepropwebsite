@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { preload } from "react-dom";
 import { LeaderboardPage } from "@/components/v2/glass/pages/leaderboard-page";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Leaderboard",

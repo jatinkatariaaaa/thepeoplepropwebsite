@@ -1,4 +1,3 @@
-import { Trophy } from "lucide-react";
 import { getDailyLeaderboard } from "@/lib/daily-leaderboard";
 import { Button, Container, Section } from "../ui";
 import { PageHero } from "../page-hero";
@@ -47,7 +46,7 @@ export async function DailyRankings() {
 export function LeaderboardPage() {
   return (
     <>
-      <PageHero art="/art/page-leaderboard.webp" crumb="Leaderboard" eyebrow="Leaderboard" icon={Trophy} lead="The daily" fade="leaderboard." lede="Ranked by realized net profit on funded simulation accounts. The ranking day starts at 00:00 UTC.">
+      <PageHero art="/art/page-leaderboard.webp" crumb="Leaderboard" eyebrow="Leaderboard" lead="The daily" fade="leaderboard." lede="Ranked by realized net profit on funded simulation accounts. The ranking day starts at 00:00 UTC.">
         <Button href="/challenges">Start a challenge</Button>
       </PageHero>
       <Section shell={false} className="pb-28">
