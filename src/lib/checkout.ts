@@ -111,28 +111,3 @@ export async function createInvoice(o: { amount: number; orderId: string; descri
 }
 
 export const newOrderId = (prefix = "ORD") => `${prefix}-${crypto.randomUUID().replace(/-/g, "").slice(0, 10).toUpperCase()}`;
-
-/** Credits the referrer once per purchase. The unique index on purchase_id makes a replay a no-op. */
-export async function creditAffiliate(purchase: { id: string; user_id: string | null; price_amount: number | string }, pct: number) {
-  const amount = Number(purchase.price_amount);
-  if (!purchase.user_id || !(amount > 0) || !(pct > 0)) return;
-
-  const { data: referral } = await supabaseAdmin.from("affiliate_referrals").select("affiliate_id").eq("referred_user_id", purchase.user_id).maybeSingle();
-  if (!referral?.affiliate_id) return;
-
-  const { data: affiliate } = await supabaseAdmin.from("affiliates").select("total_earnings, pending_payout, commission_rate, status").eq("user_id", referral.affiliate_id).maybeSingle();
-  if (!affiliate || (affiliate.status && affiliate.status !== "approved")) return;
-
-  const rate = Number(affiliate.commission_rate) > 0 ? Number(affiliate.commission_rate) : pct;
-  const commission = Math.round(amount * rate) / 100;
-
-  const { error } = await supabaseAdmin
-    .from("affiliate_earnings")
-    .insert({ affiliate_id: referral.affiliate_id, referred_user_id: purchase.user_id, purchase_id: purchase.id, amount: commission, status: "pending" });
-  if (error) return; // already credited for this purchase
-
-  await supabaseAdmin
-    .from("affiliates")
-    .update({ total_earnings: Number(affiliate.total_earnings || 0) + commission, pending_payout: Number(affiliate.pending_payout || 0) + commission })
-    .eq("user_id", referral.affiliate_id);
-}

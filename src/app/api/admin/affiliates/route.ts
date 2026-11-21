@@ -78,17 +78,12 @@ export async function POST(request: Request) {
       result = { success: true, commissionRate };
     } else if (action === "payout") {
       const { amount } = body;
-      if (!amount || amount <= 0) {
+      if (typeof amount !== "number" || !Number.isFinite(amount) || amount <= 0) {
         return NextResponse.json({ error: "Invalid amount" }, { status: 400 });
       }
 
-      const newPending = Math.max(0, Number(affiliate.pending_payout) - Number(amount));
-
-      const { error } = await supabaseAdmin
-        .from("affiliates")
-        .update({ pending_payout: newPending })
-        .eq("user_id", userId);
-
+      const { data: newPending, error } = await supabaseAdmin.rpc("debit_affiliate_payout", { p_user_id: userId, p_amount: amount });
+      if (error?.code === "23514") return NextResponse.json({ error: error.message }, { status: 409 });
       if (error) throw error;
       result = { success: true, newPending };
     } else {

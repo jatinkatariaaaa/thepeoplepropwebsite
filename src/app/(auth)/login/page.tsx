@@ -96,20 +96,25 @@ export default function LoginPage() {
         const redirect = safeRedirect(urlParams.get("redirect"));
         router.push(redirect);
       } else {
-        // Read affiliate cookie if exists
-        let affiliateId = null;
-        const match = document.cookie.match(/(^| )tpp_affiliate=([^;]+)/);
-        if (match) affiliateId = match[2];
+        let referral: { affiliate_id?: string; partner_code?: string } | undefined;
+        if (/(?:^|;\s*)tpp_(?:affiliate|partner_visit)=/.test(document.cookie)) {
+          const response = await fetch("/api/signup-referral", { cache: "no-store" });
+          if (!response.ok) throw new Error("Could not verify your referral. Please try again.");
+          referral = await response.json();
+        }
 
         const { data, error: signUpError } = await supabase.auth.signUp({
           email,
           password: pw,
           options: {
-            data: affiliateId ? { affiliate_id: affiliateId } : undefined,
+            data: referral,
             emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
           },
         });
         if (signUpError) throw signUpError;
+        // Signup attribution is now stored with the account, including when email verification is pending.
+        document.cookie = "tpp_partner_visit=; path=/; max-age=0";
+        document.cookie = "tpp_affiliate=; path=/; max-age=0";
 
         if (data.session) {
           // Track contest referral if cookie exists

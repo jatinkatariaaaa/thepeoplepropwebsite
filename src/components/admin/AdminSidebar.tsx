@@ -119,6 +119,7 @@ const sections: NavSection[] = [
     title: "SYSTEM",
     items: [
       { icon: Shield, label: "Roles & Permissions", href: "/admin/roles" },
+      { icon: Users, label: "Staff Access", href: "/admin/staff-access" },
       { icon: TrendingUp, label: "Reports", href: "/admin/reports" },
       { icon: Activity, label: "API Logs", href: "/admin/api-logs" },
       { icon: Settings, label: "Settings", href: "/admin/settings" },

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+import { partnerCookie } from '@/lib/partner-referral';
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -50,6 +51,13 @@ export async function GET(request: Request) {
         } catch (e) {
           console.error('Contest tracking error:', e);
         }
+      }
+      if (cookieStore.has(partnerCookie)) {
+        // The session has already been exchanged. A transient error on the next
+        // step can now be retried without replaying the one-time OAuth code.
+        const finish = new URL('/auth/partner-referral', origin);
+        finish.searchParams.set('next', next);
+        return NextResponse.redirect(finish);
       }
       return NextResponse.redirect(`${origin}${next}`);
     }

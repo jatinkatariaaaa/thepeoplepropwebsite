@@ -18,11 +18,12 @@ export async function getAdminUser(request?: Request) {
   }
 
   // Check admin_roles
-  const { data: adminRole } = await supabaseAdmin
+  const { data: adminRole, error: roleError } = await supabaseAdmin
     .from('admin_roles')
     .select('role')
     .eq('user_id', user.id)
-    .single();
+    .maybeSingle();
+  if (roleError) throw new Error('Unable to verify admin role');
 
   if (adminRole) {
     return { user, role: adminRole.role, email: user.email || '' };
