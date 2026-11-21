@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { preload } from "react-dom";
 import { LeaderboardPage } from "@/components/v2/glass/pages/leaderboard-page";
 
-// the sample board is date-seeded: regenerate hourly so the HTML matches the day
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Leaderboard",

@@ -32,20 +32,38 @@ export async function GET() {
   const supabase = url && key ? { apikey: key, Authorization: `Bearer ${key}` } : null;
   const init = (headers?: Record<string, string>): RequestInit => ({ headers, cache: "no-store", signal: AbortSignal.timeout(TIMEOUT_MS) });
 
-  const [auth, data, payments] = await Promise.all([
+  const [auth, data, payments, terminal] = await Promise.all([
     supabase ? probe(() => fetch(`${url}/auth/v1/health`, init(supabase))) : NOT_CONFIGURED,
-    supabase ? probe(() => fetch(`${url}/rest/v1/tpp_stats?select=key_name&limit=1`, init(supabase))) : NOT_CONFIGURED,
+    supabase ? probe(() => fetch(`${url}/rest/v1/tpp_programs?select=key&limit=1`, init(supabase))) : NOT_CONFIGURED,
     probe(
       () => fetch("https://api.nowpayments.io/v1/status", init()),
       async (res) => res.ok && (await res.json().catch(() => null))?.message === "OK",
     ),
+    (async (): Promise<Probe> => {
+      const base = process.env.TERMINAL_STATUS_URL || "https://trade.thepeopleprop.live";
+      const start = performance.now();
+      try {
+        const response = await fetch(new URL("/api/health", base), init());
+        const latency = Math.round(performance.now() - start);
+        const report = await response.json();
+        if (report?.service !== "tpp-terminal") return { state: "down", latency };
+        if (["stale", "degraded", "no prices"].includes(report.priceFeed)) return { state: "degraded", latency };
+        if (response.ok && report.ok === true && report.priceFeed === "live") {
+          return { state: latency > SLOW_MS ? "degraded" : "operational", latency };
+        }
+        return { state: "down", latency };
+      } catch {
+        return { state: "down", latency: null };
+      }
+    })(),
   ]);
 
   const services = [
-    { key: "site", name: "Website", detail: "Every page on this site", state: "operational" as State, latency: null },
+    { key: "site", name: "Website", detail: "Website status endpoint", state: "operational" as State, latency: null },
     { key: "auth", name: "Sign-in & accounts", detail: "Log in, sign up and password resets", ...auth },
     { key: "data", name: "Trader data", detail: "Dashboard, programs and live stats", ...data },
     { key: "payments", name: "Crypto checkout", detail: "NOWPayments invoices for new challenges", ...payments },
+    { key: "terminal", name: "TPP Terminal", detail: "Trading service and freshness of server quotes", ...terminal },
   ];
 
   return NextResponse.json(

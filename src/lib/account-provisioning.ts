@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto";
+import { issuanceId } from "@/lib/issuance-id";
 import { supabaseAdmin } from "@/lib/supabase";
 import { createTradingAccount, type TerminalRules } from "@/lib/terminal-api";
 import {
@@ -87,7 +87,10 @@ async function issueAccount(p: IssueParams): Promise<AccountRow> {
   if (rulesError || !rules) throw new Error(`Trading rule not found for ${p.programKey} ${p.lifecycle.label}`);
 
   const platform = await loadTerminalPlatform();
-  const crmAccountId = randomUUID();
+  const crmAccountId = p.purchaseId ? issuanceId("purchase",p.purchaseId)
+    : p.previousAccountId ? issuanceId("phase",p.previousAccountId,p.lifecycle.phase)
+    : p.resetOfAccountId ? issuanceId("reset",p.resetOfAccountId) : null;
+  if (!crmAccountId) throw new Error("An issuance source is required.");
   const label = `TPP $${p.size.toLocaleString("en-US")} ${p.lifecycle.label}`;
 
   // The No Minimum Trading Days add-on lifts the minimum on evaluation phases.
@@ -140,9 +143,7 @@ async function issueAccount(p: IssueParams): Promise<AccountRow> {
     .single();
   if (error) throw error;
 
-  if (terminal.terminalAccountId) {
-    await supabaseAdmin.from("accounts").update({ business_account_id: crmAccountId }).eq("id", terminal.terminalAccountId);
-  }
+  // The database sets the reciprocal link in the CRM insert transaction.
   return account;
 }
 

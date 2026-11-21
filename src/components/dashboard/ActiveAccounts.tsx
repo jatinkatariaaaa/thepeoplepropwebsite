@@ -201,15 +201,17 @@ export function ActiveAccounts({
 
                   {/* Actions */}
                   <div className="mt-auto flex flex-col gap-2.5 px-4 pb-4 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-end sm:px-5 sm:pb-5">
-                    <Link
+                    {account.terminal_account_id ? <Link
                       className="w-full min-[420px]:w-auto"
-                      href={`https://trade.thepeopleprop.live/?accountId=${account.terminal_account_id || account.id}`}
+                      href={`https://trade.thepeopleprop.live/?accountId=${account.terminal_account_id}`}
                       target="_blank"
                     >
                       <span className={cn(btn.light, btn.sm, "w-full")}>
                         Open Terminal
                       </span>
-                    </Link>
+                    </Link> : <Link href="/dashboard/support" className={cn(btn.light, btn.sm, "w-full min-[420px]:w-auto")}>
+                      Contact support to link Terminal
+                    </Link>}
                     <Link
                       className="w-full min-[420px]:w-auto"
                       href={`/dashboard/account/${account.id}`}
@@ -239,7 +241,7 @@ export function ActiveAccounts({
                 Ready for a new challenge?
               </h3>
               <p className="max-w-sm text-[13px] leading-relaxed text-[var(--g-muted-ink)]">
-                Prove your skills and get funded up to $200,000. Start your
+                Choose a simulated account size for your program. Start your
                 evaluation today.
               </p>
               <span className="mt-5 flex items-center text-[13px] font-semibold text-[var(--g-emerald)]">

@@ -113,10 +113,10 @@ export function Why() {
           <StaggerItem className="md:col-span-2">
             <Card
               tone="ink"
-              stat="0.0"
+              stat="1.2"
               unit="pips"
-              title="Raw spreads"
-              body="Tier-1 liquidity, zero markup. Your edge stays yours."
+              title="Forex spreads"
+              body="Forex carries a 1.2 pip spread. Gold and crypto spreads vary by price, and commission is $3 per lot per side."
               img="/art/prop-candles.webp"
               imgClass="-top-10 right-0 w-[58%] max-w-[420px] sm:-top-16"
             />
@@ -128,8 +128,8 @@ export function Why() {
             <Card
               icon={RotateCcw}
               title="Free retry"
-              body="Missed by a hair? Take one free re-attempt if you breach during evaluation."
-              note="Included on 1-Step · add-on for 2-Step & 3-Step"
+              body="An eligible account may be reset once under the free reset policy."
+              note="$50K+ · claim within 72 hours of an eligible breach"
             />
           </StaggerItem>
           <StaggerItem>
@@ -142,13 +142,13 @@ export function Why() {
             />
           </StaggerItem>
           <StaggerItem>
-            <Card stat="NFP" unit="& FOMC" title="News trading allowed" body="Trade high-impact releases on evaluation and funded accounts." img="/art/prop-stopwatch.webp" imgClass="top-3 right-3 w-36 sm:w-40" />
+            <Card stat="NFP" unit="& FOMC" title="News trading allowed" body="Trade during news. Funded payouts exclude profit from trades opened or closed within the news window." img="/art/prop-stopwatch.webp" imgClass="top-3 right-3 w-36 sm:w-40" />
           </StaggerItem>
           <StaggerItem>
             <Card icon={CalendarClock} title="Weekend & overnight holding" body="Keep positions open through the weekend — no forced flat at Friday's close." />
           </StaggerItem>
           <StaggerItem className="md:col-span-2 lg:col-span-2">
-            <Card tone="ink" stat={String(platforms.length)} unit="platforms" title="Trade on the platform you trust" body="Pick your terminal at checkout. EAs and bots are welcome." img="/art/prop-tiles.webp" imgClass="-top-10 right-2 w-[46%] max-w-[340px]">
+            <Card tone="ink" stat={String(platforms.length)} unit="platforms" title="Trade on the platform you trust" body="Trade manually on TPP Terminal in your browser." img="/art/prop-tiles.webp" imgClass="-top-10 right-2 w-[46%] max-w-[340px]">
               <ul className="mt-6 flex flex-wrap gap-2">
                 {platforms.map((p) => (
                   <li key={p} className="g-hair g-hair-ink inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-[13.5px] font-semibold text-[var(--g-ink)] shadow-[0_8px_20px_-14px_rgba(16,40,34,0.5)]">

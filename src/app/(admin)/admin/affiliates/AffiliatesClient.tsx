@@ -9,7 +9,6 @@ import { format } from "date-fns";
 import {
   CheckCircle,
   XCircle,
-  DollarSign,
   Users,
   MousePointerClick,
   TrendingUp,
@@ -68,9 +67,7 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
   const [selectedAffiliate, setSelectedAffiliate] = useState<Affiliate | null>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isPayoutModalOpen, setIsPayoutModalOpen] = useState(false);
   const [commissionRate, setCommissionRate] = useState(10);
-  const [payoutAmount, setPayoutAmount] = useState(0);
 
   const filteredAffiliates = useMemo(() => {
     return affiliates.filter((a) => {
@@ -134,36 +131,6 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
     }
   };
 
-  const handlePayout = async () => {
-    if (!selectedAffiliate || payoutAmount <= 0) return;
-    setLoading(selectedAffiliate.user_id);
-    try {
-      const res = await fetch("/api/admin/affiliates", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: selectedAffiliate.user_id, action: "payout", amount: payoutAmount }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to process");
-
-      toast.success(`Payout of $${payoutAmount} processed`);
-      setAffiliates((prev) =>
-        prev.map((a) =>
-          a.user_id === selectedAffiliate.user_id
-            ? { ...a, pending_payout: Number(data.newPending) }
-            : a
-        )
-      );
-      setIsPayoutModalOpen(false);
-      setPayoutAmount(0);
-    } catch (err: any) {
-      toast.error(err.message);
-    } finally {
-      setLoading(null);
-    }
-  };
-
   const openViewModal = (aff: Affiliate) => {
     setSelectedAffiliate(aff);
     setIsViewModalOpen(true);
@@ -173,12 +140,6 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
     setSelectedAffiliate(aff);
     setCommissionRate(aff.commission_rate || 10);
     setIsEditModalOpen(true);
-  };
-
-  const openPayoutModal = (aff: Affiliate) => {
-    setSelectedAffiliate(aff);
-    setPayoutAmount(Math.min(aff.pending_payout, aff.pending_payout));
-    setIsPayoutModalOpen(true);
   };
 
   const columns: ColumnDef<Affiliate>[] = [
@@ -308,16 +269,6 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
                 title="Suspend"
               >
                 <Ban className="w-4 h-4" />
-              </button>
-            )}
-            {aff.pending_payout > 0 && (
-              <button
-                onClick={() => openPayoutModal(aff)}
-                disabled={loading === aff.user_id}
-                className="p-1.5 text-violet-600 hover:bg-violet-50 rounded-lg transition-colors disabled:opacity-50"
-                title="Payout"
-              >
-                <DollarSign className="w-4 h-4" />
               </button>
             )}
           </div>
@@ -465,14 +416,6 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
               </div>
             )}
 
-            {selectedAffiliate.pending_payout > 0 && (
-              <button
-                onClick={() => { setIsViewModalOpen(false); openPayoutModal(selectedAffiliate); }}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-violet-600 text-white font-semibold rounded-xl hover:bg-violet-700 transition-colors"
-              >
-                <DollarSign className="w-4 h-4" /> Process Payout (${selectedAffiliate.pending_payout.toLocaleString()})
-              </button>
-            )}
           </div>
         )}
       </AdminModal>
@@ -520,49 +463,6 @@ export function AffiliatesClient({ initialAffiliates, statusCounts, totalEarning
         )}
       </AdminModal>
 
-      {/* Payout Modal */}
-      <AdminModal
-        isOpen={isPayoutModalOpen}
-        onClose={() => { setIsPayoutModalOpen(false); setPayoutAmount(0); }}
-        title="Process Affiliate Payout"
-        description={selectedAffiliate ? `Available: $${Number(selectedAffiliate.pending_payout).toLocaleString()}` : ""}
-      >
-        {selectedAffiliate && (
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-semibold text-[var(--ink-950)] mb-1">Payout Amount</label>
-              <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--ink-400)]" />
-                <input
-                  type="number"
-                  min={0.01}
-                  max={selectedAffiliate.pending_payout}
-                  step={0.01}
-                  value={payoutAmount}
-                  onChange={(e) => setPayoutAmount(Math.min(parseFloat(e.target.value) || 0, selectedAffiliate.pending_payout))}
-                  className="w-full pl-9 pr-3 py-2.5 bg-white border border-[var(--border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ink-950)]/10 focus:border-[var(--ink-950)] transition-all"
-                />
-              </div>
-              <p className="text-xs text-[var(--ink-400)] mt-1">Max: ${selectedAffiliate.pending_payout.toLocaleString()}</p>
-            </div>
-            <div className="flex justify-end gap-3 pt-2">
-              <button
-                onClick={() => { setIsPayoutModalOpen(false); setPayoutAmount(0); }}
-                className="px-4 py-2 font-semibold text-[var(--ink-600)] hover:bg-[var(--border)] rounded-full transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handlePayout}
-                disabled={loading === selectedAffiliate.user_id || payoutAmount <= 0}
-                className="px-4 py-2 font-bold text-white bg-violet-600 rounded-full hover:bg-violet-700 transition-colors disabled:opacity-50"
-              >
-                {loading === selectedAffiliate.user_id ? "Processing..." : "Process Payout"}
-              </button>
-            </div>
-          </div>
-        )}
-      </AdminModal>
     </div>
   );
 }

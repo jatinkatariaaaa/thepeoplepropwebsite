@@ -26,16 +26,22 @@ async function fetchWithTimeout(url: string, init: RequestInit, ms: number) {
   }
 }
 
-/** Checks that the terminal answers and accepts the key. */
+/** Checks terminal health and freshness of its server-side pricing. */
 export async function pingTerminal(apiUrl: string, apiKey: string): Promise<PingResult> {
   const started = Date.now();
   const base = trimSlash(apiUrl);
   try {
     const res = await fetchWithTimeout(`${base}/api/health`, { method: "GET", headers: authHeaders(apiKey) }, 6000);
     const latencyMs = Date.now() - started;
-    if (res.ok) return { success: true, message: "Connected", latencyMs };
-    if (res.status === 401 || res.status === 403) return { success: false, message: "The terminal rejected the API key", latencyMs };
-    if (res.status === 404) return { success: true, message: "Terminal reached (no /api/health endpoint on this version)", latencyMs };
+    const report = await res.json().catch(() => null);
+    if (report?.service === "tpp-terminal") {
+      if (res.ok && report.ok === true && report.priceFeed === "live") {
+        return { success: true, message: "Terminal reachable and prices current", latencyMs };
+      }
+      if (["stale", "no prices", "degraded"].includes(report.priceFeed)) {
+        return { success: false, message: "Terminal reachable, but server quotes are incomplete or stale", latencyMs };
+      }
+    }
     return { success: false, message: `Terminal returned ${res.status} ${res.statusText}`, latencyMs };
   } catch (err) {
     const e = err as Error;
@@ -80,7 +86,7 @@ export async function createTradingAccount(params: TerminalAccountParams): Promi
   try {
     const res = await fetchWithTimeout(
       `${trimSlash(apiUrl)}/api/admin/create-account`,
-      { method: "POST", headers: authHeaders(apiKey), body: JSON.stringify({ userId, accountSize, rules, programKey, phase, status, label }) },
+      { method: "POST", headers: authHeaders(apiKey), body: JSON.stringify({ userId, accountSize, rules, programKey, phase, status, label, businessAccountId: params.businessAccountId }) },
       15000,
     );
     if (!res.ok) {

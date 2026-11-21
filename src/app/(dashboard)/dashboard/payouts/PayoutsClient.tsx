@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { CalendarClock, CircleCheck, Coins, Gauge, HandCoins, ShieldCheck, TriangleAlert, Wallet, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -35,6 +35,7 @@ type Check = {
   stipendBalance: number;
   feeRefund: number;
   minPayout: number;
+  newsMinutes: number;
   kycStatus: string;
   blockers: string[];
 };
@@ -55,6 +56,8 @@ export function PayoutsClient() {
   const [method, setMethod] = useState(METHODS[0].value);
   const [details, setDetails] = useState("");
   const [busy, setBusy] = useState(false);
+  const requestAttempt = useRef<{ form: string; key: string } | null>(null);
+  const latestAccount = useRef("");
   const [message, setMessage] = useState<{ tone: "ok" | "error"; text: string } | null>(null);
 
   const load = useCallback(async () => {
@@ -79,14 +82,17 @@ export function PayoutsClient() {
   }, [load]);
 
   const runCheck = useCallback(async (id: string) => {
+    latestAccount.current = id;
     if (!id) return setCheck(null);
     setChecking(true);
     try {
       const res = await fetch(`/api/payouts/eligibility?accountId=${id}`, { cache: "no-store" });
       const data = await res.json();
+      if (latestAccount.current !== id) return;
       setCheck(res.ok ? (data as Check) : null);
       if (res.ok) setAmount(String((data as Check).profit || ""));
     } catch {
+      if (latestAccount.current !== id) return;
       setCheck(null);
     }
     setChecking(false);
@@ -102,22 +108,26 @@ export function PayoutsClient() {
   }, [accruals]);
   const totalPaid = payouts.filter((p) => p.status === "paid").reduce((s, p) => s + Number(p.amount), 0);
 
-  const gross = Math.min(Number(amount) || 0, check?.profit ?? 0);
+  const gross = Number(amount) || 0;
   const share = check ? Math.round(gross * check.splitPct) / 100 : 0;
   const total = check ? share + check.stipendBalance + check.feeRefund : 0;
   const placeholder = METHODS.find((m) => m.value === method)?.placeholder;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!check) return;
+    if (!check || check.accountId !== accountId) return;
     setMessage(null);
     if (!details.trim()) return setMessage({ tone: "error", text: "Enter where the payout should be sent." });
     setBusy(true);
     try {
-      const res = await fetch("/api/payouts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ accountId, amount: gross, paymentMethod: method, paymentDetails: details.trim() }) });
+      const payload = { accountId, amount: gross, paymentMethod: method, paymentDetails: details.trim() };
+      const form = JSON.stringify(payload);
+      if (requestAttempt.current?.form !== form) requestAttempt.current = { form, key: crypto.randomUUID() };
+      const res = await fetch("/api/payouts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...payload, requestKey: requestAttempt.current.key }) });
       const data = await res.json();
       if (!res.ok) setMessage({ tone: "error", text: data.error || "The request could not be made." });
       else {
+        requestAttempt.current = null;
         setMessage({ tone: "ok", text: "Request received. Approved payouts are sent within 24 hours on business days." });
         setDetails("");
         await load();
@@ -234,11 +244,13 @@ export function PayoutsClient() {
                         </div>
                       )}
                       <div className="mt-1 flex items-end justify-between gap-4 border-t border-black/[0.07] pt-3">
-                        <dt className="text-[14px] font-semibold text-[var(--g-ink)]">You receive</dt>
+                        <dt className="text-[14px] font-semibold text-[var(--g-ink)]">Estimated payout</dt>
                         <dd className="g-num text-[26px] leading-none font-semibold text-[var(--g-ink)]">{usd(total)}</dd>
                       </div>
                     </dl>
 
+                    <p className="text-sm text-[var(--g-muted-ink)]">Finance checks funded trades against the high-impact calendar before payment. Profit from trades opened or closed within {check.newsMinutes} minutes of a release is excluded.</p>
+                    {gross > 0 && gross < check.consistency.neededProfit && <Notice tone="red">The consistency rule requires a gross request of at least {usd(check.consistency.neededProfit)}.</Notice>}
                     {check.kycStatus !== "approved" && (
                       <Notice tone="neutral" icon={ShieldCheck}>
                         Identity verification must be approved before a payout is sent. You can request now and{" "}
@@ -250,7 +262,7 @@ export function PayoutsClient() {
                     )}
                     {message ? <Notice tone={message.tone === "ok" ? "emerald" : "red"}>{message.text}</Notice> : null}
 
-                    <button type="submit" disabled={busy || check.blockers.length > 0 || share < check.minPayout} className={btn.lime}>
+                    <button type="submit" disabled={busy || check.accountId !== accountId || check.blockers.length > 0 || gross > check.profit || gross < check.consistency.neededProfit || share < check.minPayout} className={btn.lime}>
                       {busy ? "Sending request…" : share > 0 && share < check.minPayout ? `Minimum payout is $${check.minPayout}` : `Request ${usd(total)}`}
                     </button>
                   </>

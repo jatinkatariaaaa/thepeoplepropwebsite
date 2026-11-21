@@ -147,7 +147,7 @@ export default function AdminOrdersPage() {
       </div>
 
       <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-2">
-        {[{ label: "All", value: "" }, { label: "Paid", value: "paid" }, { label: "Pending", value: "pending" }, { label: "Refunded", value: "refunded" }, { label: "Failed", value: "failed" }].map((tab) => (
+        {[{ label: "All", value: "" }, { label: "Paid", value: "paid" }, { label: "Pending", value: "pending" }, { label: "Needs invoice review", value: "missing_invoice" }, { label: "Refunded", value: "refunded" }, { label: "Failed", value: "failed" }].map((tab) => (
           <button
             key={tab.value}
             onClick={() => setStatusFilter(tab.value)}

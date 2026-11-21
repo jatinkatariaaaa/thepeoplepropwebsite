@@ -19,7 +19,10 @@ export async function GET(request: Request) {
       .from("purchases")
       .select("*", { count: "exact" });
 
-    if (status) query = query.eq("payment_status", status);
+    if (status === "missing_invoice") {
+      query = query.eq("payment_status", "pending").is("invoice_url", null).is("payment_id", null)
+        .gt("price_amount", 0).lt("created_at", new Date(Date.now() - 24 * 3600_000).toISOString());
+    } else if (status) query = query.eq("payment_status", status);
     if (program) query = query.ilike("program_key", `%${program}%`);
     if (search) {
       const pattern = JSON.stringify(`%${search}%`);

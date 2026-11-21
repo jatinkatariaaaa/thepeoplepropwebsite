@@ -11,10 +11,10 @@ import { APP } from "../routes";
 
 /* The comparison matrix from the previous landing page, row for row. */
 const ROWS = [
-  { icon: Target, cat: "Execution", them: "Marked-up spreads", us: "Raw 0.0 pip spreads" },
+  { icon: Target, cat: "Execution", them: "Marked-up spreads", us: "Published trading costs" },
   { icon: CalendarOff, cat: "Freedom", them: "30-day deadline", us: "No time limit" },
-  { icon: BadgeDollarSign, cat: "Payouts", them: "Fixed payout windows", us: "Payout on demand" },
-  { icon: TrendingUp, cat: "Growth", them: "Paid resets", us: "Free retry + auto scaling" },
+  { icon: BadgeDollarSign, cat: "Payouts", them: "Fixed payout windows", us: "First five on demand" },
+  { icon: TrendingUp, cat: "Growth", them: "Paid resets", us: "Free reset for eligible accounts" },
 ];
 
 /** One split-flap row: the typical firm on the front, TPP on the back. */

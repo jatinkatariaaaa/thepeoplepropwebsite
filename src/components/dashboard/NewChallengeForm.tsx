@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Check, Coins, Gift, RotateCcw, ShieldCheck, Zap } from "lucide-react";
@@ -10,9 +10,10 @@ import { ALL_SIZES, addOns, programs, type AccountSize, type AddOnKey, type Prog
 import { PERKS, isProgramKey, programDetails } from "@/data/catalogue";
 import { useHydratedPrograms } from "@/hooks/useHydratedPrograms";
 import { buildQuote, type CouponInfo } from "@/lib/pricing";
+import { safeReturn } from "@/lib/auth-return";
 import { Panel, SectionTitle, btn, field, fieldLabel } from "./glass";
 
-type PlatformOption = { id: string; name: string; extra_fee_pct?: number | null };
+type PlatformOption = { name: string; extra_fee_pct?: number | null };
 
 const usd = (n: number) => (n === 0 ? "Free" : `$${n.toLocaleString("en-US", { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 })}`);
 const sizeLabel = (n: number) => (n >= 1000 ? `$${n / 1000}K` : `$${n}`);
@@ -42,30 +43,43 @@ export function NewChallengeForm() {
   const initialSize = Number(params.get("size"));
   const [programKey, setProgramKey] = useState<ProgramKey>(initialProgram && isProgramKey(initialProgram) ? initialProgram : programs[0].key);
   const [size, setSize] = useState<AccountSize>((ALL_SIZES as number[]).includes(initialSize) ? (initialSize as AccountSize) : 25_000);
-  const [selected, setSelected] = useState<AddOnKey[]>([]);
+  const [selected, setSelected] = useState<AddOnKey[]>(() => addOns.filter(addon =>
+    params.get("addons")?.split(",").includes(addon.key)).map(addon => addon.key));
   const [platforms, setPlatforms] = useState<PlatformOption[]>([]);
   const [platform, setPlatform] = useState("");
   const [agreed, setAgreed] = useState(false);
 
-  const [promoInput, setPromoInput] = useState("");
+  const [promoInput, setPromoInput] = useState(params.get("promo") || "");
   const [coupon, setCoupon] = useState<CouponInfo | null>(null);
   const [promoError, setPromoError] = useState("");
   const [promoBusy, setPromoBusy] = useState(false);
 
   const [info, setInfo] = useState({ firstName: "", lastName: "", country: "", address: "" });
   const [busy, setBusy] = useState(false);
+  const checkoutAttempt = useRef({ choices: "", id: "" });
   const [message, setMessage] = useState<{ tone: "ok" | "error"; text: string } | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) router.push("/login?redirect=/dashboard/new-challenge");
+      if (!session) router.push("/login?" + new URLSearchParams({ redirect: safeReturn(window.location.pathname + window.location.search) }));
     });
-    supabase.rpc("list_public_platforms").then(({ data }) => {
-      const list = (data ?? []) as PlatformOption[];
+    fetch("/api/platforms").then(response => response.ok ? response.json() : null).then(data => {
+      const list = (data?.platforms ?? []) as PlatformOption[];
       setPlatforms(list);
-      if (list[0]) setPlatform(list[0].name);
-    });
+      if (list[0]) setPlatform(list.find(p => p.name === new URLSearchParams(window.location.search).get("platform"))?.name ?? list[0].name);
+    }).catch(() => {});
   }, [router]);
+
+  useEffect(() => {
+    const requested = new URLSearchParams(window.location.search);
+    if (requested.get("promo") !== "FIRSTTPP" || requested.get("program") !== programKey) return;
+    const controller = new AbortController();
+    fetch("/api/launch-offer?program=" + encodeURIComponent(programKey), { cache: "no-store", signal: controller.signal })
+      .then(response => response.ok ? response.json() : null)
+      .then(data => { if (!controller.signal.aborted && data?.offer) setCoupon(data.offer); })
+      .catch(() => {});
+    return () => controller.abort();
+  }, [programKey]);
 
   const program = useMemo(() => livePrograms.find((p) => p.key === programKey) ?? livePrograms[0], [programKey, livePrograms]);
   const detail = programDetails[program.key];
@@ -123,11 +137,14 @@ export function NewChallengeForm() {
     setMessage(null);
     try {
       const { data: { session } } = await supabase.auth.getSession();
+      const choices = JSON.stringify([program.key,effectiveSize,selected,platform,coupon?.code,info]);
+      if (checkoutAttempt.current.choices !== choices) checkoutAttempt.current = {choices,id:crypto.randomUUID()};
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json", ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}) },
         body: JSON.stringify({
           programKey: program.key,
+          attemptId: checkoutAttempt.current.id,
           accountSize: effectiveSize,
           addOns: selected,
           platform,
@@ -138,6 +155,7 @@ export function NewChallengeForm() {
         }),
       });
       const data = await res.json();
+      if (data.restart) checkoutAttempt.current = { choices: "", id: "" };
       if (!res.ok) setMessage({ tone: "error", text: data.error || "Checkout failed. Please try again." });
       else if (data.invoice_url) {
         setMessage({ tone: "ok", text: data.account ? "Your account is ready. Taking you to the dashboard…" : "Redirecting to the payment page…" });
@@ -169,7 +187,7 @@ export function NewChallengeForm() {
               {livePrograms.map((p) => {
                 const on = program.key === p.key;
                 return (
-                  <button key={p.key} type="button" onClick={() => setProgramKey(p.key)} className={cn(card(on), "flex min-h-[72px] items-start gap-3 p-4")}>
+                  <button key={p.key} type="button" onClick={() => {if (p.key !== programKey) { setProgramKey(p.key); setCoupon(null); }}} className={cn(card(on), "flex min-h-[72px] items-start gap-3 p-4")}>
                     <span className="mt-0.5">
                       <RadioCircle selected={on} />
                     </span>
@@ -258,7 +276,7 @@ export function NewChallengeForm() {
                 const on = platform === p.name;
                 const extra = Math.round(base * Number(p.extra_fee_pct ?? 0)) / 100;
                 return (
-                  <button key={p.id} type="button" onClick={() => setPlatform(p.name)} className={cn(card(on), "flex min-h-[52px] items-center justify-between gap-3 px-4 py-3.5")}>
+                  <button key={p.name} type="button" onClick={() => setPlatform(p.name)} className={cn(card(on), "flex min-h-[52px] items-center justify-between gap-3 px-4 py-3.5")}>
                     <span className="flex min-w-0 items-center gap-3">
                       <RadioCircle selected={on} />
                       <span className="truncate text-[13px] font-semibold text-[var(--g-ink)]">{p.name}</span>

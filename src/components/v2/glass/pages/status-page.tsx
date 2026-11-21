@@ -13,7 +13,7 @@ type State = "operational" | "degraded" | "down" | "unknown";
 type Service = { key: string; name: string; detail: string; state: State; latency: number | null };
 type Report = { checkedAt: string; services: Service[] };
 
-const LABEL: Record<State, string> = { operational: "Operational", degraded: "Slow", down: "Not responding", unknown: "Not checked" };
+const LABEL: Record<State, string> = { operational: "Operational", degraded: "Degraded", down: "Unavailable", unknown: "Not checked" };
 const DOT: Record<State, string> = { operational: "bg-[var(--g-lime)]", degraded: "bg-amber-300", down: "bg-red-400", unknown: "bg-white/30" };
 
 /** Polls /api/status once a minute; `refresh` checks again now. */
@@ -51,7 +51,7 @@ function overall(report: Report | null, failed: boolean): { state: State; text: 
   if (!report) return { state: "unknown", text: "Checking services…" };
   const checked = report.services.filter((s) => s.state !== "unknown");
   if (checked.some((s) => s.state === "down")) return { state: "down", text: "Some services are not responding" };
-  if (checked.some((s) => s.state === "degraded")) return { state: "degraded", text: "Some services are slow" };
+  if (checked.some((s) => s.state === "degraded")) return { state: "degraded", text: "Some services are degraded" };
   return { state: "operational", text: "All checked services operational" };
 }
 
@@ -121,9 +121,6 @@ export function StatusPage() {
               </div>
             </div>
           </Reveal>
-          <p className="mt-5 max-w-2xl text-[13px] leading-relaxed text-white/40">
-            These checks cover the services this website runs on. Trading platforms are run by their providers and aren&apos;t monitored here.
-          </p>
         </Container>
       </Section>
 

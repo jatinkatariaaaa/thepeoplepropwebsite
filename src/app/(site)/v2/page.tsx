@@ -5,7 +5,6 @@ import { Edge } from "@/components/v2/glass/home/edge";
 import { Challenges } from "@/components/v2/glass/challenges";
 import { Journey } from "@/components/v2/glass/home/journey";
 import { Access } from "@/components/v2/glass/home/access";
-import { Voices } from "@/components/v2/glass/home/voices";
 import { Versus } from "@/components/v2/glass/home/versus";
 import { Faq } from "@/components/v2/glass/faq";
 import { Cta } from "@/components/v2/glass/cta";
@@ -30,7 +29,6 @@ export default function LandingPreviewPage() {
       <Challenges className={SHEET} />
       <Journey />
       <Access />
-      <Voices />
       <Versus />
       <Faq className={SHEET} />
       <Cta />

@@ -1,11 +1,10 @@
 "use client";
 
-import { useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion, useInView } from "framer-motion";
 import {
   ArrowRight,
-  Bot,
   CalendarDays,
   Check,
   Copy,
@@ -23,28 +22,31 @@ import { addOns, feeFor, type AccountSize, type AddOnKey } from "@/data/programs
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import { href } from "./routes";
 import { cn } from "@/lib/utils";
+import type { CouponInfo } from "@/lib/pricing";
 import { Container, Eyebrow, Lede, Section, Title } from "./ui";
 import { AnimatedNumber, EASE, Parallax, Reveal } from "./motion";
 import { ACCESS_UPFRONT, compactUsd, entryPrice, sizesOf, targetRows, useCatalogue, usd, usePlatformOptions, usePrograms, useSelectedProgram } from "./data";
 
 const POPULAR_SIZE = 25_000; // flagged "Most popular", as on the previous landing page
-/** The launch offer; the dashboard checkout applies it (50% off + free retry). */
-const PROMO = "FIRSTTPP";
-
-function PromoStrip() {
+function PromoStrip({ offer, program }: { offer: CouponInfo; program: Parameters<typeof feeFor>[0] }) {
   const { copied, copy } = useCopyToClipboard();
+  const benefits = [
+    ...(offer.discountPct > 0 ? [`${offer.discountPct}% off the base fee`] : []),
+    ...addOns.filter(addon => offer.grantsAddons.includes(addon.key) && addon.appliesTo.includes(program.key)).map(addon => addon.label + " included"),
+  ];
+  if (!benefits.length) return null;
   return (
     <div className="g-hair mx-auto flex w-fit max-w-full flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-full bg-[linear-gradient(90deg,rgba(29,102,86,0.55),rgba(14,61,51,0.55))] py-2 pr-2 pl-5 text-[13px] text-white/80 backdrop-blur-md">
       <span className="font-semibold tracking-wide text-white uppercase">Limited time</span>
       <span className="h-3.5 w-px bg-white/20" />
-      <span>50% off + free retry</span>
+      <span>{benefits.join(" + ")}</span>
       <button
         type="button"
-        onClick={() => copy(PROMO)}
-        aria-label={`Copy promo code ${PROMO}`}
+        onClick={() => copy(offer.code)}
+        aria-label={`Copy promo code ${offer.code}`}
         className="inline-flex items-center gap-2 rounded-full bg-[var(--g-lime)] px-3.5 py-1.5 text-[12.5px] font-semibold text-[var(--g-ink)] transition-transform duration-300 hover:-translate-y-px"
       >
-        Code {PROMO}
+        Code {offer.code}
         {copied ? <Check className="h-3.5 w-3.5" strokeWidth={2.6} /> : <Copy className="h-3.5 w-3.5" strokeWidth={2.4} />}
       </button>
     </div>
@@ -83,6 +85,15 @@ export function Challenges({ className }: { className?: string } = {}) {
   const cat = useCatalogue(programs);
   const platformOptions = usePlatformOptions();
   const [programKey, setProgramKey] = useSelectedProgram();
+  const [campaign, setCampaign] = useState<{ key: string; offer: CouponInfo } | null>(null);
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/launch-offer?program=" + encodeURIComponent(programKey), { cache: "no-store", signal: controller.signal })
+      .then(response => response.ok ? response.json() : null)
+      .then(data => { if (!controller.signal.aborted) setCampaign(data?.offer ? { key: programKey, offer: data.offer } : null); })
+      .catch(() => { if (!controller.signal.aborted) setCampaign(null); });
+    return () => controller.abort();
+  }, [programKey]);
   const program = programs.find((p) => p.key === programKey) ?? programs[0];
 
   const sizes = useMemo(() => (program ? sizesOf(program) : []), [program]);
@@ -107,6 +118,12 @@ export function Challenges({ className }: { className?: string } = {}) {
   const surcharge = base != null && platform?.extra ? Math.round((base * platform.extra) / 100) : 0;
   const grand = total != null ? total + surcharge : null;
   const isAccess = program.key === "access";
+  const offer = campaign?.key === program.key ? campaign.offer : null;
+  const choices = new URLSearchParams({ program: program.key, size: String(size) });
+  if (active.length) choices.set("addons", active.join(","));
+  if (platform) choices.set("platform", platform.label);
+  if (offer) choices.set("promo", offer.code);
+  const checkoutUrl = "/dashboard/new-challenge?" + choices;
   const toggle = (k: AddOnKey) => setPicked((cur) => (cur.includes(k) ? cur.filter((x) => x !== k) : [...cur, k]));
 
   const specs: { icon: LucideIcon; label: string; value: string }[] = [
@@ -118,7 +135,7 @@ export function Challenges({ className }: { className?: string } = {}) {
     { icon: Percent, label: "Profit split", value: active.includes("split-100") ? "100%" : `${program.profitSplit}%` },
     { icon: FileText, label: "Payout cycle", value: program.payoutCycle },
     { icon: Scale, label: "Consistency rule", value: program.consistencyRule },
-    { icon: Bot, label: "EAs, news & weekend holds", value: "Allowed" },
+    { icon: CalendarDays, label: "Weekend holding", value: "Allowed" },
   ];
 
   const priceNow = isAccess ? ACCESS_UPFRONT : (grand ?? 0);
@@ -147,7 +164,7 @@ export function Challenges({ className }: { className?: string } = {}) {
         </div>
 
         <Reveal delay={0.16} className="mt-10 flex justify-center">
-          <PromoStrip />
+          {offer && <PromoStrip offer={offer} program={program} />}
         </Reveal>
 
         <div ref={body} className="relative mt-10 grid items-start gap-5 lg:grid-cols-[1.08fr_0.92fr]">
@@ -403,12 +420,12 @@ export function Challenges({ className }: { className?: string } = {}) {
               </dl>
 
               <div className="flex flex-col gap-2 p-2 pt-3">
-                <Link href="/dashboard/new-challenge" className="g-btn g-btn-lime group h-14 w-full text-[16px]">
+                <Link href={checkoutUrl} className="g-btn g-btn-lime group h-14 w-full text-[16px]">
                   Get funded with {program.shortLabel}
                   <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-0.5" strokeWidth={2.2} />
                 </Link>
                 <Link href={href("rules")} className="g-btn h-11 w-full text-[14px] font-medium text-white/65 hover:text-white">
-                  Read the full trading rules
+                  Funded news exclusions and trading rules
                 </Link>
               </div>
             </aside>
@@ -434,7 +451,7 @@ export function Challenges({ className }: { className?: string } = {}) {
                 </p>
                 <AnimatedNumber value={priceNow} format={(n) => usd(Math.round(n))} className="g-num text-[19px] font-semibold text-white" />
               </div>
-              <Link href="/dashboard/new-challenge" className="g-btn g-btn-lime h-11 px-5 text-[14.5px]">
+              <Link href={checkoutUrl} className="g-btn g-btn-lime h-11 px-5 text-[14.5px]">
                 Get funded
               </Link>
             </div>

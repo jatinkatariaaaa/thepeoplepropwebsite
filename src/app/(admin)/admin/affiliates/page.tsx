@@ -1,9 +1,14 @@
+import { AffiliateWithdrawalQueue } from "@/components/admin/AffiliateWithdrawalQueue";
+import { getAdminUser } from "@/lib/admin-auth";
+import { redirect } from "next/navigation";
 import { supabaseAdmin } from "@/lib/supabase";
 import { AffiliatesClient } from "./AffiliatesClient";
 
 export const revalidate = 0;
 
 export default async function AdminAffiliatesPage() {
+  const { role } = await getAdminUser();
+  if (!["super_admin","finance","marketing"].includes(role)) redirect("/admin");
   const [ { data: affiliates }, { data: profiles }, { data: referrals } ] = await Promise.all([
     supabaseAdmin.from("affiliates").select("*").order("total_earnings", { ascending: false }),
     supabaseAdmin.from("profiles").select("id, email, display_name, affiliate_code"),
@@ -16,8 +21,8 @@ export default async function AdminAffiliatesPage() {
   }, {});
 
   const referralsMap = (referrals || []).reduce((acc: any, r: any) => {
-    if (!acc[r.affiliate_user_id]) acc[r.affiliate_user_id] = [];
-    acc[r.affiliate_user_id].push(r);
+    if (!acc[r.affiliate_id]) acc[r.affiliate_id] = [];
+    acc[r.affiliate_id].push(r);
     return acc;
   }, {});
 
@@ -43,6 +48,7 @@ export default async function AdminAffiliatesPage() {
         <p className="text-[var(--ink-500)]">Manage affiliates, track referrals, commissions, and process payouts.</p>
       </div>
 
+      {["super_admin","finance"].includes(role) && <AffiliateWithdrawalQueue />}
       <AffiliatesClient
         initialAffiliates={enrichedAffiliates}
         statusCounts={statusCounts}

@@ -137,7 +137,7 @@ function PayoutChip() {
       </span>
       <div className="min-w-0 flex-1">
         <p className="text-[13px] font-semibold text-white">Payout request</p>
-        <p className="text-[11.5px] text-white/55">Processed in under 24 hours</p>
+        <p className="text-[11.5px] text-white/55">Approved payouts within 24 hours on business days</p>
         <div className="mt-2 h-1 overflow-hidden rounded-full bg-white/10">
           <motion.div
             className="h-full rounded-full bg-[linear-gradient(90deg,#8fc21d,#cbfb45)]"
@@ -197,13 +197,13 @@ export function Hero() {
 
   const facts = [
     ...programs.map((p) => (p.key === "access" ? `${p.shortLabel} · $${ACCESS_UPFRONT} today` : `${p.shortLabel} · from ${entryPrice(p).value}`)),
-    "Raw 0.0 pip spreads",
+    "Published trading costs",
     "No time limit",
     "News trading allowed",
-    "EAs & bots welcome",
+    "Manual trading on TPP Terminal",
     "Weekend holding",
     `Up to ${cat.maxSplit}% profit split`,
-    "Payouts processed in under 24 hours",
+    "Approved payouts within 24 hours on business days",
     ...(countries ? [`Traders in ${countries.value} countries`] : []),
   ];
 
@@ -251,18 +251,18 @@ export function Hero() {
           </motion.p>
 
           <motion.h1 {...rise(0.2)} className="g-display mt-7 text-[clamp(2.6rem,5.4vw,5.6rem)]">
-            <span className="sr-only">Fund your skills. Trade our capital.</span>
+            <span className="sr-only">Fund your skills. Trade a funded simulation.</span>
             <span aria-hidden="true" className="block">
               <span className="g-shade-dark">Fund your </span>
               <RotatingWord />
             </span>
             <span aria-hidden="true" className="g-shade-dark block">
-              Trade our capital.
+              Trade a funded simulation.
             </span>
           </motion.h1>
 
           <motion.p {...rise(0.34)} className="mt-7 max-w-[32rem] text-[clamp(1.05rem,1.35vw,1.25rem)] leading-[1.55] text-white/70">
-            <span className="font-semibold text-white">Payouts processed in under 24 hours.</span> Transparent rules, raw 0.0 pip spreads and no time limit, on accounts up to{" "}
+            <span className="font-semibold text-white">Approved payouts within 24 hours on business days.</span> Transparent rules on simulated accounts up to{" "}
             {compactUsd(cat.maxSize)}.
           </motion.p>
 

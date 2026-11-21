@@ -16,6 +16,8 @@ export class CheckoutError extends Error {
   }
 }
 
+export class InvoiceRejected extends CheckoutError {}
+
 export interface OrderRequest {
   programKey: string;
   accountSize: number;
@@ -29,7 +31,8 @@ export async function loadCoupon(code: unknown, programKey: string): Promise<Cou
   if (!couponCode) return null;
 
   const { data: coupon, error } = await supabaseAdmin.from("tpp_coupons").select("*").eq("code", couponCode).maybeSingle();
-  if (error || !coupon || !coupon.is_active) throw new CheckoutError("That promo code is not valid.");
+  if (error) throw new CheckoutError("The promo code could not be checked. Try again.", 503);
+  if (!coupon || !coupon.is_active) throw new CheckoutError("That promo code is not valid.");
   if (coupon.expires_at && new Date(coupon.expires_at).getTime() < Date.now()) throw new CheckoutError("That promo code has expired.");
   if (coupon.max_uses != null && Number(coupon.current_uses || 0) >= Number(coupon.max_uses)) throw new CheckoutError("That promo code has reached its usage limit.");
 
@@ -78,18 +81,12 @@ export async function quoteOrder(req: OrderRequest): Promise<{ quote: Quote; pro
   return { quote, program, platformName };
 }
 
-export async function redeemCoupon(code: string | null) {
-  if (!code) return;
-  const { data: coupon } = await supabaseAdmin.from("tpp_coupons").select("id, current_uses").eq("code", code).maybeSingle();
-  if (coupon) await supabaseAdmin.from("tpp_coupons").update({ current_uses: Number(coupon.current_uses || 0) + 1 }).eq("id", coupon.id);
-}
-
 export const siteUrl = () => (process.env.NEXT_PUBLIC_SITE_URL || "https://thepeopleprop.live").replace(/\/$/, "");
 
 /** Creates a NOWPayments invoice and returns its hosted payment page. */
 export async function createInvoice(o: { amount: number; orderId: string; description: string; email?: string | null }): Promise<string> {
   const apiKey = process.env.NOWPAYMENTS_API_KEY || process.env.NOWPAYMENTS_KEY;
-  if (!apiKey) throw new CheckoutError("Payments are not configured yet. Please contact support.", 503);
+  if (!apiKey) throw new InvoiceRejected("Payments are not configured yet. Please contact support.", 503);
 
   const res = await fetch("https://api.nowpayments.io/v1/invoice", {
     method: "POST",
@@ -106,8 +103,24 @@ export async function createInvoice(o: { amount: number; orderId: string; descri
     }),
   });
   const data = (await res.json().catch(() => ({}))) as { invoice_url?: string; message?: string };
-  if (!res.ok || !data.invoice_url) throw new CheckoutError(data.message || "Could not create the payment invoice.", 502);
+  if (res.status >= 400 && res.status < 500) throw new InvoiceRejected("The payment provider declined to create an invoice.",502);
+  if (!res.ok || !data.invoice_url) throw new CheckoutError("The payment provider did not confirm invoice creation.", 502);
   return data.invoice_url;
+}
+
+export async function saveInvoice(purchaseId:string, order:Parameters<typeof createInvoice>[0]) {
+  try {
+    const invoiceUrl=await createInvoice(order);
+    const {error}=await supabaseAdmin.from("purchases").update({invoice_url:invoiceUrl}).eq("id",purchaseId);
+    if(error) throw error;
+    return invoiceUrl;
+  } catch(error) {
+    const {error:saveError}=await supabaseAdmin.from("purchases").update({
+      payment_status:error instanceof InvoiceRejected ? "failed" : "invoice_review",
+    }).eq("id",purchaseId).eq("payment_status","pending");
+    if(saveError) throw saveError;
+    throw error;
+  }
 }
 
 export const newOrderId = (prefix = "ORD") => `${prefix}-${crypto.randomUUID().replace(/-/g, "").slice(0, 10).toUpperCase()}`;

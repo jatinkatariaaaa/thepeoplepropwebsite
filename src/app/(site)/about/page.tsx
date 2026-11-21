@@ -4,7 +4,7 @@ import { AboutPage } from "@/components/v2/glass/pages/about-page";
 
 export const metadata: Metadata = {
   title: "About us",
-  description: "The People Prop is built by traders, for traders: published rules, fast payouts and real capital for real skill.",
+  description: "The People Prop is built by traders, for traders: published trading rules, simulated trading accounts and payout eligibility.",
 };
 
 export default function Page() {
