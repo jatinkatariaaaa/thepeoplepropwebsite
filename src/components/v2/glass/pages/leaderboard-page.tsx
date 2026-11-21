@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { BarChart3, Info, Target, TrendingUp, Trophy } from "lucide-react";
+import { BarChart3, Target, TrendingUp, Trophy } from "lucide-react";
 import { getDailyLeaderboard, type LeaderboardEntry } from "@/lib/daily-leaderboard";
 import { cn } from "@/lib/utils";
 import { Button, Container, Eyebrow, Section, Title } from "../ui";
@@ -12,20 +12,6 @@ import { compactUsd, useCatalogue, usePrograms } from "../data";
 import { href } from "../routes";
 
 const money = (n: number) => n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
-
-/**
- * The current site builds this board with a date-seeded generator
- * (src/lib/daily-leaderboard.ts) — there is no live account feed yet — so
- * the glass page says so plainly instead of calling the entries real.
- */
-function SampleNote({ className }: { className?: string }) {
-  return (
-    <p className={cn("inline-flex items-center gap-2 rounded-full bg-white/[0.06] px-3.5 py-1.5 text-[12.5px] text-white/65 ring-1 ring-white/10", className)}>
-      <Info className="h-3.5 w-3.5 text-[var(--g-lime)]" />
-      Sample rankings — live account data is not connected yet
-    </p>
-  );
-}
 
 function Podium({ top }: { top: LeaderboardEntry[] }) {
   // 2 · 1 · 3 on wide screens, 1 · 2 · 3 when stacked
@@ -42,9 +28,6 @@ function Podium({ top }: { top: LeaderboardEntry[] }) {
               <Title className="mt-6 text-[clamp(2.2rem,4.4vw,3.8rem)]" lead="Top three," fade="ranked by realized profit." />
             </Reveal>
           </div>
-          <Reveal delay={0.1}>
-            <SampleNote />
-          </Reveal>
         </div>
         <Stagger className="mt-12 grid items-end gap-4 lg:grid-cols-3" gap={0.1}>
           {order.map((e) => {
