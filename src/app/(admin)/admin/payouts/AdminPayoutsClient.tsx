@@ -30,6 +30,11 @@ interface Payout {
   payment_details: string | null;
   processed_at: string | null;
   processed_by: string | null;
+  news_review_from?: string | null;
+  news_reviewed_at?: string | null;
+  news_minutes?: number | null;
+  news_excluded_profit?: number | null;
+  tx_reference?: string | null;
   profiles: { id: string; email: string; display_name: string } | null;
   accounts: { id: string; label: string; balance: number; equity: number; starting_balance: number } | null;
 }
@@ -59,6 +64,11 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
   const [isActionModalOpen, setIsActionModalOpen] = useState(false);
   const [actionType, setActionType] = useState<"approve" | "reject" | null>(null);
   const [adminNotes, setAdminNotes] = useState("");
+  const [newsSource, setNewsSource] = useState("");
+  const [newsEvents, setNewsEvents] = useState("");
+  const [calendarChecked, setCalendarChecked] = useState(false);
+  const [txReference, setTxReference] = useState("");
+  const reviewing = actionType === "approve" && !selectedPayout?.news_reviewed_at;
 
   const filteredPayouts = useMemo(() => {
     return payouts.filter((p) => {
@@ -78,23 +88,25 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
   const handleAction = async () => {
     if (!selectedPayout || !actionType) return;
 
-    const status = actionType === "approve" ? "paid" : "rejected";
+    const status = actionType === "reject" ? "rejected" : reviewing ? "review" : "paid";
     setLoading(selectedPayout.id);
     try {
       const res = await fetch("/api/admin/payouts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ payoutId: selectedPayout.id, status, notes: adminNotes || undefined }),
+        body: JSON.stringify({ payoutId: selectedPayout.id, status, notes: adminNotes, newsSource, calendarChecked,
+          newsEvents: newsEvents.split(/\r?\n/).map((line) => line.trim()).filter(Boolean), txReference,
+          confirmedAmount: selectedPayout.amount }),
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to update");
 
-      toast.success(`Payout ${status === "paid" ? "approved and marked as paid" : "rejected"}`);
+      toast.success(status === "review" ? `Review saved. Transfer amount is $${Number(data.payout.amount).toFixed(2)}.` : `Payout ${status}`);
       setPayouts((prev) =>
         prev.map((p) =>
           p.id === selectedPayout.id
-            ? { ...p, status, notes: adminNotes || p.notes, processed_at: new Date().toISOString() }
+            ? { ...p, ...data.payout }
             : p
         )
       );
@@ -117,6 +129,10 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
     setSelectedPayout(payout);
     setActionType(action);
     setAdminNotes(payout.notes || "");
+    setNewsSource("");
+    setNewsEvents("");
+    setCalendarChecked(false);
+    setTxReference("");
     setIsActionModalOpen(true);
   };
 
@@ -227,7 +243,7 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
                   onClick={() => openActionModal(p, "approve")}
                   disabled={loading === p.id}
                   className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
-                  title="Approve & Pay"
+                  title={p.news_reviewed_at ? "Confirm transfer" : "Review payout"}
                 >
                   <CheckCircle className="w-4 h-4" />
                 </button>
@@ -434,7 +450,7 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
                   onClick={() => { setIsViewModalOpen(false); openActionModal(selectedPayout, "approve"); }}
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-600 text-white font-semibold rounded-xl hover:bg-emerald-700 transition-colors"
                 >
-                  <CheckCircle className="w-4 h-4" /> Approve & Pay
+                  <CheckCircle className="w-4 h-4" /> {selectedPayout.news_reviewed_at ? "Confirm transfer" : "Review payout"}
                 </button>
                 <button
                   onClick={() => { setIsViewModalOpen(false); openActionModal(selectedPayout, "reject"); }}
@@ -452,17 +468,25 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
       <AdminModal
         isOpen={isActionModalOpen}
         onClose={() => { setIsActionModalOpen(false); setAdminNotes(""); }}
-        title={actionType === "approve" ? "Approve Payout" : "Reject Payout"}
+        title={actionType === "reject" ? "Decline payout" : reviewing ? "Review eligible profit" : "Confirm completed transfer"}
         description={selectedPayout ? `${Number(selectedPayout.amount).toLocaleString()} via ${selectedPayout.payment_method || "crypto"}${selectedPayout.payment_details ? " — " + selectedPayout.payment_details.substring(0, 30) + "..." : selectedPayout.crypto_address ? " — " + selectedPayout.crypto_address.substring(0, 20) + "..." : ""}` : ""}
       >
         {selectedPayout && (
           <div className="space-y-4">
-            {actionType === "approve" ? (
+            {reviewing ? (
+              <div className="grid gap-3 text-sm">
+                <p>Check high-impact releases from {selectedPayout.news_review_from ? new Date(selectedPayout.news_review_from).toUTCString() : "the account’s first trade"} through {new Date(Date.parse(selectedPayout.created_at) + (selectedPayout.news_minutes ?? 2) * 60000).toUTCString()}. Trades opened or closed within ±{selectedPayout.news_minutes ?? 2} minutes of a release are checked against the trading ledger.</p>
+                <label>Calendar source or archived report<input value={newsSource} onChange={(e) => setNewsSource(e.target.value)} maxLength={500} className="block w-full rounded-xl border p-2" /></label>
+                <label>High-impact release times in UTC, one per line<textarea value={newsEvents} onChange={(e) => setNewsEvents(e.target.value)} placeholder="2026-11-20T13:30:00Z" rows={4} className="block w-full rounded-xl border p-2" /></label>
+                <label className="flex items-start gap-2"><input type="checkbox" checked={calendarChecked} onChange={(e) => setCalendarChecked(e.target.checked)} />I checked the entire period and entered every applicable release. An empty list confirms there were none.</label>
+              </div>
+            ) : actionType === "approve" ? (
               <div className="flex items-start gap-3 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
                 <CheckCircle className="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="text-sm font-semibold text-emerald-800">Confirm Approval</p>
-                  <p className="text-sm text-emerald-700 mt-1">This will mark the payout as paid. Ensure the crypto transfer has been completed before confirming.</p>
+                  <p className="text-sm font-semibold text-emerald-800">Reviewed transfer amount ${Number(selectedPayout.amount).toFixed(2)}</p>
+                  <p className="text-sm text-emerald-700 mt-1">Excluded news profit ${Number(selectedPayout.news_excluded_profit ?? 0).toFixed(2)}. Confirm after sending the reviewed amount to the payment destination.</p>
+                  <label className="mt-3 block text-sm">Bank reference or transaction hash<input value={txReference} onChange={(e) => setTxReference(e.target.value)} maxLength={200} className="block w-full rounded-xl border p-2" /></label>
                 </div>
               </div>
             ) : (
@@ -476,7 +500,7 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
             )}
 
             <div>
-              <label className="block text-sm font-semibold text-[var(--ink-950)] mb-1">Admin Notes</label>
+              <label className="block text-sm font-semibold text-[var(--ink-950)] mb-1">{actionType === "reject" ? "Reason sent to trader" : "Notes"}</label>
               <textarea
                 value={adminNotes}
                 onChange={(e) => setAdminNotes(e.target.value)}
@@ -495,7 +519,7 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
               </button>
               <button
                 onClick={handleAction}
-                disabled={loading === selectedPayout.id}
+                disabled={loading === selectedPayout.id || (reviewing ? !calendarChecked || newsSource.trim().length < 4 : actionType === "approve" ? !txReference.trim() : !adminNotes.trim())}
                 className={`px-4 py-2 font-bold text-white rounded-full transition-colors disabled:opacity-50 ${
                   actionType === "approve" ? "bg-emerald-600 hover:bg-emerald-700" : "bg-red-600 hover:bg-red-700"
                 }`}

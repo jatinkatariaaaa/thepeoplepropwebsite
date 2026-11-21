@@ -20,6 +20,11 @@ const SUPABASE_READY = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.e
 type Item = QA & { program: ProgramKey | null };
 
 const CATALOGUE: Item[] = allFaqs().map((f) => ({ q: f.q, a: f.a, category: f.category ?? null, program: f.program }));
+const CORE_FAQS = CATALOGUE.filter((item) => !item.program && [
+  "What account sizes are available?",
+  "How do payouts work?",
+  "How long does a payout take?",
+].includes(item.q));
 
 /** Every published question: tpp_faqs when it has been filled from Admin, otherwise the catalogue. */
 function useAllFaqs(): Item[] {
@@ -35,14 +40,14 @@ function useAllFaqs(): Item[] {
       .then(({ data }) => {
         // A handful of placeholder rows is not a help centre; wait until Admin has synced the catalogue.
         if (!alive || !data || data.length < 20) return;
-        setItems(
-          data.map((f: { question: string; answer: string; category?: string | null; program_key?: string | null }) => ({
+        const published = data.map((f: { question: string; answer: string; category?: string | null; program_key?: string | null }) => ({
             q: f.question,
             a: f.answer,
             category: f.category ?? null,
             program: f.program_key && isProgramKey(f.program_key) ? f.program_key : null,
-          })),
-        );
+        }));
+        const missing = CORE_FAQS.filter((item) => !published.some((faq) => !faq.program && faq.q === item.q));
+        setItems([...published.map((faq) => faq.program ? faq : CORE_FAQS.find((item) => item.q === faq.q) ?? faq), ...missing]);
       });
     return () => {
       alive = false;

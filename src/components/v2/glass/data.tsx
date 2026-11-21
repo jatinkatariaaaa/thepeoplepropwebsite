@@ -1,15 +1,6 @@
 "use client";
 
-/**
- * Site data layer — every number on the page comes from here, and here only
- * reads real sources: Supabase (`tpp_stats`, `tpp_platforms`), the hydrated
- * program catalogue and the static data files. Nothing is invented: when
- * Supabase isn't configured we fall back to the exact defaults the previous
- * landing page shipped with.
- */
-
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { supabase } from "@/lib/supabase";
 import { useHydratedPrograms } from "@/hooks/useHydratedPrograms";
 import { platforms as staticPlatforms, programs as staticPrograms, type Program, type AccountSize, type ProgramKey } from "@/data/programs";
 
@@ -19,26 +10,17 @@ const SUPABASE_READY = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.e
 
 export type Stat = { value: string; label: string; key_name?: string };
 
-/** The previous landing page's defaults — editable from the `tpp_stats` table. */
-export const FALLBACK_STATS: Stat[] = [
-  { value: "250+", label: "Successful payouts", key_name: "total_payouts" },
-  { value: "142+", label: "Countries served", key_name: "countries" },
-  { value: "5*", label: "TrustPilot rating", key_name: "trustpilot" },
-];
+const NO_STATS: Stat[] = [];
 
 function useStatsQuery() {
-  const [stats, setStats] = useState<Stat[]>(FALLBACK_STATS);
+  const [stats, setStats] = useState<Stat[]>(NO_STATS);
   useEffect(() => {
     if (!SUPABASE_READY) return;
     let alive = true;
-    supabase
-      .from("tpp_stats")
-      .select("*")
-      .order("key_name")
-      .then(({ data }) => {
-        if (!alive || !data || data.length === 0) return;
-        setStats(data.map((d: Stat) => ({ value: String(d.value), label: String(d.label), key_name: d.key_name })));
-      });
+    fetch("/api/public-stats")
+      .then((response) => response.ok ? response.json() : { stats: [] })
+      .then(({ stats }: { stats: Stat[] }) => { if (alive) setStats(stats); })
+      .catch(() => undefined);
     return () => {
       alive = false;
     };
@@ -73,11 +55,11 @@ function usePlatformQuery() {
   useEffect(() => {
     if (!SUPABASE_READY) return;
     let alive = true;
-    supabase.rpc("list_public_platforms").then(({ data }) => {
-      const rows = (data ?? []) as { name: string; extra_fee_pct?: number | null }[];
+    fetch("/api/platforms").then((response) => response.ok ? response.json() : { platforms: [] }).then(({ platforms }) => {
+      const rows = (platforms ?? []) as { name: string; extra_fee_pct?: number | null }[];
       if (!alive || rows.length === 0) return;
       setList(rows.map((p) => ({ key: p.name.toLowerCase().replace(/[^a-z0-9]/g, ""), label: p.name, extra: Number(p.extra_fee_pct) || 0 })));
-    });
+    }).catch(() => undefined);
     return () => {
       alive = false;
     };
@@ -159,7 +141,7 @@ export function V2DataProvider({ children }: { children: ReactNode }) {
 }
 
 export const usePrograms = () => useContext(V2DataContext)?.programs ?? staticPrograms;
-export const useStats = () => useContext(V2DataContext)?.stats ?? FALLBACK_STATS;
+export const useStats = () => useContext(V2DataContext)?.stats ?? NO_STATS;
 export const usePlatformOptions = () => useContext(V2DataContext)?.platforms ?? STATIC_PLATFORM_OPTIONS;
 export const usePlatformNames = () => usePlatformOptions().map((p) => p.label);
 

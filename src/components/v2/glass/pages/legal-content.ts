@@ -351,11 +351,11 @@ const STATIC_LEGAL: Record<Exclude<LegalKey, "payout-policy" | "refund-policy">,
         "blocks": [
           {
             "type": "p",
-            "text": "**All accounts provided during the evaluation phase are simulated (demo) accounts.** You are trading with virtual funds in a simulated environment. Your performance in this simulated environment does not guarantee future success in live trading."
+            "text": "**All evaluation and funded accounts use simulated balances.** Your performance in the simulated environment does not guarantee future success in live trading."
           },
           {
             "type": "p",
-            "text": "Even after passing an evaluation and being offered a \"Funded Account\", your trades may still be executed in a simulated environment, and your compensation will be based on the simulated performance according to your contractor agreement. We do not act as a broker, and you are not risking your own capital beyond the initial evaluation fee."
+            "text": "Funded accounts continue to trade in a simulated environment. Eligible payouts are real money and are based on simulated performance under the applicable agreement and payout policy."
           }
         ]
       },

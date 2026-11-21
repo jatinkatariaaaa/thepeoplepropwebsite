@@ -9,12 +9,14 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 import { AuthHeading, AuthNotices, AuthShell, authField, authLabel } from "@/components/v2/glass/auth-shell";
 import { href } from "@/components/v2/glass/routes";
+import { safeReturn as safeRedirect } from "@/lib/auth-return";
 
 type Mode = "signin" | "signup" | "forgot";
 
-/** Only same-site paths: "?redirect=https://elsewhere" or "//elsewhere" falls back to the dashboard. */
-function safeRedirect(wanted: string | null): string {
-  return wanted && wanted.startsWith("/") && !wanted.startsWith("//") && !wanted.startsWith("/\\") ? wanted : "/dashboard";
+function callbackUrl() {
+  const url = new URL("/auth/callback", window.location.origin);
+  url.searchParams.set("next", safeRedirect(new URLSearchParams(window.location.search).get("redirect")));
+  return url.toString();
 }
 
 function GoogleIcon() {
@@ -108,7 +110,7 @@ export default function LoginPage() {
           password: pw,
           options: {
             data: referral,
-            emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
+            emailRedirectTo: callbackUrl(),
           },
         });
         if (signUpError) throw signUpError;
@@ -388,7 +390,7 @@ export default function LoginPage() {
                   const { error } = await supabase.auth.signInWithOAuth({
                     provider: 'google',
                     options: {
-                      redirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
+                      redirectTo: callbackUrl(),
                     },
                   });
                   if (error) throw error;

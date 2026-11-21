@@ -11,7 +11,7 @@ import { provisionNextPhase } from "@/lib/account-provisioning";
  * the truth; it cannot pass, fund or breach anything.
  */
 
-const isUuid = (v: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v);
+import { isUuid } from "@/lib/certificates/types";
 
 export async function POST(req: Request) {
   try {

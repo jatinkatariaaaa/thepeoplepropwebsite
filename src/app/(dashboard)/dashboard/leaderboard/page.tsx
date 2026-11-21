@@ -1,18 +1,11 @@
-import { LeaderboardHighlights } from "@/components/dashboard/LeaderboardHighlights";
-import { LeaderboardTable } from "@/components/dashboard/LeaderboardTable";
+import { DailyRankings } from "@/components/v2/glass/pages/leaderboard-page";
 import { PageTitle } from "@/components/dashboard/glass";
-
-// Re-render at most every hour so the leaderboard picks up the new
-// daily data shortly after the UTC date changes.
-export const revalidate = 3600;
 
 export default function LeaderboardPage() {
   return (
     <div className="mx-auto max-w-7xl">
-      <PageTitle lead="Hall of" fade="Fame" lede="Top performing traders from our global community." />
-
-      <LeaderboardHighlights />
-      <LeaderboardTable />
+      <PageTitle lead="Daily" fade="leaderboard" lede="Realized net profit on funded simulation accounts." />
+      <DailyRankings />
     </div>
   );
 }

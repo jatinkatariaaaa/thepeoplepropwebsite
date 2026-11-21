@@ -4,7 +4,7 @@ import { ReviewsPage } from "@/components/v2/glass/pages/reviews-page";
 
 export const metadata: Metadata = {
   title: "Reviews",
-  description: "What funded traders say about The People Prop: payouts, rules and support, in their own words.",
+  description: "Contact The People Prop to share trading feedback or get help with your account.",
 };
 
 export default function Page() {

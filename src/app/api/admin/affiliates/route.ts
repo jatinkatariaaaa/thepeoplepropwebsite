@@ -76,16 +76,6 @@ export async function POST(request: Request) {
 
       if (error) throw error;
       result = { success: true, commissionRate };
-    } else if (action === "payout") {
-      const { amount } = body;
-      if (typeof amount !== "number" || !Number.isFinite(amount) || amount <= 0) {
-        return NextResponse.json({ error: "Invalid amount" }, { status: 400 });
-      }
-
-      const { data: newPending, error } = await supabaseAdmin.rpc("debit_affiliate_payout", { p_user_id: userId, p_amount: amount });
-      if (error?.code === "23514") return NextResponse.json({ error: error.message }, { status: 409 });
-      if (error) throw error;
-      result = { success: true, newPending };
     } else {
       return NextResponse.json({ error: "Invalid action" }, { status: 400 });
     }

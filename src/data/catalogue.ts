@@ -283,7 +283,7 @@ const sharedTerms = (o: {
   {
     title: `${6 + (o.extra?.length ?? 0)}. General`,
     clauses: [
-      `An account with no trade for ${PERKS.inactivityDays} consecutive days is closed for inactivity.`,
+      `An account with no trade for ${PERKS.inactivityDays} consecutive days may be paused for inactivity.`,
       "We may change these terms for new purchases. An account you already hold keeps the rules it was sold with until it is closed.",
       "These program terms sit alongside our Terms of Service, Payout Policy, Refund Policy and Risk Disclosure. If they conflict, these program terms decide questions about this account type.",
     ],
@@ -671,6 +671,11 @@ export const generalFaqs: QA[] = [
     category: "Getting started",
   },
   {
+    q: "What account sizes are available?",
+    a: "1-Step, 2-Step and 3-Step are available up to $200,000, Instant up to $300,000, and Access up to $400,000. These are simulated account sizes. The separate limit across all active funded accounts is $400,000 per person.",
+    category: "Getting started",
+  },
+  {
     q: "Which account type should I choose?",
     a: "1-Step is the fastest: one 10% target. 2-Step has the most room, 5% a day and 10% overall, across an 8% and a 5% phase. 3-Step is the cheapest, three phases of 6%. Instant skips the evaluation and is funded from day one with tighter limits. Access lets you start a two-phase evaluation for $5 and pay the account fee only after you pass.",
     category: "Getting started",
@@ -722,7 +727,7 @@ export const generalFaqs: QA[] = [
   },
   {
     q: "What happens if I do not trade for a while?",
-    a: `An account with no trade for ${PERKS.inactivityDays} consecutive days is closed for inactivity. One trade every ${PERKS.inactivityDays} days keeps it open.`,
+    a: `An account with no trade for ${PERKS.inactivityDays} consecutive days may be paused for inactivity. One trade every ${PERKS.inactivityDays} days keeps it open.`,
     category: "Rules",
   },
   {

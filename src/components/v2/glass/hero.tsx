@@ -2,10 +2,10 @@
 
 import { useRef, type PointerEvent } from "react";
 import { motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
-import { ChevronRight, Globe2, Star } from "lucide-react";
+import { ChevronRight, Globe2 } from "lucide-react";
 import { Button, Container } from "./ui";
 import { CountUp, EASE } from "./motion";
-import { entryPrice, findStat, prettyValue, useCatalogue, usePrograms, useSelectedProgram, useStats, compactUsd, ACCESS_UPFRONT } from "./data";
+import { entryPrice, prettyValue, useCatalogue, usePrograms, useSelectedProgram, useStats, compactUsd, ACCESS_UPFRONT } from "./data";
 import type { ProgramKey } from "@/data/programs";
 
 const rise = (delay: number) => ({
@@ -52,8 +52,6 @@ export function Hero() {
   const stats = useStats();
   const programs = usePrograms();
   const cat = useCatalogue(programs);
-  const countries = findStat(stats, "countries");
-  const rating = findStat(stats, "rating");
 
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const artY = useTransform(scrollYProgress, [0, 1], ["0%", "14%"]);
@@ -71,7 +69,7 @@ export function Hero() {
 
   const tiles = [
     ...stats.slice(0, 3).map((s) => ({ value: prettyValue(s.value), label: s.label })),
-    { value: compactUsd(cat.maxSize), label: "Max. allocation" },
+    { value: compactUsd(cat.maxSize), label: "Largest simulated account" },
   ];
 
   return (
@@ -104,19 +102,19 @@ export function Hero() {
           <div className="max-w-[640px]">
             <motion.p {...rise(0.05)} className="g-pill g-hair bg-white/[0.08] text-white/85 backdrop-blur-md">
               <Globe2 className="h-3.5 w-3.5 text-[var(--g-lime)]" />
-              Evaluating traders in {countries?.value ?? "142+"} countries
+              TPP Terminal
             </motion.p>
 
             <motion.h1 {...rise(0.15)} className="g-display mt-7 text-[clamp(2.75rem,5vw,4.8rem)]">
               <span className="g-shade-dark block">Fund your skills.</span>
-              <span className="g-shade-dark block">Trade our capital.</span>
+              <span className="g-shade-dark block">Trade a funded simulation.</span>
             </motion.h1>
 
             <motion.p {...rise(0.3)} className="mt-6 text-[clamp(1.15rem,1.6vw,1.45rem)] font-semibold tracking-[-0.02em] text-white">
-              Payouts processed in under 24 hours.
+              Approved payouts sent within 24 hours on business days.
             </motion.p>
             <motion.p {...rise(0.38)} className="mt-3 max-w-[30rem] text-[16.5px] leading-[1.6] text-white/65">
-              Transparent rules and real capital up to {cat.maxSize ? `$${cat.maxSize.toLocaleString("en-US")}` : "—"}. Built for traders — not against them.
+              Trade simulated accounts up to {compactUsd(cat.maxSize)} and receive real payouts on eligible profit. Account sizes vary by program.
             </motion.p>
 
             <motion.div {...rise(0.5)} className="mt-9 flex flex-wrap items-center gap-3">
@@ -130,17 +128,6 @@ export function Hero() {
               <p className="mb-3 text-[12.5px] font-medium text-white/45">Choose your program</p>
               <ProgramChips />
             </motion.div>
-
-            {rating ? (
-              <motion.p {...rise(0.7)} className="mt-8 flex items-center gap-2 text-[13.5px] text-white/60">
-                <span className="flex gap-0.5">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className="h-3.5 w-3.5 fill-[var(--g-lime)] text-[var(--g-lime)]" />
-                  ))}
-                </span>
-                {prettyValue(rating.value)} {rating.label}
-              </motion.p>
-            ) : null}
           </div>
         </Container>
       </div>

@@ -196,7 +196,7 @@ function Platforms() {
           ))}
         </ul>
         <div className="mt-5 flex flex-wrap gap-2">
-          <Chip>EAs welcome</Chip>
+          <Chip>Manual trading</Chip>
           <Chip>Bots welcome</Chip>
         </div>
       </div>
@@ -205,12 +205,12 @@ function Platforms() {
 }
 
 const CHAPTERS = [
-  { key: "spreads", title: "Raw spreads", body: "Tier-1 liquidity, zero markup. Your edge stays yours.", Visual: Spreads },
+  { key: "spreads", title: "Published spreads", body: "Forex carries a 1.2 pip spread. See the FAQ for gold, crypto and commission.", Visual: Spreads },
   { key: "time", title: "No time limit", body: "Pass in a day or a year — your pace, your rules.", Visual: NoTimeLimit },
-  { key: "news", title: "News trading allowed", body: "Trade high-impact releases on evaluation and funded accounts.", Visual: News },
+  { key: "news", title: "News trading allowed", body: "Trade during news. A news-window review applies to funded payouts.", Visual: News },
   { key: "weekend", title: "Weekend & overnight holding", body: "Keep positions open through the weekend — no forced flat at Friday's close.", Visual: Weekend },
   { key: "retry", title: "Free retry", body: "Missed by a hair? Take one free re-attempt if you breach during evaluation.", Visual: Retry },
-  { key: "platforms", title: "Trade on the platform you trust", body: "Pick your terminal at checkout. EAs and bots are welcome.", Visual: Platforms },
+  { key: "platforms", title: "Trade on the platform you trust", body: "Trade manually on TPP Terminal in your browser.", Visual: Platforms },
 ];
 
 /** "Why TPP" as a feature theatre: chapters on the left advance on their own, the stage on the right shows each one. */

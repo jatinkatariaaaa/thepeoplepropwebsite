@@ -1,3 +1,4 @@
+import { AffiliateWithdrawal } from "@/components/dashboard/AffiliateWithdrawal";
 import { redirect } from "next/navigation";
 import { getSessionUser } from "@/lib/api-auth";
 import { readPartnerDesk } from "@/lib/partner-desk-server";
@@ -11,5 +12,5 @@ export default async function PartnerDeskPage() {
   if (!user) redirect("/login?redirect=/partner-desk");
   const desk = await readPartnerDesk(user.id);
   if (!desk) redirect("/dashboard");
-  return <PartnerDesk desk={desk} />;
+  return <div className="space-y-6"><PartnerDesk desk={desk} />{(desk.member?.permissions.includes("view_commissions") || desk.promotions.length > 0) && <AffiliateWithdrawal />}</div>;
 }

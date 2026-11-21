@@ -28,15 +28,15 @@ export function Journey() {
     {
       n: "02",
       title: "Trade your way",
-      body: "Trade on your favourite platform — news, EAs and weekend holds included.",
-      facts: [`${platforms.length} platforms`, "Raw 0.0 pip spreads", "No time limit"],
+      body: "Trade manually on TPP Terminal with weekend holding and the published news rules.",
+      facts: [`${platforms.length} platforms`, "1.2 pip forex spreads", "No time limit"],
       art: "/art/prop-bolt.webp",
     },
     {
       n: "03",
       title: "Get paid",
       body: `Request your payout and keep up to ${cat.maxSplit}% of the profit.`,
-      facts: ["Processed in under 24 hours", `${cat.baseSplit}% split · ${cat.maxSplit}% add-on`, "Fee refunded on first payout"],
+      facts: ["Approved payouts within 24 hours on business days", `${cat.baseSplit}% split · ${cat.maxSplit}% add-on`, "Evaluation fees refunded on eligible programs"],
       art: "/art/prop-coins.webp",
     },
   ];

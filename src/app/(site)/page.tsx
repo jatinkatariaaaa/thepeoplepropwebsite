@@ -6,7 +6,6 @@ import { Why } from "@/components/v2/glass/why";
 import { Steps } from "@/components/v2/glass/steps";
 import { PassFirst } from "@/components/v2/glass/pass-first";
 import { Compare } from "@/components/v2/glass/compare";
-import { Stories } from "@/components/v2/glass/stories";
 import { Faq } from "@/components/v2/glass/faq";
 import { Cta } from "@/components/v2/glass/cta";
 
@@ -24,7 +23,6 @@ export default function HomePage() {
       <Steps />
       <PassFirst />
       <Compare />
-      <Stories />
       <Faq />
       <Cta />
     </>

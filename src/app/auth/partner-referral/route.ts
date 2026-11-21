@@ -2,10 +2,11 @@ import { NextResponse, type NextRequest } from "next/server";
 import { getSessionUser } from "@/lib/api-auth";
 import { partnerCookie, readVisit } from "@/lib/partner-referral";
 import { supabaseAdmin } from "@/lib/supabase";
+import { safeReturn } from "@/lib/auth-return";
 
 export async function GET(request: NextRequest) {
   const path = request.nextUrl.searchParams.get("next") ?? "";
-  const next = /^\/(?![\/\\])/.test(path) ? path : "/dashboard";
+  const next = safeReturn(path);
   const response = NextResponse.redirect(new URL(request.nextUrl.origin + next));
   response.headers.set("Cache-Control", "private, no-store");
   try {

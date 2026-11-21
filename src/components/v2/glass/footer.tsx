@@ -58,7 +58,7 @@ export function Footer() {
               <TppMark className="h-7" />
             </Link>
             <p className="mt-5 max-w-sm text-[14.5px] leading-relaxed text-white/55">
-              Evaluating traders worldwide. Built by traders, for traders. No hidden rules, just real capital scaling.
+              Simulated trading accounts with published rules and real payouts on eligible profit.
             </p>
             <a href="mailto:support@thepeopleprop.com" className="group mt-7 inline-flex items-center gap-3 text-[14.5px] font-medium text-white/85 hover:text-white">
               <span className="grid h-10 w-10 place-items-center rounded-full bg-white/[0.07] ring-1 ring-white/10 transition-colors group-hover:bg-[var(--g-lime)] group-hover:text-[var(--g-ink)]">

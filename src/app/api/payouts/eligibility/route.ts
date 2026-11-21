@@ -1,17 +1,12 @@
-import { NextResponse } from "next/server";
 import { getSessionUser } from "@/lib/api-auth";
-import { checkPayout } from "@/lib/payouts";
+import { checkPayout, payoutError } from "@/lib/payouts";
 
-/** What a trader can withdraw from an account right now, and what stands in the way. */
 export async function GET(request: Request) {
-  try {
-    const user = await getSessionUser(request);
-    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const accountId = new URL(request.url).searchParams.get("accountId");
-    if (!accountId) return NextResponse.json({ error: "accountId is required" }, { status: 400 });
-    const { settings: _settings, ...check } = await checkPayout(user.id, accountId);
-    return NextResponse.json(check);
-  } catch (err) {
-    return NextResponse.json({ error: (err as Error).message }, { status: 400 });
-  }
+  const user = await getSessionUser(request);
+  if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
+  const accountId = new URL(request.url).searchParams.get("accountId");
+  if (!accountId) return Response.json({ error: "accountId is required" }, { status: 400 });
+  const { data, error } = await checkPayout(user.id, accountId);
+  if (error) return payoutError(error);
+  return Response.json(data);
 }

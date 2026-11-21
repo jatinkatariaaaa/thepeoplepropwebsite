@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { safeReturn } from "@/lib/auth-return";
 
 export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -53,14 +54,14 @@ export async function proxy(request: NextRequest) {
     // Redirect the user to the login page
     const url = request.nextUrl.clone();
     url.pathname = '/login';
-    url.searchParams.set('redirect', request.nextUrl.pathname);
+    url.search = '';
+    url.searchParams.set('redirect', safeReturn(request.nextUrl.pathname + request.nextUrl.search));
     return NextResponse.redirect(url);
   }
 
   // If the user is signed in and on the login/signup pages, redirect to dashboard
   if (user && (request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/signup')) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/dashboard';
+    const url = new URL(safeReturn(request.nextUrl.searchParams.get("redirect")), request.nextUrl.origin);
     return NextResponse.redirect(url);
   }
 

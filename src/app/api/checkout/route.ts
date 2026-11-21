@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import { getSessionUser } from "@/lib/api-auth";
-import { CheckoutError, createInvoice, newOrderId, quoteOrder, redeemCoupon, siteUrl } from "@/lib/checkout";
+import { CheckoutError, newOrderId, quoteOrder, saveInvoice, siteUrl } from "@/lib/checkout";
+import { issuanceId } from "@/lib/issuance-id";
+import { isUuid } from "@/lib/certificates/types";
 import { provisionNextPhase, provisionTradingAccountForPurchase } from "@/lib/account-provisioning";
 
 /**
@@ -17,6 +19,21 @@ export async function POST(request: Request) {
 
     const body = await request.json();
     if (body.kind === "activation") return await activation(user, body);
+    if (body.attemptId != null && (typeof body.attemptId !== "string" || !isUuid(body.attemptId))) throw new CheckoutError("Invalid checkout attempt.");
+    const purchaseId = body.attemptId ?? crypto.randomUUID();
+    if (body.attemptId) {
+      const prior = await supabaseAdmin.from("purchases").select("*").eq("id",purchaseId).eq("user_id",user.id).maybeSingle();
+      if (prior.error) throw prior.error;
+      if (prior.data) {
+        if (prior.data.kind !== "challenge") throw new CheckoutError("Checkout attempt already used.",409);
+        if (prior.data.payment_status === "paid") {
+          const result = await provisionTradingAccountForPurchase(prior.data);
+          return NextResponse.json({ success:true, orderId:prior.data.order_id, account:result.account, invoice_url:siteUrl()+"/dashboard?success=true" });
+        }
+        if (prior.data.payment_status === "pending" && prior.data.invoice_url) return NextResponse.json({success:true,orderId:prior.data.order_id,invoice_url:prior.data.invoice_url});
+        return NextResponse.json({error:"This order already exists. Check Transactions for its status.", restart:prior.data.payment_status==="failed"}, {status:409});
+      }
+    }
 
     const { quote, program, platformName } = await quoteOrder({
       programKey: String(body.programKey || ""),
@@ -30,6 +47,8 @@ export async function POST(request: Request) {
     const { data: purchase, error: purchaseError } = await supabaseAdmin
       .from("purchases")
       .insert({
+        id: purchaseId,
+        funded_issue_key: program.phases != null && Number(program.phases) === 0 ? issuanceId("purchase",purchaseId) : null,
         user_id: user.id,
         order_id: orderId,
         full_name: String(body.fullName || "").trim().slice(0, 160) || user.email || "Trader",
@@ -51,29 +70,34 @@ export async function POST(request: Request) {
       })
       .select()
       .single();
+    if (purchaseError?.code === "23514" && purchaseError.message.includes("allocation")) throw new CheckoutError("Your active funded accounts and reserved orders cannot exceed $400,000.",409);
+    if (purchaseError?.code === "23505") throw new CheckoutError("This order is already being created. Check Transactions before retrying.",409);
     if (purchaseError) throw purchaseError;
 
     // Fully discounted orders have nothing to pay: issue the account now.
     if (quote.dueToday <= 0) {
-      const { error: paymentError } = await supabaseAdmin.from("purchases").update({ payment_status: "paid", paid_at: new Date().toISOString() }).eq("id", purchase.id);
+      const { error: paymentError } = await supabaseAdmin.rpc("settle_free_checkout",{p_id:purchase.id});
+      if (paymentError?.code === "23514") {
+        const failed=await supabaseAdmin.from("purchases").update({payment_status:"failed"}).eq("id",purchase.id).eq("payment_status","pending");
+        if(failed.error) throw failed.error;
+        throw new CheckoutError("That offer is no longer available. Review your order.",409);
+      }
       if (paymentError) throw paymentError;
       const provisioning = await provisionTradingAccountForPurchase({ ...purchase, user_id: user.id, email: user.email });
-      await redeemCoupon(quote.couponCode);
       return NextResponse.json({ success: true, orderId, account: provisioning.account, invoice_url: `${siteUrl()}/dashboard?success=true`, message: "Your account is ready." });
     }
 
-    const invoiceUrl = await createInvoice({
+    const invoiceUrl = await saveInvoice(purchase.id,{
       amount: quote.dueToday,
       orderId,
       description: `${program.short_label || quote.programKey} $${quote.size.toLocaleString("en-US")} account`,
       email: user.email,
     });
-    await supabaseAdmin.from("purchases").update({ invoice_url: invoiceUrl }).eq("id", purchase.id);
     return NextResponse.json({ success: true, orderId, invoice_url: invoiceUrl, amount: quote.dueToday, message: "Invoice created. Redirecting to payment." });
   } catch (err) {
     if (err instanceof CheckoutError) return NextResponse.json({ error: err.message }, { status: err.status });
     console.error("Checkout error:", err);
-    return NextResponse.json({ error: (err as Error).message || "Checkout failed." }, { status: 500 });
+    return NextResponse.json({ error: "Could not complete checkout. Check Transactions before trying again." }, { status: 500 });
   }
 }
 
@@ -119,15 +143,17 @@ async function activation(user: { id: string; email?: string }, body: { accountI
       account_size: account.starting_balance,
       price_amount: fee,
       kind: "activation",
+      funded_issue_key: issuanceId("phase",account.id,"funded"),
       related_account_id: account.id,
       payment_status: "pending",
       payment_method: "crypto",
     })
     .select()
     .single();
+  if (error?.code === "23514" && error.message.includes("allocation")) throw new CheckoutError("Your active funded accounts and reserved orders cannot exceed $400,000.",409);
+  if (error?.code === "23505") throw new CheckoutError("An activation order is already open. Check Transactions for its status.",409);
   if (error) throw error;
 
-  const invoiceUrl = await createInvoice({ amount: fee, orderId, description: `Access $${Number(account.starting_balance).toLocaleString("en-US")} funded account fee`, email: user.email });
-  await supabaseAdmin.from("purchases").update({ invoice_url: invoiceUrl }).eq("id", purchase.id);
+  const invoiceUrl = await saveInvoice(purchase.id,{ amount: fee, orderId, description: `Access $${Number(account.starting_balance).toLocaleString("en-US")} funded account fee`, email: user.email });
   return NextResponse.json({ success: true, orderId, invoice_url: invoiceUrl, amount: fee });
 }

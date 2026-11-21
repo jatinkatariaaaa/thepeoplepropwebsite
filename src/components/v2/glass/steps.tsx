@@ -93,7 +93,7 @@ function Payout() {
           </motion.li>
         ))}
       </ol>
-      <p className="mt-3 rounded-[12px] bg-black/[0.04] px-3 py-2 text-[11.5px] font-medium text-[var(--g-muted-ink)]">Processed in under 24 hours</p>
+      <p className="mt-3 rounded-[12px] bg-black/[0.04] px-3 py-2 text-[11.5px] font-medium text-[var(--g-muted-ink)]">Approved payouts within 24 hours on business days</p>
     </div>
   );
 }
@@ -115,15 +115,15 @@ export function Steps() {
     {
       n: "2",
       title: "Trade your way",
-      body: "Trade on your favourite platform — news, EAs and weekend holds included.",
-      facts: [`${platforms.length} platforms`, "Raw 0.0 pip spreads", "No time limit"],
+      body: "Trade manually on TPP Terminal with weekend holding and the published news rules.",
+      facts: [`${platforms.length} platforms`, "1.2 pip forex spreads", "No time limit"],
       stage: <Terminal platforms={platforms} />,
     },
     {
       n: "3",
       title: "Get paid",
       body: `Request your payout and keep up to ${cat.maxSplit}% of the profit.`,
-      facts: ["Processed in under 24 hours", `${cat.baseSplit}% split · ${cat.maxSplit}% add-on`, "Fee refunded on first payout"],
+      facts: ["Approved payouts within 24 hours on business days", `${cat.baseSplit}% split · ${cat.maxSplit}% add-on`, "Evaluation fees refunded on eligible programs"],
       stage: <Payout />,
     },
   ];

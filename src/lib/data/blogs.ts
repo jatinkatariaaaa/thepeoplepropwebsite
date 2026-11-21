@@ -80,7 +80,7 @@ export const blogs: BlogPost[] = [
         paragraphs: [
           'One of the most overlooked decisions is account size selection. Many traders automatically pick the largest account they can afford, assuming bigger capital means bigger payouts. While technically true, a larger account also amplifies the psychological pressure — losing $5,000 on a $100K account feels very different from losing $500 on a $10K account, even though both are 5%.',
           'A smarter approach is to match the account size to your current skill level and average position size. If you normally trade 0.5 lots on a $5,000 personal account, jumping to a $100,000 challenge and trading 5 lots will feel completely different. The market will move the same number of pips, but the dollar swings will be ten times larger, and your emotions will respond accordingly.',
-          'At The People Prop, account sizes range from $10,000 to $200,000, and you can always scale up after earning your first payout. Starting with a $25K or $50K account, passing cleanly, and then upgrading is a far more sustainable path than blowing a $200K challenge twice.',
+          'The People Prop offers simulated account sizes that vary by program. Check the current comparison before you choose a size.',
         ],
         tip: 'If this is your first prop firm challenge ever, start with the smallest or second-smallest account size. Treat it as a learning experience. The cost is low, and the lessons are invaluable.',
       },
@@ -153,7 +153,7 @@ export const blogs: BlogPost[] = [
         heading: 'After You Pass: Transitioning to a Funded Account',
         paragraphs: [
           'Passing the challenge is a milestone, but the real journey begins with the funded account. Many traders pass the evaluation only to blow their live funded account within the first two weeks. The reason is almost always a shift in mindset — they start trading as if the money is "free" and abandon the discipline that got them funded.',
-          'Treat the funded account with even more respect than the challenge. The rules still apply — daily drawdown, max drawdown, and consistency requirements. At The People Prop, funded traders receive up to 90% profit splits, which means every dollar you protect and grow directly impacts your income. Think of the funded account as a long-term career, not a short-term windfall.',
+          'TPP funded accounts trade in a simulation. The standard payout split is 80%, or 100% with the eligible split add-on.',
           'Start your funded account with the same or even smaller position sizes than you used during the challenge. As your balance grows and your consistency is proven, you can gradually scale up. This patient approach is how professional funded traders build accounts from $50K to $200K and beyond.',
         ],
         tip: 'Set a personal rule: your first two weeks on a funded account use 50% of your normal position size. This gives you time to adjust to the psychology of live capital with minimal risk.',
@@ -161,8 +161,8 @@ export const blogs: BlogPost[] = [
       {
         heading: 'Why Traders Choose The People Prop for Their Challenge',
         paragraphs: [
-          'In a crowded prop firm market, The People Prop stands out for several reasons. TPP offers both one-step and two-step challenges with transparent rules, no hidden clauses, and realistic profit targets. The platform supports MetaTrader 5 and integrates cleanly with TradingView for charting, giving traders flexibility in how they analyse and execute.',
-          'Payouts at TPP start from your very first profit cycle, with splits up to 90%. There are no complicated scaling plans or arbitrary waiting periods. Indian traders especially benefit from TPP\'s INR-friendly payment options and customer support that understands the unique needs of the South Asian trading community.',
+          'The People Prop offers manual browser trading on TPP Terminal with published spreads, commissions and loss limits.',
+          'Start with the current payout policy. The first five eligible requests are on demand, then a 14-day cycle applies. Approved payouts are sent within 24 hours on business days.',
           'Whether you are a forex trader, an indices specialist, or a commodities-focused trader, TPP provides the instruments, the rules, and the infrastructure for you to prove your edge and get funded. Thousands of traders have passed their TPP challenge in 2026 — and with the strategies in this guide, you can be next.',
         ],
       },
@@ -361,7 +361,7 @@ export const blogs: BlogPost[] = [
         heading: 'Why Your Trading Platform Choice Matters More Than You Think',
         paragraphs: [
           'Your trading platform is the cockpit of your prop firm career. Every analysis you perform, every order you place, and every risk management tool you use runs through this single piece of software. A clunky platform with slow execution can cost you pips, trigger premature stop-losses, and create unnecessary friction that compounds over hundreds of trades.',
-          'In the prop firm ecosystem of 2026, two platforms dominate: MetaTrader 5 (MT5) and TradingView. MT5 is the industry-standard execution platform supported by virtually every prop firm, including The People Prop. TradingView is the world\'s most popular charting platform, beloved for its modern interface, social features, and powerful Pine Script scripting language.',
+          'MetaTrader and TradingView are useful comparisons when evaluating platforms. The People Prop currently offers its own browser-based TPP Terminal for manual trading.',
           'The decision between MT5 and TradingView is not always either-or. Many professional traders use both — TradingView for analysis and MT5 for execution. But understanding the strengths and weaknesses of each platform helps you build the most efficient trading workflow for your specific strategy and style.',
         ],
       },
@@ -634,7 +634,7 @@ export const blogs: BlogPost[] = [
         heading: 'The Basics: How Prop Firm Profit Sharing Works',
         paragraphs: [
           'When you trade a funded prop firm account, the capital belongs to the firm but the skill belongs to you. Profit sharing is the mechanism that compensates you for generating returns on the firm\'s capital. The split is expressed as a percentage: an 80/20 split means you keep 80% of the profits and the firm keeps 20%.',
-          'In 2026, profit splits across the industry range from 70% to 90%, with some firms offering up to 90% for consistent performers. At The People Prop, funded traders start with a competitive profit split that can increase to 90% as they demonstrate consistent profitability. This progression rewards long-term commitment and discourages short-term, high-risk trading.',
+          'The People Prop pays an 80% standard split on eligible profit, or 100% with the applicable add-on.',
           'It is important to understand that you earn your split on net profits — the total P&L after all trades in a payout cycle. If you make $5,000 in the first two weeks and lose $2,000 in the next two weeks, your net profit is $3,000, and your payout is calculated on that $3,000.',
         ],
       },
@@ -652,7 +652,7 @@ export const blogs: BlogPost[] = [
           'First payout: usually after a 14–30 day initial period',
           'Subsequent payouts: follow the regular cycle automatically',
         ],
-        tip: 'At TPP, the payout process is designed to be fast and transparent. Once your payout request is submitted, processing typically takes 1–3 business days. There are no hidden deductions or surprise fees.',
+        tip: 'The first five eligible payout requests are on demand. The next request can be made 14 days after the previous one. Approved payouts are sent within 24 hours on business days.',
       },
       {
         heading: 'Minimum Payout Thresholds',
@@ -682,7 +682,7 @@ export const blogs: BlogPost[] = [
         paragraphs: [
           'Many prop firms offer scaling plans that increase your account size and profit split as you demonstrate consistent profitability. The logic is simple: if you prove you can manage $50,000 responsibly, the firm is incentivised to give you $100,000 to manage — the potential profits double for both parties.',
           'Scaling plans typically have defined milestones. For example, after three consecutive profitable months with no drawdown rule violations, your account might be scaled from $50K to $75K, and your profit split might increase from 80% to 85%. After six months, it could scale to $100K with a 90% split.',
-          'At The People Prop, the scaling plan is designed to be achievable and rewarding. Traders who maintain discipline and consistency can see their effective earning potential increase dramatically over 6–12 months. A trader who starts with a $50K account at 80% split and scales to $200K at 90% split has quadrupled their capital base while increasing their profit share.',
+          'Check the account catalogue and funded allocation limit before changing account sizes. An increase in account size does not change the standard payout split.',
         ],
         tip: 'View your funded account as a long-term career, not a one-time opportunity. Traders who focus on consistency and sustainability are the ones who benefit most from scaling plans — and ultimately earn the most.',
       },
@@ -804,7 +804,7 @@ export const blogs: BlogPost[] = [
       {
         heading: 'TPP Challenge Options for Indian Traders',
         paragraphs: [
-          'TPP offers both one-step and two-step evaluation challenges, with account sizes ranging from $10,000 to $200,000. For Indian traders just starting their prop firm journey, the $10,000 or $25,000 account sizes offer an affordable entry point with challenge fees that are comparable to a few months of a streaming subscription.',
+          'The People Prop offers 1-Step, 2-Step, 3-Step, Instant and Access accounts. The simulated account limits and fees vary by program. Compare them before buying.',
           'The challenge rules at TPP are transparent and fair. Profit targets are set at achievable levels, drawdown limits provide adequate room for normal trading fluctuations, and there are no hidden rules or "gotcha" clauses buried in the fine print. Every rule is clearly stated on the website and in your account dashboard.',
           'TPP also offers occasional promotions, discounts, and free retry options that make the challenge even more accessible. Indian festivals and trading events often come with special offers — follow TPP on social media to stay updated on the latest deals.',
         ],
@@ -905,7 +905,7 @@ export const blogs: BlogPost[] = [
       {
         heading: 'The Simple Definition of a Prop Firm',
         paragraphs: [
-          'A proprietary trading firm — commonly shortened to "prop firm" — is a company that allocates its own capital to traders and shares the profits those traders generate. Instead of you funding a brokerage account with your own savings, the firm provides the account, and you provide the skill. When you make money, you keep a large share of it — at The People Prop, up to 90%.',
+          'In a prop program the published split determines how much eligible profit is paid. The People Prop offers simulated accounts with a standard 80% split, or 100% with the applicable add-on.',
           'The modern retail prop firm model works through evaluations. You pay a one-time fee to take a trading challenge with defined rules: hit a profit target, stay within drawdown limits, and demonstrate consistency. Pass the evaluation and you receive a funded account — with balances typically ranging from $10,000 to $200,000 — where your profits become real payouts.',
           'This model has fundamentally changed who can access serious trading capital. A talented trader in Mumbai, Lagos, Manila, or São Paulo no longer needs a wealthy family or institutional connections. They need skill, discipline, and a challenge fee that often costs less than a dinner for two.',
         ],
@@ -923,7 +923,7 @@ export const blogs: BlogPost[] = [
         heading: 'The Evaluation Process: From Challenge to Funded',
         paragraphs: [
           'Most prop firms offer one-step or two-step evaluations. A one-step challenge requires you to hit a single profit target (typically 10%) while respecting drawdown limits. A two-step challenge splits the process into two phases with lower targets (usually 8% then 5%), giving you more time to demonstrate consistency at a lower initial difficulty.',
-          'Once you pass, the firm verifies your trading, confirms rule compliance, and issues your funded account credentials. From that point, every profit cycle makes you eligible for payouts. At The People Prop, payouts are processed bi-weekly, and traders keep up to 90% of what they earn.',
+          'TPP funded accounts are simulated. You can request the first five eligible payouts on demand, and subsequent requests follow a 14-day cycle.',
           'Failure is part of the journey — most funded traders did not pass their first attempt. What separates eventual successes from permanent failures is journaling, reviewing, and adjusting between attempts rather than repeating the same mistakes with more frustration.',
         ],
         list: [
@@ -947,7 +947,7 @@ export const blogs: BlogPost[] = [
         heading: 'What Can You Trade With a Prop Firm?',
         paragraphs: [
           'Modern prop firms offer a wide instrument range. At The People Prop, funded traders can trade forex majors and minors, indices like US30, NAS100, and S&P 500, commodities including gold and oil, and cryptocurrency pairs. This variety lets you trade the markets where your edge actually exists.',
-          'Platform-wise, TPP supports MetaTrader 5 with TradingView-compatible charting workflows, so you can analyse where you are comfortable and execute with institutional-grade infrastructure.',
+          'TPP Terminal is a manual trading platform that runs in your browser.',
           'The key for beginners: pick one or two instruments and master them. Traders who specialise in gold or a single index pair dramatically outperform those who jump between fifteen markets chasing volatility.',
         ],
         tip: 'Start with one instrument you already understand — most Indian traders begin with gold (XAUUSD) or US30. Depth of knowledge beats breadth every time in prop trading.',
@@ -957,7 +957,7 @@ export const blogs: BlogPost[] = [
         paragraphs: [
           'Prop trading rewards a specific profile: traders who are patient, process-driven, and emotionally stable under pressure. If you have at least a few months of consistent demo or live trading results, understand risk management fundamentals, and can follow rules without impulsive deviation, you are ready to attempt an evaluation.',
           'If you are brand new to trading, do not start with a challenge. Spend 2–3 months on a demo account first, learning structure, risk, and your own psychology. The challenge fee is modest, but paying it before you have an edge is donating money.',
-          'When you are ready, The People Prop offers challenges starting from just $59, one-step and two-step formats, free retries on select plans, and bi-weekly payouts with up to 90% profit splits. Thousands of traders have already made the leap — the model works for those who respect it.',
+          'Compare The People Prop account types, current fees and payout eligibility when you are ready to choose a challenge.',
         ],
       },
     ],
@@ -1041,7 +1041,7 @@ export const blogs: BlogPost[] = [
         paragraphs: [
           'Combine the strategies above into a daily routine: pre-market planning (watchlist, levels, news check), a defined trading window (for Indian traders, the London–New York overlap from 1:30 PM to 7:30 PM IST offers the best liquidity), limit-order execution, and a post-session journal review.',
           'Traders who follow this routine report that FOMO does not disappear — it becomes irrelevant. The feeling still arises, but there is no decision left for it to hijack, because every decision was made before the emotion existed.',
-          'This is exactly the psychological profile prop firms fund. At The People Prop, the traders earning consistent bi-weekly payouts are not the most brilliant analysts — they are the most structurally disciplined. Build the routine, and the payouts follow.',
+          'Keeping a consistent trading process limits impulsive decisions. Check the published payout rules before planning a withdrawal.',
         ],
         tip: 'For your next 20 trading sessions, grade yourself daily from A to F purely on rule adherence. Traders who sustain an A average for a month almost never fail evaluations.',
       },
@@ -1165,7 +1165,7 @@ export const blogs: BlogPost[] = [
         paragraphs: [
           'Scaling a funded account is fundamentally different from passing a challenge. The challenge tests whether you can perform for 30 days; scaling tests whether you can perform for years. The firms allocating $200K in capital are looking for one thing above all: boring, repeatable consistency.',
           'The paradox of scaling is that traders who chase it aggressively almost never achieve it, while traders who focus purely on process reach maximum allocation almost automatically. Every scaling milestone at a prop firm is a byproduct of the same three inputs: positive months, controlled drawdowns, and zero rule violations.',
-          'At The People Prop, auto-scaling is built into every account — hit the performance milestones and your allocation grows from $25K to $50K, $100K, and up to $200K without renegotiation or additional fees. The path is mechanical. Your only job is to stay on it.',
+          'The People Prop lists the available simulated sizes for each program. The combined active funded allocation is capped at $400,000 per person.',
         ],
       },
       {
@@ -1205,7 +1205,7 @@ export const blogs: BlogPost[] = [
         paragraphs: [
           'Study the traders at maximum allocation across any prop firm and the same habits appear: they trade fixed sessions, journal every trade, take 2–3 positions per day maximum, review weekly, and are entirely indifferent to any single trade\'s outcome. Nothing about their daily process would look impressive on social media — and that is exactly the point.',
           'They also protect their psychology like professionals. Sleep, exercise, and screen-time limits appear constantly in interviews with top funded traders. Decision quality degrades with fatigue, and at $200K allocation, a single fatigued decision has a four-figure price tag.',
-          'The People Prop\'s scaling infrastructure — auto-scaling milestones, bi-weekly payouts, up to 90% splits, and a 100% split add-on — is designed to make this career path as frictionless as possible. The roadmap is public, the math is transparent, and the only variable is your consistency. Start smaller than you think you should, and let the system scale you.',
+          'Check The People Prop account catalogue for current funded account sizes and the payout policy for eligibility, payout timing and the applicable profit split.',
         ],
         tip: 'Create a one-page "scaling dashboard": current allocation, months of consistency, next milestone requirement, and payout history. Reviewing it weekly keeps you focused on the career, not the trade.',
       },
@@ -1361,7 +1361,7 @@ export const blogs: BlogPost[] = [
           'Prop firm advantages: $10K–$200K capital access from a small fee',
           'Maximum loss capped at the evaluation cost',
           'Enforced risk discipline via drawdown rules',
-          'Up to 90% profit splits with bi-weekly payouts at TPP',
+          '80% standard payout split at TPP, with a 100% split add-on',
           'Scaling path to $200K+ without personal capital growth',
           'Psychological freedom from trading personal savings',
         ],
@@ -1380,7 +1380,7 @@ export const blogs: BlogPost[] = [
         paragraphs: [
           'Choose a personal account if: you already have substantial risk-appropriate capital, your strategy requires deep drawdowns or months-long holds, or you fundamentally cannot operate within external rules. This is a legitimate profile — some excellent traders belong here.',
           'Choose a prop firm if: your skill exceeds your capital, you want defined maximum risk while building income, you benefit from structural discipline, or you want a realistic path to trading $100K+ within a year rather than a decade. This describes the overwhelming majority of skilled retail traders in 2026.',
-          'For most traders reading this, the practical answer is to start with an affordable evaluation and let results decide. The People Prop offers one-step and two-step challenges from $59, up to $200K in funding, bi-weekly payouts at up to 90% split, and auto-scaling built into every account. Prove your edge on our capital — and keep your savings in your bank where they belong.',
+          'Start by comparing the published simulation account sizes, entry fees, loss limits and payout rules.',
         ],
       },
     ],
@@ -1463,7 +1463,7 @@ export const blogs: BlogPost[] = [
         paragraphs: [
           'Putting it together, here is a complete framework used by consistently paid-out gold traders: trade only the London breakout and NY overlap continuation setups; risk 0.5–1% per trade with the half-size rule; maximum two gold trades per day; flat 15 minutes before US data; and a hard stop to the day after two consecutive losses.',
           'Add a weekly review layer: log every gold trade with the session, setup type, spread at entry, and outcome. Within a month, your journal will reveal your personal edge — most traders discover they are strongly profitable in one window and consistently bleed in the other. Cut the bleeding window entirely.',
-          'Gold rewards specialists. At The People Prop, many of the largest payouts come from traders who trade XAUUSD exclusively — one instrument, two setups, executed with machine-like repetition on accounts up to $200K. Master this one market properly and you never need another.',
+          'TPP Terminal supports gold. Check its published spread, commission and news-window rules before trading it on a funded account.',
         ],
       },
     ],
@@ -1626,7 +1626,7 @@ export const blogs: BlogPost[] = [
         paragraphs: [
           'SMC\'s strength for funded traders is precision: entries at order blocks with stops beyond sweeps produce tight, structurally-defined risk — routinely 3R+ reward-to-risk trades. Two winners a week at 3R with 1% risk builds 6% monthly while barely touching drawdown limits. The math fits evaluation constraints beautifully.',
           'Its danger is over-complication. SMC\'s vocabulary can metastasize into analysis paralysis — twenty concepts, every candle "meaning" something, no two trades alike. Cap your model: one structure timeframe, one entry timeframe, one setup (sweep → CHoCH → order block entry), traded only during London and New York sessions. Master a single repeatable sequence before adding anything.',
-          'Validate before you pay for an evaluation: 50 backtested setups minimum, then two weeks of demo execution. If the win rate and R-multiples hold, take it to a challenge. The People Prop\'s one-step and two-step evaluations — from $59, with up to 90% profit splits and bi-weekly payouts — are built for exactly this kind of systematic, structure-driven trading. Bring a defined edge, and the framework does the rest.',
+          'Confirm the entry fee and program rules before choosing a simulated evaluation. Check the payout policy for timing and eligibility.',
         ],
         tip: 'Limit yourself to ONE SMC setup for 50 trades: liquidity sweep → CHoCH → order block entry. Traders who master one sequence outperform those juggling every concept in the vocabulary — measurably and permanently.',
       },
@@ -1707,7 +1707,7 @@ export const blogs: BlogPost[] = [
         paragraphs: [
           'Condense everything onto a single page you can read in 60 seconds before every session. The template: EDGE — one-sentence statement. MARKETS — your 1–3 instruments. SESSION — exact window in IST. SETUP — entry conditions, checklist form. RISK — % per trade, daily stop, max trades, loss-streak rule. NO-TRADE — your explicit skip conditions. REVIEW — journal, weekly, monthly commitments.',
           'Print it. A plan living in a forgotten Notion page is decoration; a plan taped beside your monitor is infrastructure. Several of the most consistent funded traders read their plan aloud before the session — a 30-second ritual that measurably reduces impulsive deviation by making the rules cognitively fresh.',
-          'A complete plan on one page, followed for 90 days, will do more for your trading than any indicator, course, or signal group ever will. And when it does, The People Prop\'s evaluations — from $59, up to $200K in funding, bi-weekly payouts at up to 90% split — are exactly where a written plan converts into a funded career. The plan is the product; the payout is the receipt.',
+          'A documented plan helps you evaluate whether a particular trading challenge fits your strategy. Review the account catalogue and payout policy before you begin.',
         ],
         tip: 'Schedule your weekly review as a recurring 30-minute calendar event every Sunday. Traders who calendar the review actually do it; traders who intend to review, don\'t.',
       },
@@ -1788,7 +1788,7 @@ export const blogs: BlogPost[] = [
         paragraphs: [
           'For most traders attempting prop challenges, the evidence points to a middle path: intraday session trading — 1 to 3 trades per day, held 30 minutes to a few hours, capturing London or New York session moves with 1.5–3R targets. It generates enough frequency to hit targets within evaluation windows, avoids overnight gap risk, keeps costs manageable, and matches the 2–3 trades-per-day discipline that protects drawdown limits.',
           'From that base, let your journal push you toward specialization. Traders whose intraday winners cluster in the first hour of London often evolve into structured scalpers of that single window. Traders whose best trades were the ones they held longest often graduate into swing trading once funded, when time pressure disappears and patience becomes affordable.',
-          'Whichever direction you specialize, the rule is the same: one style, mastered, beats two styles sampled. The People Prop supports scalpers, intraday traders, and swing traders alike — one-step and two-step evaluations from $59, up to $200K funding, bi-weekly payouts at up to 90% split. Pick the style that fits your psychology, prove it in your journal, and bring it to a challenge built to fund it.',
+          'Compare challenge fees and account sizes, then check the rules for any funded trading restrictions that apply to your strategy.',
         ],
       },
     ],
@@ -1869,7 +1869,7 @@ export const blogs: BlogPost[] = [
         paragraphs: [
           'Assemble the pieces into a permanent routine. Morning: check the economic calendar and mark red-folder times on your charts in IST. Fifteen minutes before each event: flatten or reduce to token size. During the release: hands off — watch, never chase the spike. Fifteen to forty-five minutes after: evaluate the structure and trade the aftermath pattern if (and only if) it presents cleanly.',
           'Journal news days separately from normal days. Within a quarter you will have hard data on whether news aftermath trading adds to your bottom line or subtracts from it — and either answer is profitable knowledge. Traders who discover they lose on news days simply extend the flat window and keep their edge where it lives.',
-          'News events are the market\'s scheduled earthquakes: destructive to the unprepared, energizing to the ready. The People Prop gives funded traders full freedom on news — no restrictions, bi-weekly payouts, up to 90% splits on accounts up to $200K — because we fund traders who treat volatility as a professional tool. Build the playbook, respect the mechanics, and NFP Friday becomes just another line in your journal.',
+          'At The People Prop, you can trade through news during evaluations. On funded accounts including Instant, profit from trades opened or closed within two minutes of a high-impact release is excluded at payout review.',
         ],
         tip: 'Keep a separate journal tag for news-day trades. After 3 months, compare expectancy: news-aftermath trades vs normal trades. Let the data — not the adrenaline — decide whether you trade news at all.',
       },

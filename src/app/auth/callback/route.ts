@@ -2,13 +2,14 @@ import { NextResponse } from 'next/server';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { partnerCookie } from '@/lib/partner-referral';
+import { safeReturn } from '@/lib/auth-return';
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get('code');
   // "next" may only be a path on this site: "@evil.com" or "//evil.com" would turn the redirect into an outside URL.
   const wanted = searchParams.get('next') ?? '';
-  const next = /^\/(?![\/\\])/.test(wanted) ? wanted : '/dashboard';
+  const next = safeReturn(wanted);
 
   if (code) {
     const cookieStore = await cookies();

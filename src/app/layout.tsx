@@ -28,7 +28,7 @@ const mono = JetBrains_Mono({
 
 const TITLE = "The People Prop — Fund your skills. Trade our capital.";
 const DESCRIPTION =
-  "Transparent rules, raw 0.0 pip spreads, no time limit and payouts processed in under 24 hours. Choose a 1-Step, 2-Step, 3-Step, Instant or Access account and trade with The People Prop.";
+  "Choose a 1-Step, 2-Step, 3-Step, Instant or Access simulated trading account. View trading costs, loss limits and payout eligibility before you start.";
 
 export const metadata: Metadata = {
   title: {
