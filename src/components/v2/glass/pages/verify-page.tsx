@@ -1,15 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import { Award, Calendar, CircleDollarSign, ShieldAlert, ShieldCheck, Trophy, User, type LucideIcon } from "lucide-react";
-import { certificateImagePath, certificateTitle, type Certificate } from "@/lib/certificates/types";
+import { Award, Calendar, CircleDollarSign, Handshake, ShieldAlert, ShieldCheck, Trophy, User, type LucideIcon } from "lucide-react";
+import { certificateImagePath, certificateTitle, type ShareableCertificate } from "@/lib/certificates/types";
 import { Button, Container, Section } from "../ui";
 import { Reveal, Stagger, StaggerItem } from "../motion";
 import { PageHero } from "../page-hero";
 import { Cta } from "../cta";
 import { href } from "../routes";
 
-function lede(c: Certificate) {
+function lede(c: ShareableCertificate) {
   const of = c.program ? ` of the ${c.program}` : "";
   const on = c.accountSize ? ` on a ${c.accountSize} account` : "";
   switch (c.kind) {
@@ -23,11 +23,13 @@ function lede(c: Certificate) {
       return `This certifies that ${c.traderName} received the largest single payout The People Prop made in ${c.period}: ${c.amount}.`;
     case "award":
       return `This certifies that The People Prop presented ${c.traderName} with the ${c.title ?? "award"} on ${c.issuedOn}.`;
+    case "partner":
+      return `The People Prop recognizes ${c.traderName} as an approved collaborator in its Partner Program. This certificate was issued on ${c.issuedOn}.`;
   }
 }
 
-function details(c: Certificate): { icon: LucideIcon; label: string; value: string }[] {
-  const name = { icon: User, label: "Trader name", value: c.traderName };
+function details(c: ShareableCertificate): { icon: LucideIcon; label: string; value: string }[] {
+  const name = { icon: User, label: c.kind === "partner" ? "Collaborator" : "Trader name", value: c.traderName };
   const date = { icon: Calendar, label: c.kind === "payout" || c.kind === "highest_payout" ? "Paid on" : "Issued on", value: c.issuedOn };
   switch (c.kind) {
     case "phase_pass":
@@ -40,11 +42,13 @@ function details(c: Certificate): { icon: LucideIcon; label: string; value: stri
       return [name, { icon: CircleDollarSign, label: `Highest payout · ${c.period ?? ""}`, value: c.amount ?? "—" }, date];
     case "award":
       return [name, { icon: Award, label: c.highlightLabel || "Award", value: c.highlightValue || c.title || "—" }, date];
+    case "partner":
+      return [name, { icon: Handshake, label: "Program", value: "The People Prop Partner Program" }, date];
   }
 }
 
 /** Public certificate check. `certificate` is null when no certificate matches the id. */
-export function VerifyPage({ certificate }: { certificate: Certificate | null }) {
+export function VerifyPage({ certificate }: { certificate: ShareableCertificate | null }) {
   if (!certificate)
     return (
       <>

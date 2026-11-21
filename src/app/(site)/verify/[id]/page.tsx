@@ -3,7 +3,7 @@ import { preload } from "react-dom";
 import { findCertificate } from "@/lib/certificates/data";
 import { VerifyPage } from "@/components/v2/glass/pages/verify-page";
 
-export const revalidate = 60; // Cache for 60 seconds
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Certificate verification",

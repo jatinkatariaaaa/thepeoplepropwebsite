@@ -1,6 +1,7 @@
 import { supabaseAdmin } from "@/lib/supabase";
+import { getPartnerCertificate } from "@/lib/partners";
 import { present } from "./present";
-import { isUuid, type Certificate, type CertificateKind, type CertificateRow } from "./types";
+import { isUuid, type Certificate, type CertificateKind, type CertificateRow, type ShareableCertificate } from "./types";
 
 /*
  * Reads issued certificates (public.certificates). Rows are created by database
@@ -25,10 +26,12 @@ export async function getCertificate(id: string): Promise<Certificate | null> {
  * image route. Certificates issued before they had their own rows printed the
  * account id (funding) or the payout id (payouts), so those still resolve.
  */
-export async function findCertificate(id: string): Promise<Certificate | null> {
+export async function findCertificate(id: string): Promise<ShareableCertificate | null> {
   if (!isUuid(id)) return null;
   const own = await getCertificate(id);
   if (own) return own;
+  const partner = await getPartnerCertificate(id);
+  if (partner) return partner;
   const byPayout = await one(supabaseAdmin.from("certificates").select("*").eq("payout_id", id).eq("kind", "payout").order("status").order("created_at", { ascending: false }).limit(1));
   if (byPayout) return byPayout;
   return one(

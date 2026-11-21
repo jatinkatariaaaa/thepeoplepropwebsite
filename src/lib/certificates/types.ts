@@ -38,10 +38,10 @@ export type CertificateRow = {
 };
 
 /** Everything a certificate shows, formatted. Built from a row by ./data (or ./present). */
-export type Certificate = {
+export type Certificate<K extends CertificateKind | "partner" = CertificateKind> = {
   id: string;
   number: string;
-  kind: CertificateKind;
+  kind: K;
   status: CertificateStatus;
   revokedReason: string | null;
   traderName: string;
@@ -68,6 +68,8 @@ export type Certificate = {
   isTest: boolean;
 };
 
+export type ShareableCertificate = Certificate<CertificateKind | "partner">;
+
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://thepeopleprop.live").replace(/\/$/, "");
 
 /** Public page that confirms a certificate (the QR code points here). */
@@ -76,16 +78,17 @@ export const verifyUrl = (id: string) => `${SITE_URL}/verify/${id}`;
 /** PNG of a certificate. */
 export const certificateImagePath = (id: string) => `/api/certificate/${id}`;
 
-export const KIND_LABEL: Record<CertificateKind, string> = {
+export const KIND_LABEL: Record<ShareableCertificate["kind"], string> = {
   phase_pass: "Phase Passed",
   funded: "Certificate of Funding",
   payout: "Payout Certificate",
   highest_payout: "Highest Payout Award",
   award: "Award",
+  partner: "Certificate of Partnership",
 };
 
 /** The name a certificate goes by in lists: awards use their own title. */
-export const certificateTitle = (c: Pick<Certificate, "kind" | "title" | "phase">) =>
+export const certificateTitle = (c: Pick<ShareableCertificate, "kind" | "title" | "phase">) =>
   c.kind === "award" ? c.title || "Award" : c.kind === "phase_pass" ? `${c.phase ?? "Evaluation"} Passed` : KIND_LABEL[c.kind];
 
 export const isUuid = (v: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v);

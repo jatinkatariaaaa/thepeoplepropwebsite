@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import { P, TP, VIEWBOX } from "@/components/v2/glass/logo";
 import { encodeQr, qrPath } from "./qr";
-import { SITE_URL, verifyUrl, type Certificate, type CertificateKind } from "./types";
+import { SITE_URL, verifyUrl, type ShareableCertificate } from "./types";
 
 /*
  * Certificate artwork, drawn with next/og (Satori): a path-traced 3D plate on the right
@@ -38,15 +38,16 @@ const FONT_FILES = [
 type Font = { name: string; data: Buffer; weight: 400 | 500 | 600 | 700; style: "normal" };
 
 let fonts: Promise<Font[]> | undefined;
-const plates = new Map<CertificateKind, Promise<string>>();
+const plates = new Map<ShareableCertificate["kind"], Promise<string>>();
 
 /** One 3D plate per certificate type: bars, rosette, trophy, podium, stars. */
-const PLATE: Record<CertificateKind, string> = {
+const PLATE: Record<ShareableCertificate["kind"], string> = {
   phase_pass: "plate-phase.jpg",
   funded: "plate-funded.jpg",
   payout: "plate-payout.jpg",
   highest_payout: "plate-highest.jpg",
   award: "plate-award.jpg",
+  partner: "plate-award.jpg",
 };
 
 function loadFonts() {
@@ -54,7 +55,7 @@ function loadFonts() {
   return fonts;
 }
 
-function loadPlate(kind: CertificateKind) {
+function loadPlate(kind: ShareableCertificate["kind"]) {
   if (!plates.has(kind)) plates.set(kind, readFile(join(ASSETS, PLATE[kind])).then((buf) => `data:image/jpeg;base64,${buf.toString("base64")}`));
   return plates.get(kind) as Promise<string>;
 }
@@ -104,7 +105,7 @@ const keep = (text: string | null) => (text ? text.replace(/-/g, "\u2011") : tex
 /** Keeps "The People Prop" together at the end of a sentence. */
 const tidy = (text: string) => text.replace(/The People Prop/g, "The\u00a0People\u00a0Prop");
 
-function copyFor(c: Certificate): Copy {
+function copyFor(c: ShareableCertificate): Copy {
   const program = keep(c.program);
   switch (c.kind) {
     case "phase_pass":
@@ -161,6 +162,16 @@ function copyFor(c: Certificate): Copy {
           { label: "Paid on", value: c.issuedOn },
           { label: "Account", value: c.accountSize },
         ],
+      };
+    case "partner":
+      return {
+        eyebrow: "The People Prop Partner Program",
+        lead: "Certificate",
+        fade: "of Partnership",
+        statement: "as an approved collaborator in The People Prop Partner Program.",
+        figureLabel: null,
+        figure: null,
+        details: [{ label: "Issued on", value: c.issuedOn }],
       };
     case "award": {
       const title = c.title || "Award";
@@ -235,7 +246,7 @@ function Corners() {
   );
 }
 
-function CertificateArt({ c, plate, preview }: { c: Certificate; plate: string; preview: boolean }) {
+function CertificateArt({ c, plate, preview }: { c: ShareableCertificate; plate: string; preview: boolean }) {
   const base = copyFor(c);
   const copy = { ...base, statement: tidy(base.statement) };
   const award = c.kind === "award";
@@ -347,12 +358,12 @@ function CertificateArt({ c, plate, preview }: { c: Certificate; plate: string; 
 }
 
 /** PNG response for a certificate. `preview` stamps it for admin drafts and is never cached. */
-export async function renderCertificate(c: Certificate, { preview = false }: { preview?: boolean } = {}) {
+export async function renderCertificate(c: ShareableCertificate, { preview = false }: { preview?: boolean } = {}) {
   const [fontList, plate] = await Promise.all([loadFonts(), loadPlate(c.kind)]);
   return new ImageResponse(<CertificateArt c={c} plate={plate} preview={preview} />, {
     width: CERTIFICATE_WIDTH,
     height: CERTIFICATE_HEIGHT,
     fonts: fontList,
-    headers: { "Cache-Control": preview ? "no-store" : "public, max-age=120, s-maxage=600, stale-while-revalidate=86400" },
+    headers: { "Cache-Control": preview || c.kind === "partner" ? "no-store" : "public, max-age=120, s-maxage=600, stale-while-revalidate=86400" },
   });
 }
