@@ -14,8 +14,15 @@ export const viewport: Viewport = {
 };
 
 async function DashboardSidebar({ userId }: { userId: string | undefined }) {
-  const eligibility = userId ? await supabaseAdmin.rpc("partner_desk_eligible", { p_user_id: userId }) : null;
-  return <ClientSidebar hasPartnerDesk={eligibility?.data === true} />;
+  if (!userId) return <ClientSidebar />;
+  // Same admin rule as the admin panel itself: a row in admin_roles, or profiles.is_admin.
+  const [eligibility, role, profile] = await Promise.all([
+    supabaseAdmin.rpc("partner_desk_eligible", { p_user_id: userId }),
+    supabaseAdmin.from("admin_roles").select("role").eq("user_id", userId).maybeSingle(),
+    supabaseAdmin.from("profiles").select("is_admin").eq("id", userId).maybeSingle(),
+  ]);
+  const isAdmin = Boolean(role.data?.role) || profile.data?.is_admin === true;
+  return <ClientSidebar hasPartnerDesk={eligibility.data === true} isAdmin={isAdmin} />;
 }
 
 export default async function DashboardLayout({
