@@ -6,6 +6,7 @@ import { DASH_THEME_SCRIPT } from "@/components/dashboard/theme";
 import { AssistantWidget } from "@/components/assistant/assistant-widget";
 import { cn } from "@/lib/utils";
 import { getSessionUser } from "@/lib/api-auth";
+import { getAdminRole } from "@/lib/admin-auth";
 import { supabaseAdmin } from "@/lib/supabase";
 import styles from "./dashboard.module.css";
 
@@ -15,14 +16,12 @@ export const viewport: Viewport = {
 
 async function DashboardSidebar({ userId }: { userId: string | undefined }) {
   if (!userId) return <ClientSidebar />;
-  // Same admin rule as the admin panel itself: a row in admin_roles, or profiles.is_admin.
-  const [eligibility, role, profile] = await Promise.all([
+  // The admin panel's own rule (getAdminRole), so every admin, whatever their role, gets the button.
+  const [eligibility, adminRole] = await Promise.all([
     supabaseAdmin.rpc("partner_desk_eligible", { p_user_id: userId }),
-    supabaseAdmin.from("admin_roles").select("role").eq("user_id", userId).maybeSingle(),
-    supabaseAdmin.from("profiles").select("is_admin").eq("id", userId).maybeSingle(),
+    getAdminRole(userId).catch(() => null),
   ]);
-  const isAdmin = Boolean(role.data?.role) || profile.data?.is_admin === true;
-  return <ClientSidebar hasPartnerDesk={eligibility.data === true} isAdmin={isAdmin} />;
+  return <ClientSidebar hasPartnerDesk={eligibility.data === true} isAdmin={adminRole !== null} />;
 }
 
 export default async function DashboardLayout({

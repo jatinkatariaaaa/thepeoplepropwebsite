@@ -1,4 +1,5 @@
 import { supabaseAdmin } from "@/lib/supabase";
+import { getAdminRole } from "@/lib/admin-auth";
 import { longDate, monthLabel, present, programLabel } from "./present";
 import { isUuid, KIND_LABEL, type Certificate, type CertificateKind, type CertificateRow } from "./types";
 
@@ -44,13 +45,9 @@ async function profileName(userId: string) {
   return { name, email: data.email as string | null };
 }
 
-/** Admins and staff: profiles.is_admin or a row in admin_roles. */
+/** Admin accounts, by the same rule as the admin panel (getAdminRole). */
 export async function isStaff(userId: string) {
-  const [{ data: profile }, { data: role }] = await Promise.all([
-    supabaseAdmin.from("profiles").select("is_admin").eq("id", userId).maybeSingle(),
-    supabaseAdmin.from("admin_roles").select("role").eq("user_id", userId).maybeSingle(),
-  ]);
-  return Boolean(profile?.is_admin || role);
+  return (await getAdminRole(userId).catch(() => null)) !== null;
 }
 
 async function activeExists(filter: Record<string, string>, kind: CertificateKind) {

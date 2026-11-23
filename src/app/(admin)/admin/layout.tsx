@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { supabaseAdmin } from "@/lib/supabase";
+import { getAdminRole } from "@/lib/admin-auth";
 import { Toaster } from "sonner";
 import { cn } from "@/lib/utils";
 import styles from "../../(dashboard)/dashboard.module.css";
@@ -40,20 +41,12 @@ export default async function AdminLayout({
     redirect("/login");
   }
 
-  const [{ data: profile }, { data: adminRole, error: roleError }] = await Promise.all([
-    supabaseAdmin.from("profiles").select("is_admin").eq("id", user.id).single(),
-    supabaseAdmin.from("admin_roles").select("role").eq("user_id", user.id).maybeSingle(),
-  ]);
-  if (roleError) throw new Error("Unable to verify admin role");
-
-  // Must be flagged as admin OR have an entry in admin_roles
-  if (!profile?.is_admin && !adminRole) {
+  // The same rule the dashboard uses for its "Admin panel" button.
+  const role: AdminRole | null = await getAdminRole(user.id);
+  if (!role) {
     const { data: hasDesk } = await supabaseAdmin.rpc("partner_desk_eligible", { p_user_id: user.id });
     redirect(hasDesk === true ? "/partner-desk" : "/dashboard");
   }
-
-  // Resolve the role: admin_roles table takes precedence, fallback to super_admin for is_admin users
-  const role: AdminRole = (adminRole?.role as AdminRole) ?? "super_admin";
 
   return (
     // Same glass system and pearl canvas as the trader dashboard. The --ink-* variables the admin
