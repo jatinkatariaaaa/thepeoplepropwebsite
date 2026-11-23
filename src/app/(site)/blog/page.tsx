@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { preload } from "react-dom";
+import { blogCards } from "@/lib/data/blogs";
 import { BlogIndex } from "@/components/v2/glass/pages/blog-page";
 
 export const metadata: Metadata = {
@@ -9,5 +10,5 @@ export const metadata: Metadata = {
 
 export default function Page() {
   preload("/art/page-blog.webp", { as: "image", fetchPriority: "high" });
-  return <BlogIndex />;
+  return <BlogIndex posts={blogCards} />;
 }

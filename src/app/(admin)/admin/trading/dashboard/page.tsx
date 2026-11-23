@@ -25,28 +25,23 @@ export default function RiskDashboardPage() {
   async function fetchDashboardData() {
     setLoading(true);
     
-    // Fetch Alerts
-    const { data: alertsData } = await supabase
-      .from("trading_alerts")
-      .select(`
-        *,
-        trading_accounts(account_number, profiles(display_name))
-      `)
-      .order("created_at", { ascending: false })
-      .limit(10);
-      
+    const [{ data: alertsData }, { data: accountsData }] = await Promise.all([
+      supabase
+        .from("trading_alerts")
+        .select("id, account_id, type, message, created_at, trading_accounts(account_number)")
+        .order("created_at", { ascending: false })
+        .limit(10),
+      supabase
+        .from("trading_accounts")
+        .select(`
+          id, account_number, starting_balance, equity, current_daily_drawdown, current_max_drawdown,
+          profiles(display_name),
+          trading_rules(max_daily_drawdown_pct, max_overall_drawdown_pct, profit_target_pct)
+        `)
+        .eq("status", "active"),
+    ]);
+
     if (alertsData) setAlerts(alertsData);
-
-    // Fetch Active Accounts to calculate risk
-    const { data: accountsData } = await supabase
-      .from("trading_accounts")
-      .select(`
-        *,
-        profiles(display_name),
-        trading_rules(max_daily_drawdown_pct, max_overall_drawdown_pct, profit_target_pct)
-      `)
-      .eq("status", "active");
-
     if (accountsData) {
       const dailyRisk: any[] = [];
       const maxRisk: any[] = [];
@@ -54,12 +49,13 @@ export default function RiskDashboardPage() {
 
       accountsData.forEach(acc => {
         const startBal = parseFloat(acc.starting_balance);
-        if (!startBal || !acc.trading_rules) return;
+        const rules = Array.isArray(acc.trading_rules) ? acc.trading_rules[0] : acc.trading_rules;
+        if (!startBal || !rules) return;
 
         const eq = parseFloat(acc.equity);
-        const dailyLimit = startBal * (acc.trading_rules.max_daily_drawdown_pct / 100);
-        const maxLimit = startBal * (acc.trading_rules.max_overall_drawdown_pct / 100);
-        const target = startBal * (acc.trading_rules.profit_target_pct / 100);
+        const dailyLimit = startBal * (rules.max_daily_drawdown_pct / 100);
+        const maxLimit = startBal * (rules.max_overall_drawdown_pct / 100);
+        const target = startBal * (rules.profit_target_pct / 100);
         
         const currDaily = parseFloat(acc.current_daily_drawdown);
         const currMax = parseFloat(acc.current_max_drawdown);
