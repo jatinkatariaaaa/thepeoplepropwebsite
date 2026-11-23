@@ -153,10 +153,7 @@ export function Header() {
         </div>
       </div>
 
-      <motion.header
-        initial={{ y: -24, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, ease: EASE }}
+      <header
         className={cn("sticky top-0 z-50 px-3 sm:px-5", scrolled ? "pt-3" : "pt-4")}
         style={{ marginBottom: "-76px" }}
       >
@@ -230,7 +227,7 @@ export function Header() {
             </button>
           </div>
         </div>
-      </motion.header>
+      </header>
 
       <AnimatePresence>
         {open ? (

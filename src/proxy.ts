@@ -1,7 +1,21 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+// The marketing pages render the same content for everyone. Session refresh can
+// wait until an authenticated screen or auth-aware API is requested.
+const PUBLIC_SECTIONS = new Set([
+  "", "about", "aml-policy", "blog", "careers", "challenges", "contact",
+  "contest", "cookie", "faqs", "heatmap", "help", "leaderboard", "payout-policy",
+  "press", "privacy", "refund-policy", "reviews", "risk-disclosure", "rules",
+  "status", "terms", "tools", "v2", "verify",
+]);
+
 export async function proxy(request: NextRequest) {
+  const path = request.nextUrl.pathname;
+  if (PUBLIC_SECTIONS.has(path.split("/")[1]) || path === "/api/programs") {
+    return NextResponse.next();
+  }
+
   let supabaseResponse = NextResponse.next({
     request: {
       headers: request.headers,

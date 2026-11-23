@@ -40,19 +40,10 @@ export default async function AdminLayout({
     redirect("/login");
   }
 
-  // Check if user is admin via profiles table
-  const { data: profile } = await supabaseAdmin
-    .from("profiles")
-    .select("is_admin")
-    .eq("id", user.id)
-    .single();
-
-  // Check admin_roles table for a specific role
-  const { data: adminRole, error: roleError } = await supabaseAdmin
-    .from("admin_roles")
-    .select("role")
-    .eq("user_id", user.id)
-    .maybeSingle();
+  const [{ data: profile }, { data: adminRole, error: roleError }] = await Promise.all([
+    supabaseAdmin.from("profiles").select("is_admin").eq("id", user.id).single(),
+    supabaseAdmin.from("admin_roles").select("role").eq("user_id", user.id).maybeSingle(),
+  ]);
   if (roleError) throw new Error("Unable to verify admin role");
 
   // Must be flagged as admin OR have an entry in admin_roles
