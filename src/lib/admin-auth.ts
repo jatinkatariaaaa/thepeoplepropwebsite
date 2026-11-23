@@ -1,7 +1,26 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { supabaseAdmin } from '@/lib/supabase';
-import { NextResponse } from 'next/server';
+import type { AdminRole } from '@/lib/admin-context';
+
+/**
+ * The one admin rule for the site. The admin panel, its API routes and the dashboard's "Admin panel"
+ * button all ask this, so whoever can open /admin also gets the button.
+ *
+ * Access lives in admin_roles. profiles.is_admin mirrors it: database triggers keep the two in step
+ * (supabase/migrations/20261123130916_unify_admin_access.sql), so there is one kind of admin and a bare
+ * is_admin counts as super_admin. Returns null for everyone else. Throws when the lookup itself fails,
+ * so a database error never reads as "not an admin" or the other way round.
+ */
+export async function getAdminRole(userId: string): Promise<AdminRole | null> {
+  const [role, profile] = await Promise.all([
+    supabaseAdmin.from('admin_roles').select('role').eq('user_id', userId).maybeSingle(),
+    supabaseAdmin.from('profiles').select('is_admin').eq('id', userId).maybeSingle(),
+  ]);
+  if (role.error || profile.error) throw new Error('Unable to verify admin role');
+  if (role.data?.role) return role.data.role as AdminRole;
+  return profile.data?.is_admin === true ? 'super_admin' : null;
+}
 
 export async function getAdminUser(request?: Request) {
   const cookieStore = await cookies();
@@ -17,30 +36,9 @@ export async function getAdminUser(request?: Request) {
     throw new Error('Unauthorized');
   }
 
-  // Check admin_roles
-  const { data: adminRole, error: roleError } = await supabaseAdmin
-    .from('admin_roles')
-    .select('role')
-    .eq('user_id', user.id)
-    .maybeSingle();
-  if (roleError) throw new Error('Unable to verify admin role');
-
-  if (adminRole) {
-    return { user, role: adminRole.role, email: user.email || '' };
-  }
-
-  // Fallback to profiles.is_admin
-  const { data: profile } = await supabaseAdmin
-    .from('profiles')
-    .select('is_admin')
-    .eq('id', user.id)
-    .single();
-
-  if (profile?.is_admin) {
-    return { user, role: 'super_admin', email: user.email || '' };
-  }
-
-  throw new Error('Forbidden');
+  const role = await getAdminRole(user.id);
+  if (!role) throw new Error('Forbidden');
+  return { user, role, email: user.email || '' };
 }
 
 export async function requireRole(request: Request, allowedRoles: string[]) {

@@ -101,9 +101,6 @@ export default function AdminRolesPage() {
             }`}>
               {r.replace("_", " ")}
             </span>
-            {row.original.is_legacy && (
-              <span className="text-[10px] bg-red-50 text-red-600 px-1.5 py-0.5 rounded font-bold" title="Needs migration to admin_roles table">Legacy</span>
-            )}
           </div>
         );
       },
