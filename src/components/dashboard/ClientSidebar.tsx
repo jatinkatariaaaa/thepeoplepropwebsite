@@ -24,6 +24,7 @@ import {
   Users,
   X,
   type LucideIcon,
+  ShieldCheck,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -70,7 +71,7 @@ const navGroups: { title: string; items: NavItem[] }[] = [
   },
 ];
 
-export function ClientSidebar({ hasPartnerDesk = false }: { hasPartnerDesk?: boolean }) {
+export function ClientSidebar({ hasPartnerDesk = false, isAdmin = false }: { hasPartnerDesk?: boolean; isAdmin?: boolean }) {
   const pathname = usePathname();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
@@ -152,6 +153,17 @@ export function ClientSidebar({ hasPartnerDesk = false }: { hasPartnerDesk?: boo
               <Plus className="h-4 w-4 transition-transform duration-300 group-hover:rotate-90" strokeWidth={2.4} />
               New account
             </Link>
+            {isAdmin ? (
+              <Link
+                href="/admin"
+                onClick={() => setIsOpen(false)}
+                className="group mt-2 flex h-11 w-full items-center gap-3 rounded-[14px] bg-[var(--g-ink)] px-3.5 text-[14px] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_10px_22px_-12px_rgba(14,17,16,0.7)] transition-colors hover:bg-[#232927]"
+              >
+                <ShieldCheck className="h-[17px] w-[17px] shrink-0 text-[var(--g-lime)]" strokeWidth={2} />
+                Admin panel
+                <ArrowUpRight className="ml-auto h-4 w-4 text-white/45 transition-colors group-hover:text-white" />
+              </Link>
+            ) : null}
           </div>
 
           {/* Navigation */}
