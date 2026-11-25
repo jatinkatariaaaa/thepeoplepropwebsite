@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import {
   Search,
   Trophy,
@@ -34,11 +33,9 @@ interface ContestEntry {
 }
 
 export function ContestReferralsClient({ entries }: { entries: ContestEntry[] }) {
-  const router = useRouter();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<"all" | "eligible" | "claimed" | "active">("all");
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
-  const [allocating, setAllocating] = useState<string | null>(null);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
   // Stats
@@ -61,28 +58,6 @@ export function ContestReferralsClient({ entries }: { entries: ContestEntry[] })
     return matchesSearch;
   });
 
-  const handleAllocate = async (entryId: string) => {
-    if (!confirm("Are you sure you want to mark this entry as claimed/account allocated?")) return;
-    setAllocating(entryId);
-    try {
-      const res = await fetch("/api/admin/contest/allocate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ entryId }),
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        alert(data.error || "Failed to allocate");
-      } else {
-        router.refresh();
-      }
-    } catch {
-      alert("Network error");
-    } finally {
-      setAllocating(null);
-    }
-  };
-
   const copyCode = (code: string) => {
     navigator.clipboard.writeText(code);
     setCopiedCode(code);
@@ -101,7 +76,7 @@ export function ContestReferralsClient({ entries }: { entries: ContestEntry[] })
             <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center">
               <Users className="w-4.5 h-4.5 text-blue-600" />
             </div>
-            <span className="text-xs font-medium text-[var(--ink-500)] uppercase tracking-wider">Participants</span>
+            <span className="text-xs font-medium text-[var(--ink-500)] uppercase tracking-wider">Referrers</span>
           </div>
           <div className="text-2xl font-display font-bold text-[var(--ink-950)]">{totalParticipants}</div>
         </div>
@@ -110,7 +85,7 @@ export function ContestReferralsClient({ entries }: { entries: ContestEntry[] })
             <div className="w-9 h-9 rounded-xl bg-purple-50 flex items-center justify-center">
               <Trophy className="w-4.5 h-4.5 text-purple-600" />
             </div>
-            <span className="text-xs font-medium text-[var(--ink-500)] uppercase tracking-wider">Total Referrals</span>
+            <span className="text-xs font-medium text-[var(--ink-500)] uppercase tracking-wider">Verified sign-ups</span>
           </div>
           <div className="text-2xl font-display font-bold text-[var(--ink-950)]">{totalReferrals}</div>
         </div>
@@ -119,7 +94,7 @@ export function ContestReferralsClient({ entries }: { entries: ContestEntry[] })
             <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center">
               <Gift className="w-4.5 h-4.5 text-emerald-600" />
             </div>
-            <span className="text-xs font-medium text-[var(--ink-500)] uppercase tracking-wider">Eligible (≥ Target)</span>
+            <span className="text-xs font-medium text-[var(--ink-500)] uppercase tracking-wider">Can claim (≥ target)</span>
           </div>
           <div className="text-2xl font-display font-bold text-emerald-600">{eligibleCount}</div>
         </div>
@@ -159,7 +134,7 @@ export function ContestReferralsClient({ entries }: { entries: ContestEntry[] })
                     : "bg-[var(--paper-2)] text-[var(--ink-600)] hover:bg-[var(--paper)] border border-[var(--border)]"
                 )}
               >
-                {f === "eligible" ? `Eligible (${eligibleCount})` : f}
+                {f === "eligible" ? `Can claim (${eligibleCount})` : f}
               </button>
             ))}
           </div>
@@ -178,7 +153,7 @@ export function ContestReferralsClient({ entries }: { entries: ContestEntry[] })
                 <th className="px-5 py-3.5 font-semibold text-center">Referrals</th>
                 <th className="px-5 py-3.5 font-semibold text-center">Target</th>
                 <th className="px-5 py-3.5 font-semibold">Status</th>
-                <th className="px-5 py-3.5 font-semibold">Joined</th>
+                <th className="px-5 py-3.5 font-semibold">First referral</th>
                 <th className="px-5 py-3.5 font-semibold text-right">Action</th>
               </tr>
             </thead>
@@ -275,7 +250,7 @@ export function ContestReferralsClient({ entries }: { entries: ContestEntry[] })
                             </span>
                           ) : isEligible ? (
                             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700 animate-pulse">
-                              <Gift className="w-3 h-3" /> Eligible
+                              <Gift className="w-3 h-3" /> Can claim
                             </span>
                           ) : (
                             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-[var(--ink-100)] text-[var(--ink-600)]">
@@ -291,15 +266,6 @@ export function ContestReferralsClient({ entries }: { entries: ContestEntry[] })
 
                         {/* Action */}
                         <div className="px-5 py-4 text-right flex items-center justify-end gap-2">
-                          {isEligible && (
-                            <button
-                              onClick={(e) => { e.stopPropagation(); handleAllocate(entry.id); }}
-                              disabled={allocating === entry.id}
-                              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-all shadow-sm active:scale-[0.97] disabled:opacity-50 cursor-pointer whitespace-nowrap"
-                            >
-                              {allocating === entry.id ? "Allocating..." : "Allocate Account"}
-                            </button>
-                          )}
                           {entry.claimed && entry.claimed_at && (
                             <span className="text-xs text-[var(--ink-400)]">
                               {new Date(entry.claimed_at).toLocaleDateString()}

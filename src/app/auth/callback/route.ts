@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
-import { partnerCookie } from '@/lib/partner-referral';
+import { activePartnerLink, partnerCookie, readVisit } from '@/lib/partner-referral';
+import { forgetReferralCookies, settleReferralCookie } from '@/lib/referrals';
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -33,23 +34,16 @@ export async function GET(request: Request) {
     );
     const { error, data } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      // Check for contest referral cookie and track it
-      const contestRef = cookieStore.get('tpp_contest_ref')?.value;
-      if (contestRef && data?.session?.user) {
+      // Record who referred a brand-new account (Google sign-ups carry no metadata), then forget the link.
+      // First touch wins: partner links never replace an earlier referral link, so a live partner visit
+      // in the cookies came first and /auth/partner-referral decides this account instead.
+      if (data?.session?.user) {
         try {
-          await fetch(`${origin}/api/contest/track`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              referral_code: contestRef,
-              user_id: data.session.user.id,
-              email: data.session.user.email || '',
-            }),
-          });
-          // Clear the cookie after tracking
-          cookieStore.delete('tpp_contest_ref');
+          const visit = readVisit(cookieStore.get(partnerCookie)?.value);
+          if (visit && (await activePartnerLink(visit.code))) forgetReferralCookies(cookieStore);
+          else await settleReferralCookie(data.session.user.id, cookieStore);
         } catch (e) {
-          console.error('Contest tracking error:', e);
+          console.error('Referral recording error:', e);
         }
       }
       if (cookieStore.has(partnerCookie)) {
