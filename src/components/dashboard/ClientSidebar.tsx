@@ -4,41 +4,74 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
-  Home,
-  Trophy,
-  Settings,
-  LogOut,
-  History,
-  Menu,
-  X,
   ArrowUpRight,
-  ListOrdered,
+  Award,
+  BookOpenText,
+  Calculator,
   CalendarDays,
-  Plus,
-  Users,
   DollarSign,
   Gift,
-  Award,
+  History,
+  Home,
+  Handshake,
+  LifeBuoy,
+  ListOrdered,
+  LogOut,
+  Menu,
+  Plus,
+  Settings,
+  Trophy,
+  Users,
+  X,
+  type LucideIcon,
+  ShieldCheck,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 import { LogoTile, btn } from "./glass";
+import { ThemeToggle } from "./theme";
 
-const navItems = [
-  { icon: Home, label: "Home", href: "/dashboard" },
-  { icon: Gift, label: "Contest", href: "/dashboard/contest", badge: "HOT" },
-  { icon: History, label: "Transactions", href: "/dashboard/transactions" },
-  { icon: Trophy, label: "Competitions", href: "/dashboard/competitions" },
-  { icon: ListOrdered, label: "Leaderboard", href: "/dashboard/leaderboard" },
-  { icon: CalendarDays, label: "Calendar", href: "/dashboard/calendar" },
-  { icon: Users, label: "Affiliate", href: "/dashboard/affiliate" },
-  { icon: DollarSign, label: "Payouts", href: "/dashboard/payouts" },
-  { icon: Award, label: "Certificates", href: "/dashboard/certificates" },
-  { icon: Settings, label: "Settings", href: "/dashboard/settings" },
+type NavItem = { icon: LucideIcon; label: string; href: string; badge?: string; partnerOnly?: boolean };
+
+const navGroups: { title: string; items: NavItem[] }[] = [
+  {
+    title: "Trading",
+    items: [
+      { icon: Home, label: "Accounts", href: "/dashboard" },
+      { icon: BookOpenText, label: "Journal", href: "/dashboard/journal", badge: "NEW" },
+      { icon: Calculator, label: "Tools", href: "/dashboard/tools" },
+      { icon: CalendarDays, label: "Calendar", href: "/dashboard/calendar" },
+    ],
+  },
+  {
+    title: "Rewards",
+    items: [
+      { icon: DollarSign, label: "Payouts", href: "/dashboard/payouts" },
+      { icon: Award, label: "Certificates", href: "/dashboard/certificates" },
+      { icon: Users, label: "Affiliate", href: "/dashboard/affiliate" },
+      { icon: Handshake, label: "Partner desk", href: "/partner-desk", partnerOnly: true },
+      { icon: History, label: "Transactions", href: "/dashboard/transactions" },
+    ],
+  },
+  {
+    title: "Community",
+    items: [
+      { icon: ListOrdered, label: "Leaderboard", href: "/dashboard/leaderboard" },
+      { icon: Trophy, label: "Competitions", href: "/dashboard/competitions" },
+      { icon: Gift, label: "Contest", href: "/dashboard/contest" },
+    ],
+  },
+  {
+    title: "Account",
+    items: [
+      { icon: LifeBuoy, label: "Support", href: "/dashboard/support" },
+      { icon: Settings, label: "Settings", href: "/dashboard/settings" },
+    ],
+  },
 ];
 
-export function ClientSidebar() {
+export function ClientSidebar({ hasPartnerDesk = false, isAdmin = false }: { hasPartnerDesk?: boolean; isAdmin?: boolean }) {
   const pathname = usePathname();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
@@ -118,65 +151,62 @@ export function ClientSidebar() {
               className={cn(btn.lime, "group h-11! w-full text-[14px]!")}
             >
               <Plus className="h-4 w-4 transition-transform duration-300 group-hover:rotate-90" strokeWidth={2.4} />
-              New Challenge
+              New account
             </Link>
+            {isAdmin ? (
+              <Link
+                href="/admin"
+                onClick={() => setIsOpen(false)}
+                className="group mt-2 flex h-11 w-full items-center gap-3 rounded-[14px] bg-[var(--g-ink)] px-3.5 text-[14px] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_10px_22px_-12px_rgba(14,17,16,0.7)] transition-colors hover:bg-[#232927]"
+              >
+                <ShieldCheck className="h-[17px] w-[17px] shrink-0 text-[var(--g-lime)]" strokeWidth={2} />
+                Admin panel
+                <ArrowUpRight className="ml-auto h-4 w-4 text-white/45 transition-colors group-hover:text-white" />
+              </Link>
+            ) : null}
           </div>
 
-          {/* Menu label */}
-          <p className="px-6 pt-4 pb-2 text-[11px] font-medium tracking-[0.14em] text-black/35 uppercase">
-            Menu
-          </p>
-
           {/* Navigation */}
-          <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 pb-3 [scrollbar-width:thin]">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive =
-                item.href === "/dashboard"
-                  ? pathname === "/dashboard"
-                  : pathname.startsWith(item.href);
-
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setIsOpen(false)}
-                  aria-current={isActive ? "page" : undefined}
-                  className={cn(
-                    "group relative isolate flex items-center gap-3 rounded-[14px] px-3 py-2.5 text-[14px] font-medium transition-colors",
-                    isActive
-                      ? "text-white"
-                      : "text-[var(--g-muted-ink)] hover:bg-black/[0.04] hover:text-[var(--g-ink)]"
-                  )}
-                >
-                  {isActive && (
-                    <motion.span
-                      layoutId="client-sidebar-active"
-                      className="absolute inset-0 -z-10 rounded-[14px] bg-[var(--g-ink)] shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_10px_22px_-12px_rgba(14,17,16,0.7)]"
-                      transition={{ type: "spring", stiffness: 400, damping: 34 }}
-                    />
-                  )}
-
-                  <Icon
-                    className={cn(
-                      "h-[17px] w-[17px] shrink-0 transition-colors",
-                      isActive ? "text-[var(--g-lime)]" : "text-black/40 group-hover:text-[var(--g-ink)]"
-                    )}
-                    strokeWidth={1.9}
-                  />
-                  <span>{item.label}</span>
-                  {item.badge && (
-                    <span className="ml-auto rounded-full bg-[var(--g-lime)] px-2 py-0.5 text-[10px] font-bold tracking-wider text-[var(--g-ink)]">
-                      {item.badge}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
+          <nav className="flex-1 overflow-y-auto px-3 pb-3 [scrollbar-width:thin]">
+            {navGroups.map((group) => (
+              <div key={group.title}>
+                <p className="px-3 pt-4 pb-1.5 text-[11px] font-medium tracking-[0.14em] text-black/35 uppercase">{group.title}</p>
+                <div className="space-y-0.5">
+                  {group.items.filter(item => !item.partnerOnly || hasPartnerDesk).map((item) => {
+                    const Icon = item.icon;
+                    const isActive = item.href === "/dashboard" ? pathname === "/dashboard" || pathname.startsWith("/dashboard/account") : pathname.startsWith(item.href);
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setIsOpen(false)}
+                        aria-current={isActive ? "page" : undefined}
+                        className={cn(
+                          "group relative isolate flex items-center gap-3 rounded-[14px] px-3 py-2.5 text-[14px] font-medium transition-colors",
+                          isActive ? "text-white" : "text-[var(--g-muted-ink)] hover:bg-black/[0.04] hover:text-[var(--g-ink)]",
+                        )}
+                      >
+                        {isActive && (
+                          <motion.span
+                            layoutId="client-sidebar-active"
+                            className="absolute inset-0 -z-10 rounded-[14px] bg-[var(--g-ink)] shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_10px_22px_-12px_rgba(14,17,16,0.7)]"
+                            transition={{ type: "spring", stiffness: 400, damping: 34 }}
+                          />
+                        )}
+                        <Icon className={cn("h-[17px] w-[17px] shrink-0 transition-colors", isActive ? "text-[var(--g-lime)]" : "text-black/40 group-hover:text-[var(--g-ink)]")} strokeWidth={1.9} />
+                        <span>{item.label}</span>
+                        {item.badge && <span className="ml-auto rounded-full bg-[var(--g-lime)] px-2 py-0.5 text-[10px] font-bold tracking-wider text-[#0e1110]">{item.badge}</span>}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
           </nav>
 
           {/* Footer / Logout */}
           <div className="border-t border-black/[0.06] p-3">
+            <ThemeToggle className="mb-2" />
             <button
               type="button"
               onClick={handleSignOut}

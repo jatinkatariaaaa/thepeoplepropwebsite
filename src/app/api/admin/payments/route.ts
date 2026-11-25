@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { getAdminRole } from "@/lib/admin-auth";
 
 async function verifyAdmin(request: Request) {
   const cookieStore = await cookies();
@@ -20,13 +21,8 @@ async function verifyAdmin(request: Request) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: "Unauthorized", status: 401 };
 
-  const { data: profile } = await supabaseAdmin
-    .from("profiles")
-    .select("is_admin")
-    .eq("id", user.id)
-    .single();
-
-  if (!profile?.is_admin) return { error: "Forbidden", status: 403 };
+  const role = await getAdminRole(user.id).catch(() => null);
+  if (!role) return { error: "Forbidden", status: 403 };
 
   return { user };
 }

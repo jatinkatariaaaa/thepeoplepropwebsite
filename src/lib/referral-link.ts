@@ -16,25 +16,6 @@ export const LEGACY_REF_COOKIES = ["tpp_affiliate", "tpp_contest_ref"] as const;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 export const isUuid = (value: unknown): value is string => typeof value === "string" && UUID.test(value);
 
-function cookieValue(cookie: string, name: string) {
-  const match = cookie.match(new RegExp(`(?:^|;\\s*)${name}=([^;]+)`));
-  return match ? decodeURIComponent(match[1]) : null;
-}
-
-/**
- * What to send as `affiliate_id` when signing up: the referrer id a new link stored,
- * or the code an older link left behind (the sign-up trigger resolves either).
- */
-export function readReferral(cookie: string): string | null {
-  const id = cookieValue(cookie, REF_COOKIE);
-  if (isUuid(id)) return id;
-  for (const name of LEGACY_REF_COOKIES) {
-    const code = cookieValue(cookie, name);
-    if (code && /^[A-Za-z0-9-]{4,64}$/.test(code)) return code;
-  }
-  return null;
-}
-
 export type ReferralSummary = {
   code: string;
   link: string;

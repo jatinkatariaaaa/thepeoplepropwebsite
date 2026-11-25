@@ -1876,3 +1876,12 @@ export const blogs: BlogPost[] = [
     ],
   },
 ];
+
+export type BlogCard = Pick<BlogPost, "slug" | "title" | "date" | "author" | "readTime" | "category" | "image" | "heroExcerpt">;
+
+// Send only the fields the article list and related cards render.
+export const blogCards: BlogCard[] = blogs
+  .map(({ slug, title, date, author, readTime, category, image, heroExcerpt }) => ({
+    slug, title, date, author, readTime, category, image, heroExcerpt,
+  }))
+  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());

@@ -1,197 +1,133 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
-import { programs } from "@/data/programs";
-import { provisionTradingAccountForPurchase } from "@/lib/account-provisioning";
+import { getSessionUser } from "@/lib/api-auth";
+import { CheckoutError, createInvoice, newOrderId, quoteOrder, redeemCoupon, siteUrl } from "@/lib/checkout";
+import { provisionNextPhase, provisionTradingAccountForPurchase } from "@/lib/account-provisioning";
 
-async function validateFreeCheckoutCoupon(code: unknown, programKey: string) {
-  const couponCode = String(code || "").trim().toUpperCase();
-  if (!couponCode) {
-    return { valid: false, error: "A valid 100% coupon is required for free checkout" };
-  }
-
-  const { data: coupon, error } = await supabaseAdmin
-    .from("tpp_coupons")
-    .select("*")
-    .eq("code", couponCode)
-    .maybeSingle();
-
-  if (error || !coupon || !coupon.is_active) {
-    return { valid: false, error: "Invalid or inactive coupon" };
-  }
-
-  if (coupon.expires_at && new Date(coupon.expires_at).getTime() < Date.now()) {
-    return { valid: false, error: "Coupon has expired" };
-  }
-
-  if (coupon.max_uses != null && Number(coupon.current_uses || 0) >= Number(coupon.max_uses)) {
-    return { valid: false, error: "Coupon usage limit reached" };
-  }
-
-  const scopedProgram = coupon.challenge_specific || coupon.challenge_key;
-  if (scopedProgram && scopedProgram !== programKey) {
-    return { valid: false, error: "Coupon is not valid for this program" };
-  }
-
-  const discountPct = Number(coupon.discount_pct || 0);
-  if (!coupon.free_evaluation && discountPct < 100) {
-    return { valid: false, error: "Coupon does not cover full checkout amount" };
-  }
-
-  return { valid: true, coupon };
-}
-
+/**
+ * Checkout. The browser sends what the trader chose; the amount is always
+ * worked out here from Supabase. Two kinds of order:
+ *   - a new account (default)
+ *   - { kind: "activation", accountId }: the fee for a passed Access account
+ */
 export async function POST(request: Request) {
   try {
-    const authHeader = request.headers.get("Authorization");
-    const token = authHeader?.split(" ")[1];
-    
-    if (!token) {
-      return NextResponse.json({ error: "Unauthorized - No token" }, { status: 401 });
-    }
-
-    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
-
-    if (authError || !user) {
-      return NextResponse.json({ error: "Unauthorized - Invalid token" }, { status: 401 });
-    }
+    const user = await getSessionUser(request);
+    if (!user) return NextResponse.json({ error: "Please sign in to continue." }, { status: 401 });
 
     const body = await request.json();
-    const { 
-      programKey, 
-      accountSize, 
-      priceAmount, 
-      fullName, 
-      address, 
-      country, 
-      promoCode
-    } = body;
-    const amount = Number(priceAmount);
-    const size = Number(accountSize);
+    if (body.kind === "activation") return await activation(user, body);
 
-    if (!Number.isFinite(amount) || amount < 0) {
-      return NextResponse.json({ error: "Invalid checkout amount" }, { status: 400 });
-    }
+    const { quote, program, platformName } = await quoteOrder({
+      programKey: String(body.programKey || ""),
+      accountSize: Number(body.accountSize),
+      addOns: Array.isArray(body.addOns) ? body.addOns : [],
+      platform: body.platform ?? null,
+      promoCode: body.promoCode ?? null,
+    });
 
-    if (!Number.isFinite(size) || size <= 0) {
-      return NextResponse.json({ error: "Invalid account size" }, { status: 400 });
-    }
-
-    // 1. Verify program and get rules
-    const program = programs.find(p => p.key === programKey);
-    if (!program) {
-      return NextResponse.json({ error: "Invalid program" }, { status: 400 });
-    }
-
-    const freeCouponValidation = amount <= 0
-      ? await validateFreeCheckoutCoupon(promoCode, programKey)
-      : null;
-
-    if (freeCouponValidation && !freeCouponValidation.valid) {
-      return NextResponse.json({ error: freeCouponValidation.error }, { status: 400 });
-    }
-
-    // Generate Order ID
-    const orderId = `ORD-${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
-
-    // 2. Insert into purchases as pending
+    const orderId = newOrderId();
     const { data: purchase, error: purchaseError } = await supabaseAdmin
       .from("purchases")
       .insert({
         user_id: user.id,
         order_id: orderId,
-        full_name: fullName,
+        full_name: String(body.fullName || "").trim().slice(0, 160) || user.email || "Trader",
         email: user.email,
-        country,
-        address,
-        program_key: programKey,
-        account_size: size,
-        price_amount: amount,
-        payment_status: 'pending',
-        payment_method: 'crypto',
-        promo_code: promoCode
+        country: String(body.country || "").slice(0, 80) || null,
+        address: String(body.address || "").slice(0, 300) || null,
+        program_key: quote.programKey,
+        account_size: quote.size,
+        price_amount: quote.dueToday,
+        base_fee: quote.base,
+        discount_amount: quote.discount,
+        activation_fee: quote.dueAfterPass > 0 ? Math.max(0, quote.dueAfterPass - quote.dueToday) : null,
+        addons: quote.addOnKeys,
+        platform: platformName,
+        kind: "challenge",
+        payment_status: "pending",
+        payment_method: "crypto",
+        promo_code: quote.couponCode,
       })
       .select()
       .single();
-
     if (purchaseError) throw purchaseError;
 
-    // 3. Bypass NOWPayments if amount is 0 (Free checkout)
-    if (amount <= 0) {
-      // Mark as paid
-      const { error: paidError } = await supabaseAdmin
-        .from("purchases")
-        .update({ payment_status: "paid" })
-        .eq("id", purchase.id);
-
-      if (paidError) throw paidError;
-
-      const provisioning = await provisionTradingAccountForPurchase({
-        id: purchase.id,
-        user_id: user.id,
-        email: user.email,
-        program_key: programKey,
-        account_size: size,
-      });
-
-      if (freeCouponValidation?.coupon?.id) {
-        await supabaseAdmin
-          .from("tpp_coupons")
-          .update({ current_uses: Number(freeCouponValidation.coupon.current_uses || 0) + 1 })
-          .eq("id", freeCouponValidation.coupon.id);
-      }
-      
-      return NextResponse.json({ 
-        success: true, 
-        orderId,
-        account: provisioning.account,
-        invoice_url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://thepeopleprop.live"}/dashboard?success=true`,
-        message: "Free challenge provisioned successfully."
-      });
+    // Fully discounted orders have nothing to pay: issue the account now.
+    if (quote.dueToday <= 0) {
+      const { error: paymentError } = await supabaseAdmin.from("purchases").update({ payment_status: "paid", paid_at: new Date().toISOString() }).eq("id", purchase.id);
+      if (paymentError) throw paymentError;
+      const provisioning = await provisionTradingAccountForPurchase({ ...purchase, user_id: user.id, email: user.email });
+      await redeemCoupon(quote.couponCode);
+      return NextResponse.json({ success: true, orderId, account: provisioning.account, invoice_url: `${siteUrl()}/dashboard?success=true`, message: "Your account is ready." });
     }
 
-    // 4. Create NOWPayments Invoice
-    const apiKey = process.env.NOWPAYMENTS_API_KEY || process.env.NOWPAYMENTS_KEY;
-    if (!apiKey) {
-      throw new Error("NOWPAYMENTS_API_KEY is missing from environment variables.");
-    }
-
-    const payload = {
-      price_amount: amount,
-      price_currency: "usd",
-      order_id: orderId,
-      order_description: `${program.shortLabel} $${size.toLocaleString()} Challenge`,
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://thepeopleprop.live"}/dashboard?success=true`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://thepeopleprop.live"}/dashboard?canceled=true`,
-      ipn_callback_url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://thepeopleprop.live"}/api/nowpayments-ipn`,
-      customer_email: user.email
-    };
-
-    const response = await fetch("https://api.nowpayments.io/v1/invoice", {
-      method: "POST",
-      headers: {
-        "x-api-key": apiKey,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.error("NOWPayments API Error:", data);
-      throw new Error(data.message || "Failed to create payment invoice.");
-    }
-
-    // Return the invoice URL to the frontend for redirection
-    return NextResponse.json({ 
-      success: true, 
+    const invoiceUrl = await createInvoice({
+      amount: quote.dueToday,
       orderId,
-      invoice_url: data.invoice_url,
-      message: "Invoice created. Redirecting to payment gateway..."
+      description: `${program.short_label || quote.programKey} $${quote.size.toLocaleString("en-US")} account`,
+      email: user.email,
     });
-
-  } catch (err: any) {
-    console.error("Checkout Error:", err);
-    return NextResponse.json({ error: err.message || "Internal Server Error" }, { status: 500 });
+    await supabaseAdmin.from("purchases").update({ invoice_url: invoiceUrl }).eq("id", purchase.id);
+    return NextResponse.json({ success: true, orderId, invoice_url: invoiceUrl, amount: quote.dueToday, message: "Invoice created. Redirecting to payment." });
+  } catch (err) {
+    if (err instanceof CheckoutError) return NextResponse.json({ error: err.message }, { status: err.status });
+    console.error("Checkout error:", err);
+    return NextResponse.json({ error: (err as Error).message || "Checkout failed." }, { status: 500 });
   }
+}
+
+/** Access: the trader has passed and now pays the account fee to receive the funded account. */
+async function activation(user: { id: string; email?: string }, body: { accountId?: string }) {
+  const { data: account } = await supabaseAdmin.from("trading_accounts").select("*").eq("id", String(body.accountId || "")).eq("user_id", user.id).maybeSingle();
+  if (!account) throw new CheckoutError("Account not found.", 404);
+  if (account.status !== "passed" || !(Number(account.activation_fee) > 0)) throw new CheckoutError("This account has no activation fee to pay.");
+  if (account.activation_due_at && new Date(account.activation_due_at).getTime() < Date.now()) {
+    throw new CheckoutError("The activation window for this account has closed. Contact support to have it reopened.");
+  }
+
+  const { data: next } = await supabaseAdmin.from("trading_accounts").select("id").eq("previous_account_id", account.id).maybeSingle();
+  if (next) throw new CheckoutError("This account is already activated.");
+
+  const fee = Number(account.activation_fee);
+  const { data: open } = await supabaseAdmin
+    .from("purchases")
+    .select("*")
+    .eq("kind", "activation")
+    .eq("related_account_id", account.id)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (open?.payment_status === "paid") {
+    const result = await provisionNextPhase(account, { activationPaid: true });
+    return NextResponse.json({ success: true, account: result.account, invoice_url: `${siteUrl()}/dashboard?success=true` });
+  }
+  if (open?.invoice_url && open.payment_status === "pending" && Number(open.price_amount) === fee) {
+    return NextResponse.json({ success: true, orderId: open.order_id, invoice_url: open.invoice_url, amount: fee });
+  }
+
+  const orderId = newOrderId("ACT");
+  const { data: purchase, error } = await supabaseAdmin
+    .from("purchases")
+    .insert({
+      user_id: user.id,
+      order_id: orderId,
+      full_name: user.email || "Trader",
+      email: user.email,
+      program_key: account.program_key,
+      account_size: account.starting_balance,
+      price_amount: fee,
+      kind: "activation",
+      related_account_id: account.id,
+      payment_status: "pending",
+      payment_method: "crypto",
+    })
+    .select()
+    .single();
+  if (error) throw error;
+
+  const invoiceUrl = await createInvoice({ amount: fee, orderId, description: `Access $${Number(account.starting_balance).toLocaleString("en-US")} funded account fee`, email: user.email });
+  await supabaseAdmin.from("purchases").update({ invoice_url: invoiceUrl }).eq("id", purchase.id);
+  return NextResponse.json({ success: true, orderId, invoice_url: invoiceUrl, amount: fee });
 }

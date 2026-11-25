@@ -79,6 +79,11 @@ export async function settleReferralCookie(userId: string, store: CookieStore) {
     if (error) console.error("attribute_referral failed:", error.message);
   }
 
+  forgetReferralCookies(store);
+}
+
+/** Drop the referral-link cookies (new and old names) once they have done their job. */
+export function forgetReferralCookies(store: CookieStore) {
   for (const name of [REF_COOKIE, ...LEGACY_REF_COOKIES]) {
     if (store.has(name)) store.delete(name);
   }
@@ -144,7 +149,7 @@ export async function claimReferralReward(userId: string): Promise<ClaimResult> 
     if (!result.ok && !created) {
       return { ok: false, reason: "already_claimed", message: "Your reward has already been claimed." };
     }
-    return { ok: true, accountId: account?.id ?? null, provisioned: true, message: "Your free account is ready." };
+    return { ok: true, accountId: typeof account?.id === "string" ? account.id : null, provisioned: true, message: "Your free account is ready." };
   } catch (err) {
     console.error("Referral reward provisioning failed:", err);
     return {

@@ -22,13 +22,19 @@ export type PageKey =
   | "privacy"
   | "cookie"
   | "aml-policy"
-  | "risk-disclosure";
+  | "risk-disclosure"
+  | "tools"
+  | "payout-policy"
+  | "refund-policy";
 
 export function href(key: PageKey): string {
   return key === "home" ? "/" : `/${key}`;
 }
 
 /** App routes stay where they are. */
+/** Detail page of one account type. */
+export const programHref = (key: string) => `/challenges/${key}`;
+
 export const APP = {
   login: "/login",
   dashboard: "/dashboard",

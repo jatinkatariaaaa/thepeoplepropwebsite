@@ -5,27 +5,23 @@ import { ArrowUp, Mail } from "lucide-react";
 import { Container } from "./ui";
 import { TppMark, TppOutline } from "./logo";
 import { Reveal } from "./motion";
-import { APP, href } from "./routes";
+import { PROGRAM_ORDER, programDetails } from "@/data/catalogue";
+import { APP, href, programHref } from "./routes";
 
 const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
   {
-    title: "Platform",
-    links: [
-      { label: "Dashboard", href: APP.dashboard },
-      { label: "Challenges", href: href("challenges") },
-      { label: "Heatmap", href: href("heatmap") },
-      { label: "Leaderboard", href: href("leaderboard") },
-      { label: "System status", href: href("status") },
-    ],
+    title: "Accounts",
+    links: [...PROGRAM_ORDER.map((k) => ({ label: programDetails[k].name, href: programHref(k) })), { label: "Compare all", href: href("challenges") }],
   },
   {
-    title: "Resources",
+    title: "Trading",
     links: [
       { label: "Trading rules", href: href("rules") },
-      { label: "FAQ", href: href("faqs") },
-      { label: "Blog", href: href("blog") },
-      { label: "Contest", href: href("contest") },
-      { label: "Help centre", href: href("help") },
+      { label: "Tools", href: href("tools") },
+      { label: "Help centre", href: href("faqs") },
+      { label: "Leaderboard", href: href("leaderboard") },
+      { label: "Heatmap", href: href("heatmap") },
+      { label: "Dashboard", href: APP.dashboard },
     ],
   },
   {
@@ -35,15 +31,17 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
       { label: "Contact", href: href("contact") },
       { label: "Careers", href: href("careers") },
       { label: "Reviews", href: href("reviews") },
-      { label: "Press", href: href("press") },
+      { label: "Blog", href: href("blog") },
+      { label: "System status", href: href("status") },
     ],
   },
   {
-    title: "Legal",
+    title: "Policies",
     links: [
-      { label: "Terms", href: href("terms") },
+      { label: "Terms of service", href: href("terms") },
+      { label: "Payout policy", href: href("payout-policy") },
+      { label: "Refund policy", href: href("refund-policy") },
       { label: "Privacy policy", href: href("privacy") },
-      { label: "Cookie policy", href: href("cookie") },
       { label: "AML policy", href: href("aml-policy") },
       { label: "Risk disclosure", href: href("risk-disclosure") },
     ],

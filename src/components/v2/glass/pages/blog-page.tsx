@@ -1,10 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Clock, Lightbulb, Newspaper, PenLine } from "lucide-react";
-import { blogs, type BlogPost } from "@/lib/data/blogs";
+import type { BlogCard, BlogPost } from "@/lib/data/blogs";
 import { cn } from "@/lib/utils";
 import { Container, Eyebrow, Section, Title } from "../ui";
 import { Reveal, Stagger, StaggerItem } from "../motion";
@@ -13,11 +13,10 @@ import { Cta } from "../cta";
 import { href } from "../routes";
 
 const PER_PAGE = 6;
-const sorted = [...blogs].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 const postHref = (slug: string) => `${href("blog")}/${slug}`;
 const niceDate = (d: string) => new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
 
-function Cover({ post, className, sizes }: { post: BlogPost; className?: string; sizes: string }) {
+function Cover({ post, className, sizes }: { post: BlogCard; className?: string; sizes: string }) {
   return (
     <div className={cn("relative overflow-hidden bg-[#121615]", className)}>
       <Image src={post.image || "/placeholder.svg"} alt="" fill sizes={sizes} className="object-cover transition-transform duration-700 [transition-timing-function:var(--g-out)] group-hover:scale-[1.04]" />
@@ -25,7 +24,7 @@ function Cover({ post, className, sizes }: { post: BlogPost; className?: string;
   );
 }
 
-function PostCard({ post }: { post: BlogPost }) {
+function PostCard({ post }: { post: BlogCard }) {
   return (
     <Link href={postHref(post.slug)} className="group block h-full">
       <article className="g-card-dark g-hair flex h-full flex-col overflow-hidden rounded-[26px]">
@@ -49,10 +48,9 @@ function PostCard({ post }: { post: BlogPost }) {
   );
 }
 
-export function BlogIndex() {
-  const featured = sorted[0];
-  const rest = sorted.slice(1);
-  const cats = useMemo(() => ["All", ...Array.from(new Set(rest.map((p) => p.category)))], [rest]);
+export function BlogIndex({ posts }: { posts: BlogCard[] }) {
+  const [featured, ...rest] = posts;
+  const cats = ["All", ...new Set(rest.map((p) => p.category))];
   const [cat, setCat] = useState("All");
   const [shown, setShown] = useState(PER_PAGE);
   const list = rest.filter((p) => cat === "All" || p.category === cat);
@@ -128,8 +126,7 @@ export function BlogIndex() {
   );
 }
 
-export function BlogArticle({ post }: { post: BlogPost }) {
-  const related = sorted.filter((b) => b.slug !== post.slug).slice(0, 3);
+export function BlogArticle({ post, related }: { post: BlogPost; related: BlogCard[] }) {
   return (
     <>
       <section className="relative isolate z-10 overflow-x-clip bg-[#06100d]">

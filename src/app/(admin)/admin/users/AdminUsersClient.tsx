@@ -8,9 +8,15 @@ import { format } from "date-fns";
 import { ShieldAlert, ShieldCheck, MoreVertical, Edit, Ban, PlayCircle, Shield } from "lucide-react";
 import { toast } from "sonner";
 
-export default function AdminUsersClient({ initialUsers }: { initialUsers: any[] }) {
-  const [users, setUsers] = useState<any[]>(initialUsers || []);
-  const [loading, setLoading] = useState(true);
+export default function AdminUsersClient({
+  initialUsers,
+  initialLoadFailed,
+}: {
+  initialUsers: any[];
+  initialLoadFailed: boolean;
+}) {
+  const [users, setUsers] = useState<any[]>(initialUsers);
+  const [loading, setLoading] = useState(initialLoadFailed);
   
   // Modal states
   const [selectedUser, setSelectedUser] = useState<any>(null);
@@ -23,6 +29,7 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: any[]
     setLoading(true);
     try {
       const res = await fetch("/api/admin/users?limit=100");
+      if (!res.ok) throw new Error("Failed to fetch users");
       const data = await res.json();
       if (data.users) setUsers(data.users);
     } catch (error) {
@@ -33,8 +40,8 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: any[]
   };
 
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    if (initialLoadFailed) void fetchUsers();
+  }, [initialLoadFailed]);
 
   const handleAction = async () => {
     try {
@@ -106,7 +113,7 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: any[]
         const kyc = row.original.kyc_status || "none";
         return (
           <span className={`inline-flex px-2 py-1 rounded-full text-[11px] font-bold uppercase ${
-            kyc === "verified" ? "bg-emerald-50 text-emerald-700" :
+            kyc === "approved" || kyc === "verified" ? "bg-emerald-50 text-emerald-700" :
             kyc === "pending" ? "bg-amber-50 text-amber-700" :
             kyc === "rejected" ? "bg-red-50 text-red-700" :
             "bg-[var(--ink-100)] text-[var(--ink-600)]"
@@ -162,7 +169,7 @@ export default function AdminUsersClient({ initialUsers }: { initialUsers: any[]
   ];
 
   return (
-    <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+    <div className="max-w-7xl mx-auto">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-[var(--ink-950)]">Users Management</h1>
         <p className="text-[var(--ink-500)]">Manage all registered users, suspend or ban accounts.</p>

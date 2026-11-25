@@ -9,9 +9,13 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 import { AuthHeading, AuthNotices, AuthShell, authField, authLabel } from "@/components/v2/glass/auth-shell";
 import { href } from "@/components/v2/glass/routes";
-import { readReferral } from "@/lib/referral-link";
 
 type Mode = "signin" | "signup" | "forgot";
+
+/** Only same-site paths: "?redirect=https://elsewhere" or "//elsewhere" falls back to the dashboard. */
+function safeRedirect(wanted: string | null): string {
+  return wanted && wanted.startsWith("/") && !wanted.startsWith("//") && !wanted.startsWith("/\\") ? wanted : "/dashboard";
+}
 
 function GoogleIcon() {
   return (
@@ -43,13 +47,12 @@ export function LoginForm({ initialMode, invited }: { initialMode: "signin" | "s
   const isPwValid = pw.length === 0 || pw.length >= 8;
   const matches = mode === "signup" ? confirm.length === 0 || confirm === pw : true;
 
-  // Auto-redirect if already logged in
+  // Auto-redirect if already logged in (same-site paths only, never an outside URL)
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         const urlParams = new URLSearchParams(window.location.search);
-        const redirect = urlParams.get("redirect") || "/dashboard";
-        router.push(redirect);
+        router.push(safeRedirect(urlParams.get("redirect")));
       }
     });
   }, [router]);
@@ -86,25 +89,35 @@ export function LoginForm({ initialMode, invited }: { initialMode: "signin" | "s
         });
         if (signInError) throw signInError;
         const urlParams = new URLSearchParams(window.location.search);
-        const redirect = urlParams.get("redirect") || "/dashboard";
+        const redirect = safeRedirect(urlParams.get("redirect"));
         router.push(redirect);
       } else {
-        // Who referred them (the database records it, for the contest and the affiliate programme)
-        const affiliateId = readReferral(document.cookie);
+        // Who referred them: a referral link (contest and affiliate) or a partner link. The server
+        // checks the cookies, and the database records the referral with the new account.
+        let referral: { affiliate_id?: string; partner_code?: string } | undefined;
+        if (/(?:^|;\s*)tpp_(?:ref|affiliate|contest_ref|partner_visit)=/.test(document.cookie)) {
+          const response = await fetch("/api/signup-referral", { cache: "no-store" });
+          if (!response.ok) throw new Error("Could not verify your referral. Please try again.");
+          referral = await response.json();
+        }
 
         const { data, error: signUpError } = await supabase.auth.signUp({
           email,
           password: pw,
           options: {
-            data: affiliateId ? { affiliate_id: affiliateId } : undefined,
+            data: referral,
             emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
           },
         });
         if (signUpError) throw signUpError;
+        // The referral is now stored with the account, including while email verification is pending.
+        for (const name of ["tpp_ref", "tpp_affiliate", "tpp_contest_ref", "tpp_partner_visit"]) {
+          document.cookie = `${name}=; path=/; max-age=0`;
+        }
 
         if (data.session) {
           const urlParams = new URLSearchParams(window.location.search);
-          const redirect = urlParams.get("redirect") || "/dashboard";
+          const redirect = safeRedirect(urlParams.get("redirect"));
           router.push(redirect);
         } else {
           setSuccess("Registration successful! Please check your email to verify your account.");

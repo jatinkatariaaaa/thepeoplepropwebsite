@@ -1,118 +1,85 @@
+import { CONDITIONS, PERKS } from "./catalogue";
+
 export interface Rule {
   id: string;
   title: string;
-  icon:
-    | "target"
-    | "shield"
-    | "alert"
-    | "scale"
-    | "newspaper"
-    | "calendar"
-    | "trending"
-    | "refund";
+  icon: "target" | "shield" | "alert" | "scale" | "newspaper" | "calendar" | "trending" | "refund";
   summary: string;
   details: string[];
 }
 
+/** The rules in brief, for cards and the help centre. The full text lives on /rules and each account page. */
 export const rules: Rule[] = [
   {
     id: "profit-target",
-    title: "Profit Target",
+    title: "Profit targets",
     icon: "target",
-    summary:
-      "Reach 10% profit on the evaluation account, in any number of days, with no time pressure.",
+    summary: "10% on 1-Step, 8% then 5% on 2-Step and Access, three phases of 6% on 3-Step. Instant has no target.",
     details: [
-      "The profit target is fixed at 10% of the starting balance for all account sizes.",
-      "Profit is calculated on closed trades only — open positions do not count toward the target.",
-      "There is no maximum time limit. Trade at your own pace.",
-      "Once the target is hit and minimum trading days are completed, you advance to the funded stage.",
+      "A phase passes when equity reaches the target and the minimum trading days are done.",
+      "Each phase is a fresh account at the original balance.",
+      "There is no time limit on any phase.",
     ],
   },
   {
     id: "daily-loss-limit",
-    title: "Daily Loss Limit",
+    title: "Daily loss limit",
     icon: "alert",
-    summary:
-      "A 4% daily drawdown ceiling resets at midnight UTC. Includes floating P&L.",
+    summary: `3% to 5% of the balance you held at ${CONDITIONS.dayRollover}, measured on equity.`,
     details: [
-      "Daily loss is measured against the highest equity from the previous day's close.",
-      "The limit includes both realized losses and floating (unrealized) drawdown.",
-      "Hitting the daily limit ends the evaluation. Funded accounts use a soft breach with one allowance.",
-      "The limit resets at 00:00 UTC every trading day.",
+      "1-Step and 3-Step 4%, 2-Step and Access 5%, Instant 3%.",
+      "Floating losses count. If equity touches the limit the account is closed.",
+      "The limit resets every day from the new balance.",
     ],
   },
   {
     id: "max-loss-limit",
-    title: "Max Loss Limit",
+    title: "Maximum loss limit",
     icon: "shield",
-    summary:
-      "Total drawdown across the account is capped at 8% from the starting balance.",
-    details: [
-      "Maximum loss is a static value based on the original account size.",
-      "If equity drops below 92% of the starting balance, the account is breached.",
-      "This is the single most important risk parameter — protect it at all times.",
-    ],
+    summary: "5% to 10% below the starting balance. Static: it never trails your profit.",
+    details: ["1-Step 7%, 2-Step and Access 10%, 3-Step 8%, Instant 5%.", "Measured on equity from the starting balance of the account."],
   },
   {
     id: "consistency-rule",
-    title: "Consistency Rule",
+    title: "Payout consistency",
     icon: "scale",
-    summary:
-      "No single day's profit may exceed 30% of total profit at the time of payout.",
-    details: [
-      "The rule applies only at payout review on funded accounts.",
-      "It exists to ensure long-term, repeatable performance — not single lucky trades.",
-      "If a single day exceeds the threshold, the payout is paused but the account is not breached.",
-      "Continue trading consistently to bring the ratio back into range.",
-    ],
+    summary: "No single day may be more than 40% of a payout, or 25% on Instant accounts.",
+    details: ["Checked only when you request a payout from a funded account.", "It can delay a payout. It never breaches the account."],
   },
   {
     id: "news-trading",
-    title: "News Trading Rule",
+    title: "News trading",
     icon: "newspaper",
-    summary:
-      "Trading is permitted during high-impact news. No restrictions during evaluation.",
-    details: [
-      "TPP allows news trading on both evaluation and funded accounts.",
-      "On funded accounts, profits made during 5 minutes before/after Tier-1 news may be reviewed.",
-      "Strategies that rely solely on news arbitrage may be flagged for manual review.",
-    ],
+    summary: "Unrestricted in evaluation. A 2-minute window either side of high-impact news on funded accounts.",
+    details: ["Profit from trades opened or closed inside the window is removed at payout review.", "The account is not breached."],
   },
   {
     id: "weekend-holding",
-    title: "Weekend Holding",
+    title: "Overnight and weekend holding",
     icon: "calendar",
-    summary:
-      "Positions may be held over weekends with no penalty on all account types.",
-    details: [
-      "TPP does not require positions to be flat at the end of the week.",
-      "Be aware that weekend gaps still count toward your daily loss on Monday open.",
-      "Recommended practice: reduce size before high-uncertainty weekends.",
-    ],
+    summary: "Allowed on every account, with no swap charges.",
+    details: ["Forex and gold are closed from Friday 22:00 to Sunday 22:00 UTC.", "A gap at the open counts toward your loss limits."],
   },
   {
-    id: "scaling-plan",
-    title: "Scaling Plan",
+    id: "payouts",
+    title: "Payouts and stipend",
     icon: "trending",
-    summary:
-      "Scale account size by 25% every 4 months of consistent performance.",
+    summary: `First ${PERKS.onDemandPayouts} payouts on demand, then every ${PERKS.payoutCycleDays} days. A ${PERKS.stipend.ratePct}% stipend every month.`,
     details: [
-      "Eligibility: minimum 4 months on funded, 10% net profit, no breached rules.",
-      "Each scale event increases your account by 25% of the original balance.",
-      "Maximum scaled balance is 4× the starting size.",
-      "Scaling is automatic — no application required.",
+      "You keep 80% of the profit, or 100% with the split add-on.",
+      `Each 30-day cycle with at least ${PERKS.stipend.minTradingDays} trading days adds ${PERKS.stipend.ratePct}% of the account size to your rewards balance.`,
+      "The rewards balance is paid together with your payouts.",
     ],
   },
   {
     id: "refund-policy",
-    title: "Refund Policy",
+    title: "Fees and resets",
     icon: "refund",
-    summary:
-      "Pass the evaluation and your full challenge fee is refunded with the first payout.",
+    summary: "Evaluation fees come back with your first payout. $50K+ accounts get a free reset if they fail on day one.",
     details: [
-      "100% of the evaluation fee is refunded with your first profit split on the funded account.",
-      "Refunds are paid in the same currency as the original purchase.",
-      "Account upgrades or expedited evaluation services are non-refundable.",
+      "1-Step, 2-Step and 3-Step fees are added to your first payout.",
+      `An account of $${PERKS.freeReset.minSize.toLocaleString("en-US")} or more that breaches within ${PERKS.freeReset.windowHours} hours of its first trade can be reset once for free.`,
+      "An account that has not traded can be refunded within 14 days.",
     ],
   },
 ];

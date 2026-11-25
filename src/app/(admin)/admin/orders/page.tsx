@@ -8,8 +8,11 @@ import { format } from "date-fns";
 import { ShoppingCart, Eye, RefreshCw, FileText } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
+import { useAdminRole } from "@/lib/admin-context";
 
 export default function AdminOrdersPage() {
+  const { role } = useAdminRole();
+  const canRefund = role === "super_admin" || role === "finance";
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("");
@@ -23,7 +26,8 @@ export default function AdminOrdersPage() {
     try {
       const res = await fetch(`/api/admin/orders?limit=100${statusFilter ? `&status=${statusFilter}` : ""}`);
       const data = await res.json();
-      if (data.orders) setOrders(data.orders);
+      if (!res.ok) throw new Error(data.error || "Could not load orders.");
+      setOrders(data.orders ?? []);
     } catch (error) {
       toast.error("Failed to fetch orders");
     } finally {
@@ -66,12 +70,12 @@ export default function AdminOrdersPage() {
       ),
     },
     {
-      accessorKey: "user_email",
+      accessorKey: "email",
       header: "Customer",
       cell: ({ row }) => (
         <div>
-          <p className="font-semibold text-[var(--ink-950)] text-[13px]">{row.original.user?.display_name || "Guest"}</p>
-          <p className="text-[11px] text-[var(--ink-500)]">{row.original.user_email}</p>
+          <p className="font-semibold text-[var(--ink-950)] text-[13px]">{row.original.full_name}</p>
+          <p className="text-[11px] text-[var(--ink-500)]">{row.original.email}</p>
         </div>
       ),
     },
@@ -184,8 +188,8 @@ export default function AdminOrdersPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-[11px] font-bold text-[var(--ink-400)] uppercase">Customer</p>
-                <p className="font-semibold text-sm mt-1">{selectedOrder.user?.display_name || "Guest"}</p>
-                <p className="text-sm text-[var(--ink-600)]">{selectedOrder.user_email}</p>
+                <p className="font-semibold text-sm mt-1">{selectedOrder.full_name}</p>
+                <p className="text-sm text-[var(--ink-600)]">{selectedOrder.email}</p>
               </div>
               <div>
                 <p className="text-[11px] font-bold text-[var(--ink-400)] uppercase">Date</p>
@@ -202,15 +206,15 @@ export default function AdminOrdersPage() {
               </div>
             </div>
 
-            {selectedOrder.applied_coupon && (
+            {selectedOrder.promo_code && (
               <div className="bg-amber-50 border border-amber-200 p-3 rounded-xl flex justify-between items-center text-sm">
                 <span className="font-bold text-amber-800">Coupon Used:</span>
-                <span className="font-mono font-bold text-amber-600">{selectedOrder.applied_coupon}</span>
+                <span className="font-mono font-bold text-amber-600">{selectedOrder.promo_code}</span>
               </div>
             )}
 
             <div className="flex gap-3 pt-4 border-t border-[var(--border)]">
-              {selectedOrder.payment_status === "paid" && (
+              {canRefund && selectedOrder.payment_status === "paid" && (
                 <button
                   onClick={() => setIsRefundModalOpen(true)}
                   className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-xl font-bold hover:bg-red-100 transition-colors"
@@ -233,7 +237,7 @@ export default function AdminOrdersPage() {
             Are you sure you want to mark order <strong className="font-mono">{selectedOrder?.order_id}</strong> as refunded?
           </p>
           <div className="bg-amber-50 text-amber-800 p-3 rounded-xl text-xs font-semibold">
-            Note: This action only updates the status in the database. You must process the actual refund manually via your payment gateway (e.g., Stripe, Confirmo).
+            Confirm after the gateway returns the funds. This records the refund and reverses any partner commission for this order.
           </div>
           <div className="flex justify-end gap-3 mt-6">
             <button onClick={() => setIsRefundModalOpen(false)} className="px-4 py-2 text-[var(--ink-500)] font-semibold">Cancel</button>

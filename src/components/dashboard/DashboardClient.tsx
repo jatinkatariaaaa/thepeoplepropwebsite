@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { StatCards } from "./StatCards";
 import { ActiveAccounts } from "./ActiveAccounts";
+import { PerksStrip } from "./PerksStrip";
 import { supabase } from "@/lib/supabase";
 
 type DashboardAccount = Record<string, unknown> & {
@@ -30,29 +31,27 @@ export function DashboardClient() {
     async function fetchDashboard() {
       const { data: { session } } = await supabase.auth.getSession();
       
+      if (!alive) return;
       if (session?.user) {
-        // Fetch accounts
-        const { data: accountsData } = await supabase
+        const userId = session.user.id;
+        const accountsRequest = supabase
           .from("trading_accounts")
-          .select("*, tpp_platforms(name), trading_rules(name)")
-          .eq("user_id", session.user.id)
+          .select("id, created_at, status, starting_balance, equity, phase, terminal_account_id, tpp_platforms(name)")
+          .eq("user_id", userId)
           .order("created_at", { ascending: false });
-          
-        if (accountsData && alive) {
-          setAccounts(accountsData as DashboardAccount[]);
-        }
 
-        // Fetch payouts
-        const { data: payoutsData } = await supabase
-          .from("payouts")
+        // Accounts can render while paid-payout totals are still loading.
+        void supabase.from("payouts")
           .select("amount")
-          .eq("user_id", session.user.id)
-          .eq("status", "paid");
-          
-        if (payoutsData && alive) {
-          const total = payoutsData.reduce((s, p) => s + Number(p.amount), 0);
-          setTotalPayouts(total);
-        }
+          .eq("user_id", userId)
+          .eq("status", "paid")
+          .then(({ data }) => {
+            if (data && alive) setTotalPayouts(data.reduce((sum, row) => sum + Number(row.amount), 0));
+          });
+
+        const { data: accountsData } = await accountsRequest;
+        if (!alive) return;
+        if (accountsData) setAccounts(accountsData as unknown as DashboardAccount[]);
 
         // Setup Realtime Sync
         const channelName = `dashboard-accounts-${session.user.id}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -74,7 +73,9 @@ export function DashboardClient() {
       if (alive) setLoading(false);
     }
     
-    void fetchDashboard();
+    void fetchDashboard().catch(() => {
+      if (alive) setLoading(false);
+    });
 
     return () => {
       alive = false;
@@ -83,8 +84,9 @@ export function DashboardClient() {
   }, []);
 
   return (
-    <div className="w-full max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+    <div className="w-full max-w-7xl mx-auto">
       <StatCards accounts={accounts} totalPayouts={totalPayouts} />
+      <PerksStrip accounts={accounts} />
       <ActiveAccounts accounts={accounts} loading={loading} />
     </div>
   );

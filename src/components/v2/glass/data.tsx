@@ -73,21 +73,11 @@ function usePlatformQuery() {
   useEffect(() => {
     if (!SUPABASE_READY) return;
     let alive = true;
-    supabase
-      .from("tpp_platforms")
-      .select("*")
-      .eq("is_active", true)
-      .order("created_at")
-      .then(({ data }) => {
-        if (!alive || !data || data.length === 0) return;
-        setList(
-          data.map((p: { name: string; extra_fee_pct?: number | null }) => ({
-            key: p.name.toLowerCase().replace(/[^a-z0-9]/g, ""),
-            label: p.name,
-            extra: Number(p.extra_fee_pct) || 0,
-          })),
-        );
-      });
+    supabase.rpc("list_public_platforms").then(({ data }) => {
+      const rows = (data ?? []) as { name: string; extra_fee_pct?: number | null }[];
+      if (!alive || rows.length === 0) return;
+      setList(rows.map((p) => ({ key: p.name.toLowerCase().replace(/[^a-z0-9]/g, ""), label: p.name, extra: Number(p.extra_fee_pct) || 0 })));
+    });
     return () => {
       alive = false;
     };

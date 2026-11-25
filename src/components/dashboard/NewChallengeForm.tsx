@@ -1,497 +1,222 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Check, Coins, Gift, RotateCcw, ShieldCheck, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Check, CreditCard } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import {
-  ALL_SIZES,
-  addOns,
-  feeFor,
-  programs,
-  type AccountSize,
-  type AddOnKey,
-  type ProgramKey,
-} from "@/data/programs";
+import { ALL_SIZES, addOns, programs, type AccountSize, type AddOnKey, type ProgramKey } from "@/data/programs";
+import { PERKS, isProgramKey, programDetails } from "@/data/catalogue";
 import { useHydratedPrograms } from "@/hooks/useHydratedPrograms";
+import { buildQuote, type CouponInfo } from "@/lib/pricing";
+import { couponAccountMismatch, couponAppliesToAccount } from "@/lib/coupon-eligibility";
 import { Panel, SectionTitle, btn, field, fieldLabel } from "./glass";
 
-type PlatformOption = {
-  id: string | number;
-  name: string;
-  extra_fee_pct?: number | null;
-};
+type PlatformOption = { id: string; name: string; extra_fee_pct?: number | null };
 
-/* ── Shared UI atoms ─────────────────────────────── */
+const usd = (n: number) => (n === 0 ? "Free" : `$${n.toLocaleString("en-US", { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 })}`);
+const sizeLabel = (n: number) => (n >= 1000 ? `$${n / 1000}K` : `$${n}`);
 
 function RadioCircle({ selected }: { selected: boolean }) {
   return (
-    <span
-      aria-hidden
-      className={cn(
-        "shrink-0 flex items-center justify-center w-[18px] h-[18px] rounded-full ring-1 transition-all",
-        selected ? "bg-[var(--g-ink)] ring-[var(--g-ink)]" : "bg-white ring-black/20"
-      )}
-    >
-      <span
-        className={cn(
-          "w-2 h-2 rounded-full bg-[var(--g-lime)] transition-transform",
-          selected ? "scale-100" : "scale-0"
-        )}
-      />
+    <span aria-hidden className={cn("flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full ring-1 transition-all", selected ? "bg-[var(--g-ink)] ring-[var(--g-ink)]" : "bg-white ring-black/20")}>
+      <span className={cn("h-2 w-2 rounded-full bg-[var(--g-lime)] transition-transform", selected ? "scale-100" : "scale-0")} />
     </span>
   );
 }
 
-function SectionHeading({ title, subtitle }: { title: string; subtitle?: string }) {
-  return <SectionTitle as="h3" title={title} sub={subtitle} />;
-}
-
-const selectableCard = (selected: boolean) =>
+const card = (selected: boolean) =>
   cn(
-    "rounded-[18px] text-left cursor-pointer ring-1 transition-all",
-    selected
-      ? "bg-[var(--g-lime)]/[0.14] ring-2 ring-[var(--g-ink)] shadow-[0_14px_30px_-18px_rgba(16,40,34,0.45)]"
-      : "bg-white/55 ring-black/[0.07] hover:bg-white/85 hover:ring-black/15"
+    "cursor-pointer rounded-[18px] text-left ring-1 transition-all",
+    selected ? "bg-[var(--g-lime)]/[0.14] ring-2 ring-[var(--g-ink)] shadow-[0_14px_30px_-18px_rgba(16,40,34,0.45)]" : "bg-white/55 ring-black/[0.07] hover:bg-white/85 hover:ring-black/15",
   );
 
-const skeleton = "animate-pulse w-full rounded-[18px] bg-white/55 ring-1 ring-black/[0.05]";
+const skeleton = "w-full animate-pulse rounded-[18px] bg-white/55 ring-1 ring-black/[0.05]";
 
 export function NewChallengeForm() {
   const router = useRouter();
-  const [programKey, setProgramKey] = useState<ProgramKey>(programs[0].key);
-  const [size, setSize] = useState<AccountSize>(ALL_SIZES[2]); // Default 25k
-  const [selectedAddOns, setSelectedAddOns] = useState<AddOnKey[]>([]);
-  const [currency, setCurrency] = useState("USD");
-  const [platform, setPlatform] = useState("TPP Dashboard");
-  const [paymentMethod, setPaymentMethod] = useState("Credit / Debit Card");
+  const params = useSearchParams();
+  const { programs: livePrograms, isLoading } = useHydratedPrograms();
+
+  const initialProgram = params.get("program");
+  const initialSize = Number(params.get("size"));
+  const [programKey, setProgramKey] = useState<ProgramKey>(initialProgram && isProgramKey(initialProgram) ? initialProgram : programs[0].key);
+  const [size, setSize] = useState<AccountSize>((ALL_SIZES as number[]).includes(initialSize) ? (initialSize as AccountSize) : 25_000);
+  const [selected, setSelected] = useState<AddOnKey[]>([]);
+  const [platforms, setPlatforms] = useState<PlatformOption[]>([]);
+  const [platform, setPlatform] = useState("");
   const [agreed, setAgreed] = useState(false);
 
-  // Promo State
   const [promoInput, setPromoInput] = useState("");
-  const [appliedPromo, setAppliedPromo] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState<CouponInfo | null>(null);
   const [promoError, setPromoError] = useState("");
-  const [appliedDiscountPct, setAppliedDiscountPct] = useState(0);
+  const [promoBusy, setPromoBusy] = useState(false);
 
-  // Personal Info State
-  const [personalInfo, setPersonalInfo] = useState({
-    firstName: "",
-    lastName: "",
-    phone: "",
-    address: "",
-    city: "",
-    zipCode: ""
-  });
+  const [info, setInfo] = useState({ firstName: "", lastName: "", country: "", address: "" });
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState<{ tone: "ok" | "error"; text: string } | null>(null);
 
-  const [isCheckingOut, setIsCheckingOut] = useState(false);
-  const [checkoutMessage, setCheckoutMessage] = useState("");
-
-  const { programs: livePrograms, isLoading: isLoadingPrograms } = useHydratedPrograms();
-  const [livePlatforms, setLivePlatforms] = useState<PlatformOption[]>([]);
-
-  // Auth Check & Fetch Platforms
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) {
-        router.push("/login?redirect=/dashboard/new-challenge");
-      }
+      if (!session) router.push("/login?redirect=/dashboard/new-challenge");
     });
+    supabase.rpc("list_public_platforms").then(({ data }) => {
+      const list = (data ?? []) as PlatformOption[];
+      setPlatforms(list);
+      if (list[0]) setPlatform(list[0].name);
+    });
+  }, [router]);
 
-    // Fetch platforms
-    const fetchPlatforms = async () => {
-      try {
-        const platformsRes = await supabase
-            .from("tpp_platforms")
-            .select("*")
-            .eq("is_active", true)
-            .order("created_at", { ascending: true });
+  const program = useMemo(() => livePrograms.find((p) => p.key === programKey) ?? livePrograms[0], [programKey, livePrograms]);
+  const detail = programDetails[program.key];
+  const isAccess = program.key === "access";
 
-        if (platformsRes.error) throw platformsRes.error;
+  const sizes = useMemo(
+    () =>
+      (Object.keys(program.fees) as unknown as string[])
+        .map((s) => Number(s) as AccountSize)
+        .filter((s) => program.fees[s] != null)
+        .sort((a, b) => a - b),
+    [program],
+  );
+  const effectiveSize = sizes.includes(size) ? size : (sizes.filter((s) => s <= size).pop() ?? sizes[0]);
+  const base = program.fees[effectiveSize] ?? 0;
+  const platformExtraPct = Number(platforms.find((p) => p.name === platform)?.extra_fee_pct ?? 0);
+  const coupon = appliedCoupon && couponAppliesToAccount(appliedCoupon.eligibility, program.key, effectiveSize)
+    ? appliedCoupon
+    : null;
+  const couponBlocked = appliedCoupon !== null && coupon === null;
 
-        const fetchedPlatforms = (platformsRes.data ?? []) as PlatformOption[];
-
-        if (fetchedPlatforms.length > 0) {
-          setLivePlatforms(fetchedPlatforms);
-          // Auto-select the first available platform if the current one isn't valid
-          if (!fetchedPlatforms.find((p) => p.name === platform)) {
-            setPlatform(fetchedPlatforms[0].name);
-          }
-        }
-      } catch (err) {
-        console.error("Error fetching platforms:", err);
-      }
-    };
-    fetchPlatforms();
-  }, [platform, router]);
-
-  const program = useMemo(
-    () => livePrograms.find((p) => p.key === programKey) ?? livePrograms[0],
-    [programKey, livePrograms]
+  const quote = useMemo(
+    () => buildQuote({ programKey: program.key, size: effectiveSize, base, addOnKeys: selected, platformExtraPct, coupon, payAfterPass: isAccess, upfrontFee: PERKS.accessUpfront }),
+    [program.key, effectiveSize, base, selected, platformExtraPct, coupon, isAccess],
   );
 
-  // Fallback size if current program doesn't offer it
-  const effectiveSize = useMemo<AccountSize>(() => {
-    if (program.fees[size] !== undefined) return size;
-    const offered = (Object.keys(program.fees) as unknown as string[])
-      .map((s) => Number(s) as AccountSize)
-      .sort((a, b) => a - b);
-    const lowerOrEqual = offered.filter((s) => s <= size).pop();
-    return lowerOrEqual ?? offered[0];
-  }, [program, size]);
+  const availableAddOns = addOns.filter((a) => a.appliesTo.includes(program.key));
+  const toggle = (key: AddOnKey) => setSelected((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
 
-  const { base, total: prePlatformTotal } = useMemo(
-    () => feeFor(program, effectiveSize, selectedAddOns),
-    [program, effectiveSize, selectedAddOns]
-  );
-
-  // Promo Logic
-  let promoDiscountAmt = 0;
-  const isFirstTpp = appliedPromo === "FIRSTTPP";
-  if (appliedDiscountPct > 0) {
-    promoDiscountAmt = (base ?? 0) * (appliedDiscountPct / 100);
-  }
-
-  // Adjust total for free retry if coupon is applied
-  let freeRetryAdjustment = 0;
-  if (isFirstTpp && selectedAddOns.includes("free-retry")) {
-    const retryDef = addOns.find(a => a.key === "free-retry");
-    if (retryDef) freeRetryAdjustment = (base ?? 0) * (retryDef.feePct / 100);
-  }
-
-  // Platform logic
-  const selectedPlatformData = livePlatforms.find(p => p.name === platform);
-  const selectedPlatformFeePct = Number(selectedPlatformData?.extra_fee_pct ?? 0);
-  let platformExtras = 0;
-  if (selectedPlatformFeePct > 0) {
-    platformExtras = (base ?? 0) * (selectedPlatformFeePct / 100);
-  }
-
-  const total = prePlatformTotal ? prePlatformTotal + platformExtras - promoDiscountAmt - freeRetryAdjustment : 0;
-
-  // Payment gateway fees
-  let paymentFeePct = 0;
-  if (paymentMethod === "Neteller" || paymentMethod === "Skrill") {
-    paymentFeePct = 4;
-  }
-  if (paymentMethod === "Paysafecard") {
-    paymentFeePct = 10;
-  }
-
-  const finalTotal = total * (1 + (paymentFeePct / 100));
-
-  const handleApplyPromo = async () => {
+  const applyPromo = async () => {
     setPromoError("");
-    const code = promoInput.toUpperCase().trim();
-    if (!code) {
-      setAppliedPromo("");
-      setAppliedDiscountPct(0);
-      return;
-    }
-
-    if (code === "FIRSTTPP") {
-      setAppliedPromo("FIRSTTPP");
-      setAppliedDiscountPct(50);
-      setPaymentMethod("Crypto");
-      if (!selectedAddOns.includes("free-retry")) {
-        setSelectedAddOns(prev => [...prev, "free-retry"]);
-      }
-      return;
-    }
-
-    const { data, error } = await supabase
-      .from("tpp_coupons")
-      .select("discount_pct, is_active")
-      .eq("code", code)
-      .single();
-
-    if (error || !data || !data.is_active) {
-      setPromoError("Invalid or expired promo code");
-      setAppliedPromo("");
-      setAppliedDiscountPct(0);
-    } else {
-      setAppliedPromo(code);
-      setAppliedDiscountPct(data.discount_pct);
-    }
-  };
-
-  // Currency Conversion Logic
-  const CURRENCY_RATES: Record<string, { symbol: string, rate: number, prefix: boolean }> = {
-    USD: { symbol: "$", rate: 1, prefix: true },
-    EUR: { symbol: "€", rate: 0.95, prefix: true },
-    GBP: { symbol: "£", rate: 0.82, prefix: true },
-    CHF: { symbol: "CHF", rate: 0.9, prefix: false },
-    INR: { symbol: "₹", rate: 96, prefix: true }
-  };
-
-  const currentCurrency = CURRENCY_RATES[currency] || CURRENCY_RATES["USD"];
-
-  const formatCurrency = (usdAmount: number) => {
-    if (usdAmount === 0) return "Free";
-    const converted = usdAmount * currentCurrency.rate;
-    const formatted = converted.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    return currentCurrency.prefix ? `${currentCurrency.symbol}${formatted}` : `${formatted} ${currentCurrency.symbol}`;
-  };
-
-  const formatCompactAmount = (value: number) => {
-    if (value >= 1_000_000) return `${Number((value / 1_000_000).toFixed(1))}M`;
-    if (value >= 1_000) return `${Number((value / 1_000).toFixed(1))}K`;
-    return value.toLocaleString("en-US");
-  };
-
-  const formatAccSize = (usdSize: number) => {
-    if (currency === "INR") {
-      const inr = usdSize * 96;
-      return `INR ${Number((inr / 100000).toFixed(1))}L`;
-    }
-    const converted = usdSize * currentCurrency.rate;
-    return currentCurrency.prefix
-      ? `${currentCurrency.symbol}${formatCompactAmount(converted)}`
-      : `${formatCompactAmount(converted)} ${currentCurrency.symbol}`;
-  };
-
-  const toggleAddOn = (key: AddOnKey) => {
-    setSelectedAddOns(prev =>
-      prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key]
-    );
-  };
-
-  const handleCheckout = async () => {
-    setIsCheckingOut(true);
-    setCheckoutMessage("");
+    const code = promoInput.trim().toUpperCase();
+    if (!code) return setAppliedCoupon(null);
+    setPromoBusy(true);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-
-      const res = await fetch("/api/checkout", {
+      const res = await fetch("/api/checkout/quote", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(session?.access_token && { "Authorization": `Bearer ${session.access_token}` })
-        },
-        body: JSON.stringify({
-          programKey,
-          accountSize: size,
-          priceAmount: finalTotal,
-          fullName: `${personalInfo.firstName} ${personalInfo.lastName}`,
-          address: `${personalInfo.address}, ${personalInfo.city}, ${personalInfo.zipCode}`,
-          country: "Unknown", // Can be added to form later
-          platform,
-          promoCode: appliedPromo
-        })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ programKey: program.key, accountSize: effectiveSize, addOns: selected, platform, promoCode: code }),
       });
       const data = await res.json();
-      if (res.ok) {
-        setCheckoutMessage("Redirecting to payment gateway...");
-        if (data.invoice_url) {
-          window.location.href = data.invoice_url;
-        } else {
-          setCheckoutMessage("Error: Missing invoice URL");
-        }
+      if (!res.ok || !data.coupon) {
+        setAppliedCoupon(null);
+        setPromoError(data.error || "That promo code is not valid.");
       } else {
-        setCheckoutMessage(data.error || "Checkout failed");
+        setAppliedCoupon(data.coupon);
       }
     } catch {
-      setCheckoutMessage("An error occurred during checkout");
+      setPromoError("Could not check that code. Try again.");
     }
-    setIsCheckingOut(false);
+    setPromoBusy(false);
   };
 
-  const inputClasses = field();
+  const checkout = async () => {
+    setBusy(true);
+    setMessage(null);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}) },
+        body: JSON.stringify({
+          programKey: program.key,
+          accountSize: effectiveSize,
+          addOns: selected,
+          platform,
+          promoCode: coupon?.code ?? null,
+          fullName: `${info.firstName} ${info.lastName}`.trim(),
+          country: info.country,
+          address: info.address,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) setMessage({ tone: "error", text: data.error || "Checkout failed. Please try again." });
+      else if (data.invoice_url) {
+        setMessage({ tone: "ok", text: data.account ? "Your account is ready. Taking you to the dashboard…" : "Redirecting to the payment page…" });
+        window.location.href = data.invoice_url;
+        return;
+      } else setMessage({ tone: "error", text: "The payment page could not be opened. Please contact support." });
+    } catch {
+      setMessage({ tone: "error", text: "Something went wrong. Please try again." });
+    }
+    setBusy(false);
+  };
+
+  const canPay = agreed && info.firstName.trim() && info.lastName.trim() && !busy && !promoBusy && !couponBlocked;
+  const perksLine = [
+    { icon: Coins, text: `${PERKS.stipend.ratePct}% monthly stipend: ${usd(Math.round((effectiveSize * PERKS.stipend.ratePct) / 100))} a month` },
+    { icon: Zap, text: `First ${PERKS.onDemandPayouts} payouts on demand` },
+    ...(effectiveSize >= PERKS.freeReset.minSize ? [{ icon: RotateCcw, text: `Free reset if it fails in the first ${PERKS.freeReset.windowHours} hours` }] : []),
+  ];
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_minmax(360px,420px)] gap-6 lg:gap-10 pb-16 sm:pb-20">
-
-      {/* Left Column: Configuration */}
+    <div className="grid grid-cols-1 gap-6 pb-16 sm:pb-20 lg:gap-10 xl:grid-cols-[minmax(0,1fr)_minmax(360px,420px)]">
       <div className="min-w-0 space-y-9 sm:space-y-10">
-
-        {/* Challenge Type — model-style radio cards */}
         <section>
-          <SectionHeading title="Challenge Type" subtitle="Choose the type of challenge you want to take" />
-          {isLoadingPrograms ? (
+          <SectionTitle as="h3" title="Account type" sub="Five routes to a funded account. The rules of each are one tap away." />
+          {isLoading ? (
             <div className={cn(skeleton, "h-20")} />
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {livePrograms.map(prog => {
-                const selected = programKey === prog.key;
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {livePrograms.map((p) => {
+                const on = program.key === p.key;
                 return (
-                  <button
-                    key={prog.key}
-                    onClick={() => setProgramKey(prog.key as ProgramKey)}
-                    className={cn(selectableCard(selected), "flex items-start gap-3 p-4 min-h-[72px]")}
-                  >
-                    <span className="mt-0.5"><RadioCircle selected={selected} /></span>
+                  <button key={p.key} type="button" onClick={() => setProgramKey(p.key)} className={cn(card(on), "flex min-h-[72px] items-start gap-3 p-4")}>
+                    <span className="mt-0.5">
+                      <RadioCircle selected={on} />
+                    </span>
                     <span className="min-w-0">
-                      <span className="block text-[14px] font-semibold leading-tight text-[var(--g-ink)]">
-                        {prog.shortLabel}
-                      </span>
-                      <span className="block text-[12px] text-[var(--g-muted-ink)] mt-1 leading-snug line-clamp-2">
-                        {prog.tagline}
-                      </span>
+                      <span className="block text-[14px] leading-tight font-semibold text-[var(--g-ink)]">{p.shortLabel}</span>
+                      <span className="mt-1 line-clamp-2 block text-[12px] leading-snug text-[var(--g-muted-ink)]">{p.tagline}</span>
                     </span>
                   </button>
                 );
               })}
             </div>
           )}
+          <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 rounded-[18px] bg-white/55 px-4 py-3 text-[12.5px] text-[var(--g-muted-ink)] ring-1 ring-black/[0.06]">
+            <span>
+              Target <b className="text-[var(--g-ink)]">{detail.phases.length ? detail.phases.map((p) => `${p.targetPct}%`).join(" + ") : "none"}</b>
+            </span>
+            <span>
+              Daily loss <b className="text-[var(--g-ink)]">{detail.funded.dailyLossPct}%</b>
+            </span>
+            <span>
+              Max loss <b className="text-[var(--g-ink)]">{detail.funded.maxLossPct}%</b>
+            </span>
+            <span>
+              Min days <b className="text-[var(--g-ink)]">{detail.phases[0]?.minTradingDays ?? 0}</b>
+            </span>
+            <Link href={`/challenges/${program.key}`} target="_blank" className="ml-auto font-semibold text-[var(--g-emerald)] underline-offset-4 hover:underline">
+              Full {detail.name} rules
+            </Link>
+          </div>
         </section>
 
-        {/* Account Size */}
         <section>
-          <SectionHeading title="Account Size" subtitle="Choose your preferred account size" />
-          {isLoadingPrograms ? (
+          <SectionTitle as="h3" title="Account size" sub={isAccess ? `Pay $${PERKS.accessUpfront} today. The fee shown is due only after you pass.` : "One-time fee. No monthly charges."} />
+          {isLoading ? (
             <div className={cn(skeleton, "h-24")} />
           ) : (
-            <div className="grid grid-cols-1 min-[420px]:grid-cols-2 md:grid-cols-3 gap-3">
-              {Object.keys(program.fees)
-                .map((s) => Number(s) as AccountSize)
-                .sort((a, b) => a - b)
-                .map((s) => {
-                  const selected = effectiveSize === s;
-                  const fee = program.fees[s] ?? 0;
-                  return (
-                    <button
-                      key={s}
-                      onClick={() => setSize(s)}
-                      className={cn(selectableCard(selected), "flex items-center gap-3 px-4 py-3.5")}
-                    >
-                      <RadioCircle selected={selected} />
-                      <span className="min-w-0">
-                        <span className="g-num block text-[16px] font-semibold leading-tight text-[var(--g-ink)]">
-                          {formatAccSize(s)}
-                        </span>
-                        <span className="g-num block text-[12px] text-[var(--g-muted-ink)] mt-0.5">
-                          {formatCurrency(fee)}
-                        </span>
-                      </span>
-                    </button>
-                  );
-                })}
-            </div>
-          )}
-        </section>
-
-        {/* Customise Trading Rules (Add-ons) */}
-        <section>
-          <SectionHeading title="Customise Trading Rules" subtitle="Adjust your challenge parameters to match your trading style" />
-
-          <div className="space-y-5">
-            {addOns.filter(a => a.appliesTo.includes(programKey)).map(addon => {
-              const isActive = selectedAddOns.includes(addon.key);
-              let extraCost = (base ?? 0) * (addon.feePct / 100);
-              if (isFirstTpp && addon.key === "free-retry") extraCost = 0;
-
-              let noLabel = "No";
-              let noSub = "Default";
-              let yesLabel = "Yes";
-
-              if (addon.key === "no-min-days") {
-                noLabel = `${program.minTradingDays} Days`;
-                noSub = "Minimum";
-                yesLabel = "0 Days";
-              } else if (addon.key === "payout-on-demand") {
-                noLabel = program.payoutCycle;
-                noSub = "Regular";
-                yesLabel = "On Demand";
-              } else if (addon.key === "split-100") {
-                noLabel = `${program.profitSplit}%`;
-                noSub = "Split";
-                yesLabel = "100%";
-              }
-
-              return (
-                <div key={addon.key}>
-                  <div className="text-[14px] font-semibold text-[var(--g-ink)]">{addon.label}</div>
-                  <p className="text-[12px] text-[var(--g-muted-ink)] mt-0.5 mb-2.5">{addon.description}</p>
-                  <div className="grid grid-cols-1 min-[420px]:grid-cols-2 gap-3">
-                    <button
-                      onClick={() => isActive && toggleAddOn(addon.key)}
-                      className={cn(selectableCard(!isActive), "flex items-center justify-between gap-3 px-4 py-3.5 min-h-[52px]")}
-                    >
-                      <span className="flex items-center gap-3 min-w-0">
-                        <RadioCircle selected={!isActive} />
-                        <span className="text-[13px] font-semibold truncate text-[var(--g-ink)]">
-                          {noLabel}
-                        </span>
-                      </span>
-                      <span className="shrink-0 text-black/40 text-[12px]">{noSub}</span>
-                    </button>
-                    <button
-                      onClick={() => !isActive && toggleAddOn(addon.key)}
-                      className={cn(selectableCard(isActive), "flex items-center justify-between gap-3 px-4 py-3.5 min-h-[52px]")}
-                    >
-                      <span className="flex items-center gap-3 min-w-0">
-                        <RadioCircle selected={isActive} />
-                        <span className="text-[13px] font-semibold truncate text-[var(--g-ink)]">
-                          {yesLabel}
-                        </span>
-                      </span>
-                      <span className="g-num shrink-0 text-[var(--g-emerald)] font-semibold text-[12px]">{extraCost === 0 ? "Free" : `+${formatCurrency(extraCost)}`}</span>
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-
-            {addOns.filter(a => a.appliesTo.includes(programKey)).length === 0 && (
-              <div className="text-[13px] text-[var(--g-muted-ink)] p-4 rounded-[18px] bg-white/55 ring-1 ring-black/[0.07]">
-                No customisations available for this challenge type.
-              </div>
-            )}
-          </div>
-        </section>
-
-        {/* Currency */}
-        <section>
-          <SectionHeading title="Currency" subtitle="Select your billing currency" />
-          <div className="grid grid-cols-2 min-[420px]:grid-cols-3 sm:flex sm:flex-wrap gap-3">
-            {[
-              { id: "USD", flag: "🇺🇸" },
-              { id: "CHF", flag: "🇨🇭" },
-              { id: "EUR", flag: "🇪🇺" },
-              { id: "GBP", flag: "🇬🇧" },
-              { id: "INR", flag: "🇮🇳" }
-            ].map(c => {
-              const selected = currency === c.id;
-              return (
-                <button
-                  key={c.id}
-                  onClick={() => setCurrency(c.id)}
-                  className={cn(selectableCard(selected), "flex items-center justify-center gap-2.5 min-h-11 py-2.5 px-4 sm:px-5")}
-                >
-                  <RadioCircle selected={selected} />
-                  <span className="text-[13px] font-semibold text-[var(--g-ink)]">
-                    <span className="mr-1.5">{c.flag}</span>{c.id}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* Trading Platform */}
-        <section>
-          <SectionHeading title="Trading Platform" subtitle="Choose your preferred trading platform" />
-          {isLoadingPrograms ? (
-            <div className={cn(skeleton, "h-14")} />
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {livePlatforms.map(plat => {
-                const extraCost = (base ?? 0) * (Number(plat.extra_fee_pct ?? 0) / 100);
-                const selected = platform === plat.name;
+            <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 md:grid-cols-3">
+              {sizes.map((s) => {
+                const on = effectiveSize === s;
                 return (
-                  <button
-                    key={plat.id}
-                    onClick={() => setPlatform(plat.name)}
-                    className={cn(selectableCard(selected), "flex items-center justify-between gap-3 px-4 py-3.5 min-h-[52px]")}
-                  >
-                    <span className="flex items-center gap-3 min-w-0">
-                      <RadioCircle selected={selected} />
-                      <span className="text-[13px] font-semibold truncate text-[var(--g-ink)]">
-                        {plat.name}
-                      </span>
-                    </span>
-                    <span className={cn("g-num shrink-0 text-[12px]", extraCost === 0 ? "text-[var(--g-emerald)] font-semibold" : "text-[var(--g-muted-ink)]")}>
-                      {extraCost === 0 ? "Free" : `+${formatCurrency(extraCost)}`}
+                  <button key={s} type="button" onClick={() => setSize(s)} className={cn(card(on), "flex items-center gap-3 px-4 py-3.5")}>
+                    <RadioCircle selected={on} />
+                    <span className="min-w-0">
+                      <span className="g-num block text-[16px] leading-tight font-semibold text-[var(--g-ink)]">{sizeLabel(s)}</span>
+                      <span className="g-num mt-0.5 block text-[12px] text-[var(--g-muted-ink)]">{usd(program.fees[s] ?? 0)}</span>
                     </span>
                   </button>
                 );
@@ -500,248 +225,210 @@ export function NewChallengeForm() {
           )}
         </section>
 
-        {/* Personal Information */}
+        {availableAddOns.length > 0 && (
+          <section>
+            <SectionTitle as="h3" title="Add-ons" sub="Optional. Each one changes a rule on this account for good." />
+            <div className="grid gap-3">
+              {availableAddOns.map((a) => {
+                const granted = coupon?.grantsAddons.includes(a.key) ?? false;
+                const on = selected.includes(a.key) || granted;
+                const cost = granted ? 0 : Math.round(base * a.feePct) / 100;
+                return (
+                  <button key={a.key} type="button" disabled={granted} onClick={() => toggle(a.key)} aria-pressed={on} className={cn(card(on), "flex items-center justify-between gap-4 px-4 py-3.5 disabled:cursor-default")}>
+                    <span className="flex min-w-0 items-start gap-3">
+                      <span className={cn("mt-0.5 grid h-[18px] w-[18px] shrink-0 place-items-center rounded-md ring-1", on ? "bg-[var(--g-ink)] ring-[var(--g-ink)]" : "bg-white ring-black/20")}>
+                        {on ? <Check className="h-3 w-3 text-[var(--g-lime)]" strokeWidth={3} /> : null}
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block text-[14px] font-semibold text-[var(--g-ink)]">{a.label}</span>
+                        <span className="mt-0.5 block text-[12.5px] leading-snug text-[var(--g-muted-ink)]">{a.description}</span>
+                      </span>
+                    </span>
+                    <span className="g-num shrink-0 text-[13px] font-semibold text-[var(--g-emerald)]">{granted ? "Included" : `+${usd(cost)}`}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
+        {platforms.length > 1 && (
+          <section>
+            <SectionTitle as="h3" title="Trading platform" />
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+              {platforms.map((p) => {
+                const on = platform === p.name;
+                const extra = Math.round(base * Number(p.extra_fee_pct ?? 0)) / 100;
+                return (
+                  <button key={p.id} type="button" onClick={() => setPlatform(p.name)} className={cn(card(on), "flex min-h-[52px] items-center justify-between gap-3 px-4 py-3.5")}>
+                    <span className="flex min-w-0 items-center gap-3">
+                      <RadioCircle selected={on} />
+                      <span className="truncate text-[13px] font-semibold text-[var(--g-ink)]">{p.name}</span>
+                    </span>
+                    <span className="g-num shrink-0 text-[12px] font-semibold text-[var(--g-emerald)]">{extra === 0 ? "Included" : `+${usd(extra)}`}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
         <section>
-          <SectionHeading title="Personal Information" subtitle="Please enter your billing and contact details" />
+          <SectionTitle as="h3" title="Your details" sub="Use the name on your government ID. Payouts are only sent to the account holder." />
           <Panel className="p-4 sm:p-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className={fieldLabel}>First Name</label>
-                <input
-                  type="text"
-                  value={personalInfo.firstName}
-                  onChange={e => setPersonalInfo({...personalInfo, firstName: e.target.value})}
-                  className={inputClasses}
-                  placeholder="John"
-                />
-              </div>
-              <div>
-                <label className={fieldLabel}>Last Name</label>
-                <input
-                  type="text"
-                  value={personalInfo.lastName}
-                  onChange={e => setPersonalInfo({...personalInfo, lastName: e.target.value})}
-                  className={inputClasses}
-                  placeholder="Doe"
-                />
-              </div>
-              <div>
-                <label className={fieldLabel}>Phone Number</label>
-                <input
-                  type="tel"
-                  value={personalInfo.phone}
-                  onChange={e => setPersonalInfo({...personalInfo, phone: e.target.value})}
-                  className={inputClasses}
-                  placeholder="+1 234 567 8900"
-                />
-              </div>
-              <div>
-                <label className={fieldLabel}>Zip/Postal Code</label>
-                <input
-                  type="text"
-                  value={personalInfo.zipCode}
-                  onChange={e => setPersonalInfo({...personalInfo, zipCode: e.target.value})}
-                  className={inputClasses}
-                  placeholder="10001"
-                />
-              </div>
-              <div className="sm:col-span-2">
-                <label className={fieldLabel}>Billing Address</label>
-                <input
-                  type="text"
-                  value={personalInfo.address}
-                  onChange={e => setPersonalInfo({...personalInfo, address: e.target.value})}
-                  className={inputClasses}
-                  placeholder="123 Trading St, Suite 400"
-                />
-              </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {(
+                [
+                  ["firstName", "First name", "given-name"],
+                  ["lastName", "Last name", "family-name"],
+                  ["country", "Country", "country-name"],
+                  ["address", "Billing address", "street-address"],
+                ] as const
+              ).map(([key, label, auto]) => (
+                <div key={key} className={key === "address" ? "sm:col-span-2" : undefined}>
+                  <label className={fieldLabel} htmlFor={`nc-${key}`}>
+                    {label}
+                  </label>
+                  <input id={`nc-${key}`} type="text" autoComplete={auto} value={info[key]} onChange={(e) => setInfo({ ...info, [key]: e.target.value })} className={field()} />
+                </div>
+              ))}
             </div>
           </Panel>
         </section>
 
-        {/* Payment Gateway */}
         <section>
-          <SectionHeading title="Payment Gateway" subtitle="Choose your preferred payment method" />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {[
-              { id: "Credit / Debit Card", logo: "VISA", rightLogo: "Mastercard" },
-              { id: "Crypto", logo: "₿" },
-              { id: "AstroPay", logo: "AstroPay" },
-              { id: "PayPal", logo: "PayPal" },
-              { id: "Neteller", logo: "NETELLER", fee: "+4%" },
-              { id: "Paysafecard", logo: "paysafecard", fee: "+10%" },
-              { id: "Skrill", logo: "Skrill", fee: "+4%" },
-            ].map(method => {
-              const selected = paymentMethod === method.id;
-              return (
-                <label
-                  key={method.id}
-                  className={cn(selectableCard(selected), "flex items-center justify-between gap-3 px-4 py-3.5 min-h-[52px] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[var(--g-emerald)]")}
-                >
-                  <div className="min-w-0 flex items-center gap-3">
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value={method.id}
-                      checked={selected}
-                      onChange={(e) => {
-                        if (isFirstTpp && method.id !== "Crypto") return;
-                        setPaymentMethod(e.target.value);
-                      }}
-                      className="sr-only"
-                    />
-                    <RadioCircle selected={selected} />
-                    <span className="min-w-0 text-[13px] font-semibold flex items-center gap-2 truncate text-[var(--g-ink)]">
-                      {method.id}
-                      {method.fee && <span className="text-[11px] font-medium text-[var(--g-muted-ink)]">{method.fee}</span>}
-                    </span>
-                  </div>
-                  <div className="shrink-0 text-right text-[11px] sm:text-[12px] font-bold text-[var(--g-ink)] opacity-45">
-                    {method.logo} {method.rightLogo && <span>{method.rightLogo}</span>}
-                  </div>
-                </label>
-              );
-            })}
+          <SectionTitle as="h3" title="Payment" />
+          <div className={cn(card(true), "flex items-center gap-3 px-4 py-4")}>
+            <RadioCircle selected />
+            <span className="min-w-0">
+              <span className="block text-[14px] font-semibold text-[var(--g-ink)]">Crypto</span>
+              <span className="mt-0.5 block text-[12.5px] text-[var(--g-muted-ink)]">USDT, BTC, ETH and 100+ coins through NOWPayments. Your account is issued when the network confirms the payment.</span>
+            </span>
           </div>
-
-          {isFirstTpp && paymentMethod !== "Crypto" && (
-            <div className="mt-4 rounded-[14px] bg-red-500/10 p-3 text-[12px] font-semibold text-red-700 ring-1 ring-red-500/20">
-              Promo code applied only on crypto payments
-            </div>
-          )}
         </section>
-
       </div>
 
-
-      {/* Right Column: Coupon + Order Summary */}
       <div className="w-full min-w-0">
-        <div className="xl:sticky xl:top-24 space-y-6">
-
-          {/* Coupon Code */}
+        <div className="space-y-6 xl:sticky xl:top-24">
           <section>
-            <SectionHeading title="Coupon Code" subtitle="Enter a coupon to get a discount" />
-            <div className="flex flex-col min-[420px]:flex-row gap-2.5">
-              <input
-                type="text"
-                value={promoInput}
-                onChange={e => setPromoInput(e.target.value)}
-                placeholder="ENTER COUPON CODE"
-                className={cn(inputClasses, "min-w-0 flex-1 text-[13px] font-medium uppercase tracking-wide")}
-              />
-              <button
-                onClick={handleApplyPromo}
-                className={btn.ink}
-              >
-                Apply
+            <SectionTitle as="h3" title="Promo code" />
+            <div className="flex flex-col gap-2.5 min-[420px]:flex-row">
+              <input type="text" value={promoInput} onChange={(e) => setPromoInput(e.target.value)} disabled={promoBusy} placeholder="Enter code" aria-label="Promo code" className={cn(field(), "min-w-0 flex-1 text-[13px] font-medium tracking-wide uppercase")} />
+              <button type="button" onClick={applyPromo} disabled={promoBusy} className={btn.ink}>
+                {promoBusy ? "Checking…" : "Apply"}
               </button>
             </div>
-            {promoError && <p className="text-red-600 text-[12px] font-medium mt-2 px-1">{promoError}</p>}
-            {appliedPromo && <p className="text-[var(--g-emerald)] text-[12px] font-semibold mt-2 px-1">Coupon &quot;{appliedPromo}&quot; applied successfully!</p>}
+            {(promoError || couponBlocked) && (
+              <p role="alert" className="mt-2 px-1 text-[12px] font-medium text-red-600">{promoError || couponAccountMismatch}</p>
+            )}
+            {appliedCoupon && (
+              <div className="mt-2 flex items-center gap-2 px-1 text-[12px] font-semibold">
+                {coupon && <span role="status" className="text-[var(--g-emerald)]">{coupon.code} applied.</span>}
+                <button
+                  type="button"
+                  onClick={() => { setAppliedCoupon(null); setPromoInput(""); setPromoError(""); }}
+                  disabled={promoBusy}
+                  className="text-[var(--g-ink)] underline underline-offset-2"
+                >
+                  Remove promo code
+                </button>
+              </div>
+            )}
           </section>
 
-          {/* Order Summary Card */}
           <Panel className="overflow-hidden">
+            <div className="border-b border-black/[0.06] p-5 sm:p-6">
+              <h3 className="text-[18px] font-semibold tracking-[-0.02em] text-[var(--g-ink)]">Order summary</h3>
+            </div>
+            <div className="border-b border-black/[0.06] p-5 sm:p-6">
+              <dl className="space-y-3 text-[13px]">
+                <div className="flex justify-between gap-4 font-medium text-[var(--g-ink)]">
+                  <dt>
+                    {sizeLabel(effectiveSize)} {program.shortLabel}
+                  </dt>
+                  <dd className="g-num font-semibold">{usd(quote.base)}</dd>
+                </div>
+                {quote.addOns.map((l) => (
+                  <div key={l.key} className="flex justify-between gap-4 text-[var(--g-muted-ink)]">
+                    <dt>{l.label}</dt>
+                    <dd className={cn("g-num", l.free && "font-semibold text-[var(--g-emerald)]")}>{l.free ? "Included" : `+${usd(l.amount)}`}</dd>
+                  </div>
+                ))}
+                {quote.platformFee > 0 ? (
+                  <div className="flex justify-between gap-4 text-[var(--g-muted-ink)]">
+                    <dt>{platform}</dt>
+                    <dd className="g-num">+{usd(quote.platformFee)}</dd>
+                  </div>
+                ) : null}
+                {quote.discount > 0 ? (
+                  <div className="flex justify-between gap-4 font-semibold text-[var(--g-emerald)]">
+                    <dt>Promo {quote.couponCode}</dt>
+                    <dd className="g-num">-{usd(quote.discount)}</dd>
+                  </div>
+                ) : null}
+              </dl>
 
-            <div className="p-5 sm:p-6 border-b border-black/[0.06]">
-              <h3 className="font-semibold text-[18px] text-[var(--g-ink)] tracking-[-0.02em]">Order Summary</h3>
+              <div className="mt-5 flex items-end justify-between gap-4 border-t border-black/[0.06] pt-4">
+                <span className="text-[15px] font-semibold text-[var(--g-ink)]">{isAccess ? "Due today" : "Total"}</span>
+                <span className="g-num text-[30px] leading-none font-semibold text-[var(--g-ink)]">{usd(quote.dueToday)}</span>
+              </div>
+              {isAccess && quote.dueAfterPass > quote.dueToday ? (
+                <p className="mt-3 text-[12.5px] leading-relaxed text-[var(--g-muted-ink)]">
+                  Then <b className="text-[var(--g-ink)]">{usd(quote.dueAfterPass - quote.dueToday)}</b>, due within {PERKS.accessActivationHours} hours of passing Phase 2. Nothing more if you do not pass.
+                </p>
+              ) : null}
             </div>
 
-            <div className="p-5 sm:p-6 border-b border-black/[0.06]">
-              <div className="space-y-3">
-                <div className="flex justify-between items-start gap-4 text-[13px] font-medium text-[var(--g-ink)]">
-                  <span className="min-w-0 break-words">{formatAccSize(effectiveSize)} — {program.shortLabel}</span>
-                  <span className="g-num shrink-0 font-semibold">{formatCurrency(base ?? 0)}</span>
-                </div>
-                <div className="flex justify-between items-start gap-4 text-[13px] font-medium text-[var(--g-muted-ink)]">
-                  <span className="min-w-0 break-words">Platform: {platform}</span>
-                  {platformExtras > 0 ? (
-                    <span className="g-num shrink-0">+{formatCurrency(platformExtras)}</span>
-                  ) : (
-                    <span className="shrink-0 text-[var(--g-emerald)] font-semibold">Free</span>
-                  )}
-                </div>
-
-                {selectedAddOns.map(key => {
-                  const addOnDef = addOns.find(a => a.key === key);
-                  if (!addOnDef) return null;
-                  let cost = (base ?? 0) * (addOnDef.feePct / 100);
-                  if (isFirstTpp && key === "free-retry") cost = 0;
-                  return (
-                    <div key={key} className="flex justify-between items-start gap-4 text-[13px] font-medium text-[var(--g-muted-ink)]">
-                      <span className="min-w-0 break-words">{addOnDef.label}</span>
-                      <span className={cn("g-num shrink-0", cost === 0 ? "text-[var(--g-emerald)] font-semibold" : "")}>
-                        {cost === 0 ? "Free" : `+${formatCurrency(cost)}`}
-                      </span>
-                    </div>
-                  );
-                })}
-
-                {promoDiscountAmt > 0 && (
-                  <div className="flex justify-between items-center text-[13px] font-semibold text-[var(--g-emerald)] pt-2 border-t border-black/[0.06]">
-                    <span>Coupon ({appliedPromo.toUpperCase()})</span>
-                    <span className="g-num">-{formatCurrency(promoDiscountAmt)}</span>
-                  </div>
-                )}
-
-                {paymentFeePct > 0 && (
-                  <div className="flex justify-between items-center text-[13px] font-medium text-amber-700">
-                    <span>Payment Gateway Fee</span>
-                    <span>+{paymentFeePct}%</span>
-                  </div>
-                )}
-              </div>
-
-              <div className="flex justify-between items-end gap-4 mt-5 pt-4 border-t border-black/[0.06]">
-                <span className="font-semibold text-[15px] text-[var(--g-ink)]">Total</span>
-                <span className="min-w-0 text-right">
-                  <span className="g-num block text-[28px] sm:text-[32px] font-semibold text-[var(--g-ink)] leading-none break-words">{formatCurrency(finalTotal)}</span>
-                  <span className="block text-[11px] font-semibold uppercase tracking-wider text-[var(--g-muted-ink)] mt-1">{currency}</span>
-                </span>
-              </div>
+            <div className="border-b border-black/[0.06] p-5 sm:p-6">
+              <p className="flex items-center gap-2 text-[12px] font-semibold tracking-[0.1em] text-[var(--g-muted-ink)] uppercase">
+                <Gift className="h-3.5 w-3.5" /> Included with this account
+              </p>
+              <ul className="mt-3 space-y-2.5">
+                {perksLine.map(({ icon: Icon, text }) => (
+                  <li key={text} className="flex items-start gap-2.5 text-[13px] text-[var(--g-ink)]">
+                    <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[var(--g-emerald)]" strokeWidth={2} />
+                    {text}
+                  </li>
+                ))}
+                <li className="flex items-start gap-2.5 text-[13px] text-[var(--g-ink)]">
+                  <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-[var(--g-emerald)]" strokeWidth={2} />
+                  {detail.feeNote}
+                </li>
+              </ul>
             </div>
 
             <div className="p-5 sm:p-6">
-              <label className="flex items-start gap-3 cursor-pointer group">
-                <div className="relative flex items-center justify-center mt-0.5">
-                  <input
-                    type="checkbox"
-                    checked={agreed}
-                    onChange={(e) => setAgreed(e.target.checked)}
-                    className="peer sr-only"
-                  />
-                  <div className="w-[18px] h-[18px] rounded-md bg-white ring-1 ring-black/20 transition-colors peer-checked:bg-[var(--g-ink)] peer-checked:ring-[var(--g-ink)] peer-focus-visible:ring-2 peer-focus-visible:ring-[var(--g-emerald)]" />
-                  <Check className="w-3 h-3 text-[var(--g-lime)] absolute opacity-0 peer-checked:opacity-100 transition-opacity" strokeWidth={3} />
-                </div>
-                <div className="text-[12px] text-[var(--g-muted-ink)] leading-relaxed flex-1 select-none">
-                  <span className="block font-semibold text-[var(--g-ink)] mb-1.5">I agree with all the following terms:</span>
-                  <ul className="list-disc pl-4 space-y-1">
-                    <li>I have read and agreed to the <span className="text-[var(--g-ink)] font-medium underline underline-offset-2">Trading Objectives</span> and <span className="text-[var(--g-ink)] font-medium underline underline-offset-2">Terms &amp; Conditions</span>.</li>
-                    <li>All information provided is correct and matches government-issued ID.</li>
-                    <li>I confirm that I am not a U.S. citizen or resident.</li>
-                  </ul>
-                </div>
+              <label className="group flex cursor-pointer items-start gap-3">
+                <span className="relative mt-0.5 flex items-center justify-center">
+                  <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="peer sr-only" />
+                  <span className="h-[18px] w-[18px] rounded-md bg-white ring-1 ring-black/20 transition-colors peer-checked:bg-[var(--g-ink)] peer-checked:ring-[var(--g-ink)] peer-focus-visible:ring-2 peer-focus-visible:ring-[var(--g-emerald)]" />
+                  <Check className="absolute h-3 w-3 text-[var(--g-lime)] opacity-0 transition-opacity peer-checked:opacity-100" strokeWidth={3} />
+                </span>
+                <span className="flex-1 text-[12.5px] leading-relaxed text-[var(--g-muted-ink)] select-none">
+                  I have read the{" "}
+                  <Link href={`/challenges/${program.key}#terms`} target="_blank" className="font-medium text-[var(--g-ink)] underline underline-offset-2">
+                    {detail.name} program terms
+                  </Link>
+                  , the{" "}
+                  <Link href="/terms" target="_blank" className="font-medium text-[var(--g-ink)] underline underline-offset-2">
+                    Terms of Service
+                  </Link>{" "}
+                  and the{" "}
+                  <Link href="/refund-policy" target="_blank" className="font-medium text-[var(--g-ink)] underline underline-offset-2">
+                    Refund Policy
+                  </Link>
+                  , and the details above match my government ID.
+                </span>
               </label>
 
-              <button
-                onClick={handleCheckout}
-                disabled={!agreed || (isFirstTpp && paymentMethod !== "Crypto") || isCheckingOut}
-                className={cn(btn.lime, "w-full mt-6")}
-              >
-                <CreditCard className="w-4.5 h-4.5" />
-                {isCheckingOut ? "Processing..." : "Proceed to Payment"}
+              <button type="button" onClick={checkout} disabled={!canPay} className={cn(btn.lime, "mt-6 w-full")}>
+                {busy ? "Processing…" : quote.dueToday > 0 ? `Pay ${usd(quote.dueToday)}` : "Get my account"}
               </button>
-              {checkoutMessage && (
-                <div className="mt-4 text-center text-[13px] font-semibold text-[var(--g-emerald)]">
-                  {checkoutMessage}
-                </div>
-              )}
+              {message ? <p className={cn("mt-4 text-center text-[13px] font-semibold", message.tone === "ok" ? "text-[var(--g-emerald)]" : "text-red-600")}>{message.text}</p> : null}
             </div>
-
           </Panel>
         </div>
       </div>
-
     </div>
   );
 }

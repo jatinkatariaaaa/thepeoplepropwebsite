@@ -19,6 +19,12 @@ interface Payout {
   created_at: string;
   profit: number;
   profit_split: number;
+  sequence_no?: number | null;
+  on_demand?: boolean | null;
+  trader_share?: number | null;
+  stipend_amount?: number | null;
+  fee_refund_amount?: number | null;
+  kyc_status?: string | null;
   notes: string | null;
   payment_method: string;
   payment_details: string | null;
@@ -346,6 +352,26 @@ export function AdminPayoutsClient({ initialPayouts, statusCounts, totalPendingA
                 <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Profit Split</p>
                 <p className="font-semibold text-[var(--ink-950)]">{selectedPayout.profit_split}%</p>
               </div>
+              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
+                <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Payout number</p>
+                <p className="font-semibold text-[var(--ink-950)]">
+                  {selectedPayout.sequence_no ? `#${selectedPayout.sequence_no}` : "—"} {selectedPayout.on_demand ? "· on demand" : ""}
+                </p>
+              </div>
+              <div className="p-3 bg-[var(--paper-2)] rounded-xl">
+                <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Identity check</p>
+                <p className={`font-semibold capitalize ${selectedPayout.kyc_status === "approved" ? "text-emerald-700" : "text-amber-700"}`}>{selectedPayout.kyc_status || "pending"}</p>
+              </div>
+              {(Number(selectedPayout.stipend_amount) > 0 || Number(selectedPayout.fee_refund_amount) > 0 || selectedPayout.trader_share != null) && (
+                <div className="p-3 bg-[var(--paper-2)] rounded-xl col-span-2">
+                  <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">What the amount is made of</p>
+                  <p className="text-sm text-[var(--ink-700)]">
+                    Profit share ${Number(selectedPayout.trader_share ?? 0).toLocaleString()}
+                    {Number(selectedPayout.stipend_amount) > 0 ? ` + stipends $${Number(selectedPayout.stipend_amount).toLocaleString()}` : ""}
+                    {Number(selectedPayout.fee_refund_amount) > 0 ? ` + fee refund $${Number(selectedPayout.fee_refund_amount).toLocaleString()}` : ""}
+                  </p>
+                </div>
+              )}
               <div className="p-3 bg-[var(--paper-2)] rounded-xl">
                 <p className="text-[10px] text-[var(--ink-400)] uppercase tracking-wider font-medium mb-1">Payment Method</p>
                 <p className="font-semibold text-[var(--ink-950)] capitalize">{selectedPayout.payment_method || "crypto"}</p>

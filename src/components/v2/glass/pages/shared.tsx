@@ -9,13 +9,14 @@ import { EASE } from "../motion";
 export type QA = { q: string; a: string; category?: string | null };
 
 /** Accordion row on dark glass. */
-export function DarkQA({ item, open, onToggle }: { item: QA; open: boolean; onToggle: () => void }) {
+export function DarkQA({ item, open, onToggle, badge }: { item: QA; open: boolean; onToggle: () => void; badge?: string }) {
   const id = useId();
   return (
     <li className={cn("rounded-[22px] transition-colors duration-500", open ? "g-glass g-hair" : "bg-white/[0.03] hover:bg-white/[0.06]")}>
       <h3>
         <button type="button" onClick={onToggle} aria-expanded={open} aria-controls={id} className="flex w-full items-center justify-between gap-6 px-6 py-5 text-left">
-          <span className={cn("text-[16.5px] font-semibold tracking-[-0.02em] transition-colors", open ? "text-white" : "text-white/80")}>{item.q}</span>
+          <span className={cn("min-w-0 flex-1 text-[16.5px] font-semibold tracking-[-0.02em] transition-colors", open ? "text-white" : "text-white/80")}>{item.q}</span>
+          {badge ? <span className="hidden shrink-0 rounded-full bg-white/[0.07] px-2.5 py-1 text-[11px] font-semibold text-white/55 sm:block">{badge}</span> : null}
           <span
             className={cn(
               "grid h-9 w-9 shrink-0 place-items-center rounded-full transition-all duration-500 [transition-timing-function:var(--g-out)]",

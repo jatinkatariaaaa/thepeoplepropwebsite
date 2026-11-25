@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { blogs } from "@/lib/data/blogs";
+import { blogCards, blogs } from "@/lib/data/blogs";
 import { BlogArticle } from "@/components/v2/glass/pages/blog-page";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -25,5 +25,6 @@ export default async function Page({ params }: Props) {
   const { slug } = await params;
   const post = blogs.find((b) => b.slug === slug);
   if (!post) notFound();
-  return <BlogArticle post={post} />;
+  const related = blogCards.filter((entry) => entry.slug !== slug).slice(0, 3);
+  return <BlogArticle post={post} related={related} />;
 }

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { getAdminRole } from "@/lib/admin-auth";
 
 async function getAdmin() {
   const cookieStore = await cookies();
@@ -13,13 +14,9 @@ async function getAdmin() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return null;
 
-  const { data: adminRole } = await supabaseAdmin
-    .from("admin_roles").select("role").eq("user_id", user.id).single();
-  const { data: profile } = await supabaseAdmin
-    .from("profiles").select("is_admin").eq("id", user.id).single();
-
-  if (!adminRole && !profile?.is_admin) return null;
-  return { id: user.id, email: user.email || "", role: adminRole?.role || "super_admin" };
+  const role = await getAdminRole(user.id);
+  if (!role) return null;
+  return { id: user.id, email: user.email || "", role };
 }
 
 async function logAudit(adminId: string, adminEmail: string, action: string, entityType: string, entityId?: string, oldValue?: any, newValue?: any) {
@@ -114,7 +111,7 @@ export async function PATCH(request: Request) {
         auditAction = "unsuspend_user";
         break;
       case "verify_kyc":
-        updateData = { kyc_status: "verified" };
+        updateData = { kyc_status: "approved" };
         auditAction = "verify_kyc";
         break;
       case "reject_kyc":
@@ -122,6 +119,14 @@ export async function PATCH(request: Request) {
         auditAction = "reject_kyc";
         break;
       case "toggle_admin":
+        // Same rules as the Roles page: only super admins grant or remove admin, and never their own.
+        // Turning it on gives full (super_admin) access; pick a narrower role on the Roles page.
+        if (admin.role !== "super_admin") {
+          return NextResponse.json({ error: "Only Super Admins can manage admin access" }, { status: 403 });
+        }
+        if (userId === admin.id && oldUser?.is_admin) {
+          return NextResponse.json({ error: "You cannot remove your own admin access" }, { status: 400 });
+        }
         updateData = { is_admin: !oldUser?.is_admin };
         auditAction = oldUser?.is_admin ? "remove_admin" : "make_admin";
         break;

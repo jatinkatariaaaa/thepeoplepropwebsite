@@ -4,66 +4,47 @@ import { getAdminUser, requireRole, logAudit } from "@/lib/admin-auth";
 
 export async function GET(request: Request) {
   try {
-    const admin = await getAdminUser(request);
-    
-    // Get users from admin_roles
+    await getAdminUser(request);
+
+    // One kind of admin: every admin has a row in admin_roles, and triggers keep profiles.is_admin
+    // in step with it (supabase/migrations/20261123130916_unify_admin_access.sql).
     const { data: adminRoles, error: rolesError } = await supabaseAdmin
       .from("admin_roles")
-      .select("*");
-      
+      .select("id, user_id, role, created_at")
+      .order("created_at", { ascending: true });
     if (rolesError) throw rolesError;
-    
-    // Fetch user details for these roles
+
     const roleUserIds = adminRoles?.map(r => r.user_id) || [];
-    let profilesMap: Record<string, any> = {};
-    
+    const profilesMap: Record<string, { email: string | null; display_name: string | null }> = {};
     if (roleUserIds.length > 0) {
       const { data: roleProfiles } = await supabaseAdmin
         .from("profiles")
         .select("id, email, display_name")
         .in("id", roleUserIds);
-        
-      if (roleProfiles) {
-        roleProfiles.forEach(p => {
-          profilesMap[p.id] = p;
-        });
-      }
+      roleProfiles?.forEach(p => { profilesMap[p.id] = p; });
     }
-    
-    // Formatting the response
-    const formattedRoles = adminRoles?.map(ar => ({
+
+    const admins = (adminRoles || []).map(ar => ({
       id: ar.id,
       user_id: ar.user_id,
       role: ar.role,
       created_at: ar.created_at,
       email: profilesMap[ar.user_id]?.email,
       display_name: profilesMap[ar.user_id]?.display_name,
-    })) || [];
-    
-    // Also find legacy admins (profiles.is_admin = true but not in admin_roles)
-    let legacyQuery = supabaseAdmin
+    }));
+
+    // Belt and braces: anyone the admin check would still let in through profiles.is_admin alone
+    // (only possible if the triggers were bypassed) is listed too, as the super admin they are.
+    const { data: flagged } = await supabaseAdmin
       .from("profiles")
       .select("id, email, display_name, created_at")
       .eq("is_admin", true);
-      
-    if (roleUserIds.length > 0) {
-      // Supabase js client doesn't support NOT IN easily, but we can do it via a filter
-      const { data: legacyAdmins } = await legacyQuery;
-      
-      const missingRoles = legacyAdmins?.filter(u => !roleUserIds.includes(u.id))?.map(u => ({
-        id: `legacy-${u.id}`,
-        user_id: u.id,
-        role: "super_admin", // Default legacy to super admin
-        created_at: u.created_at,
-        email: u.email,
-        display_name: u.display_name,
-        is_legacy: true
-      })) || [];
-      
-      return NextResponse.json({ admins: [...formattedRoles, ...missingRoles] });
+    for (const u of flagged || []) {
+      if (roleUserIds.includes(u.id)) continue;
+      admins.push({ id: `profile-${u.id}`, user_id: u.id, role: "super_admin", created_at: u.created_at, email: u.email, display_name: u.display_name });
     }
 
-    return NextResponse.json({ admins: formattedRoles });
+    return NextResponse.json({ admins });
   } catch (error: any) {
     if (error.message === "Unauthorized" || error.message === "Forbidden") {
       return NextResponse.json({ error: error.message }, { status: error.message === "Unauthorized" ? 401 : 403 });
@@ -98,7 +79,7 @@ export async function POST(request: Request) {
       .from("admin_roles")
       .select("*")
       .eq("user_id", profile.id)
-      .single();
+      .maybeSingle();
       
     let result;
     
@@ -122,7 +103,7 @@ export async function POST(request: Request) {
       if (error) throw error;
       result = data;
       
-      // Ensure profile.is_admin is true
+      // profiles.is_admin follows by trigger; set here too so older checks agree even before it runs.
       await supabaseAdmin.from("profiles").update({ is_admin: true }).eq("id", profile.id);
     }
     
@@ -160,7 +141,7 @@ export async function DELETE(request: Request) {
       .from("admin_roles")
       .select("*")
       .eq("user_id", user_id)
-      .single();
+      .maybeSingle();
       
     if (existingRole) {
       await supabaseAdmin.from("admin_roles").delete().eq("user_id", user_id);

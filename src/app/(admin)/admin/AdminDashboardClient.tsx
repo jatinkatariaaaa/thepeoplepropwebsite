@@ -13,8 +13,18 @@ import {
   MoreHorizontal,
 } from "lucide-react";
 import Link from "next/link";
-import { AdminBarChart } from "@/components/admin/AdminChart";
+import dynamic from "next/dynamic";
 import { format, subDays } from "date-fns";
+
+const AdminBarChart = dynamic(
+  () => import("@/components/admin/AdminChart").then((module) => module.AdminBarChart),
+  {
+    ssr: false,
+    loading: () => (
+      <div role="status" aria-label="Loading revenue chart" className="h-[240px] rounded-xl bg-[var(--paper-2)]" />
+    ),
+  },
+);
 
 /* ─── Types ─── */
 interface DashboardStats {
@@ -191,7 +201,7 @@ export default function AdminDashboardClient() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+    <div className="mx-auto max-w-7xl">
       <div className="grid grid-cols-1 gap-5 xl:grid-cols-[1fr_360px]">
         {/* ══════════ LEFT COLUMN ══════════ */}
         <div className="min-w-0 rounded-[28px] bg-white p-5 sm:p-7 shadow-sm">

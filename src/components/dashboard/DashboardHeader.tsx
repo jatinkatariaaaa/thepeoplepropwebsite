@@ -9,18 +9,30 @@ import { cn } from "@/lib/utils";
 import { btn } from "./glass";
 
 const searchTargets = [
-  { label: "Home", href: "/dashboard", keywords: "home overview dashboard accounts" },
-  { label: "Contest", href: "/dashboard/contest", keywords: "contest giveaway prize" },
+  { label: "Accounts", href: "/dashboard", keywords: "home overview dashboard accounts" },
+  { label: "Journal", href: "/dashboard/journal", keywords: "journal trades notes review setups mistakes" },
+  { label: "Tools", href: "/dashboard/tools", keywords: "tools calculator position size risk lot pip loss limit" },
+  { label: "Payouts", href: "/dashboard/payouts", keywords: "payouts withdraw money stipend rewards" },
+  { label: "Support", href: "/dashboard/support", keywords: "support ticket help contact" },
   { label: "Transactions", href: "/dashboard/transactions", keywords: "transactions history payments orders" },
-  { label: "Competitions", href: "/dashboard/competitions", keywords: "competitions tournament" },
-  { label: "Leaderboard", href: "/dashboard/leaderboard", keywords: "leaderboard ranking top traders" },
-  { label: "Calendar", href: "/dashboard/calendar", keywords: "calendar economic events news" },
-  { label: "Affiliate", href: "/dashboard/affiliate", keywords: "affiliate referral commission" },
-  { label: "Payouts", href: "/dashboard/payouts", keywords: "payouts withdraw money" },
   { label: "Certificates", href: "/dashboard/certificates", keywords: "certificates certificate award funded payout verify" },
-  { label: "Settings", href: "/dashboard/settings", keywords: "settings profile account kyc password" },
-  { label: "New Challenge", href: "/dashboard/new-challenge", keywords: "new challenge buy start evaluation" },
+  { label: "Affiliate", href: "/dashboard/affiliate", keywords: "affiliate referral commission" },
+  { label: "Calendar", href: "/dashboard/calendar", keywords: "calendar economic events news" },
+  { label: "Leaderboard", href: "/dashboard/leaderboard", keywords: "leaderboard ranking top traders" },
+  { label: "Competitions", href: "/dashboard/competitions", keywords: "competitions tournament" },
+  { label: "Contest", href: "/dashboard/contest", keywords: "contest giveaway prize" },
+  { label: "Settings", href: "/dashboard/settings", keywords: "settings profile account kyc password identity" },
+  { label: "New account", href: "/dashboard/new-challenge", keywords: "new challenge buy start evaluation account" },
 ];
+
+type Note = { id: string; title: string; body: string | null; link: string | null; read_at: string | null; created_at: string };
+
+const ago = (iso: string) => {
+  const m = Math.max(1, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
+  if (m < 60) return `${m}m ago`;
+  if (m < 1440) return `${Math.round(m / 60)}h ago`;
+  return `${Math.round(m / 1440)}d ago`;
+};
 
 export function DashboardHeader() {
   const router = useRouter();
@@ -29,6 +41,8 @@ export function DashboardHeader() {
   const [query, setQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [bellOpen, setBellOpen] = useState(false);
+  const [notes, setNotes] = useState<Note[]>([]);
+  const unread = notes.filter((n) => !n.read_at).length;
   const searchRef = useRef<HTMLDivElement>(null);
   const bellRef = useRef<HTMLDivElement>(null);
 
@@ -53,6 +67,14 @@ export function DashboardHeader() {
           "Trader";
         setDisplayName(firstName);
         setInitials(firstName.charAt(0).toUpperCase());
+
+        const { data: rows } = await supabase
+          .from("user_notifications")
+          .select("id, title, body, link, read_at, created_at")
+          .eq("user_id", session.user.id)
+          .order("created_at", { ascending: false })
+          .limit(12);
+        if (rows) setNotes(rows as Note[]);
       } catch {
         setDisplayName("Trader");
         setInitials("T");
@@ -82,6 +104,17 @@ export function DashboardHeader() {
           t.keywords.includes(query.toLowerCase())
       )
     : [];
+
+  const openBell = async () => {
+    const next = !bellOpen;
+    setBellOpen(next);
+    if (next && unread > 0) {
+      const now = new Date().toISOString();
+      const ids = notes.filter((n) => !n.read_at).map((n) => n.id);
+      setNotes((prev) => prev.map((n) => (n.read_at ? n : { ...n, read_at: now })));
+      await supabase.from("user_notifications").update({ read_at: now }).in("id", ids);
+    }
+  };
 
   const goTo = (href: string) => {
     setQuery("");
@@ -160,49 +193,33 @@ export function DashboardHeader() {
       <div className="flex shrink-0 items-center gap-2">
         <div ref={bellRef} className="relative">
           <button
-            aria-label="Notifications"
-            onClick={() => setBellOpen(!bellOpen)}
+            aria-label={unread ? `Notifications, ${unread} unread` : "Notifications"}
+            onClick={() => void openBell()}
             className="relative grid h-10 w-10 cursor-pointer place-items-center rounded-full bg-white/65 text-[var(--g-muted-ink)] ring-1 ring-black/[0.08] backdrop-blur-md transition-colors hover:bg-white hover:text-[var(--g-ink)]"
           >
             <Bell className="h-[18px] w-[18px]" />
-            <span className="absolute top-2 right-2 h-2.5 w-2.5 rounded-full bg-[var(--g-lime)] ring-2 ring-[var(--g-ink)]" />
+            {unread > 0 ? <span className="absolute top-2 right-2 h-2.5 w-2.5 rounded-full bg-[var(--g-lime)] ring-2 ring-[#0e1110]" /> : null}
           </button>
           {bellOpen && (
-            <div className="absolute top-full right-0 z-40 mt-2 w-72 max-w-[calc(100vw-2rem)]">
+            <div className="absolute top-full right-0 z-40 mt-2 w-80 max-w-[calc(100vw-2rem)]">
               <div className="g-glass-light g-hair g-hair-ink overflow-hidden rounded-[20px]">
-                <div className="flex items-center justify-between border-b border-black/[0.06] px-4 py-3">
-                  <p className="text-[13.5px] font-semibold text-[var(--g-ink)]">
-                    Notifications
-                  </p>
-                  <span className="rounded-full bg-[var(--g-lime)] px-2 py-0.5 text-[10px] font-bold tracking-wider text-[var(--g-ink)] uppercase">
-                    New
-                  </span>
+                <div className="border-b border-black/[0.06] px-4 py-3">
+                  <p className="text-[13.5px] font-semibold text-[var(--g-ink)]">Notifications</p>
                 </div>
-                <div className="p-1.5">
-                  <Link
-                    href="/dashboard/contest"
-                    onClick={() => setBellOpen(false)}
-                    className="block rounded-[14px] px-3 py-2.5 transition-colors hover:bg-black/[0.04]"
-                  >
-                    <p className="text-[13.5px] font-semibold text-[var(--g-ink)]">
-                      Contest is live
-                    </p>
-                    <p className="mt-0.5 text-[12.5px] text-[var(--g-muted-ink)]">
-                      Join the giveaway contest and win prizes
-                    </p>
-                  </Link>
-                  <Link
-                    href="/dashboard/new-challenge"
-                    onClick={() => setBellOpen(false)}
-                    className="block rounded-[14px] px-3 py-2.5 transition-colors hover:bg-black/[0.04]"
-                  >
-                    <p className="text-[13.5px] font-semibold text-[var(--g-ink)]">
-                      Start a new challenge
-                    </p>
-                    <p className="mt-0.5 text-[12.5px] text-[var(--g-muted-ink)]">
-                      Get funded up to $200,000 today
-                    </p>
-                  </Link>
+                <div className="max-h-[360px] overflow-y-auto p-1.5 [scrollbar-width:thin]">
+                  {notes.length === 0 ? (
+                    <p className="px-3 py-6 text-center text-[13px] text-[var(--g-muted-ink)]">Nothing yet. Account, payout and stipend updates appear here.</p>
+                  ) : (
+                    notes.map((n) => (
+                      <Link key={n.id} href={n.link || "/dashboard"} onClick={() => setBellOpen(false)} className="block rounded-[14px] px-3 py-2.5 transition-colors hover:bg-black/[0.04]">
+                        <p className="flex items-baseline justify-between gap-3 text-[13.5px] font-semibold text-[var(--g-ink)]">
+                          <span className="min-w-0 truncate">{n.title}</span>
+                          <span className="shrink-0 text-[11px] font-normal text-[var(--g-muted-ink)]">{ago(n.created_at)}</span>
+                        </p>
+                        {n.body ? <p className="mt-0.5 line-clamp-2 text-[12.5px] text-[var(--g-muted-ink)]">{n.body}</p> : null}
+                      </Link>
+                    ))
+                  )}
                 </div>
               </div>
             </div>
@@ -215,7 +232,7 @@ export function DashboardHeader() {
           className={cn(btn.lime, btn.sm, "w-10! px-0! sm:w-auto! sm:px-5!")}
         >
           <Plus className="h-4 w-4" strokeWidth={2.4} />
-          <span className="hidden sm:inline">New Challenge</span>
+          <span className="hidden sm:inline">New account</span>
         </Link>
       </div>
     </header>

@@ -4,15 +4,9 @@ import { useRef, type PointerEvent } from "react";
 import { motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import { ChevronRight, Globe2, Star } from "lucide-react";
 import { Button, Container } from "./ui";
-import { CountUp, EASE } from "./motion";
+import { CountUp } from "./motion";
 import { entryPrice, findStat, prettyValue, useCatalogue, usePrograms, useSelectedProgram, useStats, compactUsd, ACCESS_UPFRONT } from "./data";
 import type { ProgramKey } from "@/data/programs";
-
-const rise = (delay: number) => ({
-  initial: { opacity: 0, y: 24, filter: "blur(8px)" },
-  animate: { opacity: 1, y: 0, filter: "blur(0px)", transitionEnd: { filter: "none" } },
-  transition: { duration: 1.1, delay, ease: EASE },
-});
 
 /** Every program as a glass chip — picking one pre-selects it in the configurator below. */
 function ProgramChips() {
@@ -102,44 +96,44 @@ export function Hero() {
       <div>
         <Container className="flex flex-col justify-center pt-[44svh] pb-10 lg:min-h-[100svh] lg:pt-28 lg:pb-44">
           <div className="max-w-[640px]">
-            <motion.p {...rise(0.05)} className="g-pill g-hair bg-white/[0.08] text-white/85 backdrop-blur-md">
+            <p className="g-pill g-hair bg-white/[0.08] text-white/85 backdrop-blur-md">
               <Globe2 className="h-3.5 w-3.5 text-[var(--g-lime)]" />
               Evaluating traders in {countries?.value ?? "142+"} countries
-            </motion.p>
+            </p>
 
-            <motion.h1 {...rise(0.15)} className="g-display mt-7 text-[clamp(2.75rem,5vw,4.8rem)]">
+            <h1 className="g-display mt-7 text-[clamp(2.75rem,5vw,4.8rem)]">
               <span className="g-shade-dark block">Fund your skills.</span>
               <span className="g-shade-dark block">Trade our capital.</span>
-            </motion.h1>
+            </h1>
 
-            <motion.p {...rise(0.3)} className="mt-6 text-[clamp(1.15rem,1.6vw,1.45rem)] font-semibold tracking-[-0.02em] text-white">
+            <p className="mt-6 text-[clamp(1.15rem,1.6vw,1.45rem)] font-semibold tracking-[-0.02em] text-white">
               Payouts processed in under 24 hours.
-            </motion.p>
-            <motion.p {...rise(0.38)} className="mt-3 max-w-[30rem] text-[16.5px] leading-[1.6] text-white/65">
+            </p>
+            <p className="mt-3 max-w-[30rem] text-[16.5px] leading-[1.6] text-white/65">
               Transparent rules and real capital up to {cat.maxSize ? `$${cat.maxSize.toLocaleString("en-US")}` : "—"}. Built for traders — not against them.
-            </motion.p>
+            </p>
 
-            <motion.div {...rise(0.5)} className="mt-9 flex flex-wrap items-center gap-3">
+            <div className="mt-9 flex flex-wrap items-center gap-3">
               <Button href="/dashboard/new-challenge">Start for ${ACCESS_UPFRONT}</Button>
               <Button href="#challenges" kind="glass" arrow={false}>
                 Explore challenges
               </Button>
-            </motion.div>
+            </div>
 
-            <motion.div {...rise(0.6)} className="mt-9">
+            <div className="mt-9">
               <p className="mb-3 text-[12.5px] font-medium text-white/45">Choose your program</p>
               <ProgramChips />
-            </motion.div>
+            </div>
 
             {rating ? (
-              <motion.p {...rise(0.7)} className="mt-8 flex items-center gap-2 text-[13.5px] text-white/60">
+              <p className="mt-8 flex items-center gap-2 text-[13.5px] text-white/60">
                 <span className="flex gap-0.5">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Star key={i} className="h-3.5 w-3.5 fill-[var(--g-lime)] text-[var(--g-lime)]" />
                   ))}
                 </span>
                 {prettyValue(rating.value)} {rating.label}
-              </motion.p>
+              </p>
             ) : null}
           </div>
         </Container>
@@ -147,10 +141,7 @@ export function Hero() {
 
       {/* stats band — overlaps into the next section */}
       <Container className="relative z-20 -mb-16 lg:-mt-36">
-        <motion.dl
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.1, delay: 0.8, ease: EASE }}
+        <dl
           className="g-glass-ink g-hair grid grid-cols-2 overflow-hidden rounded-[28px] lg:grid-cols-4"
         >
           {tiles.map((t, i) => (
@@ -161,7 +152,7 @@ export function Hero() {
               </dd>
             </div>
           ))}
-        </motion.dl>
+        </dl>
       </Container>
     </section>
   );

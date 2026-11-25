@@ -3,10 +3,11 @@
 
 export const ACCOUNT_STATUSES = [
   "active",
+  "funded",
   "suspended",
   "breached",
   "passed",
-  "disabled",
+  "deleted",
 ] as const;
 
 export type AccountStatus = (typeof ACCOUNT_STATUSES)[number];
