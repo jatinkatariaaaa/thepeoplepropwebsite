@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+import { settleReferralCookie } from '@/lib/referrals';
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -31,23 +32,12 @@ export async function GET(request: Request) {
     );
     const { error, data } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      // Check for contest referral cookie and track it
-      const contestRef = cookieStore.get('tpp_contest_ref')?.value;
-      if (contestRef && data?.session?.user) {
+      // Record who referred a brand-new account (Google sign-ups carry no metadata), then forget the link.
+      if (data?.session?.user) {
         try {
-          await fetch(`${origin}/api/contest/track`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              referral_code: contestRef,
-              user_id: data.session.user.id,
-              email: data.session.user.email || '',
-            }),
-          });
-          // Clear the cookie after tracking
-          cookieStore.delete('tpp_contest_ref');
+          await settleReferralCookie(data.session.user.id, cookieStore);
         } catch (e) {
-          console.error('Contest tracking error:', e);
+          console.error('Referral recording error:', e);
         }
       }
       return NextResponse.redirect(`${origin}${next}`);

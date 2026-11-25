@@ -51,32 +51,8 @@ export async function POST(req: Request) {
 
     const provisioning = await provisionTradingAccountForPurchase(purchase);
 
-    // 4. Track Affiliate Commission
-    const { data: referral } = await supabaseAdmin
-      .from("affiliate_referrals")
-      .select("affiliate_id")
-      .eq("referred_user_id", purchase.user_id)
-      .single();
-
-    if (referral?.affiliate_id) {
-      const commission = purchase.price_amount * 0.10;
-
-      const { data: affiliateData } = await supabaseAdmin
-        .from("affiliates")
-        .select("total_earnings, pending_payout")
-        .eq("user_id", referral.affiliate_id)
-        .single();
-
-      if (affiliateData) {
-        await supabaseAdmin
-          .from("affiliates")
-          .update({
-            total_earnings: Number(affiliateData.total_earnings) + commission,
-            pending_payout: Number(affiliateData.pending_payout) + commission
-          })
-          .eq("user_id", referral.affiliate_id);
-      }
-    }
+    // Affiliate commission is credited by the database when the purchase turns "paid"
+    // (private.settle_purchase_commission), once per purchase and at the affiliate's rate.
 
     return NextResponse.json({
       received: true,
