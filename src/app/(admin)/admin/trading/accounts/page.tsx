@@ -7,6 +7,7 @@ import { AdminTable } from "@/components/admin/AdminTable";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
@@ -28,7 +29,9 @@ type DialogKind = "reset" | "disable" | "enable" | "pass" | "breach" | "delete" 
 export default function TradingAccountsPage() {
   const [accounts, setAccounts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
+  // links from other admin pages can open the list filtered: /admin/trading/accounts?search=<email>
+  const params = useSearchParams();
+  const [search, setSearch] = useState(params.get("search") ?? "");
   const [statusFilter, setStatusFilter] = useState("all");
 
   // Modal / dialog state

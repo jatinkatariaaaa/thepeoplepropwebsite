@@ -26,7 +26,7 @@ import {
   type LucideIcon,
   ShieldCheck,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 import { LogoTile, btn } from "./glass";
@@ -75,6 +75,25 @@ export function ClientSidebar({ hasPartnerDesk = false, isAdmin = false }: { has
   const pathname = usePathname();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const [supportUnread, setSupportUnread] = useState(0);
+
+  // tickets with a reply the trader hasn't read yet; checked again on every page change
+  useEffect(() => {
+    let alive = true;
+    void (async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) return;
+      const { count } = await supabase
+        .from("support_tickets")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", session.user.id)
+        .eq("user_unread", true);
+      if (alive) setSupportUnread(count ?? 0);
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [pathname]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -196,6 +215,11 @@ export function ClientSidebar({ hasPartnerDesk = false, isAdmin = false }: { has
                         <Icon className={cn("h-[17px] w-[17px] shrink-0 transition-colors", isActive ? "text-[var(--g-lime)]" : "text-black/40 group-hover:text-[var(--g-ink)]")} strokeWidth={1.9} />
                         <span>{item.label}</span>
                         {item.badge && <span className="ml-auto rounded-full bg-[var(--g-lime)] px-2 py-0.5 text-[10px] font-bold tracking-wider text-[#0e1110]">{item.badge}</span>}
+                        {item.href === "/dashboard/support" && supportUnread > 0 ? (
+                          <span aria-label={`${supportUnread} new ${supportUnread === 1 ? "reply" : "replies"}`} className="g-num ml-auto grid h-5 min-w-5 place-items-center rounded-full bg-[var(--g-emerald)] px-1.5 text-[10.5px] font-bold text-white">
+                            {supportUnread}
+                          </span>
+                        ) : null}
                       </Link>
                     );
                   })}

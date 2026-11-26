@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Bell, Plus, Search } from "lucide-react";
+import { Bell, LifeBuoy, Plus, Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
@@ -191,6 +191,14 @@ export function DashboardHeader() {
 
       {/* Actions */}
       <div className="flex shrink-0 items-center gap-2">
+        <Link
+          href="/dashboard/support?new=1"
+          aria-label="Support: raise a ticket"
+          title="Raise a support ticket"
+          className="grid h-10 w-10 place-items-center rounded-full bg-white/65 text-[var(--g-muted-ink)] ring-1 ring-black/[0.08] backdrop-blur-md transition-colors hover:bg-white hover:text-[var(--g-ink)]"
+        >
+          <LifeBuoy className="h-[18px] w-[18px]" />
+        </Link>
         <div ref={bellRef} className="relative">
           <button
             aria-label={unread ? `Notifications, ${unread} unread` : "Notifications"}
