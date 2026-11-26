@@ -1,49 +1,72 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useTransition, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import { AdminTable } from "@/components/admin/AdminTable";
 import { AdminModal } from "@/components/admin/AdminModal";
-import { ColumnDef } from "@tanstack/react-table";
+import type { ColumnDef, SortingState } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { ShieldAlert, ShieldCheck, MoreVertical, Edit, Ban, PlayCircle, Shield } from "lucide-react";
+import { ShieldAlert, Edit, Ban, PlayCircle, Search, Shield } from "lucide-react";
 import { toast } from "sonner";
 
+type AdminUser = {
+  id: string;
+  email: string | null;
+  display_name: string | null;
+  status: string | null;
+  is_admin: boolean | null;
+  kyc_status: string | null;
+  created_at: string;
+};
+
 export default function AdminUsersClient({
-  initialUsers,
-  initialLoadFailed,
+  users,
+  total,
+  page,
+  pageSize,
+  search,
+  sorting,
+  loadFailed,
 }: {
-  initialUsers: any[];
-  initialLoadFailed: boolean;
+  users: AdminUser[];
+  total: number;
+  page: number;
+  pageSize: number;
+  search: string;
+  sorting: SortingState;
+  loadFailed: boolean;
 }) {
-  const [users, setUsers] = useState<any[]>(initialUsers);
-  const [loading, setLoading] = useState(initialLoadFailed);
-  
+  const router = useRouter();
+  const [loading, startTransition] = useTransition();
+  const pagination = { pageIndex: page - 1, pageSize };
+
   // Modal states
-  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [selectedUser, setSelectedUser] = useState<AdminUser | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isActionModalOpen, setIsActionModalOpen] = useState(false);
   const [actionType, setActionType] = useState<"suspend" | "ban" | "unsuspend" | "verify_kyc" | "reject_kyc" | "">("");
   const [actionReason, setActionReason] = useState("");
 
-  const fetchUsers = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/admin/users?limit=100");
-      if (!res.ok) throw new Error("Failed to fetch users");
-      const data = await res.json();
-      if (data.users) setUsers(data.users);
-    } catch (error) {
-      toast.error("Failed to fetch users");
-    } finally {
-      setLoading(false);
+  function openPage(nextPage: number, nextSearch = search, nextSorting = sorting) {
+    const params = new URLSearchParams();
+    if (nextPage > 1) params.set("page", String(nextPage));
+    if (nextSearch) params.set("search", nextSearch);
+    const [sort] = nextSorting;
+    if (sort) {
+      params.set("sort", sort.id);
+      params.set("direction", sort.desc ? "desc" : "asc");
     }
-  };
+    startTransition(() => router.push(params.size ? `/admin/users?${params}` : "/admin/users", { scroll: false }));
+  }
 
-  useEffect(() => {
-    if (initialLoadFailed) void fetchUsers();
-  }, [initialLoadFailed]);
+  function submitSearch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const term = new FormData(event.currentTarget).get("search");
+    openPage(1, typeof term === "string" ? term.trim() : "");
+  }
 
   const handleAction = async () => {
+    if (!selectedUser) return;
     try {
       const res = await fetch("/api/admin/users", {
         method: "PATCH",
@@ -55,18 +78,18 @@ export default function AdminUsersClient({
         }),
       });
       const data = await res.json();
-      if (data.error) throw new Error(data.error);
+      if (!res.ok) throw new Error(data.error || "Failed to update user");
       
       toast.success(`User successfully ${actionType}ed`);
       setIsActionModalOpen(false);
       setActionReason("");
-      fetchUsers();
-    } catch (error: any) {
-      toast.error(error.message);
+      startTransition(() => router.refresh());
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to update user");
     }
   };
 
-  const columns: ColumnDef<any>[] = [
+  const columns: ColumnDef<AdminUser>[] = [
     {
       accessorKey: "email",
       header: "User",
@@ -169,13 +192,59 @@ export default function AdminUsersClient({
   ];
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-[var(--ink-950)]">Users Management</h1>
-        <p className="text-[var(--ink-500)]">Manage all registered users, suspend or ban accounts.</p>
-      </div>
+    <>
+      <form onSubmit={submitSearch} className="mb-4 flex flex-wrap items-center gap-2" role="search" aria-label="Registered users">
+        <div className="relative min-w-0 grow sm:max-w-sm">
+          <Search aria-hidden="true" className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--ink-400)]" />
+          <input
+            key={search}
+            type="search"
+            name="search"
+            aria-label="Search by name or email"
+            placeholder="Search by name or email"
+            maxLength={256}
+            defaultValue={search}
+            className="w-full rounded-xl border border-[var(--border)] bg-white py-2 pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-[var(--ink-950)]"
+          />
+        </div>
+        <button type="submit" disabled={loading} className="rounded-xl bg-[var(--ink-950)] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">
+          Search
+        </button>
+        {search && (
+          <button type="button" disabled={loading} onClick={() => openPage(1, "")} className="px-2 py-2 text-sm font-semibold text-[var(--ink-600)] hover:underline disabled:opacity-50">
+            Clear search
+          </button>
+        )}
+      </form>
 
-      <AdminTable data={users} columns={columns} loading={loading} />
+      {loadFailed ? (
+        <div role="alert" className="flex flex-wrap items-center gap-3 rounded-xl border border-[var(--border)] bg-white p-4 text-sm">
+          <p>Couldn’t load registered users.</p>
+          <button type="button" onClick={() => startTransition(() => router.refresh())} disabled={loading} className="font-semibold underline">
+            {loading ? "Retrying…" : "Try again"}
+          </button>
+        </div>
+      ) : (
+        <AdminTable
+          data={users}
+          columns={columns}
+          searchable={false}
+          loading={loading}
+          serverControls={{
+            total,
+            pagination,
+            sorting,
+            onPaginationChange: (update) => {
+              const next = typeof update === "function" ? update(pagination) : update;
+              openPage(next.pageIndex + 1);
+            },
+            onSortingChange: (update) => {
+              const next = typeof update === "function" ? update(sorting) : update;
+              openPage(1, search, next);
+            },
+          }}
+        />
+      )}
 
       {/* Action Modal (Suspend/Ban/KYC) */}
       <AdminModal
@@ -188,7 +257,7 @@ export default function AdminUsersClient({
           actionType === "verify_kyc" ? "Verify KYC for" :
           actionType === "reject_kyc" ? "Reject KYC for" : ""
         } User`}
-        description={selectedUser?.email}
+        description={selectedUser?.email ?? undefined}
       >
         <div className="space-y-4">
           {actionType !== "unsuspend" && actionType !== "verify_kyc" && (
@@ -224,6 +293,6 @@ export default function AdminUsersClient({
           </div>
         </div>
       </AdminModal>
-    </div>
+    </>
   );
 }

@@ -9,18 +9,27 @@ import {
   getSortedRowModel,
   flexRender,
   ColumnDef,
+  OnChangeFn,
+  PaginationState,
   SortingState,
 } from "@tanstack/react-table";
 import { Search, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, ArrowUpDown } from "lucide-react";
 
 interface AdminTableProps<T> {
   data: T[];
-  columns: ColumnDef<T, any>[];
+  columns: ColumnDef<T>[];
   searchable?: boolean;
   globalFilter?: string;
   setGlobalFilter?: (value: string) => void;
   pageSize?: number;
   loading?: boolean;
+  serverControls?: {
+    total: number;
+    pagination: PaginationState;
+    sorting: SortingState;
+    onPaginationChange: OnChangeFn<PaginationState>;
+    onSortingChange: OnChangeFn<SortingState>;
+  };
 }
 
 export function AdminTable<T>({
@@ -31,6 +40,7 @@ export function AdminTable<T>({
   setGlobalFilter,
   pageSize = 10,
   loading = false,
+  serverControls,
 }: AdminTableProps<T>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [internalGlobalFilter, setInternalGlobalFilter] = useState("");
@@ -45,16 +55,22 @@ export function AdminTable<T>({
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    manualPagination: Boolean(serverControls),
+    manualSorting: Boolean(serverControls),
+    rowCount: serverControls?.total,
     state: {
-      sorting,
+      sorting: serverControls?.sorting ?? sorting,
       globalFilter: activeGlobalFilter,
+      ...(serverControls && { pagination: serverControls.pagination }),
     },
-    onSortingChange: setSorting,
+    onSortingChange: serverControls?.onSortingChange ?? setSorting,
     onGlobalFilterChange: activeSetGlobalFilter,
+    ...(serverControls && { onPaginationChange: serverControls.onPaginationChange }),
     initialState: {
       pagination: { pageSize },
     },
   });
+  const total = serverControls?.total ?? data.length;
 
   return (
     <div className="w-full">
@@ -72,7 +88,7 @@ export function AdminTable<T>({
       )}
 
       <div className="rounded-2xl border border-[var(--border)] bg-white overflow-visible shadow-sm">
-        <div className="overflow-visible">
+        <div className={serverControls ? "overflow-x-auto" : "overflow-visible"}>
           <table className="w-full text-left text-sm whitespace-nowrap">
             <thead className="bg-[var(--paper-2)] border-b border-[var(--border)] text-[var(--ink-500)] font-semibold">
               {table.getHeaderGroups().map((headerGroup) => (
@@ -128,9 +144,9 @@ export function AdminTable<T>({
         </div>
 
         {/* Pagination */}
-        {table.getPageCount() > 1 && (
-          <div className="flex items-center justify-between px-6 py-3 border-t border-[var(--border)] bg-[var(--paper-2)]">
-            <div className="text-sm text-[var(--ink-500)]">
+        {(table.getPageCount() > 1 || Boolean(serverControls && total)) && (
+          <div className="flex flex-wrap items-center justify-between gap-2 px-6 py-3 border-t border-[var(--border)] bg-[var(--paper-2)]">
+            <div className="text-sm text-[var(--ink-500)]" aria-live="polite">
               Showing{" "}
               <span className="font-medium text-[var(--ink-950)]">
                 {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1}
@@ -139,36 +155,40 @@ export function AdminTable<T>({
               <span className="font-medium text-[var(--ink-950)]">
                 {Math.min(
                   (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
-                  data.length
+                  total
                 )}
               </span>{" "}
-              of <span className="font-medium text-[var(--ink-950)]">{data.length}</span> results
+              of <span className="font-medium text-[var(--ink-950)]">{total}</span> results
             </div>
             <div className="flex items-center gap-1">
               <button
+                aria-label="First page"
                 onClick={() => table.setPageIndex(0)}
-                disabled={!table.getCanPreviousPage()}
+                disabled={loading || !table.getCanPreviousPage()}
                 className="p-1 rounded text-[var(--ink-500)] hover:text-[var(--ink-950)] hover:bg-[var(--border)] disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <ChevronsLeft className="w-5 h-5" />
               </button>
               <button
+                aria-label="Previous page"
                 onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
+                disabled={loading || !table.getCanPreviousPage()}
                 className="p-1 rounded text-[var(--ink-500)] hover:text-[var(--ink-950)] hover:bg-[var(--border)] disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <button
+                aria-label="Next page"
                 onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
+                disabled={loading || !table.getCanNextPage()}
                 className="p-1 rounded text-[var(--ink-500)] hover:text-[var(--ink-950)] hover:bg-[var(--border)] disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>
               <button
+                aria-label="Last page"
                 onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                disabled={!table.getCanNextPage()}
+                disabled={loading || !table.getCanNextPage()}
                 className="p-1 rounded text-[var(--ink-500)] hover:text-[var(--ink-950)] hover:bg-[var(--border)] disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <ChevronsRight className="w-5 h-5" />
