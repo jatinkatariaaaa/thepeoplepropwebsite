@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 import { AdminTable } from "@/components/admin/AdminTable";
 import { AdminModal } from "@/components/admin/AdminModal";
 import { ColumnDef } from "@tanstack/react-table";
@@ -332,6 +333,12 @@ export function NotificationsClient({ initialNotifications, unreadCount, typeCou
             <div className="p-4 bg-[var(--paper-2)] rounded-xl">
               <p className="text-sm text-[var(--ink-800)]">{selectedNotif.message}</p>
             </div>
+
+            {selectedNotif.entity_type === "ticket" && selectedNotif.entity_id ? (
+              <Link href={`/admin/tickets/${selectedNotif.entity_id}`} className="inline-flex h-10 items-center gap-2 rounded-xl bg-[var(--ink-950)] px-4 text-sm font-semibold text-white hover:bg-black">
+                Open the ticket and reply
+              </Link>
+            ) : null}
 
             <div className="grid grid-cols-2 gap-3 text-xs">
               <div>

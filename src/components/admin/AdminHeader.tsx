@@ -52,7 +52,7 @@ export function AdminHeader() {
       const [{ data: profile }, alerts, tickets] = await Promise.all([
         supabase.from("profiles").select("display_name, first_name").eq("id", session.user.id).maybeSingle(),
         supabase.from("admin_notifications").select("id", { count: "exact", head: true }).eq("is_read", false),
-        supabase.from("support_tickets").select("id", { count: "exact", head: true }).in("status", ["open", "in_progress"]),
+        supabase.from("support_tickets").select("id", { count: "exact", head: true }).eq("last_sender", "user").in("status", ["open", "in_progress"]),
       ]);
       setDisplayName(profile?.first_name || profile?.display_name?.split(" ")[0] || session.user.email?.split("@")[0] || "Admin");
       setCounts({ alerts: alerts.count ?? 0, tickets: tickets.count ?? 0 });
@@ -118,7 +118,7 @@ export function AdminHeader() {
       </div>
 
       <div className="flex shrink-0 items-center gap-2">
-        <Link href="/admin/tickets" aria-label={`Support tickets, ${counts.tickets} open`} className={iconButton}>
+        <Link href="/admin/tickets" aria-label={`Support tickets, ${counts.tickets} waiting for a reply`} className={iconButton}>
           <MessageCircle className="h-[18px] w-[18px]" />
           {counts.tickets > 0 ? <span className={badge}>{counts.tickets}</span> : null}
         </Link>
