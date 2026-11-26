@@ -126,7 +126,7 @@ function Hero({ terms, me }: { terms: ContestTerms; me: Me }) {
             <span className="g-shade-lime block">Trade {compactUsd(terms.size)} on us.</span>
           </motion.h1>
           <motion.p {...rise(0.34)} className="mt-7 max-w-[34rem] text-[clamp(1.05rem,1.35vw,1.2rem)] leading-[1.6] text-white/70">
-            Share your link. When {terms.target} friends sign up and confirm their email, claim a free{" "}
+            Share your link. When {terms.target} different friends sign up through it, claim a free{" "}
             <span className="font-semibold text-white">{label}</span> challenge. No fee, one per person.
           </motion.p>
           <motion.div {...rise(0.46)} className="mt-9 flex flex-wrap items-center gap-3">
@@ -202,7 +202,7 @@ function Ring({ value, target }: { value: number; target: number }) {
           {Math.min(value, target)}
           <span className="text-[18px] text-white/40">/{target}</span>
         </p>
-        <p className="mt-1.5 text-[11.5px] text-white/50">confirmed</p>
+        <p className="mt-1.5 text-[11.5px] text-white/50">count</p>
       </div>
     </div>
   );
@@ -228,7 +228,7 @@ function LinkSlab({ terms, me }: { terms: ContestTerms; me: Me }) {
                       ? `You've claimed your free ${label}.`
                       : me.data.verified >= me.data.reward.target
                         ? `Target reached: claim your ${label} in the dashboard.`
-                        : `${Math.max(0, me.data.reward.target - me.data.verified)} more confirmed friends to go.`}
+                        : `${Math.max(0, me.data.reward.target - me.data.verified)} more friends to go.`}
                   </p>
                   <div className="mt-5 flex flex-col gap-2 sm:flex-row">
                     <input
@@ -266,7 +266,7 @@ function LinkSlab({ terms, me }: { terms: ContestTerms; me: Me }) {
                   <dl className="mt-6 grid max-w-md grid-cols-3 gap-2">
                     {[
                       { k: "Signed up", v: me.data.signups },
-                      { k: "Confirmed", v: me.data.verified },
+                      { k: "Count", v: me.data.verified },
                       { k: "Bought", v: me.data.paid },
                     ].map(({ k, v }) => (
                       <div key={k} className="rounded-[16px] bg-white/[0.04] px-3 py-2.5 ring-1 ring-white/[0.07]">
@@ -340,7 +340,7 @@ function FriendsDemo() {
   }, [reduce]);
   const rows = [
     { icon: UserPlus, text: "New sign-up", sub: "through your link" },
-    { icon: MailCheck, text: "Email confirmed", sub: "counts toward 20" },
+    { icon: MailCheck, text: "Own device and connection", sub: "counts toward 20" },
     { icon: UserPlus, text: "New sign-up", sub: "with Google" },
   ];
   const shown = reduce ? 3 : n;
@@ -391,10 +391,10 @@ function InviteChain({ terms }: { terms: ContestTerms }) {
     {
       n: "02",
       title: "Friends sign up",
-      body: "A friend counts once they create an account through your link and confirm their email. Google sign-ups are confirmed straight away.",
+      body: "A friend counts once they create an account through your link on their own device and internet connection. Accounts made from yours, or several from one connection, don't count.",
       demo: <FriendsDemo />,
     },
-    { n: "03", title: `Claim at ${terms.target}`, body: `Claim from your dashboard and your free ${label} is created instantly. No fee.`, demo: <ClaimDemo label={label} /> },
+    { n: "03", title: `Claim at ${terms.target}`, body: `Claim from your dashboard and your free ${label} is created. No fee. If any sign-up fails our checks, our team reviews the claim first.`, demo: <ClaimDemo label={label} /> },
   ];
 
   return (
@@ -485,8 +485,8 @@ function Seats({ terms, me }: { terms: ContestTerms; me: Me }) {
           <Reveal delay={0.12}>
             <Lede tone="light" className="lg:mb-2">
               {own != null
-                ? `This is your real count: ${own} of ${target} seats are filled by friends who confirmed their email.`
-                : `Each friend who signs up and confirms their email fills a seat. Fill all ${target} and the account unlocks. Drag to try it.`}
+                ? `This is your real count: ${own} of ${target} seats are filled by friends whose sign-ups count.`
+                : `Each friend who signs up on their own device and connection fills a seat. Fill all ${target} and the account unlocks. Drag to try it.`}
             </Lede>
           </Reveal>
         </div>
@@ -525,7 +525,7 @@ function Seats({ terms, me }: { terms: ContestTerms; me: Me }) {
                   max={target}
                   value={filled}
                   onChange={(e) => set(Number(e.target.value))}
-                  aria-label="Confirmed friends"
+                  aria-label="Friends who count"
                   className="h-2 w-full cursor-pointer accent-[#1d6656]"
                 />
                 <button type="button" onClick={() => set(filled + 1)} aria-label="One more" className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[var(--g-ink)] text-[var(--g-lime)]">
@@ -536,7 +536,7 @@ function Seats({ terms, me }: { terms: ContestTerms; me: Me }) {
 
             <div className="flex flex-col justify-between gap-6 rounded-[28px] bg-[var(--g-ink)] p-6 text-white">
               <div>
-                <p className="text-[13px] font-medium text-white/50">Confirmed friends</p>
+                <p className="text-[13px] font-medium text-white/50">Friends who count</p>
                 <p className="g-num mt-2 text-[56px] leading-none font-semibold tracking-[-0.05em]">
                   {filled}
                   <span className="text-[24px] text-white/35">/{target}</span>
@@ -558,7 +558,7 @@ function Seats({ terms, me }: { terms: ContestTerms; me: Me }) {
                     <p className="text-[20px] font-semibold tracking-[-0.02em]">
                       {target - filled} more to unlock your free {label}.
                     </p>
-                    <p className="mt-2 text-[13.5px] text-white/50">Friends who haven&apos;t confirmed their email don&apos;t fill a seat yet.</p>
+                    <p className="mt-2 text-[13.5px] text-white/50">Accounts made from your device or connection, or several from one connection, don&apos;t fill a seat.</p>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -663,8 +663,8 @@ function OneLink({ terms, me }: { terms: ContestTerms; me: Me }) {
       icon: Trophy,
       eyebrow: "Contest",
       title: "Sign-ups",
-      body: `Every friend who signs up and confirms their email counts toward your free ${label}.`,
-      points: [`${terms.target} confirmed sign-ups`, "One reward per person", "Track it in Dashboard → Contest"],
+      body: `Every friend who signs up on their own device and connection counts toward your free ${label}.`,
+      points: [`${terms.target} sign-ups that count`, "One reward per person", "Track it in Dashboard → Contest"],
     },
     {
       icon: Scale,
@@ -728,20 +728,21 @@ function OneLink({ terms, me }: { terms: ContestTerms; me: Me }) {
 function RulesAndFaq({ terms }: { terms: ContestTerms }) {
   const { label, name } = useReward(terms);
   const rules = [
-    "A friend counts once they sign up through your link and confirm their email. Google sign-ups are confirmed automatically.",
+    "A friend counts once they sign up through your link on their own device and internet connection.",
     "Friends must be new to The People Prop. Existing accounts can't be added to your count.",
-    "You can't refer yourself, and each friend must be a unique user with no duplicate accounts.",
+    "You can't refer yourself: accounts made from your device or internet connection don't count, and only the first sign-up from any one device or connection counts.",
+    "If any sign-up fails these checks, our team reviews the claim before the account is created. Fake or duplicate accounts void the reward.",
     `One free ${label} per person.`,
     `Your ${label} is created when you claim it, with the standard ${name} rules.`,
     "Old contest and affiliate links still work and count toward the same total.",
   ];
   const faq = [
-    { q: "Do my friends need to buy anything?", a: "No. A friend counts once they create an account through your link and confirm their email. If they later buy a challenge, you also earn affiliate commission on it." },
-    { q: "Does signing up with Google count?", a: "Yes. Google accounts arrive with a confirmed email, so they count straight away." },
+    { q: "Do my friends need to buy anything?", a: "No. A friend counts once they create an account through your link on their own device and connection. If they later buy a challenge, you also earn affiliate commission on it." },
+    { q: "Why doesn't one of my sign-ups count?", a: "Your dashboard shows the reason next to each friend: it came from your own connection or device, or another sign-up already used that connection or device. Making several accounts yourself doesn't count." },
     { q: "Where do I see my progress?", a: "In your dashboard under Contest. The Affiliate section shows the same sign-ups, plus purchases and commission." },
     { q: "Is my contest link different from my affiliate link?", a: "No. Every account has one link. It counts sign-ups for the contest and purchases for commission." },
     { q: "Can I win more than once?", a: `No. The free ${label} is one per person.` },
-    { q: "What happens when I claim?", a: `Your ${label} challenge is created on your account straight away, with the standard rules. No payment needed.` },
+    { q: "What happens when I claim?", a: `Your ${label} challenge is created on your account with the standard rules, straight away when every sign-up passed our checks, or after a quick review by our team. No payment needed.` },
   ];
   const [open, setOpen] = useState<string | null>(faq[0].q);
 

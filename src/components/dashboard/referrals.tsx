@@ -1,9 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Check, CheckCircle, Clock, Copy, Link2, Mail, Send, Share2, ShoppingBag, Users } from "lucide-react";
+import { Check, CheckCircle, Clock, Copy, Link2, Mail, Send, Share2, ShoppingBag, Users, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { ReferralSummary } from "@/lib/referral-link";
+import { CHECK_LABEL, type ReferralSummary } from "@/lib/referral-link";
 import { Chip, Empty, Panel, PanelHead, btn, table } from "./glass";
 
 /*
@@ -148,7 +148,7 @@ export function ProgressRing({ value, target, size = 176, dark = false }: { valu
             {Math.min(value, target)}
             <span className={cn("text-[20px]", dark ? "text-white/40" : "text-black/30")}>/{target}</span>
           </p>
-          <p className={cn("mt-1.5 text-[12px] font-medium", dark ? "text-white/55" : "text-[var(--g-muted-ink)]")}>confirmed sign-ups</p>
+          <p className={cn("mt-1.5 text-[12px] font-medium", dark ? "text-white/55" : "text-[var(--g-muted-ink)]")}>sign-ups that count</p>
         </div>
       </div>
     </div>
@@ -157,8 +157,39 @@ export function ProgressRing({ value, target, size = 176, dark = false }: { valu
 
 const date = (iso: string) => new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 
-/** Everyone who signed up through the link: email confirmed (contest) and bought a challenge (affiliate). */
-export function ReferralTable({ referrals, title = "Your referrals" }: { referrals: ReferralSummary["referrals"]; title?: string }) {
+/** Contest view: does this sign-up count toward the reward, and if not, why. */
+function CountChip({ r }: { r: ReferralSummary["referrals"][number] }) {
+  if (r.counted) {
+    return (
+      <Chip tone="lime">
+        <CheckCircle className="h-3.5 w-3.5" /> Counts
+      </Chip>
+    );
+  }
+  return (
+    <Chip tone={r.reason === "unconfirmed" ? "amber" : "neutral"}>
+      {r.reason === "unconfirmed" ? <Clock className="h-3.5 w-3.5" /> : <XCircle className="h-3.5 w-3.5" />}
+      {r.reason ? CHECK_LABEL[r.reason] : "Doesn't count"}
+    </Chip>
+  );
+}
+
+/** Affiliate view: email confirmed or still waiting. */
+function EmailChip({ r }: { r: ReferralSummary["referrals"][number] }) {
+  return r.verified ? (
+    <Chip tone="lime">
+      <CheckCircle className="h-3.5 w-3.5" /> Confirmed
+    </Chip>
+  ) : (
+    <Chip tone="amber">
+      <Clock className="h-3.5 w-3.5" /> Waiting
+    </Chip>
+  );
+}
+
+/** Everyone who signed up through the link: whether they count (contest) and bought a challenge (affiliate). */
+export function ReferralTable({ referrals, title = "Your referrals", mode = "affiliate" }: { referrals: ReferralSummary["referrals"]; title?: string; mode?: "contest" | "affiliate" }) {
+  const Status = mode === "contest" ? CountChip : EmailChip;
   return (
     <Panel className="overflow-hidden">
       <PanelHead title={title} sub="Emails are partly hidden to protect your friends' privacy." icon={Users} />
@@ -177,15 +208,7 @@ export function ReferralTable({ referrals, title = "Your referrals" }: { referra
                   <p className="mt-0.5 text-[12px] text-[var(--g-muted-ink)]">{date(r.joinedAt)}</p>
                 </div>
                 <div className="flex shrink-0 flex-col items-end gap-1.5">
-                  {r.verified ? (
-                    <Chip tone="lime">
-                      <CheckCircle className="h-3.5 w-3.5" /> Confirmed
-                    </Chip>
-                  ) : (
-                    <Chip tone="amber">
-                      <Clock className="h-3.5 w-3.5" /> Waiting
-                    </Chip>
-                  )}
+                  <Status r={r} />
                   {r.paid ? (
                     <Chip tone="emerald">
                       <ShoppingBag className="h-3.5 w-3.5" /> Bought
@@ -201,7 +224,7 @@ export function ReferralTable({ referrals, title = "Your referrals" }: { referra
                 <tr className={table.headRow}>
                   <th className={table.th}>Friend</th>
                   <th className={table.th}>Signed up</th>
-                  <th className={table.th}>Email</th>
+                  <th className={table.th}>{mode === "contest" ? "Contest" : "Email"}</th>
                   <th className={table.th}>Challenge</th>
                 </tr>
               </thead>
@@ -211,15 +234,7 @@ export function ReferralTable({ referrals, title = "Your referrals" }: { referra
                     <td className={cn(table.td, "g-num text-[var(--g-ink)]")}>{r.email}</td>
                     <td className={cn(table.td, "whitespace-nowrap text-[var(--g-muted-ink)]")}>{date(r.joinedAt)}</td>
                     <td className={table.td}>
-                      {r.verified ? (
-                        <Chip tone="lime">
-                          <CheckCircle className="h-3.5 w-3.5" /> Confirmed
-                        </Chip>
-                      ) : (
-                        <Chip tone="amber">
-                          <Clock className="h-3.5 w-3.5" /> Waiting
-                        </Chip>
-                      )}
+                      <Status r={r} />
                     </td>
                     <td className={table.td}>
                       {r.paid ? (

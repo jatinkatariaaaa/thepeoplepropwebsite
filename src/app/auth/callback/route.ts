@@ -3,6 +3,7 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { activePartnerLink, partnerCookie, readVisit } from '@/lib/partner-referral';
 import { forgetReferralCookies, settleReferralCookie } from '@/lib/referrals';
+import { DEVICE_COOKIE, DEVICE_COOKIE_OPTIONS, isDeviceId, newDeviceId, readSignal, recordAccountSignal } from '@/lib/network-signal';
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -45,6 +46,15 @@ export async function GET(request: Request) {
         } catch (e) {
           console.error('Referral recording error:', e);
         }
+        // Where this login or sign-up came from (connection and browser). For a brand-new referred
+        // account this is its sign-up network, which the contest checks; it runs after the referral
+        // is recorded above. It never blocks the login.
+        let device = cookieStore.get(DEVICE_COOKIE)?.value;
+        if (!isDeviceId(device)) {
+          device = newDeviceId();
+          cookieStore.set(DEVICE_COOKIE, device, DEVICE_COOKIE_OPTIONS);
+        }
+        await recordAccountSignal(data.session.user.id, readSignal(request.headers, device));
       }
       if (cookieStore.has(partnerCookie)) {
         // The session has already been exchanged. A transient error on the next

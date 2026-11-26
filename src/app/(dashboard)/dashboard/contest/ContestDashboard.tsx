@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { AlertTriangle, ArrowRight, CheckCircle, Gift, Info, Trophy } from "lucide-react";
+import { AlertTriangle, ArrowRight, CheckCircle, Clock, Gift, Info, ShieldCheck, Trophy } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ClaimResult } from "@/lib/referral-link";
 import { useHydratedPrograms } from "@/hooks/useHydratedPrograms";
@@ -40,12 +40,13 @@ export function ContestDashboard() {
     );
   }
 
-  const { reward, verified, signups } = data;
+  const { reward, verified, signups, flagged } = data;
   const program = programs.find((p) => p.key === reward.program);
   const label = `${compact(Number(reward.size))} ${program?.shortLabel ?? programName(reward.program)}`;
   const remaining = Math.max(0, reward.target - verified);
-  const waiting = Math.max(0, signups - verified);
-  const eligible = verified >= reward.target && !reward.claimed;
+  const held = !reward.claimed && (reward.status === "held" || (claim && !claim.ok && claim.reason === "held"));
+  const declined = !reward.claimed && reward.status === "rejected";
+  const eligible = verified >= reward.target && !reward.claimed && !held && !declined;
   const accountId = (claim?.ok && claim.accountId) || reward.accountId;
 
   const onClaim = async () => {
@@ -55,7 +56,7 @@ export function ContestDashboard() {
       const res = await fetch("/api/referrals/claim", { method: "POST" });
       const result = (await res.json()) as ClaimResult;
       setClaim(result);
-      if (result.ok) reload();
+      if (result.ok || result.reason === "held") reload();
     } catch {
       setClaim({ ok: false, reason: "error", message: "We couldn't reach the server. Please try again." });
     } finally {
@@ -68,7 +69,7 @@ export function ContestDashboard() {
       <PageTitle
         lead="Contest"
         fade={`${reward.target} friends, one free account.`}
-        lede={`Share your link. When ${reward.target} friends sign up and confirm their email, claim a free ${label} challenge. One per person.`}
+        lede={`Share your link. When ${reward.target} different people sign up through it, claim a free ${label} challenge. One per person.`}
       />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
@@ -87,6 +88,27 @@ export function ContestDashboard() {
                   <p className="mt-2 text-[14px] leading-relaxed text-white/60">Find it with your other accounts and start trading.</p>
                   <Link href={accountId ? `/dashboard/account/${accountId}` : "/dashboard"} className={cn(btn.lime, btn.sm, "mt-5")}>
                     Open the account <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </>
+              ) : held ? (
+                <>
+                  <p className="inline-flex items-center gap-2 text-[13px] font-semibold text-[var(--g-lime-soft)]">
+                    <Clock className="h-4 w-4" /> Claim under review
+                  </p>
+                  <h2 className="mt-2 text-[24px] font-semibold tracking-[-0.03em]">We&apos;re checking your sign-ups.</h2>
+                  <p className="mt-2 text-[14px] leading-relaxed text-white/60">
+                    Some sign-ups failed our checks, so a person on our team looks at the claim. Your free {label} is created as soon as it&apos;s approved, usually within 24 hours.
+                  </p>
+                </>
+              ) : declined ? (
+                <>
+                  <p className="inline-flex items-center gap-2 text-[13px] font-semibold text-red-300">
+                    <AlertTriangle className="h-4 w-4" /> Claim declined
+                  </p>
+                  <h2 className="mt-2 text-[24px] font-semibold tracking-[-0.03em]">This claim wasn&apos;t approved.</h2>
+                  <p className="mt-2 text-[14px] leading-relaxed text-white/60">{reward.note || "Too many of your sign-ups failed our checks."}</p>
+                  <Link href="/dashboard/support?new=1" className={cn(btn.light, btn.sm, "mt-5")}>
+                    Contact support
                   </Link>
                 </>
               ) : eligible ? (
@@ -108,7 +130,7 @@ export function ContestDashboard() {
                     {remaining} more {remaining === 1 ? "friend" : "friends"} to go.
                   </h2>
                   <p className="mt-2 text-[14px] leading-relaxed text-white/60">
-                    A friend counts once they sign up through your link and confirm their email.
+                    A friend counts when they sign up through your link on their own device and internet connection.
                   </p>
                   <Meter value={Math.round((verified / reward.target) * 100)} className="mt-5 bg-white/10" />
                 </>
@@ -119,8 +141,8 @@ export function ContestDashboard() {
           <dl className="relative mt-8 grid grid-cols-3 divide-x divide-white/10 rounded-[20px] bg-white/[0.05] ring-1 ring-white/10">
             {[
               { k: "Signed up", v: signups },
-              { k: "Confirmed", v: verified },
-              { k: "Waiting on email", v: waiting },
+              { k: "Count", v: verified },
+              { k: "Don't count", v: flagged },
             ].map(({ k, v }) => (
               <div key={k} className="px-3 py-4 text-center">
                 <dd className="g-num text-[22px] font-semibold text-white">{v}</dd>
@@ -160,8 +182,15 @@ export function ContestDashboard() {
         </div>
       </div>
 
+      <Notice tone="neutral" icon={ShieldCheck} className="mt-6">
+        <strong className="font-semibold text-[var(--g-ink)]">What counts.</strong>{" "}
+        One sign-up per person: each friend uses their own device and internet
+        connection. Sign-ups from your connection or device, or several from the same one, don&apos;t count. If any sign-up fails these checks, our team reviews
+        the claim before the account is created.
+      </Notice>
+
       <div className="mt-6">
-        <ReferralTable referrals={data.referrals} />
+        <ReferralTable referrals={data.referrals} mode="contest" />
       </div>
 
       <Notice tone="emerald" icon={Info} className="mt-6">
