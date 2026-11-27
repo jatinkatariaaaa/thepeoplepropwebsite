@@ -16,6 +16,7 @@ export default function SettingsPage() {
     lastName: "",
     dob: "",
     email: "",
+    phoneNumber: "",
     timezone: "",
     street: "",
     city: "",
@@ -54,6 +55,7 @@ export default function SettingsPage() {
             lastName: profile.lastName || "",
             dob: profile.dob || "",
             email: profile.email || "",
+            phoneNumber: profile.phoneNumber || "",
             timezone: profile.timezone || "",
             street: profile.street || "",
             city: profile.city || "",
@@ -261,6 +263,19 @@ export default function SettingsPage() {
                     className={cn(field(), "bg-black/[0.03] text-[var(--g-muted-ink)]")}
                   />
                 </div>
+
+                {formData.phoneNumber && (
+                  <div>
+                    <label htmlFor="profile-mobile-number" className={fieldLabel}>Mobile number</label>
+                    <input
+                      id="profile-mobile-number"
+                      type="tel"
+                      value={formData.phoneNumber}
+                      readOnly
+                      className={cn(field(), "bg-black/[0.03] text-[var(--g-muted-ink)]")}
+                    />
+                  </div>
+                )}
 
                 <div>
                   <label className={fieldLabel}>Preferred Time Zone</label>

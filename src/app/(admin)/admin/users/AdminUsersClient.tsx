@@ -9,9 +9,10 @@ import { format } from "date-fns";
 import { ShieldAlert, Edit, Ban, PlayCircle, Search, Shield } from "lucide-react";
 import { toast } from "sonner";
 
-type AdminUser = {
+export type AdminUser = {
   id: string;
   email: string | null;
+  phone_number?: string | null;
   display_name: string | null;
   status: string | null;
   is_admin: boolean | null;
@@ -97,6 +98,9 @@ export default function AdminUsersClient({
         <div>
           <p className="font-semibold text-[var(--ink-950)]">{row.original.display_name || "—"}</p>
           <p className="text-xs text-[var(--ink-400)]">{row.original.email}</p>
+          {row.original.phone_number && (
+            <p className="mt-0.5 text-xs tabular-nums text-[var(--ink-600)]">{row.original.phone_number}</p>
+          )}
         </div>
       ),
     },

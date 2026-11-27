@@ -4,6 +4,9 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { getAdminRole } from "@/lib/admin-auth";
 
+// Keep contact numbers out of the customer picker and profile-change audit payloads.
+const profileFields = "id, email, display_name, status, is_admin, kyc_status, created_at, title, first_name, last_name, dob, timezone, street, city, postal_code, country, last_login, global_rank, affiliate_code, suspended_reason";
+
 async function getAdmin() {
   const cookieStore = await cookies();
   const supabase = createServerClient(
@@ -48,7 +51,7 @@ export async function GET(request: Request) {
 
     let query = supabaseAdmin
       .from("profiles")
-      .select("*", { count: "exact" });
+      .select(profileFields, { count: "exact" });
 
     if (search) {
       query = query.or(`email.ilike.%${search}%,display_name.ilike.%${search}%`);
@@ -92,7 +95,7 @@ export async function PATCH(request: Request) {
 
     // Get current user state for audit log
     const { data: oldUser } = await supabaseAdmin
-      .from("profiles").select("*").eq("id", userId).single();
+      .from("profiles").select(profileFields).eq("id", userId).single();
 
     let updateData: any = {};
     let auditAction = "";

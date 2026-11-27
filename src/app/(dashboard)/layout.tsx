@@ -1,4 +1,5 @@
 import type { Viewport } from "next";
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { ClientSidebar } from "@/components/dashboard/ClientSidebar";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
@@ -7,6 +8,7 @@ import { AssistantWidget } from "@/components/assistant/assistant-widget";
 import { cn } from "@/lib/utils";
 import { getVerifiedUserId } from "@/lib/api-auth";
 import { getSidebarFlags } from "@/lib/sidebar-flags";
+import { supabaseAdmin } from "@/lib/supabase";
 import styles from "./dashboard.module.css";
 
 export const viewport: Viewport = {
@@ -25,9 +27,16 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Only the id is needed here (which sidebar buttons to show), so the session is verified locally.
+  // Verify the identity locally for the profile check and sidebar.
   const userId = await getVerifiedUserId();
-  const user = userId ? { id: userId } : null;
+  if (userId) {
+    const { data: profile, error } = await supabaseAdmin.from("profiles")
+      .select("signup_details_pending")
+      .eq("id", userId)
+      .maybeSingle();
+    if (error) throw new Error("Could not check your profile. Please try again.");
+    if (profile?.signup_details_pending) redirect("/complete-profile");
+  }
   return (
     // .v2-scope switches on the glass system (src/app/glass.css); styles.light turns it to the light side.
     // <html data-dash="dark"> (set by the theme toggle) turns the same markup dark: see dashboard.module.css.
@@ -49,7 +58,7 @@ export default async function DashboardLayout({
       </div>
 
       <Suspense fallback={<ClientSidebar />}>
-        <DashboardSidebar userId={user?.id} />
+        <DashboardSidebar userId={userId ?? undefined} />
       </Suspense>
       <div className="flex min-h-screen flex-col lg:pl-[272px]">
         <DashboardHeader />
