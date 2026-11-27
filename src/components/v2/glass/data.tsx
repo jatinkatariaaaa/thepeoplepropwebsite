@@ -9,8 +9,8 @@
  */
 
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { supabase } from "@/lib/supabase";
 import { useHydratedPrograms } from "@/hooks/useHydratedPrograms";
+import { loadSiteData } from "@/lib/site-data-client";
 import { platforms as staticPlatforms, programs as staticPrograms, type Program, type AccountSize, type ProgramKey } from "@/data/programs";
 
 const SUPABASE_READY = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
@@ -31,14 +31,12 @@ function useStatsQuery() {
   useEffect(() => {
     if (!SUPABASE_READY) return;
     let alive = true;
-    supabase
-      .from("tpp_stats")
-      .select("*")
-      .order("key_name")
-      .then(({ data }) => {
-        if (!alive || !data || data.length === 0) return;
-        setStats(data.map((d: Stat) => ({ value: String(d.value), label: String(d.label), key_name: d.key_name })));
-      });
+    // tpp_stats ordered by key_name, from the shared site-data request (lib/site-data).
+    void loadSiteData().then((site) => {
+      const data = site?.stats as Stat[] | undefined;
+      if (!alive || !data || data.length === 0) return;
+      setStats(data.map((d: Stat) => ({ value: String(d.value), label: String(d.label), key_name: d.key_name })));
+    });
     return () => {
       alive = false;
     };
@@ -73,8 +71,9 @@ function usePlatformQuery() {
   useEffect(() => {
     if (!SUPABASE_READY) return;
     let alive = true;
-    supabase.rpc("list_public_platforms").then(({ data }) => {
-      const rows = (data ?? []) as { name: string; extra_fee_pct?: number | null }[];
+    // list_public_platforms, from the shared site-data request (lib/site-data).
+    void loadSiteData().then((site) => {
+      const rows = (site?.platforms ?? []) as { name: string; extra_fee_pct?: number | null }[];
       if (!alive || rows.length === 0) return;
       setList(rows.map((p) => ({ key: p.name.toLowerCase().replace(/[^a-z0-9]/g, ""), label: p.name, extra: Number(p.extra_fee_pct) || 0 })));
     });

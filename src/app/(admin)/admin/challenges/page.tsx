@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { refreshPublicSiteData } from "@/lib/site-data-client";
 import { createBrowserClient } from "@supabase/ssr";
 import { Button } from "@/components/ui/Button";
 import { Plus, Edit2, X, Trash2 } from "lucide-react";
@@ -280,6 +281,7 @@ export default function ChallengesAdminPage() {
       }));
       await supabase.from("tpp_program_fees").insert(feesToInsert);
     }
+    refreshPublicSiteData();
 
     setIsModalOpen(false);
     fetchPrograms();

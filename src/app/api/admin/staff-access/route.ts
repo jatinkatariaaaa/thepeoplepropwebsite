@@ -1,4 +1,5 @@
 import { logAudit, requireRole } from "@/lib/admin-auth";
+import { refreshSidebarFlags } from "@/lib/sidebar-flags";
 import { jsonError } from "@/lib/api-auth";
 import { isUuid } from "@/lib/certificates/types";
 import { isStaffPermission } from "@/lib/staff-access";
@@ -49,6 +50,7 @@ export async function POST(request: Request) {
       action: expectedVersion ? "update_staff_access" : "grant_staff_access",
       entityType: "staff_member", entityId: userId, newValue: { rank, permissions, commissionBps, active },
     });
+    refreshSidebarFlags();
     return Response.json({ success: true });
   } catch (error) {
     if (error instanceof Error && error.message === "Unauthorized") return jsonError("Sign in to continue.", 401);
