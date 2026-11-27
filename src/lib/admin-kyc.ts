@@ -11,7 +11,7 @@ export async function attachKycProfiles<T extends { user_id: string }>(documents
   const userIds = [...new Set(documents.map((document) => document.user_id))];
   const { data: profiles, error } = await supabaseAdmin
     .from("profiles")
-    .select("id, email, display_name")
+    .select("id, email, display_name, kyc_status")
     .in("id", userIds);
 
   if (error) throw error;

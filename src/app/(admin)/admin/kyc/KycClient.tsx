@@ -25,6 +25,7 @@ interface KycDoc {
   expires_at: string | null;
   created_at: string;
   updated_at: string;
+  bulk_eligible: boolean;
   profiles: { id: string; email: string; display_name: string } | null;
 }
 
@@ -54,6 +55,12 @@ export function KycClient({ initialDocuments }: KycClientProps) {
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState<string | null>(null);
+  const [bulkDocumentIds, setBulkDocumentIds] = useState<string[] | null>(null);
+  const [bulkApproving, setBulkApproving] = useState(false);
+  const eligibleIds = documents.filter((document) => document.status === "pending" && document.bulk_eligible)
+    .map((document) => document.id);
+  const bulkCount = bulkDocumentIds?.length ?? 0;
+  const bulkLabel = `${bulkCount} ${bulkCount === 1 ? "request" : "requests"}`;
 
   // Modal states
   const [selectedDoc, setSelectedDoc] = useState<KycDoc | null>(null);
@@ -131,6 +138,42 @@ export function KycClient({ initialDocuments }: KycClientProps) {
     setSelectedDoc(doc);
     setIsViewModalOpen(true);
   };
+
+  async function approveBatch() {
+    if (!bulkDocumentIds?.length || bulkApproving) return;
+
+    setBulkApproving(true);
+    try {
+      const response = await fetch("/api/admin/kyc", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ documentIds: bulkDocumentIds }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Could not approve the KYC requests");
+
+      const approved: { id: string; reviewed_at: string }[] = result.approved;
+      const decisions = new Map(approved.map((document) => [document.id, document.reviewed_at]));
+      const attempted = new Set(bulkDocumentIds);
+      setDocuments((current) => current.map((document) => {
+        const reviewedAt = decisions.get(document.id);
+        if (reviewedAt) {
+          return { ...document, status: "approved", reviewed_at: reviewedAt, rejection_reason: null, bulk_eligible: false };
+        }
+        return attempted.has(document.id) ? { ...document, bulk_eligible: false } : document;
+      }));
+      setBulkDocumentIds(null);
+      if (result.skippedCount) {
+        toast.info(`${approved.length} approved, ${result.skippedCount} skipped. Refresh to see the latest queue.`);
+      } else {
+        toast.success(`${approved.length} ${approved.length === 1 ? "request" : "requests"} approved`);
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not approve the KYC requests");
+    } finally {
+      setBulkApproving(false);
+    }
+  }
 
   const openActionModal = (doc: KycDoc, action: "approve" | "reject" | "reupload") => {
     setSelectedDoc(doc);
@@ -308,10 +351,49 @@ export function KycClient({ initialDocuments }: KycClientProps) {
             <option value="selfie">Selfie</option>
           </select>
         </div>
+        <button
+          type="button"
+          onClick={() => setBulkDocumentIds(eligibleIds)}
+          disabled={!eligibleIds.length || Boolean(loading) || bulkApproving}
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--ink-950)] px-4 py-2 text-sm font-semibold text-white disabled:opacity-40 sm:ml-auto"
+        >
+          <ShieldCheck className="h-4 w-4" aria-hidden="true" />
+          Approve All ({eligibleIds.length})
+        </button>
       </div>
 
       {/* Table */}
       <AdminTable data={filteredDocs} columns={columns} pageSize={15} />
+
+      <AdminModal
+        isOpen={Boolean(bulkDocumentIds)}
+        onClose={() => { if (!bulkApproving) setBulkDocumentIds(null); }}
+        title="Approve all eligible KYC requests?"
+        size="sm"
+      >
+        <p className="text-sm text-[var(--ink-600)]">
+          Confirm you’ve reviewed the documents in this batch.
+          Approval marks the users as verified for payouts.
+        </p>
+        <div className="mt-5 flex flex-wrap justify-end gap-3">
+          <button
+            type="button"
+            onClick={() => setBulkDocumentIds(null)}
+            disabled={bulkApproving}
+            className="rounded-full border border-[var(--border)] px-4 py-2 text-sm font-semibold disabled:opacity-50"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={() => void approveBatch()}
+            disabled={bulkApproving}
+            className="rounded-full bg-emerald-700 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+          >
+            {bulkApproving ? "Approving…" : `Approve ${bulkLabel}`}
+          </button>
+        </div>
+      </AdminModal>
 
       {/* View Document Modal */}
       <AdminModal
