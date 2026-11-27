@@ -33,6 +33,8 @@ async function loadQueue() {
   return documents.map((doc) => {
     const latest = !seenUsers.has(doc.user_id);
     seenUsers.add(doc.user_id);
+    const filePaths = [doc.front_image_url, doc.back_image_url, doc.selfie_image_url]
+      .filter((path): path is string => typeof path === "string" && path.length > 0);
     const requiredPaths = doc.document_type === "passport"
       ? [doc.front_image_url, doc.selfie_image_url]
       : [doc.front_image_url, doc.back_image_url, doc.selfie_image_url];
@@ -42,6 +44,8 @@ async function loadQueue() {
       front_image_url: link(doc.front_image_url),
       back_image_url: link(doc.back_image_url),
       selfie_image_url: link(doc.selfie_image_url),
+      has_hosted_files: filePaths.some((path) => signed.has(path))
+        && filePaths.every((path) => path.startsWith(`${doc.user_id}/`) && !path.includes("..")),
       bulk_eligible: latest && doc.status === "pending" && doc.profiles?.kyc_status === "pending"
         && (!doc.expires_at || Date.parse(doc.expires_at) > now)
         && ["passport", "national_id", "driving_license"].includes(doc.document_type)
