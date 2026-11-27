@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import { requireRole } from "@/lib/admin-auth";
+import { attachKycProfiles, kycReviewRoles, maxKycPageSize } from "@/lib/admin-kyc";
 
 async function verifyAdmin(request: Request) {
   try {
-    const admin = await requireRole(request, ["super_admin", "finance", "support"]);
+    const admin = await requireRole(request, kycReviewRoles);
     return { user: admin.user };
   } catch (e) {
     const m = (e as Error).message;
@@ -24,13 +25,18 @@ export async function GET(request: Request) {
     const type = searchParams.get("type");
     const country = searchParams.get("country");
     const search = searchParams.get("search");
-    const limit = parseInt(searchParams.get("limit") || "50");
-    const offset = parseInt(searchParams.get("offset") || "0");
+    const requestedLimit = Number(searchParams.get("limit") ?? 50);
+    const offset = Number(searchParams.get("offset") ?? 0);
+    if (!Number.isSafeInteger(requestedLimit) || requestedLimit < 1 || !Number.isSafeInteger(offset) || offset < 0 || offset > 2_147_483_647 - maxKycPageSize) {
+      return NextResponse.json({ error: "Invalid pagination parameters" }, { status: 400 });
+    }
+    const limit = Math.min(requestedLimit, maxKycPageSize);
 
     let query = supabaseAdmin
       .from("kyc_documents")
-      .select("*, profiles(id, email, display_name)", { count: "exact" })
+      .select("*", { count: "exact" })
       .order("created_at", { ascending: false })
+      .order("id", { ascending: false })
       .range(offset, offset + limit - 1);
 
     if (status) query = query.eq("status", status);
@@ -42,10 +48,10 @@ export async function GET(request: Request) {
     if (error) throw error;
 
     // Filter by search client-side for display_name/email
-    let filtered = data || [];
+    let filtered = await attachKycProfiles(data);
     if (search) {
       const s = search.toLowerCase();
-      filtered = filtered.filter((d: any) =>
+      filtered = filtered.filter((d) =>
         (d.profiles?.display_name || "").toLowerCase().includes(s) ||
         (d.profiles?.email || "").toLowerCase().includes(s) ||
         (d.document_number || "").toLowerCase().includes(s)
@@ -53,9 +59,9 @@ export async function GET(request: Request) {
     }
 
     return NextResponse.json({ documents: filtered, count: count || filtered.length });
-  } catch (error: any) {
-    console.error("Admin KYC GET error:", error);
-    return NextResponse.json({ error: error.message || "Internal server error" }, { status: 500 });
+  } catch {
+    console.error("Unable to load KYC requests for the admin API");
+    return NextResponse.json({ error: "Could not load KYC requests" }, { status: 500 });
   }
 }
 

@@ -30,7 +30,6 @@ interface KycDoc {
 
 interface KycClientProps {
   initialDocuments: KycDoc[];
-  statusCounts: Record<string, number>;
 }
 
 const statusConfig: Record<string, { label: string; icon: any; className: string }> = {
@@ -49,7 +48,7 @@ const docTypeLabels: Record<string, string> = {
   selfie: "Selfie",
 };
 
-export function KycClient({ initialDocuments, statusCounts }: KycClientProps) {
+export function KycClient({ initialDocuments }: KycClientProps) {
   const [documents, setDocuments] = useState<KycDoc[]>(initialDocuments);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [typeFilter, setTypeFilter] = useState<string>("all");
@@ -256,7 +255,7 @@ export function KycClient({ initialDocuments, statusCounts }: KycClientProps) {
           { key: "reupload_requested", label: "Re-upload", icon: RefreshCw, color: "text-sky-600", bg: "bg-sky-50" },
         ].map((stat) => {
           const Icon = stat.icon;
-          const count = statusCounts[stat.key] || 0;
+          const count = documents.filter((document) => document.status === stat.key).length;
           const isActive = statusFilter === stat.key;
           return (
             <button
