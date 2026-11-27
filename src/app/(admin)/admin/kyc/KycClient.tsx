@@ -8,6 +8,13 @@ import { format } from "date-fns";
 import { Clock, CircleCheck as CheckCircle, Circle as XCircle, CircleAlert as AlertCircle, RefreshCw, Eye, FileText, MapPin, User, MessageSquare, Check, X, Upload, Shield, ShieldCheck, ShieldAlert, Search, ListFilter as Filter } from "lucide-react";
 import { toast } from "sonner";
 
+type CleanupStatus = "removed" | "pending";
+
+interface CleanupResult {
+  id: string;
+  status: CleanupStatus;
+}
+
 interface KycDoc {
   id: string;
   user_id: string;
@@ -26,6 +33,8 @@ interface KycDoc {
   created_at: string;
   updated_at: string;
   bulk_eligible: boolean;
+  storage_cleanup_requested_at: string | null;
+  storage_cleanup_completed_at: string | null;
   profiles: { id: string; email: string; display_name: string } | null;
 }
 
@@ -49,6 +58,42 @@ const docTypeLabels: Record<string, string> = {
   selfie: "Selfie",
 };
 
+function applyCleanupStatus(document: KycDoc, status?: CleanupStatus): KycDoc {
+  if (!status) return document;
+  const now = new Date().toISOString();
+  return {
+    ...document,
+    storage_cleanup_requested_at: document.storage_cleanup_requested_at ?? now,
+    ...(status === "removed" ? {
+      storage_cleanup_completed_at: document.storage_cleanup_completed_at ?? now,
+      front_image_url: null,
+      back_image_url: null,
+      selfie_image_url: null,
+    } : {}),
+  };
+}
+
+function ArchiveConfirmation({ checked, disabled, onChange }: {
+  checked: boolean;
+  disabled: boolean;
+  onChange: (checked: boolean) => void;
+}) {
+  return (
+    <label className="mt-4 flex items-start gap-3 rounded-xl border border-[var(--border)] bg-[var(--paper-2)] p-3 text-sm text-[var(--ink-950)]">
+      <input
+        type="checkbox"
+        checked={checked}
+        disabled={disabled}
+        onChange={(event) => onChange(event.target.checked)}
+        className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--ink-950)]"
+      />
+      <span>
+        I saved readable copies of all these KYC files in our secure offline archive. Permanently remove the hosted copies after approval.
+      </span>
+    </label>
+  );
+}
+
 export function KycClient({ initialDocuments }: KycClientProps) {
   const [documents, setDocuments] = useState<KycDoc[]>(initialDocuments);
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -57,6 +102,7 @@ export function KycClient({ initialDocuments }: KycClientProps) {
   const [loading, setLoading] = useState<string | null>(null);
   const [bulkDocumentIds, setBulkDocumentIds] = useState<string[] | null>(null);
   const [bulkApproving, setBulkApproving] = useState(false);
+  const [archiveConfirmed, setArchiveConfirmed] = useState(false);
   const eligibleIds = documents.filter((document) => document.status === "pending" && document.bulk_eligible)
     .map((document) => document.id);
   const bulkCount = bulkDocumentIds?.length ?? 0;
@@ -69,6 +115,8 @@ export function KycClient({ initialDocuments }: KycClientProps) {
   const [actionType, setActionType] = useState<"approve" | "reject" | "reupload" | null>(null);
   const [rejectionReason, setRejectionReason] = useState("");
   const [adminNotes, setAdminNotes] = useState("");
+  const canArchiveSingle = actionType === "approve" && selectedDoc?.status === "pending" && selectedDoc.bulk_eligible;
+  const selectedCleanupPending = selectedDoc?.storage_cleanup_requested_at && !selectedDoc.storage_cleanup_completed_at;
 
   const filteredDocs = useMemo(() => {
     return documents.filter((d) => {
@@ -104,23 +152,29 @@ export function KycClient({ initialDocuments }: KycClientProps) {
           rejectionReason: actionType === "reject" ? rejectionReason : undefined,
           adminNotes: adminNotes || undefined,
           action: actionType,
+          archiveConfirmed: Boolean(canArchiveSingle && archiveConfirmed),
         }),
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to update");
 
-      toast.success(`Document ${newStatus.replace("_", " ")}`);
+      const cleanup: CleanupResult[] = data.cleanup ?? [];
+      const cleanupStatus = cleanup.find((item) => item.id === selectedDoc.id)?.status;
+      toast.success(cleanupStatus === "removed" ? "Document approved and hosted files removed" : `Document ${newStatus.replace("_", " ")}`);
+      if (cleanupStatus === "pending") {
+        toast.info("Approval saved. Hosted file removal is still pending.");
+      }
       setDocuments((prev) =>
         prev.map((d) =>
           d.id === selectedDoc.id
-            ? {
+            ? applyCleanupStatus({
                 ...d,
                 status: newStatus,
                 rejection_reason: actionType === "reject" ? rejectionReason : d.rejection_reason,
                 admin_notes: adminNotes || d.admin_notes,
                 reviewed_at: new Date().toISOString(),
-              }
+              }, cleanupStatus)
             : d
         )
       );
@@ -139,6 +193,29 @@ export function KycClient({ initialDocuments }: KycClientProps) {
     setIsViewModalOpen(true);
   };
 
+  async function retryFileRemoval(documentId: string) {
+    setLoading(documentId);
+    try {
+      const response = await fetch("/api/admin/kyc/cleanup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ documentId }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Could not remove hosted files");
+      const cleanup: CleanupResult[] = result.cleanup ?? [];
+      const status = cleanup.find((item) => item.id === documentId)?.status;
+      setDocuments((current) => current.map((record) => record.id === documentId ? applyCleanupStatus(record, status) : record));
+      setSelectedDoc((current) => current?.id === documentId ? applyCleanupStatus(current, status) : current);
+      if (status === "removed") toast.success("Hosted files removed");
+      else toast.info("Hosted file removal is still pending");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not remove hosted files");
+    } finally {
+      setLoading(null);
+    }
+  }
+
   async function approveBatch() {
     if (!bulkDocumentIds?.length || bulkApproving) return;
 
@@ -147,18 +224,23 @@ export function KycClient({ initialDocuments }: KycClientProps) {
       const response = await fetch("/api/admin/kyc", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ documentIds: bulkDocumentIds }),
+        body: JSON.stringify({ documentIds: bulkDocumentIds, archiveConfirmed }),
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Could not approve the KYC requests");
 
       const approved: { id: string; reviewed_at: string }[] = result.approved;
+      const cleanup: CleanupResult[] = result.cleanup ?? [];
+      const cleanupById = new Map(cleanup.map((item) => [item.id, item.status]));
       const decisions = new Map(approved.map((document) => [document.id, document.reviewed_at]));
       const attempted = new Set(bulkDocumentIds);
       setDocuments((current) => current.map((document) => {
         const reviewedAt = decisions.get(document.id);
         if (reviewedAt) {
-          return { ...document, status: "approved", reviewed_at: reviewedAt, rejection_reason: null, bulk_eligible: false };
+          return applyCleanupStatus(
+            { ...document, status: "approved", reviewed_at: reviewedAt, rejection_reason: null, bulk_eligible: false },
+            cleanupById.get(document.id),
+          );
         }
         return attempted.has(document.id) ? { ...document, bulk_eligible: false } : document;
       }));
@@ -167,6 +249,11 @@ export function KycClient({ initialDocuments }: KycClientProps) {
         toast.info(`${approved.length} approved, ${result.skippedCount} skipped. Refresh to see the latest queue.`);
       } else {
         toast.success(`${approved.length} ${approved.length === 1 ? "request" : "requests"} approved`);
+      }
+      if (cleanup.length) {
+        const removed = cleanup.filter((item) => item.status === "removed").length;
+        const waiting = cleanup.length - removed;
+        toast.info(waiting ? `${removed} hosted file sets removed, ${waiting} still pending` : `Hosted files removed for ${removed} ${removed === 1 ? "request" : "requests"}`);
       }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Could not approve the KYC requests");
@@ -180,6 +267,7 @@ export function KycClient({ initialDocuments }: KycClientProps) {
     setActionType(action);
     setRejectionReason(doc.rejection_reason || "");
     setAdminNotes(doc.admin_notes || "");
+    setArchiveConfirmed(false);
     setIsActionModalOpen(true);
   };
 
@@ -353,7 +441,7 @@ export function KycClient({ initialDocuments }: KycClientProps) {
         </div>
         <button
           type="button"
-          onClick={() => setBulkDocumentIds(eligibleIds)}
+          onClick={() => { setArchiveConfirmed(false); setBulkDocumentIds(eligibleIds); }}
           disabled={!eligibleIds.length || Boolean(loading) || bulkApproving}
           className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--ink-950)] px-4 py-2 text-sm font-semibold text-white disabled:opacity-40 sm:ml-auto"
         >
@@ -375,6 +463,7 @@ export function KycClient({ initialDocuments }: KycClientProps) {
           Confirm you’ve reviewed the documents in this batch.
           Approval marks the users as verified for payouts.
         </p>
+        <ArchiveConfirmation checked={archiveConfirmed} disabled={bulkApproving} onChange={setArchiveConfirmed} />
         <div className="mt-5 flex flex-wrap justify-end gap-3">
           <button
             type="button"
@@ -453,7 +542,22 @@ export function KycClient({ initialDocuments }: KycClientProps) {
             </div>
 
             {/* Documents: signed links from the private bucket, valid for one hour */}
-            {(selectedDoc.front_image_url || selectedDoc.back_image_url || selectedDoc.selfie_image_url) ? (
+            {selectedCleanupPending && (
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-amber-50 p-4 text-sm text-amber-800">
+                <p>Hosted file removal is pending for this approved request.</p>
+                <button
+                  type="button"
+                  onClick={() => void retryFileRemoval(selectedDoc.id)}
+                  disabled={loading !== null}
+                  className="rounded-full border border-amber-200 px-3 py-1.5 font-semibold hover:bg-amber-100 disabled:opacity-50"
+                >
+                  {loading === selectedDoc.id ? "Removing files…" : "Retry file removal"}
+                </button>
+              </div>
+            )}
+            {selectedDoc.storage_cleanup_completed_at ? (
+              <p className="rounded-xl bg-[var(--paper-2)] p-4 text-sm text-[var(--ink-600)]">Hosted files were removed after archive confirmation. View the archived copies in your company’s KYC archive.</p>
+            ) : (selectedDoc.front_image_url || selectedDoc.back_image_url || selectedDoc.selfie_image_url) ? (
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                 {([
                   ["Front", selectedDoc.front_image_url],
@@ -469,7 +573,7 @@ export function KycClient({ initialDocuments }: KycClientProps) {
                   ) : null,
                 )}
               </div>
-            ) : (
+            ) : !selectedCleanupPending && (
               <p className="rounded-xl bg-[var(--paper-2)] p-4 text-sm text-[var(--ink-500)]">This submission has no document images. Ask the trader to submit again from Settings.</p>
             )}
 
@@ -552,6 +656,9 @@ export function KycClient({ initialDocuments }: KycClientProps) {
                 placeholder="Add internal notes (not visible to user)..."
               />
             </div>
+            {canArchiveSingle && (
+              <ArchiveConfirmation checked={archiveConfirmed} disabled={loading === selectedDoc.id} onChange={setArchiveConfirmed} />
+            )}
             <div className="flex justify-end gap-3 pt-2">
               <button
                 onClick={() => { setIsActionModalOpen(false); setRejectionReason(""); setAdminNotes(""); }}
