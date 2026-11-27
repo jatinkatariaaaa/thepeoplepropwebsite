@@ -5,8 +5,9 @@ import { removeArchivedKycFiles } from "@/lib/kyc-storage-cleanup";
 import { supabaseAdmin } from "@/lib/supabase";
 
 export async function POST(request: Request) {
+  let reviewer: Awaited<ReturnType<typeof requireRole>>;
   try {
-    await requireRole(request, kycReviewRoles);
+    reviewer = await requireRole(request, kycReviewRoles);
   } catch (error) {
     const unauthorized = error instanceof Error && error.message === "Unauthorized";
     return NextResponse.json({ error: unauthorized ? "Unauthorized" : "Forbidden" }, { status: unauthorized ? 401 : 403 });
@@ -21,18 +22,29 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Choose a valid KYC request" }, { status: 400 });
   }
 
-  const { data, error } = await supabaseAdmin.from("kyc_documents")
-    .select("id, storage_cleanup_completed_at")
-    .eq("id", documentId)
-    .eq("status", "approved")
-    .not("storage_cleanup_requested_at", "is", null)
-    .maybeSingle();
+  const archiveConfirmed = body?.archiveConfirmed === true;
+  const { data, error } = archiveConfirmed
+    ? await supabaseAdmin.rpc("request_kyc_storage_cleanup", {
+        p_document_id: documentId,
+        p_admin_id: reviewer.user.id,
+        p_admin_email: reviewer.user.email ?? null,
+      }).maybeSingle<{ id: string; storage_cleanup_completed_at: string | null }>()
+    : await supabaseAdmin.from("kyc_documents")
+        .select("id, storage_cleanup_completed_at")
+        .eq("id", documentId)
+        .eq("status", "approved")
+        .not("storage_cleanup_requested_at", "is", null)
+        .maybeSingle();
   if (error) {
+    if (archiveConfirmed && error.code === "22023") {
+      return NextResponse.json({ error: error.message }, { status: 409 });
+    }
     console.error("Unable to find archived KYC cleanup request", error.code);
     return NextResponse.json({ error: "Could not load the file removal request" }, { status: 500 });
   }
   if (!data) {
-    return NextResponse.json({ error: "File removal was not confirmed for this request" }, { status: 404 });
+    const error = archiveConfirmed ? "An approved KYC request was not found" : "File removal was not confirmed for this request";
+    return NextResponse.json({ error }, { status: 404 });
   }
 
   const cleanup = data.storage_cleanup_completed_at

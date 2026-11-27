@@ -33,6 +33,7 @@ interface KycDoc {
   created_at: string;
   updated_at: string;
   bulk_eligible: boolean;
+  has_hosted_files: boolean;
   storage_cleanup_requested_at: string | null;
   storage_cleanup_completed_at: string | null;
   profiles: { id: string; email: string; display_name: string } | null;
@@ -73,10 +74,11 @@ function applyCleanupStatus(document: KycDoc, status?: CleanupStatus): KycDoc {
   };
 }
 
-function ArchiveConfirmation({ checked, disabled, onChange }: {
+function ArchiveConfirmation({ checked, disabled, onChange, alreadyApproved = false }: {
   checked: boolean;
   disabled: boolean;
   onChange: (checked: boolean) => void;
+  alreadyApproved?: boolean;
 }) {
   return (
     <label className="mt-4 flex items-start gap-3 rounded-xl border border-[var(--border)] bg-[var(--paper-2)] p-3 text-sm text-[var(--ink-950)]">
@@ -88,7 +90,9 @@ function ArchiveConfirmation({ checked, disabled, onChange }: {
         className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--ink-950)]"
       />
       <span>
-        I saved readable copies of all these KYC files in our secure offline archive. Permanently remove the hosted copies after approval.
+        I saved readable copies of all these KYC files in our secure offline archive. {alreadyApproved
+          ? "Permanently remove the hosted copies."
+          : "Permanently remove the hosted copies after approval."}
       </span>
     </label>
   );
@@ -111,12 +115,15 @@ export function KycClient({ initialDocuments }: KycClientProps) {
   // Modal states
   const [selectedDoc, setSelectedDoc] = useState<KycDoc | null>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [existingArchiveConfirmed, setExistingArchiveConfirmed] = useState<boolean | null>(null);
   const [isActionModalOpen, setIsActionModalOpen] = useState(false);
   const [actionType, setActionType] = useState<"approve" | "reject" | "reupload" | null>(null);
   const [rejectionReason, setRejectionReason] = useState("");
   const [adminNotes, setAdminNotes] = useState("");
   const canArchiveSingle = actionType === "approve" && selectedDoc?.status === "pending" && selectedDoc.bulk_eligible;
   const selectedCleanupPending = selectedDoc?.storage_cleanup_requested_at && !selectedDoc.storage_cleanup_completed_at;
+  const canRemoveExistingFiles = selectedDoc?.status === "approved"
+    && selectedDoc.has_hosted_files && !selectedDoc.storage_cleanup_requested_at;
 
   const filteredDocs = useMemo(() => {
     return documents.filter((d) => {
@@ -189,17 +196,19 @@ export function KycClient({ initialDocuments }: KycClientProps) {
   };
 
   const openViewModal = (doc: KycDoc) => {
+    setExistingArchiveConfirmed(null);
     setSelectedDoc(doc);
     setIsViewModalOpen(true);
   };
 
-  async function retryFileRemoval(documentId: string) {
+  async function removeHostedFiles(documentId: string, confirmArchive = false) {
+    if (loading !== null) return;
     setLoading(documentId);
     try {
       const response = await fetch("/api/admin/kyc/cleanup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ documentId }),
+        body: JSON.stringify({ documentId, archiveConfirmed: confirmArchive }),
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Could not remove hosted files");
@@ -207,6 +216,7 @@ export function KycClient({ initialDocuments }: KycClientProps) {
       const status = cleanup.find((item) => item.id === documentId)?.status;
       setDocuments((current) => current.map((record) => record.id === documentId ? applyCleanupStatus(record, status) : record));
       setSelectedDoc((current) => current?.id === documentId ? applyCleanupStatus(current, status) : current);
+      setExistingArchiveConfirmed(null);
       if (status === "removed") toast.success("Hosted files removed");
       else toast.info("Hosted file removal is still pending");
     } catch (error) {
@@ -547,7 +557,7 @@ export function KycClient({ initialDocuments }: KycClientProps) {
                 <p>Hosted file removal is pending for this approved request.</p>
                 <button
                   type="button"
-                  onClick={() => void retryFileRemoval(selectedDoc.id)}
+                  onClick={() => void removeHostedFiles(selectedDoc.id)}
                   disabled={loading !== null}
                   className="rounded-full border border-amber-200 px-3 py-1.5 font-semibold hover:bg-amber-100 disabled:opacity-50"
                 >
@@ -575,6 +585,43 @@ export function KycClient({ initialDocuments }: KycClientProps) {
               </div>
             ) : !selectedCleanupPending && (
               <p className="rounded-xl bg-[var(--paper-2)] p-4 text-sm text-[var(--ink-500)]">This submission has no document images. Ask the trader to submit again from Settings.</p>
+            )}
+
+            {canRemoveExistingFiles && (
+              <div className="border-t border-[var(--border)] pt-4">
+                {existingArchiveConfirmed === null ? (
+                  <button
+                    type="button"
+                    onClick={() => setExistingArchiveConfirmed(false)}
+                    disabled={loading !== null}
+                    className="rounded-full border border-red-200 px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-50 disabled:opacity-50"
+                  >
+                    Remove hosted files
+                  </button>
+                ) : (
+                  <div>
+                    <ArchiveConfirmation alreadyApproved checked={existingArchiveConfirmed} disabled={loading !== null} onChange={setExistingArchiveConfirmed} />
+                    <div className="mt-3 flex flex-wrap justify-end gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setExistingArchiveConfirmed(null)}
+                        disabled={loading !== null}
+                        className="rounded-full px-4 py-2 text-sm font-semibold hover:bg-[var(--paper-2)] disabled:opacity-50"
+                      >
+                        Cancel removal
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => void removeHostedFiles(selectedDoc.id, true)}
+                        disabled={!existingArchiveConfirmed || loading !== null}
+                        className="rounded-full bg-red-700 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+                      >
+                        {loading === selectedDoc.id ? "Removing files…" : "Permanently remove files"}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
 
             {/* Admin Notes */}
