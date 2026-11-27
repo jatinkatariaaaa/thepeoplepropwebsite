@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import { requireRole } from "@/lib/admin-auth";
-import { attachKycProfiles, kycReviewRoles, maxKycPageSize } from "@/lib/admin-kyc";
+import { attachKycProfiles, kycDocumentIdPattern, kycReviewRoles, maxKycPageSize } from "@/lib/admin-kyc";
+import { removeArchivedKycFiles } from "@/lib/kyc-storage-cleanup";
 
 async function verifyAdmin(request: Request) {
   try {
@@ -78,14 +79,14 @@ export async function POST(request: Request) {
 
   const body = await request.json().catch(() => null);
   const ids = body?.documentIds;
-  const uuid = /^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
   if (!Array.isArray(ids) || ids.length < 1 || ids.length > maxKycPageSize
-      || !ids.every((id): id is string => typeof id === "string" && uuid.test(id))) {
+      || !ids.every((id): id is string => typeof id === "string" && kycDocumentIdPattern.test(id))) {
     return NextResponse.json({ error: "Choose a valid batch of KYC requests" }, { status: 400 });
   }
 
   const documentIds = [...new Set(ids.map((id) => id.toLowerCase()))];
-  const { data, error } = await supabaseAdmin.rpc("approve_kyc_batch", {
+  const archiveConfirmed = body.archiveConfirmed === true;
+  const { data, error } = await supabaseAdmin.rpc(archiveConfirmed ? "approve_kyc_batch_archived" : "approve_kyc_batch", {
     p_document_ids: documentIds,
     p_admin_id: auth.user.id,
     p_admin_email: auth.user.email ?? null,
@@ -97,7 +98,10 @@ export async function POST(request: Request) {
   }
 
   const approved = data ?? [];
-  return NextResponse.json({ approved, skippedCount: documentIds.length - approved.length });
+  const cleanup = archiveConfirmed
+    ? await removeArchivedKycFiles(approved.map((row: { id: string }) => row.id))
+    : undefined;
+  return NextResponse.json({ approved, skippedCount: documentIds.length - approved.length, cleanup });
 }
 
 export async function PATCH(request: Request) {
@@ -107,10 +111,35 @@ export async function PATCH(request: Request) {
   }
 
   try {
-    const { documentId, status, rejectionReason, adminNotes, action } = await request.json();
+    const { documentId, status, rejectionReason, adminNotes, action, archiveConfirmed } = await request.json();
 
     if (!documentId || !status) {
       return NextResponse.json({ error: "Missing documentId or status" }, { status: 400 });
+    }
+
+    if (archiveConfirmed === true) {
+      if (status !== "approved" || typeof documentId !== "string" || !kycDocumentIdPattern.test(documentId)
+          || (adminNotes !== undefined && (typeof adminNotes !== "string" || adminNotes.length > 4_000))) {
+        return NextResponse.json({ error: "Choose a valid KYC request to approve and remove its files" }, { status: 400 });
+      }
+
+      const { data, error } = await supabaseAdmin.rpc("approve_kyc_batch_archived", {
+        p_document_ids: [documentId],
+        p_admin_id: auth.user.id,
+        p_admin_email: auth.user.email ?? null,
+        p_admin_notes: adminNotes ?? null,
+      });
+      if (error) {
+        console.error("Unable to approve archived KYC request", error.code);
+        return NextResponse.json({ error: "Could not approve the request. Refresh the queue before retrying." }, { status: 500 });
+      }
+      const approved = data?.[0];
+      if (!approved) {
+        return NextResponse.json({ error: "This request is no longer eligible for approval with file removal. Refresh the queue." }, { status: 409 });
+      }
+
+      const cleanup = await removeArchivedKycFiles([approved.id]);
+      return NextResponse.json({ success: true, cleanup });
     }
 
     const updateData: any = {

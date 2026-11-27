@@ -3,6 +3,7 @@ import { supabaseAdmin } from "@/lib/supabase";
 
 export const kycReviewRoles = ["super_admin", "finance", "support"];
 export const maxKycPageSize = 200;
+export const kycDocumentIdPattern = /^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
 
 export async function attachKycProfiles<T extends { user_id: string }>(documents: T[]) {
   if (!documents.length) return [];
