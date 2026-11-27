@@ -10,7 +10,7 @@ async function loadQueue() {
   const { data, error } = await supabaseAdmin
     .from("kyc_documents")
     .select("*")
-    .order("created_at", { ascending: false })
+    .order("created_at", { ascending: false, nullsFirst: false })
     .order("id", { ascending: false })
     .limit(maxKycPageSize);
   if (error) throw error;
@@ -28,12 +28,27 @@ async function loadQueue() {
   }
   const link = (p: string | null) => (p ? (p.startsWith("http") ? p : (signed.get(p) ?? null)) : null);
 
-  return documents.map((d) => ({
-    ...d,
-    front_image_url: link(d.front_image_url),
-    back_image_url: link(d.back_image_url),
-    selfie_image_url: link(d.selfie_image_url),
-  }));
+  const seenUsers = new Set<string>();
+  const now = Date.now();
+  return documents.map((doc) => {
+    const latest = !seenUsers.has(doc.user_id);
+    seenUsers.add(doc.user_id);
+    const requiredPaths = doc.document_type === "passport"
+      ? [doc.front_image_url, doc.selfie_image_url]
+      : [doc.front_image_url, doc.back_image_url, doc.selfie_image_url];
+
+    return {
+      ...doc,
+      front_image_url: link(doc.front_image_url),
+      back_image_url: link(doc.back_image_url),
+      selfie_image_url: link(doc.selfie_image_url),
+      bulk_eligible: latest && doc.status === "pending" && doc.profiles?.kyc_status === "pending"
+        && (!doc.expires_at || Date.parse(doc.expires_at) > now)
+        && ["passport", "national_id", "driving_license"].includes(doc.document_type)
+        && requiredPaths.every((path) => path?.startsWith(`${doc.user_id}/`) && signed.has(path))
+        && new Set(requiredPaths).size === requiredPaths.length,
+    };
+  });
 }
 
 export default async function AdminKycPage() {

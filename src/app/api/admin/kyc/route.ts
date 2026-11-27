@@ -65,6 +65,41 @@ export async function GET(request: Request) {
   }
 }
 
+export async function POST(request: Request) {
+  const auth = await verifyAdmin(request);
+  if ("error" in auth) {
+    return NextResponse.json({ error: auth.error }, { status: auth.status });
+  }
+
+  const contentType = request.headers.get("content-type")?.split(";")[0].trim().toLowerCase();
+  if (contentType !== "application/json") {
+    return NextResponse.json({ error: "Send the KYC batch as JSON" }, { status: 415 });
+  }
+
+  const body = await request.json().catch(() => null);
+  const ids = body?.documentIds;
+  const uuid = /^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
+  if (!Array.isArray(ids) || ids.length < 1 || ids.length > maxKycPageSize
+      || !ids.every((id): id is string => typeof id === "string" && uuid.test(id))) {
+    return NextResponse.json({ error: "Choose a valid batch of KYC requests" }, { status: 400 });
+  }
+
+  const documentIds = [...new Set(ids.map((id) => id.toLowerCase()))];
+  const { data, error } = await supabaseAdmin.rpc("approve_kyc_batch", {
+    p_document_ids: documentIds,
+    p_admin_id: auth.user.id,
+    p_admin_email: auth.user.email ?? null,
+  });
+
+  if (error) {
+    console.error("Unable to bulk approve KYC requests", error.code);
+    return NextResponse.json({ error: "Could not approve the KYC requests. Refresh the queue before retrying." }, { status: 500 });
+  }
+
+  const approved = data ?? [];
+  return NextResponse.json({ approved, skippedCount: documentIds.length - approved.length });
+}
+
 export async function PATCH(request: Request) {
   const auth = await verifyAdmin(request);
   if ("error" in auth) {
@@ -97,12 +132,22 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: "Document not found" }, { status: 404 });
     }
 
-    const { error } = await supabaseAdmin
+    if (!["pending", "reupload_requested"].includes(doc.status)) {
+      return NextResponse.json({ error: "This request has already been reviewed. Refresh the queue." }, { status: 409 });
+    }
+
+    const { data: changed, error } = await supabaseAdmin
       .from("kyc_documents")
       .update(updateData)
-      .eq("id", documentId);
+      .eq("id", documentId)
+      .eq("status", doc.status)
+      .select("id")
+      .maybeSingle();
 
     if (error) throw error;
+    if (!changed) {
+      return NextResponse.json({ error: "This request changed during review. Refresh the queue." }, { status: 409 });
+    }
 
     // Log activity
     await supabaseAdmin.from("payment_activity_logs").insert({
