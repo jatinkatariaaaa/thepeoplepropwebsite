@@ -9,7 +9,7 @@ import { format } from "date-fns";
 import { ShieldAlert, Edit, Ban, PlayCircle, Search, Shield } from "lucide-react";
 import { toast } from "sonner";
 
-type AdminUser = {
+export type AdminUser = {
   id: string;
   email: string | null;
   phone_number?: string | null;

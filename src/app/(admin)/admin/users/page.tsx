@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getAdminUser } from "@/lib/admin-auth";
 import { supabaseAdmin } from "@/lib/supabase";
-import AdminUsersClient from "./AdminUsersClient";
+import AdminUsersClient, { type AdminUser } from "./AdminUsersClient";
 
 export const revalidate = 0;
 
@@ -23,11 +23,10 @@ export default async function AdminUsersPage({ searchParams }: PageProps<"/admin
   const sorting = sortColumn ? [{ id: sortColumn, desc: params.direction === "desc" }] : [];
   const offset = (page - 1) * pageSize;
   const fields = "id, email, display_name, status, is_admin, kyc_status, created_at";
-  const fieldsWithPhone = `${fields}, phone_number` as const;
 
   let query = supabaseAdmin
     .from("profiles")
-    .select(canSeePhoneNumbers ? fieldsWithPhone : fields, { count: "exact" });
+    .select(canSeePhoneNumbers ? `${fields}, phone_number` : fields, { count: "exact" });
 
   if (search) {
     // Quote the filter value for PostgREST and escape SQL LIKE metacharacters.
@@ -38,7 +37,8 @@ export default async function AdminUsersPage({ searchParams }: PageProps<"/admin
   const { data: users, count, error } = await query
     .order(sortColumn ?? "created_at", { ascending: sortColumn ? params.direction !== "desc" : false })
     .order("id", { ascending: false })
-    .range(offset, offset + pageSize - 1);
+    .range(offset, offset + pageSize - 1)
+    .overrideTypes<AdminUser[], { merge: false }>();
 
   // A bookmarked page can disappear if records are removed or its URL is edited.
   if (page > 1 && (error?.code === "PGRST103" || (count !== null && offset >= count))) {
