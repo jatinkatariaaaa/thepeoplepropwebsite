@@ -34,6 +34,7 @@ export async function GET(request: Request) {
         lastName: profile.last_name || "",
         dob: profile.dob || "",
         email: user.email || "",
+        phoneNumber: profile.phone_number || "",
         timezone: profile.timezone || "",
         street: profile.street || "",
         city: profile.city || "",
@@ -41,7 +42,7 @@ export async function GET(request: Request) {
         country: profile.country || "",
         kycStatus: profile.kyc_status || "none",
       },
-    });
+    }, { headers: { "Cache-Control": "private, no-store" } });
   } catch (err: any) {
     console.error("Settings GET Error:", err);
     return NextResponse.json({ error: err.message || "Internal Server Error" }, { status: 500 });
