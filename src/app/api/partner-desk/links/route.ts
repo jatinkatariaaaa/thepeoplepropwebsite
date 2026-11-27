@@ -1,4 +1,5 @@
 import { getSessionUser } from "@/lib/api-auth";
+import { refreshSidebarFlags } from "@/lib/sidebar-flags";
 import { deskResponse } from "@/lib/partner-desk-server";
 import { supabaseAdmin } from "@/lib/supabase";
 
@@ -44,7 +45,10 @@ async function saveLink(request: Request, editing: boolean) {
     p_partner_id: user.id, p_promoter_id: promoterId,
     p_promoter_bps: body.shareBps, p_active: editing ? body.active : true, p_create_only: !editing,
   });
-  if (!error) return deskResponse({ code });
+  if (!error) {
+    refreshSidebarFlags();
+    return deskResponse({ code });
+  }
   if (error.code === "42501") return fail("Link management is unavailable.", 403);
   if (error.code === "23505") return fail("This promoter already has a link. Edit the existing link.", 409);
   if (["22023", "23514", "23503", "P0001"].includes(error.code)) {

@@ -58,9 +58,12 @@ export async function proxy(request: NextRequest) {
     }
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // Verify the session here without a round trip to Supabase Auth: getClaims checks the access token's
+  // ES256 signature against the project's published signing key (cached in memory) and its expiry. An
+  // expired token is refreshed exactly as before, which keeps the cookies fresh for pages and API routes.
+  // Routes that move money or grant access still confirm the session with Auth (getUser) themselves.
+  const { data } = await supabase.auth.getClaims();
+  const user = data?.claims ?? null;
 
   // If the user is not signed in and the current path is under /dashboard or /admin
   if (!user && (request.nextUrl.pathname.startsWith('/dashboard') || request.nextUrl.pathname.startsWith('/admin'))) {

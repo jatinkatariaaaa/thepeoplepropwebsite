@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createBrowserClient } from "@supabase/ssr";
 import { Edit2, Check, X } from "lucide-react";
+import { refreshPublicSiteData } from "@/lib/site-data-client";
 
 export function AdminStatsClient({ initialStats }: { initialStats: any[] }) {
   const [stats, setStats] = useState(initialStats);
@@ -18,6 +19,7 @@ export function AdminStatsClient({ initialStats }: { initialStats: any[] }) {
     try {
       const { error } = await supabase.from("tpp_stats").update({ value: editValue }).eq("id", id);
       if (error) throw error;
+      refreshPublicSiteData();
       setStats(stats.map(s => s.id === id ? { ...s, value: editValue } : s));
       setEditingId(null);
     } catch (err) {

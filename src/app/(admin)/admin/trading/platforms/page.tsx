@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { refreshPublicSiteData } from "@/lib/site-data-client";
 import { createBrowserClient } from "@supabase/ssr";
 import { Button } from "@/components/ui/Button";
 import { Plus, Edit2, Boxes, X, Wifi, Activity, CheckCircle2, AlertCircle } from "lucide-react";
@@ -120,6 +121,7 @@ export default function PlatformsAdminPage() {
       if (!error) {
         setIsModalOpen(false);
         fetchPlatforms();
+        refreshPublicSiteData();
         toast.success("Platform updated");
       } else {
         toast.error("Error updating platform: " + error.message);
@@ -131,6 +133,7 @@ export default function PlatformsAdminPage() {
       if (!error) {
         setIsModalOpen(false);
         fetchPlatforms();
+        refreshPublicSiteData();
         toast.success("Platform added");
       } else {
         toast.error("Error creating platform: " + error.message);

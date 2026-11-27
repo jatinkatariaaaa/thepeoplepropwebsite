@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { refreshSidebarFlags } from "@/lib/sidebar-flags";
 import { supabaseAdmin } from "@/lib/supabase";
 import { getAdminUser, requireRole, logAudit } from "@/lib/admin-auth";
 
@@ -118,6 +119,7 @@ export async function POST(request: Request) {
       request
     });
     
+    refreshSidebarFlags();
     return NextResponse.json({ success: true, admin: result });
   } catch (error: any) {
     if (error.message === "Forbidden") return NextResponse.json({ error: "Only Super Admins can manage roles" }, { status: 403 });
@@ -160,6 +162,7 @@ export async function DELETE(request: Request) {
       request
     });
     
+    refreshSidebarFlags();
     return NextResponse.json({ success: true });
   } catch (error: any) {
     if (error.message === "Forbidden") return NextResponse.json({ error: "Only Super Admins can manage roles" }, { status: 403 });

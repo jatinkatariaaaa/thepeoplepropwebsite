@@ -5,9 +5,8 @@ import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { DASH_THEME_SCRIPT } from "@/components/dashboard/theme";
 import { AssistantWidget } from "@/components/assistant/assistant-widget";
 import { cn } from "@/lib/utils";
-import { getSessionUser } from "@/lib/api-auth";
-import { getAdminRole } from "@/lib/admin-auth";
-import { supabaseAdmin } from "@/lib/supabase";
+import { getVerifiedUserId } from "@/lib/api-auth";
+import { getSidebarFlags } from "@/lib/sidebar-flags";
 import styles from "./dashboard.module.css";
 
 export const viewport: Viewport = {
@@ -17,11 +16,8 @@ export const viewport: Viewport = {
 async function DashboardSidebar({ userId }: { userId: string | undefined }) {
   if (!userId) return <ClientSidebar />;
   // The admin panel's own rule (getAdminRole), so every admin, whatever their role, gets the button.
-  const [eligibility, adminRole] = await Promise.all([
-    supabaseAdmin.rpc("partner_desk_eligible", { p_user_id: userId }),
-    getAdminRole(userId).catch(() => null),
-  ]);
-  return <ClientSidebar hasPartnerDesk={eligibility.data === true} isAdmin={adminRole !== null} />;
+  const { hasPartnerDesk, isAdmin } = await getSidebarFlags(userId);
+  return <ClientSidebar hasPartnerDesk={hasPartnerDesk} isAdmin={isAdmin} />;
 }
 
 export default async function DashboardLayout({
@@ -29,7 +25,9 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const user = await getSessionUser();
+  // Only the id is needed here (which sidebar buttons to show), so the session is verified locally.
+  const userId = await getVerifiedUserId();
+  const user = userId ? { id: userId } : null;
   return (
     // .v2-scope switches on the glass system (src/app/glass.css); styles.light turns it to the light side.
     // <html data-dash="dark"> (set by the theme toggle) turns the same markup dark: see dashboard.module.css.
