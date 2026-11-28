@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import type { AccountMetrics } from "@/lib/account-metrics";
 import { TppMark } from "@/components/v2/glass/logo";
 import { Panel } from "../glass";

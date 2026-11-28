@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { useRouter } from "next/navigation";
 import { useRef, useState, type FormEvent } from "react";
 import { KeyRound, Pencil, Users } from "lucide-react";

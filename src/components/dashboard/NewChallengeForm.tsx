@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Check, Coins, Gift, RotateCcw, ShieldCheck, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";

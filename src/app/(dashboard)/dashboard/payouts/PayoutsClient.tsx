@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { CalendarClock, CircleCheck, Coins, Gauge, HandCoins, ShieldCheck, TriangleAlert, Wallet, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";

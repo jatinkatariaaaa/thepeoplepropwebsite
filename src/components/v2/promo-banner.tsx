@@ -1,6 +1,6 @@
 'use client'
 
-import Link from 'next/link'
+import Link from '@/components/IntentLink'
 import { motion, Reveal } from '@/components/v2/motion'
 
 export function PromoBanner() {

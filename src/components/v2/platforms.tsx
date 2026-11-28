@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from '@/components/IntentLink'
 import { ArrowRight, CandlestickChart } from 'lucide-react'
 
 export function Platforms() {

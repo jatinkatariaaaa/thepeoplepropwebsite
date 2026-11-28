@@ -4,7 +4,7 @@ import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "framer-
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/layout/Logo";
 import { Button } from "@/components/ui/Button";
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 

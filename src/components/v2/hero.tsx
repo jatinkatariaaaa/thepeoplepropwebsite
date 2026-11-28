@@ -1,6 +1,6 @@
 'use client'
 
-import Link from 'next/link'
+import Link from '@/components/IntentLink'
 import Image from 'next/image'
 import { ArrowRight, Star, TrendingUp } from 'lucide-react'
 import { motion, Stagger, StaggerItem } from '@/components/v2/motion'

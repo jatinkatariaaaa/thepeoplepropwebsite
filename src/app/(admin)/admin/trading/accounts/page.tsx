@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { AdminTable } from "@/components/admin/AdminTable";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";

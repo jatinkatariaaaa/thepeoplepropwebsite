@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { Ban, CheckCircle2, ChevronRight, Clock, Gift, RotateCcw, Search, ShieldAlert, ShieldCheck, Users, X, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";

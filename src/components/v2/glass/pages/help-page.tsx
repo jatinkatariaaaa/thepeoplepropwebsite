@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { ArrowRight, BookOpen, CircleHelp, LayoutDashboard, LifeBuoy, MessagesSquare, Newspaper, Scale, Trophy, type LucideIcon } from "lucide-react";
 import { rules } from "@/data/rules";
 import { Button, Container, Eyebrow, Lede, Section, Title } from "../ui";

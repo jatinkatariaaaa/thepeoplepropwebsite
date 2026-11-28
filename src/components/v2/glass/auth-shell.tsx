@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import type { ReactNode } from "react";
 import { preload } from "react-dom";
 import { cn } from "@/lib/utils";

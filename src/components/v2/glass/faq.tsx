@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useMemo, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, CircleHelp, Mail, Plus } from "lucide-react";
 import { faq, type FAQItem } from "@/data/faq";

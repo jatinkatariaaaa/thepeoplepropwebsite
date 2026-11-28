@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { useRouter } from "next/navigation";
 import { Bell, MessageCircle, Search } from "lucide-react";
 import { supabase } from "@/lib/supabase";

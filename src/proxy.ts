@@ -2,7 +2,8 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 // The marketing pages render the same content for everyone. Session refresh can
-// wait until an authenticated screen or auth-aware API is requested.
+// wait until an authenticated screen or auth-aware API is requested. The matcher
+// below already keeps the proxy off these pages; this check stays as a guard.
 const PUBLIC_SECTIONS = new Set([
   "", "about", "aml-policy", "blog", "careers", "challenges", "contact",
   "contest", "cookie", "faqs", "heatmap", "help", "leaderboard", "payout-policy",
@@ -85,14 +86,23 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
+  // Only the routes where the proxy does something:
+  // - the signed-in areas (sent to /login when signed out);
+  // - /login and /signup (signed-in visitors go to the dashboard);
+  // - the auth flows;
+  // - the profile step (its Server Function posts to /complete-profile);
+  // - the API routes that act for a signed-in user, whose session cookie it keeps fresh.
+  // Every other route never reads the session: the public pages (all static), the referral links, public
+  // data, certificate images, webhooks and cron. Until 2026-11 each of their requests still paid for a
+  // proxy run, and proxy runs were most of the team's Vercel Active CPU.
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * Feel free to modify this pattern to include more paths.
-     */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/dashboard/:path*',
+    '/admin/:path*',
+    '/partner-desk/:path*',
+    '/login',
+    '/signup',
+    '/complete-profile',
+    '/auth/:path*',
+    '/api/((?!programs$|status$|certificate/|nowpayments-ipn$|terminal-webhook$|cron/).*)',
   ],
 };

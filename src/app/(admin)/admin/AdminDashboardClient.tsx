@@ -12,7 +12,7 @@ import {
   ShieldCheck,
   MoreHorizontal,
 } from "lucide-react";
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import dynamic from "next/dynamic";
 import { format, subDays } from "date-fns";
 

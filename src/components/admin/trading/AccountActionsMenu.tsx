@@ -13,7 +13,7 @@ import {
   BadgeCheck,
   Ban,
 } from "lucide-react";
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { cn } from "@/lib/utils";
 
 export interface AccountActionHandlers {

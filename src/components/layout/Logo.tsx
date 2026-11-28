@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { cn } from "@/lib/utils";
 
 export function Logo({

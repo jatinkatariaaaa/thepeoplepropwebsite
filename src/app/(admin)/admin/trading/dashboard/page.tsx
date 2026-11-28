@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { createBrowserClient } from "@supabase/ssr";
 import { Activity, ShieldAlert, AlertTriangle, TrendingUp, Wallet, CheckCircle2 } from "lucide-react";
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { cn } from "@/lib/utils";
 
 export default function RiskDashboardPage() {

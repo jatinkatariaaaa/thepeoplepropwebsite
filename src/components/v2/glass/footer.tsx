@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { ArrowUp, Mail } from "lucide-react";
 import { Container } from "./ui";
 import { TppMark, TppOutline } from "./logo";

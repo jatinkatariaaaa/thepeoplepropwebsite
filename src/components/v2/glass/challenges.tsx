@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useRef, useState, type ReactNode } from "react";
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { AnimatePresence, motion, useInView } from "framer-motion";
 import {
   ArrowRight,

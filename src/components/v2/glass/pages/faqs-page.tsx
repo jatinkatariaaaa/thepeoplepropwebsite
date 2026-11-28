@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useMemo, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { useSearchParams } from "next/navigation";
 import { ArrowRight, Bot, CircleHelp, LifeBuoy, Mail, Search } from "lucide-react";
 import { supabase } from "@/lib/supabase";

@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { ArrowRight, Check, KeyRound } from "lucide-react";
 import { Container, Eyebrow } from "../ui";
 import { Parallax, Reveal } from "../motion";

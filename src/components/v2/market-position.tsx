@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from '@/components/IntentLink'
 import { ArrowRight, Star, Target } from 'lucide-react'
 
 const competitors = [

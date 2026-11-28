@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { AnimatePresence, motion, useInView, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Check, CheckCircle2, Copy, Gift, Link2, MailCheck, Minus, Plus, Scale, Send, Share2, ShieldCheck, Sparkles, Trophy, UserPlus, Users } from "lucide-react";
 import { cn } from "@/lib/utils";

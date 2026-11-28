@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { ArrowLeft, CheckCircle2, Inbox, LifeBuoy, MessageSquarePlus, RotateCcw, Search, Send, UserRound, X, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { ChevronRight, Share2, Key, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Chip, LogoTile, Notice, btn } from "../glass";
