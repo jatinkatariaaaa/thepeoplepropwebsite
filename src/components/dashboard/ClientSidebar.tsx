@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {

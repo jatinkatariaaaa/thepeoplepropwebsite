@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { ArrowRight, Coins, RotateCcw, Zap } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { PERKS } from "@/data/catalogue";

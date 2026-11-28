@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import Link from 'next/link'
+import Link from '@/components/IntentLink'
 import { Mail, MessageCircle, Send } from 'lucide-react'
 import { motion, Reveal } from '@/components/v2/motion'
 

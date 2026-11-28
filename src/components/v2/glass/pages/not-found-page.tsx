@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { ArrowRight, Compass } from "lucide-react";
 import { Button, Container, Section } from "../ui";
 import { Stagger, StaggerItem } from "../motion";

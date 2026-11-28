@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, CalendarRange, Check, Coins, Gift, Layers, MessagesSquare, RotateCcw, Trophy, Zap } from "lucide-react";
 import { ALL_SIZES, formatSize, type ProgramKey } from "@/data/programs";

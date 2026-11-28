@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { Trophy, Calendar, Eye, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Chip, Empty, Panel, PanelHead, Prop, Spinner, btn, segment } from "./glass";

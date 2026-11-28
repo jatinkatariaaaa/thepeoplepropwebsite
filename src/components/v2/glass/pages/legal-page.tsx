@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { BadgeDollarSign, Cookie, FileText, HandCoins, Lock, ShieldCheck, TriangleAlert, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Container } from "../ui";

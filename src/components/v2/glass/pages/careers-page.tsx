@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { ArrowUpRight, Briefcase, Coins, Globe, GraduationCap, HeartPulse, Laptop, Sparkles, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button, Container, Eyebrow, Section, Title } from "../ui";

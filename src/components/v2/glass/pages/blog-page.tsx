@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { ArrowLeft, ArrowRight, Clock, Lightbulb, Newspaper, PenLine } from "lucide-react";
 import type { BlogCard, BlogPost } from "@/lib/data/blogs";
 import { cn } from "@/lib/utils";

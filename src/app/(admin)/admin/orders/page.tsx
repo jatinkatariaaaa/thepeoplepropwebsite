@@ -7,7 +7,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { ShoppingCart, Eye, RefreshCw, FileText } from "lucide-react";
 import { toast } from "sonner";
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { useAdminRole } from "@/lib/admin-context";
 
 export default function AdminOrdersPage() {

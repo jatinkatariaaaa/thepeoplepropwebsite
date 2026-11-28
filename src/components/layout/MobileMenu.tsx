@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { X, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Logo } from "./Logo";

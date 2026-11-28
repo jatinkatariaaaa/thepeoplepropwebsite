@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { AlertTriangle, ArrowRight, CheckCircle, Clock, Gift, Info, ShieldCheck, Trophy } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ClaimResult } from "@/lib/referral-link";

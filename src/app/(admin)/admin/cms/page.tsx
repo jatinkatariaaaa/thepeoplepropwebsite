@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { format } from "date-fns";
 import { FileText, Edit, Globe, CheckCircle2, AlertCircle } from "lucide-react";
 import { toast } from "sonner";

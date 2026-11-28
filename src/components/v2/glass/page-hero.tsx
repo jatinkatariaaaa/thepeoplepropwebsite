@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, type ReactNode } from "react";
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { ChevronRight, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";

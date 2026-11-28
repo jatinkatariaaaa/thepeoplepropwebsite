@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { cn } from "@/lib/utils";
 
 type Variant = "primary" | "dark" | "secondary" | "ghost" | "outline" | "success";

@@ -28,6 +28,11 @@ const anon =
       })
     : null;
 
+/** False in a deployment without the Supabase settings, which has no site data to serve. */
+export function siteDataConfigured(): boolean {
+  return anon !== null;
+}
+
 async function readSiteData(): Promise<SiteData> {
   if (!anon) throw new Error("Supabase is not configured");
   const [programs, stats, platforms] = await Promise.all([

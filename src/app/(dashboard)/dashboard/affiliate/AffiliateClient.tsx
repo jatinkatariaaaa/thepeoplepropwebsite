@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/IntentLink";
 import { ArrowRight, DollarSign, Gift, Link as LinkIcon, ShoppingBag, Users, WalletCards } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Empty, Meter, PageTitle, Panel, PanelHead, Stat, btn } from "@/components/dashboard/glass";
